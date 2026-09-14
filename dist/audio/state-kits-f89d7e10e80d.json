@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "Spanish_Narrator",
+  "language": "Spanish",
+  "text": "Ahora se han agotado los kits de componentes. El siguiente suministro llega a las ocho de la mañana. Más robots no pueden fabricar móviles sin esas piezas. Este límite viene del exterior de la fábrica.",
+  "duration_ms": 17892,
+  "billed_characters": 201,
+  "sample_rate": 32000,
+  "size_bytes": 287988,
+  "generated_at": "2026-09-14T23:52:13.936578+00:00"
+}

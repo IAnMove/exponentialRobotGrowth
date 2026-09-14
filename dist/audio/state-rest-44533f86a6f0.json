@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "Spanish_Narrator",
+  "language": "Spanish",
+  "text": "En el momento que has seleccionado no hay personal disponible en este proceso. Las personas están fuera de turno o los robots asignados están en una pausa. La instalación necesita volver a disponer de trabajadores para continuar.",
+  "duration_ms": 18432,
+  "billed_characters": 229,
+  "sample_rate": 32000,
+  "size_bytes": 296628,
+  "generated_at": "2026-09-14T23:52:00.651669+00:00"
+}

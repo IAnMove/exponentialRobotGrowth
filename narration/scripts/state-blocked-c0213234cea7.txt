@@ -1,0 +1,1 @@
+Ahora la salida de este puesto está llena. Tiene trabajo terminado que el siguiente proceso todavía no puede recibir. Por eso debe esperar. Mira el puesto siguiente: incorporar otro robot aquí no elimina esa cola.

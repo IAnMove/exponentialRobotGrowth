@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "Spanish_Narrator",
+  "language": "Spanish",
+  "text": "En el momento que has seleccionado, este proceso tiene trabajo y personal disponible. Está produciendo. Mira su salida y las existencias: ese ritmo solo puede mantenerse mientras sigan llegando materiales y haya capacidad para continuar la cadena.",
+  "duration_ms": 21780,
+  "billed_characters": 247,
+  "sample_rate": 32000,
+  "size_bytes": 350196,
+  "generated_at": "2026-09-14T23:51:58.367290+00:00"
+}

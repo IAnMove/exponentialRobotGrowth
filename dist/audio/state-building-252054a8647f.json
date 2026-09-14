@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "Spanish_Narrator",
+  "language": "Spanish",
+  "text": "Ahora hay una ampliación en marcha. Parte de los robots trabaja en aumentar la capacidad de la instalación. La mejora no aparece de inmediato: primero hay que completar la obra. Esa espera separa la decisión de invertir del momento en que empieza a dar producción adicional.",
+  "duration_ms": 22932,
+  "billed_characters": 274,
+  "sample_rate": 32000,
+  "size_bytes": 368628,
+  "generated_at": "2026-09-14T23:52:06.510648+00:00"
+}

@@ -2,6 +2,7 @@ import * as THREE from './vendor/three.module.js';
 import {WORLD,createWorld,roadRoute,routePoint} from './world.js';
 import {createCharacters} from './characters.js';
 import {createActivity,processStatus,INPUTS,RESOURCES} from './activity.js';
+import {createNarrator} from './narrator.js';
 
 const $=id=>document.getElementById(id),container=$('world');
 let renderer;
@@ -17,6 +18,9 @@ let run=simulateIndustry(),baseline=simulateIndustry('assembly'),index=0,phase=0
 let yaw=.58,yawTarget=.58,zoom=1.08,zoomTarget=1.08,look=new THREE.Vector3(-3,0,3),targetLook=look.clone();
 let showRoutes=false,needsFrame=true;
 const nextFrame=()=>run.frames[Math.min(index+1,run.frames.length-1)];
+const narrator=createNarrator({toggleHost:document.querySelector('.masthead'),onBegin(){playing=false;updateUI();}});
+document.addEventListener('click',e=>{if(e.target.closest('#play,#next-day,[data-hour],.milestones button,.experiment-controls button,#close-inspector,#camera-reset,#about-button'))narrator.stop();},true);
+document.addEventListener('input',e=>{if(e.target.matches('#time,#expand'))narrator.stop();},true);
 const labels=[],projection=new THREE.Vector3(),totals=a=>a.reduce((n,v)=>n+v,0),format=n=>n.toLocaleString('es-ES');
 const periods={work:'Turno de trabajo',lunch:'Pausa para comer',sleep:'Descanso nocturno',commute:'Camino al trabajo',rest:'Fin del turno humano'};
 const places=[...INDUSTRIES.map(s=>({...s,y:5.6})),{name:'Barrio residencial',...WORLD.home,y:4.7,icon:'⌂'},{name:'Comedor',...WORLD.canteen,y:4.5,icon:'☕'},{name:'Recarga y servicio',...WORLD.charging,y:3.8,icon:'ϟ'},{name:'Robots nuevos',...WORLD.hub,y:5,icon:'↻'},{name:'Energía externa',x:36,z:-28,y:3.7,icon:'☀'}];
@@ -41,7 +45,7 @@ function updateInspector(){const f=run.frames[index],i=selected;$('place-title')
     $('stock-list').replaceChildren(...INPUTS[i].map(k=>{const row=document.createElement('div');row.className='stock-row'+(f.inventory[k]===0?' empty':'');const name=document.createElement('span');name.textContent=RESOURCES[k];const count=document.createElement('strong');count.textContent=format(f.inventory[k]);row.append(name,count);return row;}));$('stock-title').textContent=i===0?'Extracción limitada por equipos':'Existencias que necesita';$('stock-footnote').textContent=i===0?'Los insumos especializados y la energía vienen del exterior.':'Lotes en la red · pilas del mapa orientativas';$('capacity-fill').style.width=Math.min(100,status.rate/f.hardware[i]*100)+'%';$('capacity-label').textContent=status.rate+' / '+f.hardware[i]+' lotes por hora';
   }else{$('place-status').dataset.state='';$('place-status').textContent=i===9?f.humansReplaced+' personas con su tarea industrial cubierta por robots.':i===10?f.period==='lunch'?'Es la hora de comer.':'El comedor espera la siguiente pausa.':i===11?totals(f.charging)+' recargando · '+totals(f.maintenance)+' en mantenimiento':i===12?format(f.exported)+' robots destinados a otros usos.':'Suministro externo supuesto.';}
 }
-function selectPlace(i){selected=i;$('inspector').hidden=false;zoomTarget=container.clientWidth<680?4:2.8;targetLook.set(places[i].x,0,places[i].z);updateUI();}
+function selectPlace(i){selected=i;$('inspector').hidden=false;zoomTarget=container.clientWidth<680?4:2.8;targetLook.set(places[i].x,0,places[i].z);updateUI();narrator.explain('district-'+i,i<9?'state-'+processStatus(run.frames[index],nextFrame(),i).code:null);}
 function resetCamera(){selected=-1;$('inspector').hidden=true;zoomTarget=1;yawTarget=.58;targetLook.set(-1,0,3);updateUI();}
 $('routes').addEventListener('click',()=>{showRoutes=!showRoutes;needsFrame=true;$('routes').setAttribute('aria-pressed',showRoutes);});
 $('close-inspector').addEventListener('click',()=>{selected=-1;$('inspector').hidden=true;updateUI();});

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "Spanish_Narrator",
+  "language": "Spanish",
+  "text": "El móvil recibe aquí su pantalla y su batería, y se completa el cierre del conjunto. Cada unidad que llega ya ha pasado por preparación y montaje. Las piezas esperando indican cuánto trabajo tiene disponible este puesto. Si la cola está vacía, añadir otro robot no garantiza más producción: primero tienen que llegar móviles desde montaje. Si la salida se llena, el problema está más adelante. La fábrica tiene espacio limitado entre puestos, de modo que un atasco acaba obligando a parar a los anteriores. Observa cómo una decisión local se propaga por toda la línea, y compara después los móviles terminados durante un día completo.",
+  "duration_ms": 51876,
+  "billed_characters": 634,
+  "sample_rate": 32000,
+  "size_bytes": 831732,
+  "generated_at": "2026-09-14T23:51:52.847101+00:00"
+}

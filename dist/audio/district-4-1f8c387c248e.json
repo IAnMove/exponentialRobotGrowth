@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "Spanish_Narrator",
+  "language": "Spanish",
+  "text": "Los robots necesitan almacenar energía para trabajar sin estar conectados permanentemente a un cable. En esta instalación representamos la preparación y el ensamblaje de sus baterías. La simulación supone que los insumos químicos especializados llegan del exterior; no reproduce toda la industria de una batería real. Cada kit de robot necesita una batería, además de las otras familias de componentes. Por eso un almacén lleno de motores no compensa que falten baterías. Cuando incorpores robots aquí, observa si aumenta la cantidad de kits completos y, finalmente, la salida de robots terminados. Esa relación permite distinguir una mejora local de una mejora que realmente beneficia a toda la red.",
+  "duration_ms": 54072,
+  "billed_characters": 700,
+  "sample_rate": 32000,
+  "size_bytes": 866868,
+  "generated_at": "2026-09-14T23:51:28.317603+00:00"
+}

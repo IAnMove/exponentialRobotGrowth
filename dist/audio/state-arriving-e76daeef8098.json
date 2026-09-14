@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "Spanish_Narrator",
+  "language": "Spanish",
+  "text": "Ahora está llegando un robot para cubrir una de las tareas. Durante la incorporación todavía no aporta producción. Cuando llegue a su puesto podrá trabajar según su horario de disponibilidad, siempre que tenga piezas y capacidad de maquinaria.",
+  "duration_ms": 20916,
+  "billed_characters": 243,
+  "sample_rate": 32000,
+  "size_bytes": 336372,
+  "generated_at": "2026-09-14T23:52:11.650350+00:00"
+}

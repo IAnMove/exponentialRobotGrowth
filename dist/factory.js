@@ -1,8 +1,11 @@
 import {STATIONS,BUFFER,STEP,createFactory,tick,automate,status,period,forecast,constraint} from './factory-model.js';
 import {createFactoryWorld} from './factory-world.js';
+import {createNarrator} from './narrator.js';
 const $=id=>document.getElementById(id),fmt=n=>Math.round(n).toLocaleString('es-ES');
 let state=createFactory(),reference=createFactory(),selected=1,playing=false,speed=1,motion=0,last=performance.now(),accumulator=0,uiClock=0;
 const baseDay=forecast([0,0,0,0,0]);let planDay=baseDay;
+const narrator=createNarrator({toggleHost:document.querySelector('.topbar'),onBegin(){playing=false;updateUI();}});
+document.addEventListener('click',e=>{if(e.target.closest('#f-play,#f-reset,#f-automate,#f-lunch,#f-night,#f-day-end,#help,#f-assumptions'))narrator.stop();},true);
 let world;
 try{world=createFactoryWorld($('factory-canvas'));$('factory-loading').hidden=true;}
 catch(error){$('factory-loading').textContent='No se pudo iniciar el mundo 3D. Los controles y la comparación siguen disponibles.';console.error(error);}
@@ -12,7 +15,7 @@ STATIONS.forEach((st,i)=>{
   const tab=document.createElement('button');tab.type='button';tab.className='station-tab';tab.innerHTML=`<b>${String(i+1).padStart(2,'0')}</b><span>${st.name}<small></small></span>`;tab.addEventListener('click',()=>{select(i);if(matchMedia('(max-width:760px)').matches)document.querySelector('.station-panel').scrollIntoView({behavior:'smooth',block:'start'});});$('station-tabs').append(tab);tabs.push(tab);
 });
 for(let i=0;i<16;i++)$('f-queue-dots').append(document.createElement('i'));
-function select(i,focus=true){selected=i;world?.select(i,focus);updateUI();}
+function select(i,focus=true){selected=i;world?.select(i,focus);updateUI();if(focus){let code=status(state,i).code;if(code==='starved')code=i===0?'kits':'waiting';if(code==='rest'&&state.robots[i].some(t=>t>state.time))code='arriving';narrator.explain('factory-'+i,'state-'+code);}}
 function recalculate(){planDay=forecast(state.robots.map(r=>r.length));}
 function updateUI(){
   const hour=(state.time+8)%24,h=Math.floor(hour),m=Math.min(59,Math.floor((hour-h)*60+1e-5)),st=STATIONS[selected],s=status(state,selected),bound=constraint(state);

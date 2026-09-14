@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "Spanish_Narrator",
+  "language": "Spanish",
+  "text": "Aquí se coloca la placa en la carcasa y se conectan los componentes del móvil. Las dos personas que ves comparten el trabajo del puesto. Puedes incorporar un robot para cubrir una de esas tareas, y después otro para cubrir la segunda. En este ejemplo cada robot aporta un ritmo mayor y tiene más horas disponibles, pero la maquinaria también tiene un límite. Mira la cola que aparece en el siguiente puesto y cuenta los móviles que salen de embalaje. Si el atasco está en pruebas, acelerar montaje puede producir muchas piezas pendientes y muy pocos móviles adicionales. Una mejora en este puesto no se traduce automáticamente en la misma mejora para toda la fábrica.",
+  "duration_ms": 53460,
+  "billed_characters": 667,
+  "sample_rate": 32000,
+  "size_bytes": 857076,
+  "generated_at": "2026-09-14T23:51:50.753633+00:00"
+}

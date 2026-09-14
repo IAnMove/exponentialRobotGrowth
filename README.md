@@ -2,6 +2,10 @@
 
 ## Escena de la fábrica de móviles
 
+La narración al seleccionar cubre los 14 lugares del distrito y los 5 puestos de la fábrica. Cada lugar tiene una explicación grabada con MiniMax; los procesos añaden un segundo fragmento elegido según el estado del modelo. La simulación se pausa para conservar ese contexto. Reanudar o modificar la simulación detiene la explicación; seleccionar otro lugar sustituye el audio anterior. El reproductor incluye pausa, repetición, salto al estado actual, texto y desactivación global.
+
+Los guiones están en `narration/places.json`; `tools/build_narration.py` genera audios con nombres derivados del contenido y reutiliza los ya existentes. La clave se lee del `.env` externo de MiniMax; no se copia al proyecto ni se necesita para reproducir el sitio. `node check-narrator.mjs` valida cobertura, archivos y el ciclo de reproducción, incluidas respuestas tardías de una selección anterior.
+
 `dist/factory.html` abre una segunda escena independiente del distrito, con cinco puestos y diez personas. Los robots se incorporan desde el exterior, uno por tarea, y el usuario decide dónde introducirlos. Incluye selección de puestos, cámara isométrica con desplazamiento y zoom táctil, pausas humanas, recarga y servicio de robots, colas limitadas, comparación simultánea con una línea humana y un ensayo separado de 24 horas con la configuración fija.
 
 `dist/factory-model.js` conserva unidades: cada kit pasa por preparación (incluida la RAM), montaje, pantalla/batería, pruebas y embalaje. Hay 160 kits iniciales, hasta 160 entregados cada día, buffers de 16 unidades y límites de maquinaria. Las tasas, el factor 1,4 de los robots, el turno humano de ocho horas y las 21 horas disponibles por robot son supuestos didácticos. Una estación bloqueada conserva su trabajo terminado hasta que el siguiente buffer tenga espacio. Los contadores diarios cambian a las 08:00; se conserva el resultado del último día completo.

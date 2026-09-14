@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "Spanish_Narrator",
+  "language": "Spanish",
+  "text": "Un robot ensamblado todavía tiene que verificarse, calibrarse y ponerse a punto. Este es el último paso antes de contarlo como robot terminado y permitir que se incorpore a trabajar. Observa los cuerpos que llegan y el ritmo con el que salen. Si las pruebas se quedan atrás, acelerar el montaje acumula trabajo pendiente sin aumentar igual de rápido la flota disponible. Reforzar este paso puede liberar esa producción retenida. La escena simplifica el proceso y no simula rechazos ni averías aleatorias. Aun así, conserva una distinción esencial: fabricar piezas, ensamblar un robot y disponer de un robot operativo son resultados diferentes.",
+  "duration_ms": 57420,
+  "billed_characters": 643,
+  "sample_rate": 32000,
+  "size_bytes": 920436,
+  "generated_at": "2026-09-14T23:51:36.662946+00:00"
+}

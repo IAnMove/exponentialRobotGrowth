@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "Spanish_Narrator",
+  "language": "Spanish",
+  "text": "Este es el primer puesto de la fábrica de móviles. Aquí se prepara un kit con la placa, la memoria RAM, los sensores y los demás componentes necesarios. La pantalla y la batería se instalarán más adelante. En este escenario los componentes llegan del exterior: empezamos con ciento sesenta kits y recibimos hasta ciento sesenta nuevos cada día. Un robot puede cubrir la tarea de una de las dos personas del puesto, pero no fabricar componentes que no han llegado. Observa cómo cambian los kits disponibles y las piezas que esperan delante de montaje. Preparar más kits solo mejora la producción final si los siguientes puestos pueden procesarlos.",
+  "duration_ms": 53136,
+  "billed_characters": 646,
+  "sample_rate": 32000,
+  "size_bytes": 851892,
+  "generated_at": "2026-09-14T23:51:48.901998+00:00"
+}

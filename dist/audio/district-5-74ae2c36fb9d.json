@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "Spanish_Narrator",
+  "language": "Spanish",
+  "text": "Esta es la electrónica que permite controlar el robot y recibir información de su entorno: controladores, sensores, conexiones y cableado. La fabricación especializada de chips y sus equipos se resume en este edificio; la simulación no supone que un robot pueda improvisar una fábrica de semiconductores. Mira qué materiales recibe y cuántos conjuntos electrónicos entrega. Cada robot terminado necesita esta familia de componentes, aunque todas las piezas mecánicas estén listas. Cuando la electrónica limita, acelerar el montaje solo hace que el montaje espere más. Para sostener la expansión también tienen que crecer estos proveedores especializados, su maquinaria y sus suministros.",
+  "duration_ms": 60156,
+  "billed_characters": 687,
+  "sample_rate": 32000,
+  "size_bytes": 964212,
+  "generated_at": "2026-09-14T23:51:29.092234+00:00"
+}

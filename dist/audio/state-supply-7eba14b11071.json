@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "Spanish_Narrator",
+  "language": "Spanish",
+  "text": "Ahora llegan materiales, pero no bastan para aprovechar toda la capacidad del proceso. Una parte del equipo podría producir más si recibiera suficientes entradas. Observa qué proveedor limita ese suministro antes de enviar más robots aquí.",
+  "duration_ms": 23508,
+  "billed_characters": 239,
+  "sample_rate": 32000,
+  "size_bytes": 377844,
+  "generated_at": "2026-09-14T23:52:04.385500+00:00"
+}

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "Spanish_Narrator",
+  "language": "Spanish",
+  "text": "Observa esta fábrica. Al principio, todas las tareas las hacen personas. Cuando llega un robot, puede cubrir uno de esos puestos. Pero fabricar más rápido en montaje no sirve de mucho si las piezas se acumulan en pruebas. Para aumentar la producción hay que reforzar el cuello de botella. Y, a una escala mayor, parte de los nuevos robots puede ayudar a construir más fábricas. Así crece la capacidad de producir, siempre que también lleguen materiales, energía y maquinaria. El crecimiento puede acelerarse, pero no es ilimitado.",
+  "duration_ms": 45360,
+  "billed_characters": 530,
+  "sample_rate": 32000,
+  "size_bytes": 727476,
+  "generated_at": "2026-09-14T18:47:07.734460+00:00"
+}
