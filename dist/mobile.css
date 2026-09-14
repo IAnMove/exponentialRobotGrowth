@@ -1,3 +1,4 @@
+.factory-entry{color:#bce9d9;background:#a7e0cf10;border:1px solid #a7e0cf40;border-radius:9px;text-decoration:none;padding:11px 14px;font-size:13px;line-height:1.35;white-space:nowrap}.factory-entry:hover{background:#a7e0cf22}@media(max-width:1000px){.masthead{flex-wrap:wrap}.factory-entry{margin-left:auto}}@media(max-width:680px){.factory-entry{order:4;width:100%;text-align:center;font-size:13px;padding:10px}}
 @media(pointer:coarse){
   .camera-controls button{width:44px;height:44px}
   .map-tools{right:76px}

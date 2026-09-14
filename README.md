@@ -1,5 +1,13 @@
 # Robots que refuerzan su cadena de fabricación
 
+## Escena de la fábrica de móviles
+
+`dist/factory.html` abre una segunda escena independiente del distrito, con cinco puestos y diez personas. Los robots se incorporan desde el exterior, uno por tarea, y el usuario decide dónde introducirlos. Incluye selección de puestos, cámara isométrica con desplazamiento y zoom táctil, pausas humanas, recarga y servicio de robots, colas limitadas, comparación simultánea con una línea humana y un ensayo separado de 24 horas con la configuración fija.
+
+`dist/factory-model.js` conserva unidades: cada kit pasa por preparación (incluida la RAM), montaje, pantalla/batería, pruebas y embalaje. Hay 160 kits iniciales, hasta 160 entregados cada día, buffers de 16 unidades y límites de maquinaria. Las tasas, el factor 1,4 de los robots, el turno humano de ocho horas y las 21 horas disponibles por robot son supuestos didácticos. Una estación bloqueada conserva su trabajo terminado hasta que el siguiente buffer tenga espacio. Los contadores diarios cambian a las 08:00; se conserva el resultado del último día completo.
+
+`node check-factory.mjs` verifica conservación, límites, turnos, incorporación, comparación de intervenciones y suministro. `python check-site.py` valida ambas páginas y sus módulos. Las piezas del suministro y las cajas expedidas se dibujan de forma resumida; las colas internas y los contadores representan las unidades del modelo.
+
 ## Versión actual: Robot Lab 3D
 
 La web actual está en `dist/`: un distrito isométrico en Three.js, cinco veces mayor que el anterior, con 74 humanos iniciales, robots articulados, vehículos, obras, comedor, viviendas, parque y recarga. Play inicia el reloj y las animaciones inmediatamente. El reloj es independiente del refresco del lienzo. Los controles se prueban en la página real, mediante clics.

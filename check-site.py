@@ -17,11 +17,12 @@ class References(HTMLParser):
                 target = public / value[2:]
                 assert target.is_file(), f'Recurso ausente: {target}'
 
-references = References()
-references.feed((public / 'index.html').read_text(encoding='utf-8'))
-controls = set(re.findall(r"\$\('([^']+)'\)", (public / 'game.js').read_text(encoding='utf-8')))
-assert controls <= references.ids, f'Controles ausentes: {controls - references.ids}'
-for name in ('game.js', 'world.js', 'characters.js', 'activity.js', 'industrial-model.js', 'network-model.js', 'vendor/three.module.js', 'vendor/three.core.js'):
+for page, module in [('index.html', 'game.js'), ('factory.html', 'factory.js')]:
+    references = References()
+    references.feed((public / page).read_text(encoding='utf-8'))
+    controls = set(re.findall(r"\$\('([^']+)'\)", (public / module).read_text(encoding='utf-8')))
+    assert controls <= references.ids, f'Controles ausentes en {page}: {controls - references.ids}'
+for name in ('game.js', 'world.js', 'characters.js', 'activity.js', 'factory.js', 'factory-world.js', 'factory-model.js', 'industrial-model.js', 'network-model.js', 'vendor/three.module.js', 'vendor/three.core.js'):
     subprocess.run(['node', '--check', str(public / name)], check=True, capture_output=True)
 assert (public / 'network-model.js').read_bytes() == (root / 'network-model.js').read_bytes()
 assert (public / 'industrial-model.js').read_bytes() == (root / 'industrial-model.js').read_bytes()
