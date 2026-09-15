@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "Spanish_Narrator",
+  "language": "Spanish",
+  "text": "Esta zona agrupa las estructuras, los actuadores, las baterías y la electrónica que necesita un robot. En el modelo, dos lotes de material refinado se convierten en un kit completo. Es una simplificación: no significa que todos los componentes reales se fabriquen en el mismo edificio. Si construyes fábricas de robots sin ampliar estos proveedores, las nuevas líneas esperarán piezas. Mira la gráfica de kits producidos y el almacén. El objetivo de una ampliación útil no es llenar el mapa de edificios, sino aumentar el flujo que llega hasta los robots terminados. La fabricación especializada de maquinaria y algunos insumos se suponen disponibles desde el exterior.",
+  "duration_ms": 57924,
+  "billed_characters": 669,
+  "sample_rate": 32000,
+  "size_bytes": 928500,
+  "generated_at": "2026-09-15T06:45:26.283759+00:00"
+}

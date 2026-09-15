@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "Spanish_Narrator",
+  "language": "Spanish",
+  "text": "Esta parcela tiene una obra en marcha. El material de construcción ya se ha descontado del almacén. El porcentaje indica cuánto trabajo se ha completado, pero la nueva instalación no aporta capacidad hasta llegar al cien por cien. Puede trabajar un máximo de cuatro robots en esta obra. El control de inversión limita cuántos robots se destinan a construir; si lo bajas a cero, las obras esperan. Así puedes observar el intercambio entre producir ahora y disponer de más capacidad después.",
+  "duration_ms": 41616,
+  "billed_characters": 489,
+  "sample_rate": 32000,
+  "size_bytes": 667572,
+  "generated_at": "2026-09-15T06:45:38.716002+00:00"
+}

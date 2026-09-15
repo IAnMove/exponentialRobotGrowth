@@ -20,7 +20,7 @@ class References(HTMLParser):
                 assert target.is_file(), f'Recurso ausente: {target}'
 
 for directory, language in [(public, 'en'), (public / 'es', 'es')]:
-    for page, module in [('index.html', 'game.js'), ('factory.html', 'factory.js')]:
+    for page, module in [('index.html', 'game.js'), ('factory.html', 'factory.js'), ('region.html', 'region.js')]:
         references = References(directory)
         html = (directory / page).read_text(encoding='utf-8')
         references.feed(html)
@@ -36,4 +36,4 @@ for file in public.rglob('*.js'):
             assert (file.parent / link).is_file(), f'Missing import: {file}: {link}'
 for name in ['industrial-model.js', 'network-model.js']:
     assert (public / 'es' / name).read_text(encoding='utf-8') == (root / name).read_text(encoding='utf-8')
-print('Four bilingual routes, controls, language links, module imports and JavaScript syntax: OK')
+print('Six bilingual routes, controls, language links, module imports and JavaScript syntax: OK')

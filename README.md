@@ -1,5 +1,13 @@
 # Robots que refuerzan su cadena de fabricación
 
+## Región industrial
+
+`region.html` añade el tercer nivel, accesible desde distrito y fábrica. Empieza con 24 robots y seis instalaciones; no importa el estado de las otras escenas. El control de inversión limita la fracción de la flota destinada a construir y reserva esa misma fracción de material recién refinado para próximas obras. La producción, las obras y los inventarios conservan material; el dinero no se modela.
+
+Hay seis tipos de industria, seis parcelas por tipo y hasta tres proyectos simultáneos. Cada proyecto consume 48 lotes y necesita 24 unidades de trabajo, con hasta cuatro robots. La electricidad limita producción y construcción; la logística limita flujos industriales. La referencia también incorpora los robots fabricados, pero mantiene sus seis instalaciones originales. Los ciclos no son días ni años. Los robots se dibujan individualmente hasta que hace falta agruparlos para mantener legible el mapa; la equivalencia se indica en pantalla.
+
+El modelo está en `site-src/region-model.js`; `node check-region.mjs` comprueba conservación, existencias, demoras, límites, construcción manual, coste inicial de la inversión y mayor capacidad posterior. Las narraciones adicionales están en `narration/region.es.json` y `narration/region.en.json` y se generan con el mismo comando de narración. `check-site.py` valida las seis rutas y `check-localization.mjs` también compara ambos modelos regionales.
+
 ## Inglés, español y GitHub Pages
 
 Web pública: https://ianmove.github.io/exponentialRobotGrowth/ · Repositorio público: https://github.com/IAnMove/exponentialRobotGrowth

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This plot has a construction project in progress. Its construction material has already been deducted from inventory. The percentage shows how much work is complete, but the facility adds no capacity until it reaches one hundred percent. Up to four robots can work on this project. The investment control limits the robots assigned to construction. If you lower it to zero, projects wait. This lets you observe the tradeoff between producing now and having more capacity later.",
+  "duration_ms": 28008,
+  "billed_characters": 477,
+  "sample_rate": 32000,
+  "size_bytes": 449844,
+  "generated_at": "2026-09-15T06:45:29.625132+00:00"
+}

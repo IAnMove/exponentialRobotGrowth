@@ -1,0 +1,61 @@
+import {TYPES,STEP,END,COST,WORK,MAX_PROJECTS,SLOTS,createRegion,tickRegion,counts,metrics,startBuild} from './region-model.js';
+import {createRegionWorld} from './region-world.js';
+import {createNarrator} from './narrator.js';
+const $=id=>document.getElementById(id),fmt=(n,d=0)=>n.toLocaleString('en-US',{maximumFractionDigits:d});
+let state=createRegion(),reference=createRegion(0,false),playing=false,speed=1,motion=0,selected=-1,last=performance.now(),accumulator=0,uiTime=0,world;
+const narrator=createNarrator({toggleHost:document.querySelector('.region-top'),onBegin(){playing=false;update();}});
+try{world=createRegionWorld($('r-canvas'));$('r-loading').hidden=true;}catch(e){$('r-loading').textContent='The 3D world could not start. Controls and comparisons remain available.';console.error(e);}
+const labels=[],tabs=[];
+const sectors=document.createElement('div');sectors.className='region-sectors';sectors.setAttribute('aria-label','Select an industry');document.querySelector('.region-chain').after(sectors);
+TYPES.forEach((t,i)=>{for(const overlay of [true,false]){const b=document.createElement('button');b.type='button';b.className=overlay?'region-zone':'region-sector';b.innerHTML='<b>'+String(i+1).padStart(2,'0')+'</b><span>'+t.name+'</span><small></small>';b.setAttribute('aria-label','Select '+t.name);b.addEventListener('click',()=>select(i*SLOTS));(overlay?$('r-labels'):sectors).append(b);(overlay?labels:tabs).push(b);}});
+const limits={
+  start:['Initial balance','The region needs to reinforce its entire chain to keep growing.'],
+  power:['Not enough electrical power','Demand exceeds generation. Expanding energy lets factories and construction use more of their capacity.'],
+  transport:['Transport at capacity','The network cannot move the full potential flow. More logistics capacity connects the expansions.'],
+  kits:['Components are missing','Robot factories are waiting for kits. Reinforcing components or their suppliers can unlock them.'],
+  material:['Material for the next project','Construction and components share material. Expanding refining can release resources for investment.'],
+  land:['The map has a limit','Every plot is occupied. The fleet can keep growing, but regional capacity no longer expands.'],
+  machines:['Robots without a workstation','There are more robots than workstations in current facilities. New construction can create useful capacity.'],
+  balanced:['The chain moves together','The next expansion needs workers, material and time. Output increases when new capacity enters service.']
+};
+function chart(element,series,maxTime=END){
+  const width=320,height=element.id==='r-chart'?130:110,bottom=height-7,peak=Math.max(1,...series.flatMap(s=>s.values.map(p=>p[1]))),left=28,right=316,top=12;
+  let svg='';for(let n=0;n<3;n++){const y=top+(bottom-top)*n/2;svg+='<path d="M'+left+' '+y+'H'+right+'" stroke="#718c9e" stroke-opacity=".2"/><text x="0" y="'+(y+3)+'" fill="#91aebe" font-size="9">'+fmt(peak*(1-n/2))+'</text>';}
+  series.forEach((s,i)=>{const points=s.values.map(([x,y])=>(left+x/maxTime*(right-left)).toFixed(2)+','+(bottom-y/peak*(bottom-top)).toFixed(2)).join(' ');svg+='<polyline points="'+points+'" fill="none" stroke="'+s.color+'" stroke-width="'+(i?2.5:1.7)+'" '+(i?'':'stroke-dasharray="4 4"')+' stroke-linecap="round" stroke-linejoin="round"/>';});element.innerHTML=svg;
+}
+function update(){
+  const n=counts(state),m=metrics(state),projects=state.sites.filter(p=>p.status==='building'),limit=limits[state.reason];
+  $('r-cycle').textContent='CYCLE '+String(Math.floor(state.time)).padStart(2,'0');$('r-play-state').textContent=playing?'Running':'Paused';$('r-play').textContent=playing?'Ⅱ Pause':state.time>=END?'↺ Replay':'▶ Play';$('r-progress').style.width=state.time/END*100+'%';
+  $('r-fleet').textContent=fmt(state.fleet);$('r-fleet-note').textContent='24 initial + '+fmt(state.built)+' new';$('r-buildings').textContent=n.reduce((a,b)=>a+b,0);$('r-projects').textContent=projects.length+' construction projects';$('r-rate').textContent=fmt(state.flow[3],1);$('r-multiple').textContent=fmt(reference.flow[3],1)+' / cycle without new facilities';
+  $('r-working').textContent=fmt(m.working)+' in production';$('r-builders').textContent=fmt(m.builders)+' building';$('r-idle').textContent=fmt(m.idle)+' available';$('r-share-label').textContent=Math.round(state.share*100)+' %';
+  $('r-gain').textContent=fmt(state.fleet/reference.fleet,2)+'×';$('r-chart-end').textContent='Cycle '+Math.floor(state.time)+' / 120';
+  chart($('r-chart'),[{values:[[0,24],...reference.history.map(p=>[p.time,p.fleet])],color:'#839eaf'},{values:[[0,24],...state.history.map(p=>[p.time,p.fleet])],color:'#a7e0cf'}]);$('r-chart').setAttribute('aria-label','Fleet: '+fmt(state.fleet)+'; without new facilities: '+fmt(reference.fleet));
+  $('r-limit').textContent=limit[0];$('r-limit-note').textContent=limit[1];
+  for(const [id,ratio] of [['power',m.energyDemand/m.power],['log',m.freight/Math.max(.001,m.transport)]]){$('r-'+id+'-label').textContent=fmt(ratio*100)+' %';$('r-'+id+'-bar').style.width=Math.min(100,ratio*100)+'%';$('r-'+id+'-bar').classList.toggle('over',ratio>1);}
+  const event=state.events.at(-1);$('r-event').textContent=state.time>=END?'Scenario complete. Compare fleets and try a different investment.':event?(event.event==='opened'?'New facility opened: ':'Construction started: ')+TYPES[event.type].name+'. '+(event.event==='opened'?'The capacity is now available.':'The material has been reserved.'):'24 robots. Six facilities. A new scale.';
+  TYPES.forEach((t,i)=>{for(const b of [labels[i],tabs[i]]){b.querySelector('small').textContent=n[i]+' / 6 '+(projects.some(p=>p.type===i)?' · building':'');b.setAttribute('aria-pressed',String(selected>=0&&Math.floor(selected/SLOTS)===i));}});
+  if(selected>=0)inspect();
+}
+function inspect(){const p=state.sites[selected],t=TYPES[p.type];$('r-selected-name').textContent=t.name+' · '+String(p.slot+1).padStart(2,'0');$('r-selected-description').textContent=t.description;$('r-selected-state').textContent=p.status==='open'?'OPERATING FACILITY':p.status==='building'?'CONSTRUCTION · '+fmt(p.progress/WORK*100)+' %':'AVAILABLE PLOT';
+  const full=state.sites.filter(p=>p.status==='building').length>=MAX_PROJECTS;$('r-build').hidden=p.status!=='empty';$('r-build').disabled=state.material<COST||full||state.time>=END;$('r-build').textContent=full?'Three projects in progress':state.material<COST?'Not enough material':'Build here · 48';
+  const projectOrder=state.sites.filter(site=>site.status==='building').indexOf(p),projectWorkers=Math.max(0,Math.min(4,metrics(state).builders-projectOrder*4));
+  $('r-build-note').textContent=p.status==='building'?fmt(projectWorkers)+' robots on this project · '+fmt(WORK-p.progress,1)+' work units remaining.':p.status==='empty'?'Cost: 48 material batches. Work: 24 units. Assign robots to construction to make progress.':'Installed capacity. Output depends on workers, energy and supplies.';
+  $('r-enter').hidden=p.status!=='open';$('r-output').textContent=fmt(state.flow[p.type],1);$('r-site-unit').textContent=t.unit;
+  chart($('r-site-chart'),[{values:[[0,0],...reference.history.map(h=>[h.time,h.flow[p.type]])],color:'#839eaf'},{values:[[0,0],...state.history.map(h=>[h.time,h.flow[p.type]])],color:'#a7e0cf'}]);$('r-site-chart').setAttribute('aria-label',t.name+': '+fmt(state.flow[p.type],1)+' '+t.unit);
+  $('r-ore').textContent=fmt(state.ore,1);$('r-material').textContent=fmt(state.material,1);$('r-kits').textContent=fmt(state.kits,1);
+}
+function select(i){if(i<0)return;selected=i;$('r-inspector').hidden=false;world?.select(i);update();const p=state.sites[i];narrator.explain('region-'+p.type,p.status==='building'?'region-project':p.status==='open'?'region-operation':null);if(matchMedia('(max-width:760px)').matches)$('r-inspector').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});}
+function step(){tickRegion(state);tickRegion(reference);if(state.time>=END)playing=false;}
+function reset(){narrator.stop();state=createRegion(Number($('r-share').value)/100,$('r-auto').checked);reference=createRegion(0,false);playing=false;motion=0;accumulator=0;selected=-1;$('r-inspector').hidden=true;world?.select(-1,false);world?.fit();update();}
+document.addEventListener('click',e=>{if(e.target.closest('#r-play,#r-jump,#r-reset,#r-build,#r-close,#r-help,#r-assumptions'))narrator.stop();},true);
+$('r-play').onclick=()=>{if(state.time>=END)reset();playing=!playing;last=performance.now();update();};$('r-speed').onchange=e=>speed=Number(e.target.value);$('r-reset').onclick=reset;
+$('r-jump').onclick=()=>{playing=false;for(let i=0;i<10/STEP&&state.time<END;i++)step();update();};$('r-share').oninput=e=>{narrator.stop();state.share=Number(e.target.value)/100;update();};$('r-auto').onchange=e=>{narrator.stop();state.auto=e.target.checked;update();};
+$('r-build').onclick=()=>{if(startBuild(state,selected)){playing=true;last=performance.now();update();}};$('r-close').onclick=()=>{selected=-1;$('r-inspector').hidden=true;world?.select(-1,false);world?.fit();update();};$('r-enter').onclick=()=>location.href='./index.html';
+$('r-plus').onclick=()=>world?.zoomBy(1.25);$('r-minus').onclick=()=>world?.zoomBy(.8);$('r-fit').onclick=()=>world?.fit();
+function help(){playing=false;update();$('r-about').showModal();}$('r-help').onclick=help;$('r-assumptions').onclick=help;$('r-close-help').onclick=()=>$('r-about').close();$('r-explain').onclick=()=>{$('r-about').close();narrator.explain('region-overview');};
+const surface=$('r-canvas'),pointers=new Map();let moved=false,start=null,pinch=0;
+surface.addEventListener('pointerdown',e=>{if(e.button!==0)return;pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});surface.setPointerCapture(e.pointerId);if(pointers.size===1){start={x:e.clientX,y:e.clientY};moved=false;}else{moved=true;const [a,b]=[...pointers.values()];pinch=Math.hypot(a.x-b.x,a.y-b.y);}});
+surface.addEventListener('pointermove',e=>{const before=pointers.get(e.pointerId);if(!before)return;pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size===2){const [a,b]=[...pointers.values()],d=Math.hypot(a.x-b.x,a.y-b.y);if(pinch>0)world?.zoomBy(d/pinch);pinch=d;moved=true;}else{if(start&&Math.hypot(e.clientX-start.x,e.clientY-start.y)>6)moved=true;if(moved)world?.pan(e.clientX-before.x,e.clientY-before.y);}});
+surface.addEventListener('pointerup',e=>{if(!moved&&pointers.size===1)select(world?.pick(e.clientX,e.clientY)??-1);pointers.delete(e.pointerId);pinch=0;});surface.addEventListener('pointercancel',e=>{pointers.delete(e.pointerId);moved=true;pinch=0;});surface.addEventListener('wheel',e=>{e.preventDefault();world?.zoomBy(Math.exp(-e.deltaY*.001));},{passive:false});
+document.addEventListener('visibilitychange',()=>last=performance.now());update();
+function frame(now){const dt=Math.min(.1,(now-last)/1000);last=now;if(!document.hidden){if(playing){accumulator+=dt*speed;motion+=dt*Math.min(speed,2);while(accumulator>=STEP&&state.time<END){step();accumulator-=STEP;}}uiTime+=dt;if(uiTime>.25){update();uiTime=0;}const scale=world?.render(state,motion)??1;$('r-scale').textContent=scale===1?'Each figure represents one robot':'Each figure represents up to '+scale+' robots';labels.forEach((b,i)=>{if(!world){b.hidden=true;return;}const p=world.project(i);b.style.left=p.x+'px';b.style.top=p.y+'px';b.hidden=p.x<25||p.x>surface.clientWidth-25||p.y<65||p.y>surface.clientHeight-85;});}requestAnimationFrame(frame);}requestAnimationFrame(frame);

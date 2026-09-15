@@ -6,6 +6,8 @@ import {NARRATIONS as ENGLISH} from './dist/narration-catalog-en.js';
 assert.deepEqual(Object.keys(ENGLISH),Object.keys(NARRATIONS));
 for(let i=0;i<14;i++)assert(NARRATIONS['district-'+i]);
 for(let i=0;i<5;i++)assert(NARRATIONS['factory-'+i]);
+for(let i=0;i<6;i++)assert(NARRATIONS['region-'+i]);
+for(const key of ['region-overview','region-operation','region-project'])assert(NARRATIONS[key]);
 for(const state of ['working','rest','waiting','supply','building','full','blocked','arriving','kits'])assert(NARRATIONS['state-'+state]);
 for(const entry of [...Object.values(NARRATIONS),...Object.values(ENGLISH)]){assert(entry.text.length>100);assert(entry.duration>0);assert(fs.statSync(new URL(entry.src)).size>1024);}
 class FakeAudio{
@@ -28,4 +30,4 @@ player.stop();assert.equal(player.state,'stopped');assert.equal(player.audio,nul
 FakeAudio.rejectNext=true;player.start([NARRATIONS['district-1']]);await Promise.resolve();assert.equal(player.state,'blocked');player.toggle();assert.equal(player.state,'playing');
 const failing=player.audio;FakeAudio.rejectNext=true;player.start([NARRATIONS['district-2']]);player.start([NARRATIONS['district-3']]);await Promise.resolve();assert.equal(player.state,'playing','An old play rejection must not overwrite a new selection');assert(failing.paused);
 player.audio.onerror();assert.equal(player.state,'error');player.toggle();assert.equal(player.state,'playing');player.stop();
-console.log('56 bilingual audio assets; switching, stale events, sequential context, pause/replay, autoplay rejection and error recovery: OK');
+console.log(Object.keys(NARRATIONS).length*2+' bilingual audio assets; switching, stale events, sequential context, pause/replay, autoplay rejection and error recovery: OK');

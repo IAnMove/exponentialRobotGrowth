@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This facility is open. Its capacity adds to that of other facilities of the same type. The chart shows their combined industry output across the cycles. The light line is your region, and the dashed line is the reference without new facilities. Also check inventory, energy and transport limits. A completed factory may have spare capacity and still produce little if a necessary input is missing.",
+  "duration_ms": 27360,
+  "billed_characters": 397,
+  "sample_rate": 32000,
+  "size_bytes": 439476,
+  "generated_at": "2026-09-15T06:45:28.656423+00:00"
+}

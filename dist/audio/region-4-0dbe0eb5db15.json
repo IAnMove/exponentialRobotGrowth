@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "Spanish_Narrator",
+  "language": "Spanish",
+  "text": "Los paneles representan nuevas instalaciones de generación conectadas a la red. Cada instalación añade capacidad eléctrica por ciclo. No es una batería ni un contador de energía almacenada. La demanda procede de los puestos en funcionamiento, los edificios y las obras. Si supera la capacidad disponible, el modelo reduce tanto la producción industrial como la velocidad de construcción. Una central nueva no fabrica robots directamente, pero puede permitir que muchas otras instalaciones aprovechen su capacidad. Esta dependencia ayuda a entender por qué la expansión de los robots exige ampliar también su infraestructura. Aquí no se simulan el clima, las redes reales ni los materiales especializados de los equipos eléctricos.",
+  "duration_ms": 61632,
+  "billed_characters": 730,
+  "sample_rate": 32000,
+  "size_bytes": 987828,
+  "generated_at": "2026-09-15T06:45:30.696838+00:00"
+}

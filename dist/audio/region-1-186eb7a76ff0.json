@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "Spanish_Narrator",
+  "language": "Spanish",
+  "text": "Aquí el mineral se convierte en material refinado. Ese material tiene dos destinos que compiten entre sí: fabricar componentes o construir nuevas instalaciones. Cada obra consume cuarenta y ocho lotes, que se descuentan al iniciarla. El porcentaje de inversión también reserva parte del nuevo material refinado para futuras obras. Por eso una inversión mayor puede reducir la producción inmediata de robots. Cuando las ampliaciones del refinado entran en servicio, permiten abastecer una red mayor. Observa el almacén compartido y la curva de producción. Una región que quiera seguir ampliándose necesita producir tanto para su actividad actual como para construir su capacidad futura.",
+  "duration_ms": 58608,
+  "billed_characters": 685,
+  "sample_rate": 32000,
+  "size_bytes": 939444,
+  "generated_at": "2026-09-15T06:45:25.663086+00:00"
+}

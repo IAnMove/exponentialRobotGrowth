@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "Spanish_Narrator",
+  "language": "Spanish",
+  "text": "Aquí se ve el centro del ciclo: los kits se convierten en robots y cada robot terminado se incorpora a la flota regional. Una instalación nueva crea más puestos y maquinaria que los robots pueden utilizar. Pero la capacidad del edificio no equivale automáticamente a su producción. Necesita kits, electricidad, transporte y trabajadores disponibles. Compara la curva de tu región con la referencia. La referencia también incorpora todos sus robots nuevos, pero mantiene sus seis instalaciones. Llega un momento en que acumula robots que su maquinaria no puede aprovechar. Tu región puede invertir parte de esos recursos en construir más capacidad. La diferencia aparece después de terminar las obras, y depende de que toda la cadena pueda abastecerlas.",
+  "duration_ms": 64152,
+  "billed_characters": 752,
+  "sample_rate": 32000,
+  "size_bytes": 1028148,
+  "generated_at": "2026-09-15T06:45:30.233435+00:00"
+}

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This network connects mines, refineries, component producers and robot factories. Vehicles represent cargo flow, not exact individual deliveries. The bar compares the potential flow facilities could require with available transport capacity. When demand exceeds one hundred percent, logistics reduces the industrial rate. Expanding transport can unlock capacity at several factories at once. A logistics facility also needs workers, materials and construction time. The region grows as a network of connected processes. Adding buildings without being able to exchange their products does not complete the loop.",
+  "duration_ms": 39276,
+  "billed_characters": 610,
+  "sample_rate": 32000,
+  "size_bytes": 630132,
+  "generated_at": "2026-09-15T06:45:26.027109+00:00"
+}

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Here ore becomes refined material. That material has two competing destinations: components and construction. Each new facility consumes forty-eight batches, deducted when construction begins. The investment percentage also reserves part of newly refined material for future construction. A higher investment can therefore reduce immediate robot output. Once refinery expansions open, they can supply a larger network. Watch the shared inventory and the production curve. A region that wants to keep expanding must produce for its current activity and for building its future capacity.",
+  "duration_ms": 38124,
+  "billed_characters": 585,
+  "sample_rate": 32000,
+  "size_bytes": 611700,
+  "generated_at": "2026-09-15T06:45:17.536161+00:00"
+}

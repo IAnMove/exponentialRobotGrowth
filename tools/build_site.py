@@ -10,7 +10,7 @@ import html
 
 ROOT = Path(__file__).resolve().parents[1]
 translations = {}
-for line in (ROOT / 'site-src/en.tsv').read_text(encoding='utf-8').splitlines():
+for line in '\n'.join(p.read_text(encoding='utf-8') for p in sorted((ROOT / 'site-src').glob('*en.tsv'))).splitlines():
     if not line or line.startswith('#'):
         continue
     source, target = line.split('\t', 1)

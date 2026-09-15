@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This area groups the structures, actuators, batteries and electronics a robot needs. In the model, two batches of refined material become one complete kit. This is a simplification: it does not mean all real components are made in one building. If you build robot factories without expanding these suppliers, the new lines will wait for parts. Watch the kit production chart and inventory. A useful expansion is not about filling the map with buildings. It increases the flow that reaches finished robots. Specialized equipment manufacturing and some inputs are assumed available from outside the region.",
+  "duration_ms": 39060,
+  "billed_characters": 604,
+  "sample_rate": 32000,
+  "size_bytes": 626676,
+  "generated_at": "2026-09-15T06:45:21.186991+00:00"
+}

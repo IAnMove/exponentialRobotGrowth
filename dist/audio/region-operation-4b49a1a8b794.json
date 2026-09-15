@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "Spanish_Narrator",
+  "language": "Spanish",
+  "text": "Esta instalación ya está abierta. Su capacidad se suma a la de las otras instalaciones del mismo tipo. La gráfica muestra la producción conjunta de esa industria a lo largo de los ciclos. La línea clara corresponde a tu región y la línea discontinua a la referencia sin nuevas instalaciones. Fíjate también en los almacenes y los límites de energía y transporte: una fábrica construida puede tener capacidad disponible y aun así producir poco si falta algo necesario.",
+  "duration_ms": 43956,
+  "billed_characters": 467,
+  "sample_rate": 32000,
+  "size_bytes": 705012,
+  "generated_at": "2026-09-15T06:45:35.137080+00:00"
+}

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This is the center of the loop. Kits become robots, and every finished robot joins the regional fleet. A new facility creates more workstations and machinery for robots to use. But building capacity does not automatically mean producing at that capacity. Kits, electricity, transport and available workers are required. Compare your region's curve with the reference. The reference also reinvests all its new robots, but keeps its six facilities. Eventually it accumulates robots its machinery cannot use. Your region can invest some resources in building more capacity. The difference appears after construction is completed, and depends on the entire chain being able to supply the new facilities.",
+  "duration_ms": 43128,
+  "billed_characters": 699,
+  "sample_rate": 32000,
+  "size_bytes": 691764,
+  "generated_at": "2026-09-15T06:45:22.124879+00:00"
+}
