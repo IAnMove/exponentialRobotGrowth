@@ -166,6 +166,60 @@ export const NARRATIONS = {
     "text": "Ahora se han agotado los kits de componentes. El siguiente suministro llega a las ocho de la mañana. Más robots no pueden fabricar móviles sin esas piezas. Este límite viene del exterior de la fábrica.",
     "src": "./audio/state-kits-f89d7e10e80d.mp3",
     "duration": 17.892
+  },
+  "region-overview": {
+    "title": "Una región que amplía su capacidad",
+    "text": "Hasta ahora observábamos cómo los robots ocupaban puestos en una fábrica. Aquí subimos de escala. Empezamos con veinticuatro robots y seis instalaciones ya construidas. Los nuevos robots pueden reforzar la producción o participar en nuevas obras. El control de inversión reserva una fracción máxima de la flota para construir y esa misma fracción del material refinado para futuras instalaciones. Al principio, invertir puede reducir los robots que terminas: faltan trabajadores y material en producción. Pero cuando una obra termina, aparece capacidad que antes no existía. Más capacidad permite fabricar más robots, y esos robots pueden ayudar a construir más instalaciones. La curva compara tu región con otra que conserva sus seis instalaciones iniciales. Ninguna mejora está garantizada: también deben crecer la extracción, los componentes, la energía y el transporte. Las parcelas son finitas, y los ciclos comprimen el proceso sin representar días ni años. Esto explica un mecanismo de crecimiento acumulativo, no una previsión de la economía.",
+    "src": "./audio/region-overview-eb7555b05fcc.mp3",
+    "duration": 96.048
+  },
+  "region-0": {
+    "title": "Extracción regional",
+    "text": "Estas minas abastecen de mineral a las refinerías. Cada nueva mina amplía la capacidad de extracción, pero necesita material para construirse, trabajadores y energía para funcionar. Mira cómo aparecen nuevas instalaciones en las parcelas libres. La gráfica inferior suma la producción de todas las minas de esta región y la compara con la referencia sin obras. Si el almacén de mineral está lleno, la extracción deja de crecer aunque haya maquinaria libre. Más mineral solo es útil si las refinerías y las fábricas posteriores pueden aprovecharlo. Este modelo agrupa muchos materiales distintos y no representa la búsqueda de nuevos yacimientos ni sus plazos reales.",
+    "src": "./audio/region-0-9bb156778100.mp3",
+    "duration": 55.98
+  },
+  "region-1": {
+    "title": "Refinado y material de construcción",
+    "text": "Aquí el mineral se convierte en material refinado. Ese material tiene dos destinos que compiten entre sí: fabricar componentes o construir nuevas instalaciones. Cada obra consume cuarenta y ocho lotes, que se descuentan al iniciarla. El porcentaje de inversión también reserva parte del nuevo material refinado para futuras obras. Por eso una inversión mayor puede reducir la producción inmediata de robots. Cuando las ampliaciones del refinado entran en servicio, permiten abastecer una red mayor. Observa el almacén compartido y la curva de producción. Una región que quiera seguir ampliándose necesita producir tanto para su actividad actual como para construir su capacidad futura.",
+    "src": "./audio/region-1-186eb7a76ff0.mp3",
+    "duration": 58.608
+  },
+  "region-2": {
+    "title": "La industria de componentes",
+    "text": "Esta zona agrupa las estructuras, los actuadores, las baterías y la electrónica que necesita un robot. En el modelo, dos lotes de material refinado se convierten en un kit completo. Es una simplificación: no significa que todos los componentes reales se fabriquen en el mismo edificio. Si construyes fábricas de robots sin ampliar estos proveedores, las nuevas líneas esperarán piezas. Mira la gráfica de kits producidos y el almacén. El objetivo de una ampliación útil no es llenar el mapa de edificios, sino aumentar el flujo que llega hasta los robots terminados. La fabricación especializada de maquinaria y algunos insumos se suponen disponibles desde el exterior.",
+    "src": "./audio/region-2-5ac2c97ee14d.mp3",
+    "duration": 57.924
+  },
+  "region-3": {
+    "title": "Fábricas que producen robots",
+    "text": "Aquí se ve el centro del ciclo: los kits se convierten en robots y cada robot terminado se incorpora a la flota regional. Una instalación nueva crea más puestos y maquinaria que los robots pueden utilizar. Pero la capacidad del edificio no equivale automáticamente a su producción. Necesita kits, electricidad, transporte y trabajadores disponibles. Compara la curva de tu región con la referencia. La referencia también incorpora todos sus robots nuevos, pero mantiene sus seis instalaciones. Llega un momento en que acumula robots que su maquinaria no puede aprovechar. Tu región puede invertir parte de esos recursos en construir más capacidad. La diferencia aparece después de terminar las obras, y depende de que toda la cadena pueda abastecerlas.",
+    "src": "./audio/region-3-52d8afbe6f25.mp3",
+    "duration": 64.152
+  },
+  "region-4": {
+    "title": "La energía también debe crecer",
+    "text": "Los paneles representan nuevas instalaciones de generación conectadas a la red. Cada instalación añade capacidad eléctrica por ciclo. No es una batería ni un contador de energía almacenada. La demanda procede de los puestos en funcionamiento, los edificios y las obras. Si supera la capacidad disponible, el modelo reduce tanto la producción industrial como la velocidad de construcción. Una central nueva no fabrica robots directamente, pero puede permitir que muchas otras instalaciones aprovechen su capacidad. Esta dependencia ayuda a entender por qué la expansión de los robots exige ampliar también su infraestructura. Aquí no se simulan el clima, las redes reales ni los materiales especializados de los equipos eléctricos.",
+    "src": "./audio/region-4-0dbe0eb5db15.mp3",
+    "duration": 61.632
+  },
+  "region-5": {
+    "title": "Transporte entre industrias",
+    "text": "Esta red conecta minas, refinerías, componentes y fábricas de robots. Los vehículos representan el movimiento de cargas, no entregas individuales exactas. La barra compara el flujo que las instalaciones podrían necesitar con la capacidad de transporte disponible. Si la demanda supera el cien por cien, la logística reduce el ritmo industrial. Ampliar el transporte puede liberar capacidad de varias fábricas a la vez. Una instalación logística también necesita trabajadores, material y tiempo de construcción. La región crece como una red de procesos conectados: añadir edificios sin poder intercambiar sus productos no completa el ciclo.",
+    "src": "./audio/region-5-a6589c748434.mp3",
+    "duration": 54.468
+  },
+  "region-operation": {
+    "title": "Cómo leer esta instalación",
+    "text": "Esta instalación ya está abierta. Su capacidad se suma a la de las otras instalaciones del mismo tipo. La gráfica muestra la producción conjunta de esa industria a lo largo de los ciclos. La línea clara corresponde a tu región y la línea discontinua a la referencia sin nuevas instalaciones. Fíjate también en los almacenes y los límites de energía y transporte: una fábrica construida puede tener capacidad disponible y aun así producir poco si falta algo necesario.",
+    "src": "./audio/region-operation-4b49a1a8b794.mp3",
+    "duration": 43.956
+  },
+  "region-project": {
+    "title": "Una inversión que todavía no produce",
+    "text": "Esta parcela tiene una obra en marcha. El material de construcción ya se ha descontado del almacén. El porcentaje indica cuánto trabajo se ha completado, pero la nueva instalación no aporta capacidad hasta llegar al cien por cien. Puede trabajar un máximo de cuatro robots en esta obra. El control de inversión limita cuántos robots se destinan a construir; si lo bajas a cero, las obras esperan. Así puedes observar el intercambio entre producir ahora y disponer de más capacidad después.",
+    "src": "./audio/region-project-2ae3d49e4bee.mp3",
+    "duration": 41.616
   }
 };
 for (const item of Object.values(NARRATIONS)) item.src = new URL(item.src, import.meta.url).href;
