@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "An expansion is under way. Some robots are working to increase the facility's capacity. The improvement is not immediate: construction must first be completed. That delay separates the decision to invest from the moment additional production becomes available.",
+  "duration_ms": 15444,
+  "billed_characters": 260,
+  "sample_rate": 32000,
+  "size_bytes": 248820,
+  "generated_at": "2026-09-15T00:05:12.979573+00:00"
+}

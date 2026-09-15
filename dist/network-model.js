@@ -2,7 +2,7 @@
  * Las productividades, demoras y capacidades no son estimaciones de Tesla.
  */
 function simulateNetwork(policy = 'network', expansion = true, horizon = 32) {
-  const names = ['Materiales', 'Procesamiento', 'Componentes', 'Logística', 'Montaje y pruebas'];
+  const names = ['Materials', 'Processing', 'Components', 'Logistics', 'Assembly and testing'];
   const workers = [8, 12, 16, 12, 12];
   const modules = [2, 2, 3, 2, 2];
   const stock = [0, 8, 12, 8, 8];

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This is where we make the mechanisms that let a robot move: motors, transmissions and joints. It is an interesting part of the loop, because existing robots can help make the mechanisms for the next generation. But materials, machines and specialized operations are still required. Watch the incoming stock and the actuator sets leaving for logistics. A new robot can only be assembled when its structure, battery and electronics are also ready. If actuators are missing, reinforcing this factory can unlock assembly. If it already has spare capacity, additional robots here will help less than strengthening the supplier that is holding back the entire chain.",
+  "duration_ms": 40824,
+  "billed_characters": 660,
+  "sample_rate": 32000,
+  "size_bytes": 654900,
+  "generated_at": "2026-09-15T00:04:24.987823+00:00"
+}

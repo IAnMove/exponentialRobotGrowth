@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This station checks the screen, charging, cameras and connections. In the initial configuration it has the lowest daily capacity on the line. That is why parts often pile up in front of it even when assembly is working quickly. Adding robots here can increase finished phones until another station or the component supply becomes the new limit. Watch the queue before and after the change, and compare it with output from packaging. The simulation does not introduce defective phones: it represents the time needed to test them. We want to discover where reinforcing the chain improves its final result.",
+  "duration_ms": 36072,
+  "billed_characters": 603,
+  "sample_rate": 32000,
+  "size_bytes": 578868,
+  "generated_at": "2026-09-15T00:05:02.896068+00:00"
+}

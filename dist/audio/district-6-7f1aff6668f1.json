@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This hub brings together the parts needed for assembly. A complete kit requires one structure, one actuator set, one battery and one electronic set. The rule is simple: if any of the four families is missing, the kit cannot leave. Look at the stocks individually. Three components can be plentiful while very few robots are produced because the fourth is scarce. Robots assigned to logistics help prepare and move kits, but they cannot replace missing components. This explains why a production chain depends on its parts advancing together, rather than simply adding up the capacity of every factory.",
+  "duration_ms": 37980,
+  "billed_characters": 601,
+  "sample_rate": 32000,
+  "size_bytes": 609396,
+  "generated_at": "2026-09-15T00:04:28.992462+00:00"
+}

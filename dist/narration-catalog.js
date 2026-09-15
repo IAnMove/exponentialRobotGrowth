@@ -168,3 +168,4 @@ export const NARRATIONS = {
     "duration": 17.892
   }
 };
+for (const item of Object.values(NARRATIONS)) item.src = new URL(item.src, import.meta.url).href;

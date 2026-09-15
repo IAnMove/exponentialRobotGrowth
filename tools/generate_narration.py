@@ -19,6 +19,7 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--voice', default='Spanish_Narrator')
     parser.add_argument('--model', default='speech-2.8-hd')
+    parser.add_argument('--language', choices=['Spanish', 'English'], default='Spanish')
     args = parser.parse_args()
     if args.output.exists():
         raise RuntimeError('Output already exists; choose a new file to avoid regenerating it.')
@@ -35,7 +36,7 @@ def main():
         raise RuntimeError('The configured API base is not a supported official MiniMax endpoint.')
     payload = {
         'model': args.model, 'text': text, 'stream': False,
-        'language_boost': 'Spanish', 'output_format': 'hex',
+        'language_boost': args.language, 'output_format': 'hex',
         'voice_setting': {'voice_id': args.voice, 'speed': 1, 'vol': 1, 'pitch': 0},
         'audio_setting': {'sample_rate': 32000, 'bitrate': 128000, 'format': 'mp3', 'channel': 1},
     }
@@ -54,7 +55,7 @@ def main():
         extra = response.get('extra_info', {})
         metadata = {
             'provider': 'MiniMax', 'model': args.model, 'voice': args.voice,
-            'language': 'Spanish', 'text': text,
+            'language': args.language, 'text': text,
             'duration_ms': extra.get('audio_length'),
             'billed_characters': extra.get('usage_characters'),
             'sample_rate': extra.get('audio_sample_rate'),

@@ -1,0 +1,1 @@
+At the moment you selected, no workers are available at this process. People are off shift or the assigned robots are taking a break. The facility needs workers to become available again before it can continue.

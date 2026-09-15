@@ -2,15 +2,15 @@
  * Las cuatro familias de componentes están agregadas; no es una lista de materiales de Tesla.
  */
 const INDUSTRIES = [
-  {name:'Mina',kind:'mine',x:-29,z:-25,humans:10,product:'lotes de mineral',description:'Extracción y preparación de minerales. Es el comienzo de las cuatro cadenas de componentes.'},
-  {name:'Refinería y metales',kind:'refinery',x:-6,z:-25,humans:10,product:'lotes refinados',description:'Refinado y transformación. Cada lote abastece las cuatro familias de componentes del modelo.'},
-  {name:'Estructuras',kind:'structure',x:18,z:-25,humans:8,product:'estructuras',description:'Carcasas, bastidores y piezas mecanizadas. Una de las cuatro entradas necesarias para montar un robot.'},
-  {name:'Motores y actuadores',kind:'motor',x:33,z:-4,humans:8,product:'conjuntos de motores',description:'Motores, transmisiones y articulaciones. Los robots ayudan a fabricar los mecanismos que les permiten moverse.'},
-  {name:'Baterías',kind:'battery',x:10,z:-4,humans:8,product:'baterías',description:'Preparación y ensamblaje de baterías. Los insumos químicos especializados se suponen disponibles.'},
-  {name:'Electrónica y sensores',kind:'electronics',x:-13,z:-4,humans:8,product:'conjuntos electrónicos',description:'Electrónica de control, cableado y sensores. La fabricación especializada y sus equipos se representan de forma agregada.'},
-  {name:'Centro logístico',kind:'logistics',x:-13,z:19,humans:6,product:'kits completos',description:'Reúne una estructura, motores, una batería y electrónica. Sin las cuatro familias no sale un kit.'},
-  {name:'Montaje de robots',kind:'assembly',x:11,z:19,humans:10,product:'robots ensamblados',description:'Los kits se convierten en robots. Al principio trabajan personas; después se incorporan los robots nuevos.'},
-  {name:'Pruebas y calibración',kind:'testing',x:33,z:19,humans:6,product:'robots terminados',description:'Verificación, calibración y puesta a punto. Solo los robots terminados pueden incorporarse a trabajar.'}
+  {name:'Mine',kind:'mine',x:-29,z:-25,humans:10,product:'ore batches',description:'Mineral extraction and preparation. The start of all four component chains.'},
+  {name:'Refinery and metals',kind:'refinery',x:-6,z:-25,humans:10,product:'refined batches',description:'Refining and processing. Each batch supplies all four component families in the model.'},
+  {name:'Structures',kind:'structure',x:18,z:-25,humans:8,product:'structures',description:'Housings, frames and machined parts. One of four inputs needed to assemble a robot.'},
+  {name:'Motors and actuators',kind:'motor',x:33,z:-4,humans:8,product:'motor sets',description:'Motors, transmissions and joints. Robots help build the mechanisms that let them move.'},
+  {name:'Batteries',kind:'battery',x:10,z:-4,humans:8,product:'batteries',description:'Battery preparation and assembly. Specialized chemical inputs are assumed available.'},
+  {name:'Electronics and sensors',kind:'electronics',x:-13,z:-4,humans:8,product:'electronic sets',description:'Control electronics, wiring and sensors. Specialized manufacturing and equipment are represented in aggregate.'},
+  {name:'Logistics hub',kind:'logistics',x:-13,z:19,humans:6,product:'complete kits',description:'Combines a structure, motors, a battery and electronics. No kit leaves without all four families.'},
+  {name:'Robot assembly',kind:'assembly',x:11,z:19,humans:10,product:'assembled robots',description:'Kits become robots. People work here initially; newly built robots join later.'},
+  {name:'Testing and calibration',kind:'testing',x:33,z:19,humans:6,product:'finished robots',description:'Verification, calibration and commissioning. Only finished robots can join the workforce.'}
 ];
 const HUMAN_TOTAL = INDUSTRIES.reduce((sum,s)=>sum+s.humans,0);
 function humanPeriod(hour){hour=((hour%24)+24)%24;return hour>=8&&hour<12||hour>=14&&hour<18?'work':hour>=12&&hour<14?'lunch':hour>=22||hour<6?'sleep':hour>=6&&hour<8?'commute':'rest';}

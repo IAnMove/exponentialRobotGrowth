@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This is the departure and distribution point for finished robots. Some can return to industry to strengthen its processes; others go to different uses. This model reinvests up to seventy percent when useful capacity is available to accommodate them. New workers also need travel time before they start. Follow the robots leaving here and see which facility receives the reinforcement. The compounding effect appears when that addition allows more robots to be built, and some of those expand capacity again. If supplies or machinery are missing, reinvestment alone does not guarantee ever faster expansion.",
+  "duration_ms": 37152,
+  "billed_characters": 606,
+  "sample_rate": 32000,
+  "size_bytes": 596148,
+  "generated_at": "2026-09-15T00:04:40.165009+00:00"
+}

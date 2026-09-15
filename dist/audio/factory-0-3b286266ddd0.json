@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This is the first station in the phone factory. A kit is prepared with the circuit board, RAM, sensors and other required components. The screen and battery will be installed later. In this scenario components arrive from outside: we begin with one hundred and sixty kits and receive up to one hundred and sixty more each day. A robot can cover the task of one of the station's two people, but it cannot manufacture components that have not arrived. Watch the available kits and the parts waiting before assembly. Preparing more kits only improves final output if the following stations can process them.",
+  "duration_ms": 37476,
+  "billed_characters": 604,
+  "sample_rate": 32000,
+  "size_bytes": 601332,
+  "generated_at": "2026-09-15T00:04:43.777531+00:00"
+}

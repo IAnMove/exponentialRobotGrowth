@@ -1,0 +1,1 @@
+Machinery is setting the maximum output this facility can achieve. Adding workers to the same equipment does not raise that limit. Further growth requires more equipment or an expansion, as well as sufficient materials.

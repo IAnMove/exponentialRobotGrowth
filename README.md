@@ -1,5 +1,19 @@
 # Robots que refuerzan su cadena de fabricación
 
+## Inglés, español y GitHub Pages
+
+Web pública: https://ianmove.github.io/robot-lab/ · Repositorio público: https://github.com/IAnMove/robot-lab
+
+El inglés es el idioma inicial en `/`; el español está en `/es/`. EN/ES cambia interfaz y narración conservando la escena (distrito o fábrica). Hay 28 grabaciones por idioma, con texto y controles de reproducción. El cambio de idioma recarga la escena desde el inicio.
+
+Editar HTML/CSS/JS en `site-src/`, traducciones en `site-src/en.tsv`, y los modelos industriales clásicos en los archivos de la raíz. `python tools/build_site.py` genera las cuatro rutas con referencias relativas, compatibles con el subdirectorio de GitHub Pages. `python build-site.py` también actualiza el proveedor Three.js desde las dependencias instaladas. No editar las traducciones directamente en `dist/`.
+
+Guiones: `narration/places.json` y `narration/places.en.json`. Generar únicamente clips nuevos mediante `python tools/build_narration.py --language es` o `--language en`. Los audios existentes se reutilizan. No hace falta generar voces para compilar o servir la web.
+
+Validación: `python check-site.py`, `node check-localization.mjs`, `node check-narrator.mjs`, `node check-industrial.js` y `node check-factory.mjs`. La prueba de localización confirma que los resultados numéricos de ambos idiomas coinciden.
+
+El checkout público de publicación está en `C:/Users/ina/.codex/artifacts/robot-lab-pages`. `python tools/package_pages.py --output C:/Users/ina/.codex/artifacts/robot-lab-pages` copia únicamente los recursos públicos de `dist/` (sin `.env`, metadatos de generación ni configuración de Sites). Publicar sus cambios en `main` actualiza GitHub Pages. Las credenciales MiniMax siguen fuera de ambos repositorios y no son necesarias para reproducir la web.
+
 ## Escena de la fábrica de móviles
 
 La narración al seleccionar cubre los 14 lugares del distrito y los 5 puestos de la fábrica. Cada lugar tiene una explicación grabada con MiniMax; los procesos añaden un segundo fragmento elegido según el estado del modelo. La simulación se pausa para conservar ese contexto. Reanudar o modificar la simulación detiene la explicación; seleccionar otro lugar sustituye el audio anterior. El reproductor incluye pausa, repetición, salto al estado actual, texto y desactivación global.

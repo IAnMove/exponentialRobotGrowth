@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This factory makes the robot's structure: frames, housings and parts that support its other components. In the model it consumes refined materials and sends structures to the logistics hub. Follow the connection between the two facilities. A large stock of frames is not the same as a large number of finished robots. Motors, a battery and electronics are still needed. If this factory falls behind, kits cannot be completed. If it gets too far ahead, it builds inventory that cannot yet be used. The useful improvement is higher output across the whole chain, with its component supplies kept in balance.",
+  "duration_ms": 38556,
+  "billed_characters": 605,
+  "sample_rate": 32000,
+  "size_bytes": 618612,
+  "generated_at": "2026-09-15T00:04:21.652396+00:00"
+}

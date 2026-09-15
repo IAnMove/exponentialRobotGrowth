@@ -1,0 +1,1 @@
+Materials are arriving, but not enough to use the process's full capacity. Part of the team could produce more if it received enough inputs. Check which supplier is limiting the flow before sending more robots here.

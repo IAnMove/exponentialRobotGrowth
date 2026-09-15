@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This process is waiting for materials or parts from earlier stages. It has spare capacity, but not everything needed to use it. The useful reinforcement may belong at its suppliers, because an additional worker cannot replace a missing part.",
+  "duration_ms": 14868,
+  "billed_characters": 241,
+  "sample_rate": 32000,
+  "size_bytes": 239604,
+  "generated_at": "2026-09-15T00:05:09.573549+00:00"
+}

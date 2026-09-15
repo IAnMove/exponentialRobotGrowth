@@ -1,0 +1,1 @@
+A robot is arriving to cover one of the tasks. During deployment it does not yet contribute output. Once it reaches its station, it can work according to its availability schedule, provided parts and machine capacity are available.

@@ -19,7 +19,7 @@ export function createFactoryWorld(container){
   box(floor,-1,.05,1,36,.9,28,0x1b3545);box(floor,-1,.55,1,35.6,.15,27.6,0x8caeab);
   for(let x=-18;x<17;x+=2)for(let z=-12;z<15;z+=2)box(floor,x+.8,.643,z+.8,1.94,.025,1.94,(x+z)%4?0x9db7af:0x98b3af);
   function floorSign(text,x,z,width){const c=document.createElement('canvas');c.width=768;c.height=96;const ctx=c.getContext('2d');ctx.font='600 40px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#254957';ctx.fillText(text,384,48);const texture=new THREE.CanvasTexture(c);texture.colorSpace=THREE.SRGBColorSpace;const sign=new THREE.Mesh(new THREE.PlaneGeometry(width,1.2),new THREE.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false}));sign.rotation.x=-Math.PI/2;sign.position.set(x,.685,z);floor.add(sign);}
-  floorSign('KITS · PLACA + RAM + COMPONENTES',-9,-7.6,14);floorSign('MÓVILES TERMINADOS',-11,7.6,8);floorSign('DESCANSO',-10,14.1,5.5);floorSign('RECARGA Y SERVICIO',7,14.1,9);
+  floorSign('KITS · BOARD + RAM + COMPONENTS',-9,-7.6,14);floorSign('FINISHED PHONES',-11,7.6,8);floorSign('REST AREA',-10,14.1,5.5);floorSign('CHARGING AND SERVICE',7,14.1,9);
   // A roofless miniature: back wall, windows, conduit and a loading entrance.
   box(floor,-1,2.25,-12.7,35.7,3.35,.3,0xc7d9d4);box(floor,-1,4,-12.7,36,.2,.5,0x3e6271);
   const windowMat=mat(0xa1d8e1,.2);

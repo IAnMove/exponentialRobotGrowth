@@ -1,4 +1,4 @@
-import {NARRATIONS} from './narration-catalog.js';
+import {NARRATIONS} from './narration-catalog-en.js';
 
 // One owner for playback. A superseded request cannot resume or advance the new one.
 export class NarrationPlayer {
@@ -28,15 +28,15 @@ export class NarrationPlayer {
 export function createNarrator({toggleHost,onBegin}){
   let enabled=true;try{enabled=localStorage.getItem('robot-lab-narration')!=='off';}catch{}
   const toggle=document.createElement('button');toggle.type='button';toggle.className='narration-toggle';toggleHost.append(toggle);
-  const dock=document.createElement('aside');dock.className='narration-dock';dock.hidden=true;dock.setAttribute('aria-label','Explicación del lugar seleccionado');
-  dock.innerHTML='<div class="narration-row"><span class="narration-symbol" aria-hidden="true">◖))</span><div class="narration-heading"><span class="narration-eyebrow">EXPLICACIÓN DEL LUGAR</span><strong data-n="title"></strong></div><button type="button" data-n="play" aria-label="Pausar explicación">Ⅱ</button><button type="button" data-n="repeat" aria-label="Repetir explicación" title="Repetir explicación">↺</button><button type="button" data-n="close" aria-label="Cerrar explicación">×</button></div><div class="narration-meta"><span data-n="status" role="status"></span><button type="button" data-n="next">Qué ocurre ahora →</button></div><details><summary>Leer la explicación</summary><p data-n="transcript"></p></details><p class="narration-note">La simulación está en pausa. Pulsa Reproducir para continuar.</p>';
+  const dock=document.createElement('aside');dock.className='narration-dock';dock.hidden=true;dock.setAttribute('aria-label','Explanation of the selected place');
+  dock.innerHTML='<div class="narration-row"><span class="narration-symbol" aria-hidden="true">◖))</span><div class="narration-heading"><span class="narration-eyebrow">PLACE EXPLANATION</span><strong data-n="title"></strong></div><button type="button" data-n="play" aria-label="Pause explanation">Ⅱ</button><button type="button" data-n="repeat" aria-label="Replay explanation" title="Replay explanation">↺</button><button type="button" data-n="close" aria-label="Close explanation">×</button></div><div class="narration-meta"><span data-n="status" role="status"></span><button type="button" data-n="next">What is happening now →</button></div><details><summary>Read the explanation</summary><p data-n="transcript"></p></details><p class="narration-note">The simulation is paused. Press Play to continue.</p>';
   document.body.append(dock);const el=name=>dock.querySelector('[data-n="'+name+'"]');
-  const labels={loading:'Cargando voz…',playing:'Escuchando',paused:'Narración en pausa',blocked:'Pulsa ▶ para escuchar',error:'No se pudo cargar la voz. Puedes leer la explicación o reintentar.',finished:'Explicación terminada'};
+  const labels={loading:'Loading voice…',playing:'Listening',paused:'Narration paused',blocked:'Press ▶ to listen',error:'The voice could not load. Read the explanation or try again.',finished:'Explanation finished'};
   const player=new NarrationPlayer({onBegin,onClip(item,index,total){el('title').textContent=item.title;el('transcript').textContent=item.text;el('next').hidden=index+1>=total;},onState(state){
     dock.hidden=state==='stopped';document.body.classList.toggle('has-narration',state!=='stopped');
-    el('status').textContent=labels[state]??'';el('play').textContent=state==='playing'?'Ⅱ':'▶';el('play').setAttribute('aria-label',state==='playing'?'Pausar explicación':state==='finished'?'Repetir explicación':'Escuchar explicación');
+    el('status').textContent=labels[state]??'';el('play').textContent=state==='playing'?'Ⅱ':'▶';el('play').setAttribute('aria-label',state==='playing'?'Pause explanation':state==='finished'?'Replay explanation':'Listen to explanation');
   }});
-  function updateToggle(){toggle.textContent=enabled?'◖)) Voz activada':'◖)) Voz desactivada';toggle.setAttribute('aria-pressed',String(enabled));toggle.title='Explicar cada lugar al seleccionarlo';toggle.setAttribute('aria-label',enabled?'Desactivar narración al seleccionar':'Activar narración al seleccionar');}
+  function updateToggle(){toggle.textContent=enabled?'◖)) Voice on':'◖)) Voice off';toggle.setAttribute('aria-pressed',String(enabled));toggle.title='Explain each place when selected';toggle.setAttribute('aria-label',enabled?'Turn off narration on selection':'Turn on narration on selection');}
   toggle.addEventListener('click',()=>{enabled=!enabled;try{localStorage.setItem('robot-lab-narration',enabled?'on':'off');}catch{}if(!enabled)player.stop();updateToggle();});updateToggle();
   el('play').addEventListener('click',()=>player.toggle());el('repeat').addEventListener('click',()=>player.repeat());el('next').addEventListener('click',()=>player.next());el('close').addEventListener('click',()=>player.stop());
   window.addEventListener('pagehide',()=>player.stop());

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "The phone receives its screen and battery here, and its housing is closed. Each arriving unit has already passed preparation and assembly. Waiting parts show how much work is available to this station. If its queue is empty, adding a robot does not guarantee more output: phones must first arrive from assembly. If its exit fills up, the problem is further down the line. Space between stations is limited, so a backlog eventually forces earlier stations to stop. Watch how a local decision spreads through the line, then compare finished phones over a full day.",
+  "duration_ms": 34308,
+  "billed_characters": 562,
+  "sample_rate": 32000,
+  "size_bytes": 550644,
+  "generated_at": "2026-09-15T00:04:50.869459+00:00"
+}

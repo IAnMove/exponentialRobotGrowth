@@ -2,15 +2,15 @@ import * as THREE from './vendor/three.module.js';
 import {roadRoute,routePoint} from './world.js';
 
 export const INPUTS=[[],[0],[1],[1],[1],[1],[2,3,4,5],[6],[7]];
-export const RESOURCES=['Mineral','Metales','Estructuras','Actuadores','Baterías','Electrónica','Kits','Por probar'];
+export const RESOURCES=['Ore','Metals','Structures','Actuators','Batteries','Electronics','Kits','Awaiting testing'];
 export function processStatus(frame,next,i){
   const rate=next?.flow[i]??frame.flow[i],cap=next?.worked?.cap[i]??Math.floor(frame.capacity[i]);
-  if(frame.capacity[i]<=0)return {code:'rest',label:'Sin turno disponible',color:0x7995b4,rate};
-  if(rate===0&&cap>0)return {code:'waiting',label:'Esperando materiales',color:0xffaa61,rate};
-  if(rate<cap)return {code:'supply',label:'Suministro insuficiente',color:0xffaa61,rate};
-  if(frame.projects[i])return {code:'building',label:'Ampliación en marcha',color:0xffc96c,rate};
-  if(frame.capacity[i]>=frame.hardware[i])return {code:'full',label:'Maquinaria al máximo',color:0xddbc78,rate};
-  return {code:'working',label:'En producción',color:0xa7e3cb,rate};
+  if(frame.capacity[i]<=0)return {code:'rest',label:'No available shift',color:0x7995b4,rate};
+  if(rate===0&&cap>0)return {code:'waiting',label:'Waiting for materials',color:0xffaa61,rate};
+  if(rate<cap)return {code:'supply',label:'Insufficient supply',color:0xffaa61,rate};
+  if(frame.projects[i])return {code:'building',label:'Expansion under way',color:0xffc96c,rate};
+  if(frame.capacity[i]>=frame.hardware[i])return {code:'full',label:'Machinery at capacity',color:0xddbc78,rate};
+  return {code:'working',label:'In production',color:0xa7e3cb,rate};
 }
 
 export function createActivity(scene,world,industries){

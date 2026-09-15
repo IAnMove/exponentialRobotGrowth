@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "At the moment you selected, no workers are available at this process. People are off shift or the assigned robots are taking a break. The facility needs workers to become available again before it can continue.",
+  "duration_ms": 11736,
+  "billed_characters": 210,
+  "sample_rate": 32000,
+  "size_bytes": 189492,
+  "generated_at": "2026-09-15T00:05:08.595417+00:00"
+}

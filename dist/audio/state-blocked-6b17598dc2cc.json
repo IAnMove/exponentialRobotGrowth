@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This station's output queue is full. It has finished work that the next process cannot yet accept, so it must wait. Look at the next station. Adding another robot here will not remove that queue.",
+  "duration_ms": 12096,
+  "billed_characters": 195,
+  "sample_rate": 32000,
+  "size_bytes": 195252,
+  "generated_at": "2026-09-15T00:05:15.977520+00:00"
+}

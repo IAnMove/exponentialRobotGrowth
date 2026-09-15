@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Ore arriving from the mine is not yet ready to become a robot. Here we represent refining it into usable materials. This facility supplies all four component families in the model. Look at the available stock and the output rate. Adding robots helps when there are tasks and machines they can use. Without ore, workers wait. When equipment is at capacity, the facility needs an expansion. This is a shared dependency: a bottleneck here can slow several factories at once. That is why strengthening a common supplier can be more useful than adding workers to final assembly.",
+  "duration_ms": 35892,
+  "billed_characters": 573,
+  "sample_rate": 32000,
+  "size_bytes": 575988,
+  "generated_at": "2026-09-15T00:04:21.304513+00:00"
+}

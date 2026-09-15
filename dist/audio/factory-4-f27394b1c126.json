@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This is the final station. Phones that have passed testing are protected and packaged for dispatch. Only when they finish here does the production counter increase. This avoids confusing a warehouse of unfinished parts with useful output. Compare your factory with the same line staffed only by humans, at the same moment. The twenty-four-hour trial answers a different question: how much would each configuration produce if maintained for a whole day from the start? It includes breaks and waiting. If packaging is waiting for phones, reinforcing it will not solve a bottleneck earlier in the line.",
+  "duration_ms": 38052,
+  "billed_characters": 599,
+  "sample_rate": 32000,
+  "size_bytes": 610548,
+  "generated_at": "2026-09-15T00:05:05.599167+00:00"
+}

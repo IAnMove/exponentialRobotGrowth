@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Machinery is setting the maximum output this facility can achieve. Adding workers to the same equipment does not raise that limit. Further growth requires more equipment or an expansion, as well as sufficient materials.",
+  "duration_ms": 14184,
+  "billed_characters": 219,
+  "sample_rate": 32000,
+  "size_bytes": 228660,
+  "generated_at": "2026-09-15T00:05:14.952154+00:00"
+}

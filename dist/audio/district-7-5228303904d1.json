@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Here, complete kits become assembled robots. People do the work initially. Later, robots produced by the network itself can join them. This is the start of reinvestment: part of today's output helps produce what comes next. Testing is still required before those robots can work. Watch whether assembly receives enough kits and whether its machines have spare capacity. Adding robots here does little when components arrive too slowly. Growth can accelerate when supplies, testing and machinery expand as well. Compare the strategy that reinforces the entire chain with the one that concentrates robots only in assembly.",
+  "duration_ms": 38736,
+  "billed_characters": 620,
+  "sample_rate": 32000,
+  "size_bytes": 621492,
+  "generated_at": "2026-09-15T00:04:32.170925+00:00"
+}

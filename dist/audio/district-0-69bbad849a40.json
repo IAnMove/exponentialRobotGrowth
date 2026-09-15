@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This is where the chain begins: the mine. Ore must be extracted, transported and refined before it becomes useful components. Watch the workers and the loads heading toward the refinery. A robot can cover a task and extend operating hours, but it cannot create ore or increase an excavator's capacity on its own. Once the machinery is fully occupied, additional equipment is needed. This mine represents several materials in a simplified way. The key idea is that building more robots also requires more extraction to supply them. If this input does not grow, factories further along the chain will eventually have to wait.",
+  "duration_ms": 40248,
+  "billed_characters": 623,
+  "sample_rate": 32000,
+  "size_bytes": 645684,
+  "generated_at": "2026-09-15T00:04:17.944961+00:00"
+}

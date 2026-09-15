@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Robots need stored energy to work without remaining connected to a cable. This facility represents battery preparation and assembly. The simulation assumes specialized chemical inputs arrive from outside. It does not reproduce the entire real battery industry. Every robot kit needs a battery as well as the other component families. A warehouse full of motors cannot make up for missing batteries. When robots are assigned here, watch whether the number of complete kits increases, and ultimately whether more finished robots leave the network. That connection helps distinguish a local improvement from one that actually benefits the whole system.",
+  "duration_ms": 38484,
+  "billed_characters": 649,
+  "sample_rate": 32000,
+  "size_bytes": 617460,
+  "generated_at": "2026-09-15T00:04:25.349723+00:00"
+}

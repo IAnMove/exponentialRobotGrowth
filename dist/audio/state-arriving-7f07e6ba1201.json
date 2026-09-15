@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "A robot is arriving to cover one of the tasks. During deployment it does not yet contribute output. Once it reaches its station, it can work according to its availability schedule, provided parts and machine capacity are available.",
+  "duration_ms": 13392,
+  "billed_characters": 231,
+  "sample_rate": 32000,
+  "size_bytes": 215988,
+  "generated_at": "2026-09-15T00:05:18.194420+00:00"
+}

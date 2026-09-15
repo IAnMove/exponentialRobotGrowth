@@ -2,10 +2,12 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {NarrationPlayer} from './dist/narrator.js';
 import {NARRATIONS} from './dist/narration-catalog.js';
+import {NARRATIONS as ENGLISH} from './dist/narration-catalog-en.js';
+assert.deepEqual(Object.keys(ENGLISH),Object.keys(NARRATIONS));
 for(let i=0;i<14;i++)assert(NARRATIONS['district-'+i]);
 for(let i=0;i<5;i++)assert(NARRATIONS['factory-'+i]);
 for(const state of ['working','rest','waiting','supply','building','full','blocked','arriving','kits'])assert(NARRATIONS['state-'+state]);
-for(const entry of Object.values(NARRATIONS)){assert(entry.text.length>100);assert(entry.duration>0);assert(fs.statSync(new URL(entry.src,new URL('./dist/',import.meta.url))).size>1024);}
+for(const entry of [...Object.values(NARRATIONS),...Object.values(ENGLISH)]){assert(entry.text.length>100);assert(entry.duration>0);assert(fs.statSync(new URL(entry.src)).size>1024);}
 class FakeAudio{
   static rejectNext=false;static instances=[];
   constructor(src){this.src=src;this.paused=true;FakeAudio.instances.push(this);}
@@ -26,4 +28,4 @@ player.stop();assert.equal(player.state,'stopped');assert.equal(player.audio,nul
 FakeAudio.rejectNext=true;player.start([NARRATIONS['district-1']]);await Promise.resolve();assert.equal(player.state,'blocked');player.toggle();assert.equal(player.state,'playing');
 const failing=player.audio;FakeAudio.rejectNext=true;player.start([NARRATIONS['district-2']]);player.start([NARRATIONS['district-3']]);await Promise.resolve();assert.equal(player.state,'playing','An old play rejection must not overwrite a new selection');assert(failing.paused);
 player.audio.onerror();assert.equal(player.state,'error');player.toggle();assert.equal(player.state,'playing');player.stop();
-console.log('28 audio assets; switching, stale events, sequential context, pause/replay, autoplay rejection and error recovery: OK');
+console.log('56 bilingual audio assets; switching, stale events, sequential context, pause/replay, autoplay rejection and error recovery: OK');

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "These electronics control the robot and receive information about its surroundings: controllers, sensors, connections and wiring. Specialized chip production and its equipment are compressed into this building. The simulation does not assume a robot can improvise a semiconductor factory. Look at the materials arriving and the electronic sets leaving. Every finished robot needs this component family, even when all its mechanical parts are ready. If electronics are the bottleneck, faster assembly simply means more waiting at assembly. Sustained expansion also requires these specialized suppliers, their machinery and their inputs to grow.",
+  "duration_ms": 39384,
+  "billed_characters": 643,
+  "sample_rate": 32000,
+  "size_bytes": 631860,
+  "generated_at": "2026-09-15T00:04:28.616916+00:00"
+}

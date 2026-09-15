@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Between noon and two, people take a break to eat and travel. Watch them leave their stations and gather here. During this period, tasks covered by robots can remain active if components, machines and robots are available. That does not mean every robot works without stopping: charging and maintenance are still necessary. The scene uses simple schedules to make a difference in work organization visible. When comparing production, look at a full day. Choosing only a human break would exaggerate the difference and hide what happens during the rest of the day.",
+  "duration_ms": 33660,
+  "billed_characters": 562,
+  "sample_rate": 32000,
+  "size_bytes": 540276,
+  "generated_at": "2026-09-15T00:04:36.257815+00:00"
+}

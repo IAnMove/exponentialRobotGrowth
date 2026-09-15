@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101722">
+  <title>Robot Lab — El relevo</title><meta name="description" content="Un mundo isométrico donde humanos y robots construyen una industria que crece. Explora su cadena de componentes, el día y la noche.">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./polish.css"><link rel="stylesheet" href="./mobile.css"><link rel="stylesheet" href="./narrator.css">
+</head>
+<body><main>
+  <header class="masthead">
+    <div class="identity"><span class="brand-mark" aria-hidden="true">r.</span><span>ROBOT LAB<span class="edition">EXPERIMENTO 001</span></span></div>
+    <div class="headline"><h1>Una industria que crece.</h1><p>Cada nuevo robot puede ayudar a construir el siguiente.</p></div>
+    <a class="factory-entry" href="./factory.html">Entrar en la fábrica de móviles ↗</a><button class="quiet-button" id="about-button" type="button">Cómo funciona <span aria-hidden="true">↗</span></button>
+  </header>
+  <div class="simulation-shell">
+  <section class="world-panel" aria-label="Mundo industrial en 3D">
+    <div id="world" role="img" aria-label="Distrito isométrico con nueve industrias, humanos, robots, comedor, viviendas y estaciones de recarga"></div>
+    <div id="loading" class="loading"><span class="loader"></span>Construyendo el distrito…</div>
+    <div class="scene-header"><div class="clock-card"><span id="sun-icon" aria-hidden="true">☀</span><div><span id="clock-day">DÍA 01</span><strong id="clock-time">08:00</strong></div><span id="period-label">Turno de trabajo</span></div><div class="live-state"><span id="state-icon" aria-hidden="true">Ⅱ</span><span id="state-label">En pausa</span></div></div>
+    <div class="population"><div><span class="stat-title"><i class="legend-robot human"></i>Humanos en turno</span><strong id="human-count">74</strong><small id="human-detail">0 de 74 tareas con relevo</small><div class="coverage"><i id="coverage-bar"></i></div></div><div><span class="stat-title"><i class="legend-robot"></i>Robots en turno</span><strong id="robot-count">0</strong><small id="robot-detail">0 en recarga / servicio</small></div><div class="fleet-stat"><span class="stat-title">Robots incorporados</span><strong id="fleet-count">0</strong><small id="fleet-detail">0 de camino</small></div></div>
+    <div id="place-labels" class="place-labels"></div>
+    <aside class="inspector" id="inspector" hidden>
+      <div class="inspector-head"><span id="place-title"></span><button id="close-inspector" type="button" aria-label="Cerrar detalle">×</button></div>
+      <p id="place-description"></p>
+      <div id="industrial-detail">
+        <div class="inspector-numbers"><div><strong id="place-humans"></strong><span>personas</span></div><div><strong id="place-workers"></strong><span>robots</span></div><div><strong id="place-flow"></strong><span>producidos</span></div></div>
+        <div id="place-product" class="place-product"></div><p id="place-shift"></p>
+        <div class="capacity-caption"><span>Ritmo esta hora</span><strong id="capacity-label"></strong></div><div class="capacity-track"><i id="capacity-fill"></i></div>
+        <h3 id="stock-title">Existencias que necesita</h3><div id="stock-list"></div><p id="stock-footnote"></p>
+      </div>
+      <div id="place-status" class="place-status"></div>
+    </aside>
+    <div class="map-card"><div>DISTRITO INDUSTRIAL <span>↗</span></div><canvas id="minimap" width="200" height="152" tabindex="0" role="button" aria-label="Mapa: haz clic para explorar. Flechas para desplazarte. Intro para ver todo."></canvas><span>Haz clic para explorar</span></div>
+    <div class="map-tools"><button id="routes" type="button" aria-pressed="false"><span aria-hidden="true">⑂</span> Conexiones</button></div>
+    <div class="camera-controls"><button id="fullscreen" type="button" aria-label="Pantalla completa" title="Pantalla completa">⛶</button><button id="zoom-in" type="button" aria-label="Acercar cámara">+</button><button id="zoom-out" type="button" aria-label="Alejar cámara">−</button><button id="camera-reset" type="button" aria-label="Ver todo el mundo" title="Ver todo el mundo">⌖</button></div>
+    <div class="event-toast" id="event-toast"><span class="event-index">01</span><span id="event-text">74 personas ponen en marcha la industria. Todavía no hay robots.</span></div>
+    <div class="scene-legend"><span><i class="legend-robot human"></i>Humanos</span><span><i class="legend-robot"></i>Robots</span><span><i class="legend-robot orange"></i>Relevo en camino</span><span><i class="legend-robot cyan"></i>Recarga / servicio</span><span class="navigation-hint">Arrastra para explorar · rueda para acercar · ⇧ para girar</span></div>
+  </section>
+  <section class="control-deck" aria-label="Controles de reproducción">
+    <button id="play" class="play-button" type="button"><span id="play-symbol" aria-hidden="true">▶</span><span id="play-label">Reproducir</span></button>
+    <div class="timeline"><div class="timeline-label"><label for="time">DÍA <strong id="cycle">01</strong><span> / 12</span></label><span id="rate-label">0 terminados en la última hora</span></div><input id="time" type="range" min="0" max="279" value="0" step="1" aria-label="Hora de la simulación"></div>
+    <label class="speed-control" for="speed">Velocidad<select id="speed"><option value="1">1×</option><option value="2">2×</option><option value="4">4×</option><option value="8">8×</option></select></label>
+    <div class="total"><strong id="total">0</strong><span>robots fabricados</span></div>
+  </section>
+  <div class="day-shortcuts"><span>EXPLORAR EL DÍA</span><button data-hour="9" type="button">☀ Trabajo</button><button data-hour="13" type="button">☕ Comida</button><button data-hour="23" type="button">☾ Noche</button><button id="next-day" type="button">Día siguiente →</button><span class="time-note">Tiempo ilustrativo · no son plazos industriales reales</span></div>
+  <div class="milestones" aria-label="Momentos de la transformación"><span>IR A UN MOMENTO</span><button id="beginning" type="button" aria-pressed="true"><b>01</b> Inicio</button><button id="handover" type="button" aria-pressed="false"><b>02</b> Relevos</button><button id="networked" type="button" aria-pressed="false"><b>03</b> Red robotizada</button><button id="construction" type="button" aria-pressed="false"><b>04</b> Ampliaciones</button></div>
+  </div>
+  <section class="experiment-controls" aria-label="Estrategia industrial"><div class="strategy"><span class="control-label">DESTINAR LOS NUEVOS ROBOTS A</span><div class="segmented"><button type="button" id="network" aria-pressed="true">Toda la cadena</button><button type="button" id="assembly" aria-pressed="false">Solo el montaje</button><button type="button" id="none" aria-pressed="false">Sin reinvertir</button></div></div><label class="switch"><input id="expand" type="checkbox" checked><span class="switch-track" aria-hidden="true"></span><span>Construir ampliaciones</span></label><div class="growth"><div class="growth-caption"><span>ROBOTS FABRICADOS</span><span><i></i>Tu estrategia <i class="reference"></i>Solo montaje</span></div><canvas id="growth-chart" width="300" height="86" role="img" aria-label="Evolución de los robots fabricados"></canvas><div class="growth-values"><span>Tu estrategia <strong id="growth-current">0</strong></span><span>Solo montaje <strong id="growth-reference">0</strong></span></div></div><div class="comparison"><span>Con refuerzos solo en montaje</span><strong id="comparison">0 robots</strong></div></section>
+  <footer><span>Una simulación para entender un mecanismo, no una predicción.</span><span>Sin fechas ni cifras atribuidas a Tesla.</span></footer>
+</main>
+<dialog id="about"><button class="dialog-close" id="close-about" type="button" aria-label="Cerrar">×</button><span class="dialog-eyebrow">EL EXPERIMENTO</span><h2>El relevo.<br>Después, la expansión.</h2><p>Empiezas con 74 personas, materiales y piezas disponibles, y ningún robot operativo. Mina → refinería → estructuras, motores, baterías y electrónica → kits → montaje → pruebas. Las existencias se consumen: si falta una familia de componentes, la cadena espera.</p><p>Los robots nuevos pueden reforzar todos esos procesos. Cubren tareas humanas y, cuando la maquinaria limita, ayudan a construir ampliaciones. Acelerar únicamente el montaje deja otros cuellos de botella.</p><dl><div><dt>Reinversión</dt><dd id="retention-label">Hasta el 70 %, según la capacidad útil</dd></div><div><dt>Turno humano</dt><dd>08–12 y 14–18; comida y descanso</dd></div><div><dt>Turno de cada robot</dt><dd>21 h disponible, 2 h recarga, 1 h servicio</dd></div><div><dt>Incorporación</dt><dd>2 horas simuladas de traslado</dd></div><div><dt>Ampliaciones</dt><dd>2 robots, 12 horas de trabajo; hasta 3 obras</dd></div><div><dt>Suministros externos</dt><dd>Energía, equipos e insumos especializados</dd></div></dl><p class="fine-print">Horarios, cantidades, productividad y sustitución son supuestos didácticos, no datos de Tesla. Los 12 días comprimen un proceso sin representar su duración real. Las fábricas humanas también pueden trabajar con varios turnos; aquí se usa uno para hacer visible el descanso. La recarga y el servicio de los robots se escalonan; cada robot individual también para.</p><p class="fine-print">Las personas con relevo permanecen en el barrio. Esto representa tareas cubiertas, no una predicción laboral. Se supone que los robots dominan las tareas y reciben maquinaria y materiales especializados. No se modelan fallos aleatorios, rechazos, nuevos yacimientos, costes ni permisos. La mina, la maquinaria y el despliegue tienen límites: el crecimiento no es exponencial para siempre.</p></dialog>
+<script src="./industrial-model.js"></script><script type="module" src="./game.js"></script>
+</body></html>
+
+
+
+

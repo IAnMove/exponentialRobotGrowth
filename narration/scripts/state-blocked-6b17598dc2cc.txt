@@ -1,0 +1,1 @@
+This station's output queue is full. It has finished work that the next process cannot yet accept, so it must wait. Look at the next station. Adding another robot here will not remove that queue.

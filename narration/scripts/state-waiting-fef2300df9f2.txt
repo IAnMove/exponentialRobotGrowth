@@ -1,0 +1,1 @@
+This process is waiting for materials or parts from earlier stages. It has spare capacity, but not everything needed to use it. The useful reinforcement may belong at its suppliers, because an additional worker cannot replace a missing part.

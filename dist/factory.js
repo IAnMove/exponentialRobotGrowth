@@ -1,17 +1,17 @@
 import {STATIONS,BUFFER,STEP,createFactory,tick,automate,status,period,forecast,constraint} from './factory-model.js';
 import {createFactoryWorld} from './factory-world.js';
 import {createNarrator} from './narrator.js';
-const $=id=>document.getElementById(id),fmt=n=>Math.round(n).toLocaleString('es-ES');
+const $=id=>document.getElementById(id),fmt=n=>Math.round(n).toLocaleString('en-US');
 let state=createFactory(),reference=createFactory(),selected=1,playing=false,speed=1,motion=0,last=performance.now(),accumulator=0,uiClock=0;
 const baseDay=forecast([0,0,0,0,0]);let planDay=baseDay;
 const narrator=createNarrator({toggleHost:document.querySelector('.topbar'),onBegin(){playing=false;updateUI();}});
 document.addEventListener('click',e=>{if(e.target.closest('#f-play,#f-reset,#f-automate,#f-lunch,#f-night,#f-day-end,#help,#f-assumptions'))narrator.stop();},true);
 let world;
 try{world=createFactoryWorld($('factory-canvas'));$('factory-loading').hidden=true;}
-catch(error){$('factory-loading').textContent='No se pudo iniciar el mundo 3D. Los controles y la comparación siguen disponibles.';console.error(error);}
+catch(error){$('factory-loading').textContent='The 3D world could not start. Controls and comparisons remain available.';console.error(error);}
 const labels=[],tabs=[];
 STATIONS.forEach((st,i)=>{
-  const b=document.createElement('button');b.type='button';b.className='station-label';b.innerHTML=`<b>${String(i+1).padStart(2,'0')}</b><span class="label-name">${st.name}</span><small></small>`;b.setAttribute('aria-label','Seleccionar '+st.name);b.addEventListener('click',()=>select(i));$('station-labels').append(b);labels.push(b);
+  const b=document.createElement('button');b.type='button';b.className='station-label';b.innerHTML=`<b>${String(i+1).padStart(2,'0')}</b><span class="label-name">${st.name}</span><small></small>`;b.setAttribute('aria-label','Select '+st.name);b.addEventListener('click',()=>select(i));$('station-labels').append(b);labels.push(b);
   const tab=document.createElement('button');tab.type='button';tab.className='station-tab';tab.innerHTML=`<b>${String(i+1).padStart(2,'0')}</b><span>${st.name}<small></small></span>`;tab.addEventListener('click',()=>{select(i);if(matchMedia('(max-width:760px)').matches)document.querySelector('.station-panel').scrollIntoView({behavior:'smooth',block:'start'});});$('station-tabs').append(tab);tabs.push(tab);
 });
 for(let i=0;i<16;i++)$('f-queue-dots').append(document.createElement('i'));
@@ -19,28 +19,28 @@ function select(i,focus=true){selected=i;world?.select(i,focus);updateUI();if(fo
 function recalculate(){planDay=forecast(state.robots.map(r=>r.length));}
 function updateUI(){
   const hour=(state.time+8)%24,h=Math.floor(hour),m=Math.min(59,Math.floor((hour-h)*60+1e-5)),st=STATIONS[selected],s=status(state,selected),bound=constraint(state);
-  $('f-clock').textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');$('f-day').textContent='DÍA '+String(state.day).padStart(2,'0');$('f-sun').textContent=h>=7&&h<20?'☀':'☾';$('f-period').textContent=period(state.time);
-  $('f-run').textContent=playing?'EN MARCHA':'EN PAUSA';$('f-play').textContent=playing?'Ⅱ Pausar':'▶ Reproducir';$('f-play').setAttribute('aria-label',playing?'Pausar fábrica':'Reproducir fábrica');$('f-timeline').style.width=(state.time%24)/24*100+'%';
-  $('f-today').textContent=fmt(state.today);$('f-reference').textContent=fmt(reference.today);$('f-total').textContent=fmt(state.total)+' desde el inicio'+(state.history.length?' · ayer '+state.history.at(-1):'');
-  $('f-day-result').hidden=!state.history.length;if(state.history.length)$('f-day-result').textContent='Día '+(state.day-1)+' completado: '+state.history.at(-1)+' móviles en tu fábrica · '+reference.history.at(-1)+' solo con humanos.';
-  $('f-constraint').textContent=bound.index<0?'Suministro de kits':STATIONS[bound.index].name;$('f-constraint-note').textContent=bound.index<0?'Entran hasta 160 kits al día del exterior.':'Menor capacidad diaria teórica · las colas muestran las esperas actuales';
+  $('f-clock').textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');$('f-day').textContent='DAY '+String(state.day).padStart(2,'0');$('f-sun').textContent=h>=7&&h<20?'☀':'☾';$('f-period').textContent=period(state.time);
+  $('f-run').textContent=playing?'RUNNING':'PAUSED';$('f-play').textContent=playing?'Ⅱ Pause':'▶ Play';$('f-play').setAttribute('aria-label',playing?'Pause factory':'Play factory');$('f-timeline').style.width=(state.time%24)/24*100+'%';
+  $('f-today').textContent=fmt(state.today);$('f-reference').textContent=fmt(reference.today);$('f-total').textContent=fmt(state.total)+' since the start'+(state.history.length?' · yesterday '+state.history.at(-1):'');
+  $('f-day-result').hidden=!state.history.length;if(state.history.length)$('f-day-result').textContent='Day '+(state.day-1)+' completed: '+state.history.at(-1)+' phones in your factory · '+reference.history.at(-1)+' with humans only.';
+  $('f-constraint').textContent=bound.index<0?'Kit supply':STATIONS[bound.index].name;$('f-constraint-note').textContent=bound.index<0?'Up to 160 kits arrive daily from outside.':'Lowest theoretical daily capacity · queues show current waiting';
   $('f-number').textContent=String(selected+1).padStart(2,'0');$('f-station-name').textContent=st.name;$('f-task').textContent=st.task;$('f-status').textContent=s.text;$('f-status').dataset.state=s.code;
-  $('f-humans').textContent=2-state.robots[selected].length;$('f-robots').textContent=state.robots[selected].length;$('f-rate').textContent=s.rate.toLocaleString('es-ES',{maximumFractionDigits:1});
-  $('f-job-label').textContent=state.jobs[selected]===null?'En espera':s.code==='blocked'?'Salida llena':Math.floor(state.jobs[selected]*100)+' %';$('f-job').style.width=(state.jobs[selected]??0)*100+'%';
-  $('f-queue-label').textContent=selected===0?'Kits disponibles':'Piezas esperando';$('f-queue').textContent=selected===0?fmt(state.queues[0]):state.queues[selected]+' / '+BUFFER;
+  $('f-humans').textContent=2-state.robots[selected].length;$('f-robots').textContent=state.robots[selected].length;$('f-rate').textContent=s.rate.toLocaleString('en-US',{maximumFractionDigits:1});
+  $('f-job-label').textContent=state.jobs[selected]===null?'Waiting':s.code==='blocked'?'Output queue full':Math.floor(state.jobs[selected]*100)+' %';$('f-job').style.width=(state.jobs[selected]??0)*100+'%';
+  $('f-queue-label').textContent=selected===0?'Available kits':'Parts waiting';$('f-queue').textContent=selected===0?fmt(state.queues[0]):state.queues[selected]+' / '+BUFFER;
   [...$('f-queue-dots').children].forEach((el,i)=>el.classList.toggle('filled',i<(selected===0?Math.ceil(state.queues[0]/20):state.queues[selected])));
-  $('f-automate').disabled=state.robots[selected].length===2;$('f-automate').textContent=state.robots[selected].length===2?'Puesto robotizado':'+ Incorporar un robot';
-  $('f-automation-note').textContent=state.robots[selected].length===2?'Las dos tareas tienen relevo. La maquinaria, los materiales y las pausas aún pueden limitar el puesto.':'Cubre la tarea de una persona. Llega en 15 minutos simulados.';
+  $('f-automate').disabled=state.robots[selected].length===2;$('f-automate').textContent=state.robots[selected].length===2?'Station automated':'+ Add a robot';
+  $('f-automation-note').textContent=state.robots[selected].length===2?'Both tasks are covered by robots. Machinery, materials and breaks can still limit this station.':'Covers one person\'s task. Arrives in 15 simulated minutes.';
   let insight;
-  if(s.code==='blocked')insight='La salida está llena. Este puesto tiene que parar hasta que el siguiente retire piezas. Añadir aquí otro robot no resuelve esa espera.';
-  else if(s.code==='rest')insight='En este momento no hay personal disponible. Los humanos descansan y cada robot también tiene su horario de recarga y mantenimiento.';
-  else if(s.code==='starved'&&state.time>.8)insight=selected===0?'Se han agotado los kits. El siguiente suministro llega a las 08:00. Más robots no pueden fabricar sin materiales.':'Este puesto espera a los anteriores. La capacidad que ves es lo que podría hacer con piezas; no es producción terminada.';
-  else if(selected===bound.index)insight='Este puesto tiene la menor capacidad diaria de la línea. Reforzarlo puede aumentar la salida, hasta que el límite pase a otro puesto o al suministro.';
-  else if(bound.index<0)insight='La línea ya tiene más capacidad que el suministro diario de kits. Para seguir creciendo también harían falta más componentes del exterior.';
-  else insight='Acelerar '+st.name.toLowerCase()+' puede llenar la cola de otro puesto. El límite diario está en '+STATIONS[bound.index].name.toLowerCase()+'. Mira los móviles que salen de embalaje.';
+  if(s.code==='blocked')insight='The output queue is full. This station must stop until the next one takes parts. Adding another robot here will not resolve the wait.';
+  else if(s.code==='rest')insight='No workers are available now. People are resting, and each robot also has a charging and maintenance schedule.';
+  else if(s.code==='starved'&&state.time>.8)insight=selected===0?'Kits have run out. The next delivery arrives at 08:00. More robots cannot produce without materials.':'This station is waiting for earlier stages. Its capacity is what it could produce with parts; it is not finished output.';
+  else if(selected===bound.index)insight='This station has the lowest daily capacity. Reinforcing it can increase output until another station or supply becomes the limit.';
+  else if(bound.index<0)insight='The line already has more capacity than the daily kit supply. Further growth also requires more components from outside.';
+  else insight='Speeding up '+st.name.toLowerCase()+' can fill another station\'s queue. The daily limit is at '+STATIONS[bound.index].name.toLowerCase()+'. Watch the phones leaving packaging.';
   $('f-insight').textContent=insight;
   $('f-base-day').textContent=fmt(baseDay);$('f-plan-day').textContent=fmt(planDay);const max=Math.max(baseDay,planDay,1);$('f-base-bar').style.width=baseDay/max*100+'%';$('f-plan-bar').style.width=planDay/max*100+'%';
-  labels.forEach((el,i)=>{el.setAttribute('aria-pressed',selected===i);el.classList.toggle('bottleneck',i===bound.index);el.dataset.status=status(state,i).code;el.querySelector('small').textContent=state.queues[i]+(i===0?' kits':' en cola');tabs[i].setAttribute('aria-pressed',selected===i);tabs[i].querySelector('small').textContent=(2-state.robots[i].length)+' H · '+state.robots[i].length+' R';});
+  labels.forEach((el,i)=>{el.setAttribute('aria-pressed',selected===i);el.classList.toggle('bottleneck',i===bound.index);el.dataset.status=status(state,i).code;el.querySelector('small').textContent=state.queues[i]+(i===0?' kits':' in queue');tabs[i].setAttribute('aria-pressed',selected===i);tabs[i].querySelector('small').textContent=(2-state.robots[i].length)+' H · '+state.robots[i].length+' R';});
 }
 function step(){tick(state);tick(reference);}
 function jumpTo(target){const ticks=Math.round((target-state.time)/STEP);for(let n=0;n<ticks;n++)step();accumulator=0;updateUI();}
