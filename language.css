@@ -1,0 +1,7 @@
+.language-switch{display:flex;align-items:center;gap:3px;flex-shrink:0;padding:3px;border:1px solid #4c5c6c;border-radius:9px;background:#132332}
+.language-switch a{display:block;padding:7px 9px!important;border-radius:6px;color:#bacbdb!important;text-decoration:none;font:600 12px system-ui;line-height:1!important;min-height:30px;box-sizing:border-box}
+.language-switch a[aria-current]{background:#e5eee9;color:#17313e!important}
+.language-switch a:focus-visible{outline:2px solid #ffac75;outline-offset:3px}
+.masthead{flex-wrap:wrap}.masthead .language-switch{margin-left:auto}
+.topbar>.language-switch{margin-left:0}.topbar>nav:not(.language-switch){margin-left:auto}
+@media(max-width:600px){.topbar{gap:8px;flex-wrap:wrap}.topbar>.language-switch{order:1}.topbar>.narration-toggle{order:2}.masthead .language-switch{margin-left:0}.factory-heading h1{font-size:clamp(28px,7vw,42px)}.masthead .headline h1{font-size:clamp(25px,6vw,38px)}}

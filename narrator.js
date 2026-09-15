@@ -1,0 +1,45 @@
+import {NARRATIONS} from './narration-catalog-en.js';
+
+// One owner for playback. A superseded request cannot resume or advance the new one.
+export class NarrationPlayer {
+  constructor({AudioClass=Audio,onClip=()=>{},onState=()=>{},onBegin=()=>{}}={}){
+    this.AudioClass=AudioClass;this.onClip=onClip;this.onState=onState;this.onBegin=onBegin;
+    this.items=[];this.index=0;this.audio=null;this.state='stopped';
+  }
+  setState(state){this.state=state;this.onState(state);}
+  dispose(){const old=this.audio;this.audio=null;if(old){old.onended=old.onerror=old.onplaying=old.onpause=null;old.pause();old.removeAttribute('src');old.load();}}
+  start(items){this.dispose();this.items=items;this.index=0;if(!items.length){this.setState('stopped');return;}this.onBegin();this.playClip();}
+  playClip(){
+    this.dispose();const item=this.items[this.index];if(!item){this.setState('finished');return;}
+    this.onClip(item,this.index,this.items.length);const a=new this.AudioClass(new URL(item.src,import.meta.url).href);this.audio=a;a.preload='auto';
+    a.onplaying=()=>{if(this.audio===a)this.setState('playing');};
+    a.onpause=()=>{if(this.audio===a&&this.state!=='finished')this.setState('paused');};
+    a.onerror=()=>{if(this.audio===a)this.setState('error');};
+    a.onended=()=>{if(this.audio!==a)return;if(this.index+1<this.items.length){this.index++;this.playClip();}else this.setState('finished');};
+    this.play();
+  }
+  play(){const a=this.audio;if(!a)return;this.setState('loading');try{Promise.resolve(a.play()).catch(()=>{if(this.audio===a)this.setState('blocked');});}catch{if(this.audio===a)this.setState('blocked');}}
+  toggle(){if(!this.items.length)return;if(this.state==='finished'){this.start(this.items);return;}if(this.audio?.paused||['blocked','error'].includes(this.state)){this.onBegin();if(this.state==='error')this.playClip();else this.play();}else this.audio?.pause();}
+  repeat(){if(this.items.length)this.start(this.items);}
+  next(){if(this.index+1<this.items.length){this.index++;this.onBegin();this.playClip();}}
+  stop(){this.dispose();this.items=[];this.setState('stopped');}
+}
+
+export function createNarrator({toggleHost,onBegin}){
+  let enabled=true;try{enabled=localStorage.getItem('robot-lab-narration')!=='off';}catch{}
+  const toggle=document.createElement('button');toggle.type='button';toggle.className='narration-toggle';toggleHost.append(toggle);
+  const dock=document.createElement('aside');dock.className='narration-dock';dock.hidden=true;dock.setAttribute('aria-label','Explanation of the selected place');
+  dock.innerHTML='<div class="narration-row"><span class="narration-symbol" aria-hidden="true">◖))</span><div class="narration-heading"><span class="narration-eyebrow">PLACE EXPLANATION</span><strong data-n="title"></strong></div><button type="button" data-n="play" aria-label="Pause explanation">Ⅱ</button><button type="button" data-n="repeat" aria-label="Replay explanation" title="Replay explanation">↺</button><button type="button" data-n="close" aria-label="Close explanation">×</button></div><div class="narration-meta"><span data-n="status" role="status"></span><button type="button" data-n="next">What is happening now →</button></div><details><summary>Read the explanation</summary><p data-n="transcript"></p></details><p class="narration-note">The simulation is paused. Press Play to continue.</p>';
+  document.body.append(dock);const el=name=>dock.querySelector('[data-n="'+name+'"]');
+  const labels={loading:'Loading voice…',playing:'Listening',paused:'Narration paused',blocked:'Press ▶ to listen',error:'The voice could not load. Read the explanation or try again.',finished:'Explanation finished'};
+  const player=new NarrationPlayer({onBegin,onClip(item,index,total){el('title').textContent=item.title;el('transcript').textContent=item.text;el('next').hidden=index+1>=total;},onState(state){
+    dock.hidden=state==='stopped';document.body.classList.toggle('has-narration',state!=='stopped');
+    el('status').textContent=labels[state]??'';el('play').textContent=state==='playing'?'Ⅱ':'▶';el('play').setAttribute('aria-label',state==='playing'?'Pause explanation':state==='finished'?'Replay explanation':'Listen to explanation');
+  }});
+  function updateToggle(){toggle.textContent=enabled?'◖)) Voice on':'◖)) Voice off';toggle.setAttribute('aria-pressed',String(enabled));toggle.title='Explain each place when selected';toggle.setAttribute('aria-label',enabled?'Turn off narration on selection':'Turn on narration on selection');}
+  toggle.addEventListener('click',()=>{enabled=!enabled;try{localStorage.setItem('robot-lab-narration',enabled?'on':'off');}catch{}if(!enabled)player.stop();updateToggle();});updateToggle();
+  el('play').addEventListener('click',()=>player.toggle());el('repeat').addEventListener('click',()=>player.repeat());el('next').addEventListener('click',()=>player.next());el('close').addEventListener('click',()=>player.stop());
+  window.addEventListener('pagehide',()=>player.stop());
+  document.addEventListener('fullscreenchange',()=>{(document.fullscreenElement??document.body).append(dock);});
+  return {explain(key,stateKey){if(!enabled)return;const items=[NARRATIONS[key],NARRATIONS[stateKey]].filter(Boolean);player.start(items);},stop:()=>player.stop()};
+}
