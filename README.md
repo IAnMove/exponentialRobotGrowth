@@ -2,7 +2,7 @@
 
 ## Inglés, español y GitHub Pages
 
-Web pública: https://ianmove.github.io/robot-lab/ · Repositorio público: https://github.com/IAnMove/robot-lab
+Web pública: https://ianmove.github.io/exponentialRobotGrowth/ · Repositorio público: https://github.com/IAnMove/exponentialRobotGrowth
 
 El inglés es el idioma inicial en `/`; el español está en `/es/`. EN/ES cambia interfaz y narración conservando la escena (distrito o fábrica). Hay 28 grabaciones por idioma, con texto y controles de reproducción. El cambio de idioma recarga la escena desde el inicio.
 
@@ -12,7 +12,7 @@ Guiones: `narration/places.json` y `narration/places.en.json`. Generar únicamen
 
 Validación: `python check-site.py`, `node check-localization.mjs`, `node check-narrator.mjs`, `node check-industrial.js` y `node check-factory.mjs`. La prueba de localización confirma que los resultados numéricos de ambos idiomas coinciden.
 
-El checkout público de publicación está en `C:/Users/ina/.codex/artifacts/robot-lab-pages`. `python tools/package_pages.py --output C:/Users/ina/.codex/artifacts/robot-lab-pages` copia únicamente los recursos públicos de `dist/` (sin `.env`, metadatos de generación ni configuración de Sites). Publicar sus cambios en `main` actualiza GitHub Pages. Las credenciales MiniMax siguen fuera de ambos repositorios y no son necesarias para reproducir la web.
+El checkout público de publicación está en `C:/Users/ina/.codex/artifacts/robot-lab-pages`. Su remoto `origin` apunta a `IAnMove/exponentialRobotGrowth`; `previous-site` conserva el destino anterior `IAnMove/robot-lab`. `python tools/package_pages.py --output C:/Users/ina/.codex/artifacts/robot-lab-pages` copia únicamente los recursos públicos de `dist/` (sin `.env`, metadatos de generación ni configuración de Sites). Publicar sus cambios en `main` actualiza GitHub Pages. Las credenciales MiniMax siguen fuera de ambos repositorios y no son necesarias para reproducir la web.
 
 ## Escena de la fábrica de móviles
 
