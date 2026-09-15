@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "We begin at the smallest scale: one line with five stations and ten people. Components are prepared, the structure is assembled, actuators and a battery are installed, the system is calibrated, and the finished robot is verified. Initially there are no operational robots. The first ones must pass every station before returning to work in this same factory. Press Play and watch the automatic handover. Each new robot covers a task and can help finish the next robots. This is the first reinvestment loop. But workstations, machinery and supply are limited. When those limits appear, more robots are not enough. We need to move up a scale and expand the chain supplying them. Quantities and schedules are teaching assumptions, not Tesla data or a prediction of dates.",
+  "duration_ms": 48816,
+  "billed_characters": 768,
+  "sample_rate": 32000,
+  "size_bytes": 782772,
+  "generated_at": "2026-09-15T21:22:41.600468+00:00"
+}

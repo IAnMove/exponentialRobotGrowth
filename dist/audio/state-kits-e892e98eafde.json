@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "The component kits have run out. The next delivery arrives at eight in the morning. More robots cannot manufacture robots without those parts. This limit comes from outside the factory.",
+  "duration_ms": 10584,
+  "billed_characters": 185,
+  "sample_rate": 32000,
+  "size_bytes": 171060,
+  "generated_at": "2026-09-15T21:27:11.327991+00:00"
+}

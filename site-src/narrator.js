@@ -32,7 +32,7 @@ export function createNarrator({toggleHost,onBegin}){
   dock.innerHTML='<div class="narration-row"><span class="narration-symbol" aria-hidden="true">◖))</span><div class="narration-heading"><span class="narration-eyebrow">EXPLICACIÓN DEL LUGAR</span><strong data-n="title"></strong></div><button type="button" data-n="play" aria-label="Pausar explicación">Ⅱ</button><button type="button" data-n="repeat" aria-label="Repetir explicación" title="Repetir explicación">↺</button><button type="button" data-n="close" aria-label="Cerrar explicación">×</button></div><div class="narration-meta"><span data-n="status" role="status"></span><button type="button" data-n="next">Qué ocurre ahora →</button></div><details><summary>Leer la explicación</summary><p data-n="transcript"></p></details><p class="narration-note">La simulación está en pausa. Pulsa Reproducir para continuar.</p>';
   document.body.append(dock);const el=name=>dock.querySelector('[data-n="'+name+'"]');
   const labels={loading:'Cargando voz…',playing:'Escuchando',paused:'Narración en pausa',blocked:'Pulsa ▶ para escuchar',error:'No se pudo cargar la voz. Puedes leer la explicación o reintentar.',finished:'Explicación terminada'};
-  const player=new NarrationPlayer({onBegin,onClip(item,index,total){el('title').textContent=item.title;el('transcript').textContent=item.text;el('next').hidden=index+1>=total;},onState(state){
+  const player=new NarrationPlayer({onBegin,onClip(item,index,total){el('title').textContent=item.title;el('transcript').textContent=item.text;el('next').hidden=index+1>=total;el('next').textContent=total>2?'Siguiente sector →':'Qué ocurre ahora →';if(item.focus)document.dispatchEvent(new CustomEvent('narration-focus',{detail:item.focus}));},onState(state){
     dock.hidden=state==='stopped';document.body.classList.toggle('has-narration',state!=='stopped');
     el('status').textContent=labels[state]??'';el('play').textContent=state==='playing'?'Ⅱ':'▶';el('play').setAttribute('aria-label',state==='playing'?'Pausar explicación':state==='finished'?'Repetir explicación':'Escuchar explicación');
   }});
@@ -41,5 +41,9 @@ export function createNarrator({toggleHost,onBegin}){
   el('play').addEventListener('click',()=>player.toggle());el('repeat').addEventListener('click',()=>player.repeat());el('next').addEventListener('click',()=>player.next());el('close').addEventListener('click',()=>player.stop());
   window.addEventListener('pagehide',()=>player.stop());
   document.addEventListener('fullscreenchange',()=>{(document.fullscreenElement??document.body).append(dock);});
+  const scene=location.pathname.includes('district')?'district':location.pathname.includes('region')?'region':location.pathname.includes('city')?'city':'factory';
+  const tours={factory:['guide-factory',...Array.from({length:5},(_,i)=>'robot-factory-'+i)],district:['guide-district',...Array.from({length:14},(_,i)=>'district-'+i)],region:['region-overview',...Array.from({length:6},(_,i)=>'region-'+i)],city:['guide-city',...Array.from({length:6},(_,i)=>'city-'+i)]};
+  document.getElementById('lesson-overview')?.addEventListener('click',()=>player.start([NARRATIONS[tours[scene][0]]].filter(Boolean)));
+  document.getElementById('lesson-tour')?.addEventListener('click',()=>player.start(tours[scene].map(key=>NARRATIONS[key]?{...NARRATIONS[key],focus:key}:null).filter(Boolean)));
   return {explain(key,stateKey){if(!enabled)return;const items=[NARRATIONS[key],NARRATIONS[stateKey]].filter(Boolean);player.start(items);},stop:()=>player.stop()};
 }

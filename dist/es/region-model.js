@@ -8,7 +8,7 @@ export const TYPES=[
   {name:'Transporte regional',unit:'cargas / ciclo',color:0xc3b2db,rate:36,description:'Conecta extracción, transformación y montaje. Una red saturada frena a todas las plantas.'}
 ];
 export const STEP=.125,END=120,COST=48,WORK=24,MAX_PROJECTS=3,SLOTS=6;
-export function createRegion(share=.4,auto=true){return {time:0,fleet:24,built:0,partial:0,share,auto,ore:80,material:120,kits:24,reserve:0,extracted:0,spent:0,sites:TYPES.flatMap((_,type)=>Array.from({length:SLOTS},(_,slot)=>({type,slot,status:slot===0?'open':'empty',progress:0,workers:0}))),history:[],events:[],flow:Array(6).fill(0),builders:0,working:24,idle:0,energyFactor:1,transportFactor:1,energyDemand:0,power:36,freight:0,reason:'start'};}
+export function createRegion(share=.4,auto=true){return {time:0,fleet:24,built:0,exportShare:0,exported:0,exportCredit:0,partial:0,share,auto,ore:80,material:120,kits:24,reserve:0,extracted:0,spent:0,sites:TYPES.flatMap((_,type)=>Array.from({length:SLOTS},(_,slot)=>({type,slot,status:slot===0?'open':'empty',progress:0,workers:0}))),history:[],events:[],flow:Array(6).fill(0),builders:0,working:24,idle:0,energyFactor:1,transportFactor:1,energyDemand:0,power:36,freight:0,reason:'start'};}
 export const counts=s=>TYPES.map((_,i)=>s.sites.filter(p=>p.type===i&&p.status==='open').length);
 export function startBuild(s,index){const p=s.sites[index];if(!p||p.status!=='empty'||s.material<COST||s.sites.filter(p=>p.status==='building').length>=MAX_PROJECTS||s.time>=END)return false;s.material-=COST;s.reserve=Math.min(s.material,Math.max(0,s.reserve-COST));s.spent+=COST;p.status='building';p.progress=0;s.events.push({time:s.time,type:p.type,event:'started'});return true;}
 function nextType(s){
@@ -48,7 +48,7 @@ export function tickRegion(s,dt=STEP){
   const rates=m.potentials.map(x=>x*m.transportFactor),flow=Array(6).fill(0);
   // Downstream first: inventory is conserved and new inputs wait until next tick.
   flow[3]=Math.min(s.kits,rates[3]*dt);s.kits-=flow[3];s.partial+=flow[3];
-  const finished=Math.floor(s.partial+1e-9);s.partial-=finished;s.built+=finished;s.fleet+=finished;
+  const finished=Math.floor(s.partial+1e-9);s.partial-=finished;s.built+=finished;s.exportCredit+=finished*s.exportShare;const exported=Math.floor(s.exportCredit);s.exportCredit-=exported;s.exported+=exported;s.fleet+=finished-exported;
   if(s.share===0||!s.sites.some(p=>p.status==='empty'))s.reserve=0;
   flow[2]=Math.max(0,Math.min(Math.max(0,s.material-s.reserve)/2,rates[2]*dt,80-s.kits));s.material-=2*flow[2];s.kits+=flow[2];
   flow[1]=Math.max(0,Math.min(s.ore,rates[1]*dt,400-s.material));s.ore-=flow[1];s.material+=flow[1];

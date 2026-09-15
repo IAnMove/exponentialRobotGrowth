@@ -2,7 +2,7 @@ import {STATIONS,BUFFER,STEP,createFactory,tick,automate,status,period,forecast,
 import {createFactoryWorld} from './factory-world.js';
 import {createNarrator} from './narrator.js';
 const $=id=>document.getElementById(id),fmt=n=>Math.round(n).toLocaleString('es-ES');
-let state=createFactory(),reference=createFactory(),selected=1,playing=false,speed=1,motion=0,last=performance.now(),accumulator=0,uiClock=0;
+let state=createFactory(undefined,true),reference=createFactory(),selected=1,playing=false,speed=1,motion=0,last=performance.now(),accumulator=0,uiClock=0;
 const baseDay=forecast([0,0,0,0,0]);let planDay=baseDay;
 const narrator=createNarrator({toggleHost:document.querySelector('.topbar'),onBegin(){playing=false;updateUI();}});
 document.addEventListener('click',e=>{if(e.target.closest('#f-play,#f-reset,#f-automate,#f-lunch,#f-night,#f-day-end,#help,#f-assumptions'))narrator.stop();},true);
@@ -15,39 +15,41 @@ STATIONS.forEach((st,i)=>{
   const tab=document.createElement('button');tab.type='button';tab.className='station-tab';tab.innerHTML=`<b>${String(i+1).padStart(2,'0')}</b><span>${st.name}<small></small></span>`;tab.addEventListener('click',()=>{select(i);if(matchMedia('(max-width:760px)').matches)document.querySelector('.station-panel').scrollIntoView({behavior:'smooth',block:'start'});});$('station-tabs').append(tab);tabs.push(tab);
 });
 for(let i=0;i<16;i++)$('f-queue-dots').append(document.createElement('i'));
-function select(i,focus=true){selected=i;world?.select(i,focus);updateUI();if(focus){let code=status(state,i).code;if(code==='starved')code=i===0?'kits':'waiting';if(code==='rest'&&state.robots[i].some(t=>t>state.time))code='arriving';narrator.explain('factory-'+i,'state-'+code);}}
+function select(i,focus=true,narrate=true){selected=i;world?.select(i,focus);updateUI();if(focus&&narrate){let code=status(state,i).code;if(code==='starved')code=i===0?'kits':'waiting';if(code==='rest'&&state.robots[i].some(t=>t>state.time))code='arriving';narrator.explain('robot-factory-'+i,'state-'+code);}}
 function recalculate(){planDay=forecast(state.robots.map(r=>r.length));}
 function updateUI(){
   const hour=(state.time+8)%24,h=Math.floor(hour),m=Math.min(59,Math.floor((hour-h)*60+1e-5)),st=STATIONS[selected],s=status(state,selected),bound=constraint(state);
   $('f-clock').textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');$('f-day').textContent='DÍA '+String(state.day).padStart(2,'0');$('f-sun').textContent=h>=7&&h<20?'☀':'☾';$('f-period').textContent=period(state.time);
   $('f-run').textContent=playing?'EN MARCHA':'EN PAUSA';$('f-play').textContent=playing?'Ⅱ Pausar':'▶ Reproducir';$('f-play').setAttribute('aria-label',playing?'Pausar fábrica':'Reproducir fábrica');$('f-timeline').style.width=(state.time%24)/24*100+'%';
   $('f-today').textContent=fmt(state.today);$('f-reference').textContent=fmt(reference.today);$('f-total').textContent=fmt(state.total)+' desde el inicio'+(state.history.length?' · ayer '+state.history.at(-1):'');
-  $('f-day-result').hidden=!state.history.length;if(state.history.length)$('f-day-result').textContent='Día '+(state.day-1)+' completado: '+state.history.at(-1)+' móviles en tu fábrica · '+reference.history.at(-1)+' solo con humanos.';
+  $('f-day-result').hidden=!state.history.length;if(state.history.length)$('f-day-result').textContent='Día '+(state.day-1)+' completado: '+state.history.at(-1)+' robots en tu fábrica · '+reference.history.at(-1)+' solo con humanos.';
   $('f-constraint').textContent=bound.index<0?'Suministro de kits':STATIONS[bound.index].name;$('f-constraint-note').textContent=bound.index<0?'Entran hasta 160 kits al día del exterior.':'Menor capacidad diaria teórica · las colas muestran las esperas actuales';
   $('f-number').textContent=String(selected+1).padStart(2,'0');$('f-station-name').textContent=st.name;$('f-task').textContent=st.task;$('f-status').textContent=s.text;$('f-status').dataset.state=s.code;
   $('f-humans').textContent=2-state.robots[selected].length;$('f-robots').textContent=state.robots[selected].length;$('f-rate').textContent=s.rate.toLocaleString('es-ES',{maximumFractionDigits:1});
   $('f-job-label').textContent=state.jobs[selected]===null?'En espera':s.code==='blocked'?'Salida llena':Math.floor(state.jobs[selected]*100)+' %';$('f-job').style.width=(state.jobs[selected]??0)*100+'%';
   $('f-queue-label').textContent=selected===0?'Kits disponibles':'Piezas esperando';$('f-queue').textContent=selected===0?fmt(state.queues[0]):state.queues[selected]+' / '+BUFFER;
   [...$('f-queue-dots').children].forEach((el,i)=>el.classList.toggle('filled',i<(selected===0?Math.ceil(state.queues[0]/20):state.queues[selected])));
-  $('f-automate').disabled=state.robots[selected].length===2;$('f-automate').textContent=state.robots[selected].length===2?'Puesto robotizado':'+ Incorporar un robot';
-  $('f-automation-note').textContent=state.robots[selected].length===2?'Las dos tareas tienen relevo. La maquinaria, los materiales y las pausas aún pueden limitar el puesto.':'Cubre la tarea de una persona. Llega en 15 minutos simulados.';
+  $('f-auto').checked=state.automatic;$('f-stock').textContent=fmt(state.total-state.deployed);$('f-returned').textContent=fmt(state.deployed);$('f-automate').disabled=state.robots[selected].length===2||state.total<=state.deployed;$('f-automate').textContent=state.robots[selected].length===2?'Puesto robotizado':state.total<=state.deployed?'Esperando un robot terminado':'+ Incorporar un robot';
+  $('f-automation-note').textContent=state.robots[selected].length===2?'Las dos tareas tienen relevo. La maquinaria, los materiales y las pausas aún pueden limitar el puesto.':'Usa un robot ya terminado. Cubre una tarea humana tras 15 minutos simulados.';
   let insight;
   if(s.code==='blocked')insight='La salida está llena. Este puesto tiene que parar hasta que el siguiente retire piezas. Añadir aquí otro robot no resuelve esa espera.';
   else if(s.code==='rest')insight='En este momento no hay personal disponible. Los humanos descansan y cada robot también tiene su horario de recarga y mantenimiento.';
   else if(s.code==='starved'&&state.time>.8)insight=selected===0?'Se han agotado los kits. El siguiente suministro llega a las 08:00. Más robots no pueden fabricar sin materiales.':'Este puesto espera a los anteriores. La capacidad que ves es lo que podría hacer con piezas; no es producción terminada.';
   else if(selected===bound.index)insight='Este puesto tiene la menor capacidad diaria de la línea. Reforzarlo puede aumentar la salida, hasta que el límite pase a otro puesto o al suministro.';
   else if(bound.index<0)insight='La línea ya tiene más capacidad que el suministro diario de kits. Para seguir creciendo también harían falta más componentes del exterior.';
-  else insight='Acelerar '+st.name.toLowerCase()+' puede llenar la cola de otro puesto. El límite diario está en '+STATIONS[bound.index].name.toLowerCase()+'. Mira los móviles que salen de embalaje.';
+  else insight='Acelerar '+st.name.toLowerCase()+' puede llenar la cola de otro puesto. El límite diario está en '+STATIONS[bound.index].name.toLowerCase()+'. Mira los robots que salen de puesta en marcha.';
   $('f-insight').textContent=insight;
   $('f-base-day').textContent=fmt(baseDay);$('f-plan-day').textContent=fmt(planDay);const max=Math.max(baseDay,planDay,1);$('f-base-bar').style.width=baseDay/max*100+'%';$('f-plan-bar').style.width=planDay/max*100+'%';
   labels.forEach((el,i)=>{el.setAttribute('aria-pressed',selected===i);el.classList.toggle('bottleneck',i===bound.index);el.dataset.status=status(state,i).code;el.querySelector('small').textContent=state.queues[i]+(i===0?' kits':' en cola');tabs[i].setAttribute('aria-pressed',selected===i);tabs[i].querySelector('small').textContent=(2-state.robots[i].length)+' H · '+state.robots[i].length+' R';});
 }
-function step(){tick(state);tick(reference);}
+function step(){const before=state.deployed;tick(state);tick(reference);if(state.deployed!==before)recalculate();}
 function jumpTo(target){const ticks=Math.round((target-state.time)/STEP);for(let n=0;n<ticks;n++)step();accumulator=0;updateUI();}
+$('f-auto').addEventListener('change',e=>{narrator.stop();state.automatic=e.target.checked;updateUI();});
+document.addEventListener('narration-focus',e=>{if(e.detail.startsWith('robot-factory-'))select(Number(e.detail.split('-').at(-1)),true,false);});
 $('f-play').addEventListener('click',()=>{playing=!playing;last=performance.now();updateUI();});
 $('f-speed').addEventListener('change',e=>speed=Number(e.target.value));
 $('f-automate').addEventListener('click',()=>{if(automate(state,selected)){recalculate();playing=true;last=performance.now();updateUI();}});
-$('f-reset').addEventListener('click',()=>{state=createFactory();reference=createFactory();playing=false;accumulator=0;recalculate();world?.fit();select(1,false);});
+$('f-reset').addEventListener('click',()=>{state=createFactory(undefined,true);reference=createFactory();playing=false;accumulator=0;recalculate();world?.fit();select(1,false);});
 $('f-lunch').addEventListener('click',()=>{const day=Math.floor(state.time/24),at=day*24+5;jumpTo(at>state.time?at:at+24);});
 $('f-night').addEventListener('click',()=>{const day=Math.floor(state.time/24),at=day*24+15;jumpTo(at>state.time?at:at+24);});
 $('f-day-end').addEventListener('click',()=>{jumpTo(state.day*24);playing=false;updateUI();});

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This station gathers the structure, actuators, battery, controllers and sensors. Kits arrive from external suppliers. This scene does not manufacture all those parts: the industrial district explains that step. Every finished robot consumes one kit and must pass all five stations. Two people work here initially. A robot that has already left the final station can return and cover one of their tasks. Without kits, that robot waits too. Supply is one of the limits preventing this line from growing forever.",
+  "duration_ms": 32400,
+  "billed_characters": 509,
+  "sample_rate": 32000,
+  "size_bytes": 520116,
+  "generated_at": "2026-09-15T21:22:46.643016+00:00"
+}

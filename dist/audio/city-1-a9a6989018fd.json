@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Shops and food services contain repeated physical tasks such as stocking, preparation and cleaning. This scenario lets robots cover some of them while people continue serving customers, handling exceptions and making decisions. Watch robots arrive as industrial output increases. They are not all assigned at the start. An automated task is not interpreted as a business without people. Coverage stops at the selected hypothesis's limit, even if more robots keep arriving in the city.",
+  "duration_ms": 29988,
+  "billed_characters": 484,
+  "sample_rate": 32000,
+  "size_bytes": 481524,
+  "generated_at": "2026-09-15T21:23:04.732563+00:00"
+}

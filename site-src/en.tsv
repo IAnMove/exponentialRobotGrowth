@@ -1,11 +1,11 @@
 Robot Lab — El relevo	Robot Lab — The compounding loop
 Robot Lab — Dentro de la fábrica	Robot Lab — Inside the factory
 Un mundo isométrico donde humanos y robots construyen una industria que crece. Explora su cadena de componentes, el día y la noche.	An interactive world where humans and robots build a growing industry. Explore the component chain, day and night.
-Automatiza una fábrica de móviles, sigue las piezas y descubre por qué más robots no siempre significan más producción.	Automate a phone factory, follow its parts and discover why more robots do not always mean more output.
+Automatiza una fábrica de robots, sigue las piezas y descubre por qué más robots no siempre significan más producción.	Automate a robot factory, follow its parts and discover why more robots do not always mean more output.
 EXPERIMENTO	EXPERIMENT
 Una industria que crece.	An industry that grows.
 Cada nuevo robot puede ayudar a construir el siguiente.	Each new robot can help build the next.
-Entrar en la fábrica de móviles ↗	Enter the phone factory ↗
+Entrar en la fábrica de robots ↗	Enter the robot factory ↗
 Cómo funciona	How it works
 Mundo industrial en 3D	3D industrial world
 Distrito isométrico con nueve industrias, humanos, robots, comedor, viviendas y estaciones de recarga	Isometric district with nine industries, humans, robots, a dining hall, homes and charging stations
@@ -127,7 +127,7 @@ Ampliaciones	Expansions
 Relevos	Handovers
 Inicio	Start
 Escenas	Scenes
-Fábrica de móviles	Phone factory
+Fábrica de robots	Robot factory
 Distrito	District
 DENTRO DE LA FÁBRICA	INSIDE THE FACTORY
 El ritmo lo marca el más lento.	The slowest step sets the pace.
@@ -148,7 +148,7 @@ Reiniciar fábrica	Reset factory
 ☕ Ver la comida	☕ See lunch break
 ☾ Ver la noche	☾ See nighttime
 Completar el día →	Complete the day →
-Producción de móviles	Phone production
+Producción de robots	Phone production
 Terminados hoy	Finished today
 desde el inicio	since the start
 Solo humanos · mismo instante	Humans only · same moment
@@ -164,24 +164,24 @@ Piezas esperando	Parts waiting
 + Incorporar un robot	+ Add a robot
 Cubre la tarea de una persona. Llega en 15 minutos simulados.	Covers one person's task. Arrives in 15 simulated minutes.
 OBSERVA ESTO	WATCH THIS
-Si aceleras montaje, las piezas pueden acumularse delante de pruebas. Cuenta los móviles que salen, no los que esperan.	Faster assembly can create a pile of parts before testing. Count the phones leaving, not those waiting.
+Si aceleras montaje, las piezas pueden acumularse delante de pruebas. Cuenta los robots que salen, no los que esperan.	Faster assembly can create a pile of parts before testing. Count the robots leaving, not those waiting.
 ¿Cuántos en un día completo?	How many in a full day?
 Ensayo de 24 h desde las 08:00, con la configuración actual fija y la misma cantidad inicial de kits.	A 24-hour trial from 08:00, with the current setup fixed and the same initial supply of kits.
 Tu configuración	Your setup
 Este ensayo empieza con la línea vacía. El contador de hoy refleja tus cambios durante la partida.	This trial starts with an empty line. Today's counter reflects changes you made during the simulation.
 Seleccionar un puesto	Select a station
 SIGUE UNA PIEZA	FOLLOW A PART
-Del kit al móvil terminado	From kit to finished phone
+Del kit al robot terminado	From kit to finished robot
 Modelo didáctico · cifras ilustrativas, no datos de Tesla.	Educational model · illustrative figures, not Tesla data.
 Ver supuestos	View assumptions
 CÓMO LEER LA FÁBRICA	HOW TO READ THE FACTORY
-Más rápido en un puesto.<br>¿Más móviles al final?	Faster at one station.<br>More phones at the end?
-El número importante es el de móviles que salen de embalaje. Cada móvil consume un kit y pasa por los cinco puestos. Las pilas pequeñas muestran las piezas que esperan; el suministro y las cajas de salida usan una representación resumida. El movimiento por la cinta forma parte del ciclo de cada puesto.	The important number is phones leaving packaging. Each phone consumes one kit and passes through all five stations. Small stacks show waiting parts; supply and output boxes are summarized visually. Conveyor movement forms part of each station's cycle.
+Más rápido en un puesto.<br>¿Más robots al final?	Faster at one station.<br>More robots at the end?
+El número importante es el de robots que salen de puesta en marcha. Cada robot consume un kit y pasa por los cinco puestos. Las pilas pequeñas muestran las piezas que esperan; el suministro y las cajas de salida usan una representación resumida. El movimiento por la cinta forma parte del ciclo de cada puesto.	The important number is robots leaving commissioning. Each robot consumes one kit and passes through all five stations. Small stacks show waiting parts; supply and output boxes are summarized visually. Conveyor movement forms part of each station's cycle.
 Empiezas con diez personas. Cada robot cubre una tarea humana y llega del exterior. Aquí no se fabrican nuevos robots: esta escena muestra el efecto de automatizar una línea.	You start with ten people. Each robot covers one human task and arrives from outside. No new robots are built here: this scene shows the effect of automating a line.
 Dos por puesto. Un turno: 08–12 y 14–18.	Two per station. One shift: 08–12 and 14–18.
 Hasta dos por puesto. Cada uno: 21 h disponible, 2 h de recarga y 1 h de mantenimiento, con horarios distintos.	Up to two per station. Each has 21 h available, 2 h charging and 1 h maintenance, with staggered schedules.
 Un robot aporta 1,4 veces el ritmo de una persona en este ejemplo. También limita la maquinaria.	A robot contributes 1.4 times a person's rate in this example. Machinery also limits output.
-160 kits iniciales y hasta 160 nuevos cada día a las 08:00. Incluyen placa y RAM, sensores, carcasa, pantalla y batería. Hasta 16 piezas entre puestos.	160 initial kits and up to 160 new kits daily at 08:00. They include a circuit board and RAM, sensors, housing, screen and battery. Up to 16 parts can wait between stations.
+160 kits iniciales y hasta 160 nuevos cada día a las 08:00. Incluyen estructura, actuadores, batería, controladores y sensores. Hasta 16 piezas entre puestos.	160 initial kits and up to 160 new kits daily at 08:00. They include the structure, actuators, battery, controllers and sensors. Up to 16 parts can wait between stations.
 El ensayo mantiene la configuración durante 24 horas completas. Incluye esperas y descansos; no multiplica sin más el ritmo de una hora por 24.	The trial holds the setup fixed for a full 24 hours. It includes waiting and breaks; it does not simply multiply one hour's rate by 24.
 Todos estos valores son supuestos para aprender, no productividades reales ni plazos previstos. Una fábrica humana puede organizar varios turnos. Se omiten averías, rechazos, costes y el tiempo real de adaptar los puestos.	All values are learning assumptions, not real productivity figures or predicted timelines. A human factory can organize multiple shifts. Breakdowns, rejected units, costs and real station adaptation time are omitted.
 No se pudo iniciar el mundo 3D. Los controles y la comparación siguen disponibles.	The 3D world could not start. Controls and comparisons remain available.
@@ -190,7 +190,7 @@ Pausar fábrica	Pause factory
 Reproducir fábrica	Play factory
  · ayer 	 · yesterday 
  completado: 	 completed: 
- móviles en tu fábrica · 	 phones in your factory · 
+ robots en tu fábrica · 	 robots in your factory · 
  solo con humanos.	 with humans only.
 Suministro de kits	Kit supply
 Entran hasta 160 kits al día del exterior.	Up to 160 kits arrive daily from outside.
@@ -206,19 +206,19 @@ Este puesto tiene la menor capacidad diaria de la línea. Reforzarlo puede aumen
 La línea ya tiene más capacidad que el suministro diario de kits. Para seguir creciendo también harían falta más componentes del exterior.	The line already has more capacity than the daily kit supply. Further growth also requires more components from outside.
 Acelerar 	Speeding up 
  puede llenar la cola de otro puesto. El límite diario está en 	 can fill another station's queue. The daily limit is at 
-. Mira los móviles que salen de embalaje.	. Watch the phones leaving packaging.
+. Mira los robots que salen de puesta en marcha.	. Watch the robots leaving commissioning.
  en cola	 in queue
 Reunir la placa, la memoria RAM, los sensores y el resto del kit.	Gather the circuit board, RAM, sensors and the rest of the kit.
 Fijar la placa y conectar los componentes en la carcasa.	Secure the circuit board and connect components inside the housing.
-Instalar la pantalla, conectar la batería y cerrar el móvil.	Install the screen, connect the battery and close the phone.
+Instalar la pantalla, conectar la batería y cerrar el robot.	Install the screen, connect the battery and close the robot.
 Comprobar la pantalla, la carga, las cámaras y las conexiones.	Check the screen, charging, cameras and connections.
-Proteger y embalar el móvil terminado para su salida.	Protect and package the finished phone for dispatch.
+Proteger y embalar el robot terminado para su salida.	Protect and package the finished robot for dispatch.
 Preparación	Preparation
 Preparar	Prepare
-Pantalla y batería	Screen and battery
+Actuadores y batería	Actuators and battery
 Completar	Complete
-Empaquetar	Pack
-Embalaje	Packaging
+Activar	Pack
+Puesta en marcha	Commissioning
 Montar	Assemble
 Probar	Test
 Descanso humano	Human rest
@@ -235,7 +235,7 @@ Ampliación en marcha	Expansion under way
 Maquinaria al máximo	Machinery at capacity
 Por probar	Awaiting testing
 KITS · PLACA + RAM + COMPONENTES	KITS · BOARD + RAM + COMPONENTS
-MÓVILES TERMINADOS	FINISHED PHONES
+ROBOTS TERMINADOS	FINISHED ROBOTS
 RECARGA Y SERVICIO	CHARGING AND SERVICE
 DESCANSO	REST AREA
 Extracción y preparación de minerales. Es el comienzo de las cuatro cadenas de componentes.	Mineral extraction and preparation. The start of all four component chains.

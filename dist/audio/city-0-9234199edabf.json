@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This sector groups delivery, sorting and warehouse tasks. Robots arrive from industry and cover part of the work represented here. Orange figures indicate human tasks and light figures indicate robot-covered tasks. We do not show autonomous vehicles solving every street. Access, driving, exceptions and supervision remain necessary conditions. The bar and chart explain how much this sector has changed under the selected hypothesis. A different outcome requires different assumptions, not an imaginary date.",
+  "duration_ms": 34452,
+  "billed_characters": 509,
+  "sample_rate": 32000,
+  "size_bytes": 552948,
+  "generated_at": "2026-09-15T21:23:03.395668+00:00"
+}

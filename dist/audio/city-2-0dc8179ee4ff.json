@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This sector represents material handling and repeatable construction and repair operations. Changing environments, coordination and technical decisions leave human tasks. Here we measure how many urban tasks move to robots. More robotic figures do not apply a magical boost to every construction project. Robot manufacturing and supplier expansion happen in the industrial model feeding the city. Keeping the two separate makes it clear where acceleration actually comes from.",
+  "duration_ms": 30060,
+  "billed_characters": 476,
+  "sample_rate": 32000,
+  "size_bytes": 482676,
+  "generated_at": "2026-09-15T21:23:09.432406+00:00"
+}

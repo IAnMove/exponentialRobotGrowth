@@ -1,5 +1,17 @@
 # Robots que refuerzan su cadena de fabricación
 
+## Recorrido de cuatro escalas (preparado; voz española pendiente de elección)
+
+La entrada `index.html` ahora corresponde a `factory.html`, una fábrica de robots con cinco puestos. El distrito anterior se conserva en `district.html`, seguido de `region.html` y `city.html`. Una navegación común presenta el orden, la explicación general y un recorrido narrado por los sectores con enfoque de cámara. Cada escala mantiene condiciones iniciales propias.
+
+La fábrica solo puede incorporar robots que ya haya terminado. El modo automático está activado inicialmente y prioriza puestos con baja capacidad diaria. Puede desactivarse para elegir manualmente. Se mantiene la comparación con humanos y el ensayo de configuración fija. Los cuerpos robóticos sustituyen a los móviles en las cintas y la salida; vuelven desde la salida a sus puestos.
+
+La ciudad añade 600 tareas equivalentes, seis sectores y tres hipótesis de alcance. Su industria usa el modelo regional y exporta una fracción de los robots fabricados: esas unidades dejan de trabajar en industria. Los traslados tardan un ciclo y la asignación urbana es automática. Se conservan robots, materiales y tareas; nunca se equipara una tarea automatizada a un empleo eliminado. `node check-city.mjs` verifica conservación, demoras y límites.
+
+Los guiones generales, los de la nueva fábrica y los urbanos están en `narration/lessons.es.json` y `narration/lessons.en.json`. El constructor omite los cinco clips antiguos de la fábrica de móviles. La voz inglesa ya está generada; hay 46 clips vigentes por idioma. Muestras españolas en `narration/auditions/`: `Spanish_ReliableMan`, `Spanish_SereneWoman`, `Spanish_Steadymentor`. Falta la elección del usuario antes de regenerar los 46 clips españoles y publicar. La web pública sigue en la versión anterior mientras se cierra esta elección.
+
+Tras elegir la voz: guardar `narration/voices.json` con claves `es` y `en` (`English_expressive_narrator` para inglés), ejecutar `python tools/build_narration.py --language es`, `python tools/build_site.py`, las comprobaciones del sitio y modelos y `node check-narrator.mjs`. Este último permite `--english` para validar solo la versión inglesa mientras está pendiente el español. Empaquetar y publicar en el checkout dedicado de Pages una vez completado.
+
 ## Región industrial
 
 `region.html` añade el tercer nivel, accesible desde distrito y fábrica. Empieza con 24 robots y seis instalaciones; no importa el estado de las otras escenas. El control de inversión limita la fracción de la flota destinada a construir y reserva esa misma fracción de material recién refinado para próximas obras. La producción, las obras y los inventarios conservan material; el dinero no se modela.

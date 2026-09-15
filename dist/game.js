@@ -45,7 +45,7 @@ function updateInspector(){const f=run.frames[index],i=selected;$('place-title')
     $('stock-list').replaceChildren(...INPUTS[i].map(k=>{const row=document.createElement('div');row.className='stock-row'+(f.inventory[k]===0?' empty':'');const name=document.createElement('span');name.textContent=RESOURCES[k];const count=document.createElement('strong');count.textContent=format(f.inventory[k]);row.append(name,count);return row;}));$('stock-title').textContent=i===0?'Extraction limited by equipment':'Required stock';$('stock-footnote').textContent=i===0?'Specialized inputs and energy come from outside.':'Batches in the network · map stacks are illustrative';$('capacity-fill').style.width=Math.min(100,status.rate/f.hardware[i]*100)+'%';$('capacity-label').textContent=status.rate+' / '+f.hardware[i]+' batches per hour';
   }else{$('place-status').dataset.state='';$('place-status').textContent=i===9?f.humansReplaced+' people with their industrial task covered by robots.':i===10?f.period==='lunch'?'It is lunchtime.':'The dining hall awaits the next break.':i===11?totals(f.charging)+' charging · '+totals(f.maintenance)+' in maintenance':i===12?format(f.exported)+' robots sent to other uses.':'External supply assumed.';}
 }
-function selectPlace(i){selected=i;$('inspector').hidden=false;zoomTarget=container.clientWidth<680?4:2.8;targetLook.set(places[i].x,0,places[i].z);updateUI();narrator.explain('district-'+i,i<9?'state-'+processStatus(run.frames[index],nextFrame(),i).code:null);}
+function selectPlace(i,narrate=true){selected=i;$('inspector').hidden=false;zoomTarget=container.clientWidth<680?4:2.8;targetLook.set(places[i].x,0,places[i].z);updateUI();if(narrate)narrator.explain('district-'+i,i<9?'state-'+processStatus(run.frames[index],nextFrame(),i).code:null);}
 function resetCamera(){selected=-1;$('inspector').hidden=true;zoomTarget=1;yawTarget=.58;targetLook.set(-1,0,3);updateUI();}
 $('routes').addEventListener('click',()=>{showRoutes=!showRoutes;needsFrame=true;$('routes').setAttribute('aria-pressed',showRoutes);});
 $('close-inspector').addEventListener('click',()=>{selected=-1;$('inspector').hidden=true;updateUI();});
@@ -90,3 +90,5 @@ function render(){requestAnimationFrame(render);const now=performance.now(),dt=M
 
 
 
+
+document.addEventListener('narration-focus',e=>{if(/^district-\d+$/.test(e.detail))selectPlace(Number(e.detail.split('-')[1]),false);});

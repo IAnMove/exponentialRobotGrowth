@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Sensors, motion and control are calibrated here. This station initially has the lowest daily capacity, so parts can pile up before it. A finished robot returning here can help release that work. Another station or supply can then become the new limit. The scene represents verification time, but does not simulate failures or rejected units. An assembled structure is not counted as an available robot until every step is complete. That distinction avoids confusing unfinished parts with real capacity to manufacture more.",
+  "duration_ms": 32040,
+  "billed_characters": 522,
+  "sample_rate": 32000,
+  "size_bytes": 514356,
+  "generated_at": "2026-09-15T21:22:53.146615+00:00"
+}

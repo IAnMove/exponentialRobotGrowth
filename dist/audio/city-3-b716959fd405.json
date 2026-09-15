@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Repeatable cleaning tasks can be a destination for robots, provided spaces and equipment allow them to work. That is why this hypothesis gives this sector a different scope from education or care. But not all maintenance is repeatable. Breakdowns, difficult access and unexpected situations require capabilities the model does not demonstrate. Watch progressive arrivals and compare tasks performed by humans and robots. The scene illustrates how capacity would be distributed under these assumptions, not what the real outcome will be.",
+  "duration_ms": 33804,
+  "billed_characters": 536,
+  "sample_rate": 32000,
+  "size_bytes": 542580,
+  "generated_at": "2026-09-15T21:23:10.060366+00:00"
+}

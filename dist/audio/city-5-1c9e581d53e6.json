@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This sector groups logistical support, space management and some simple administrative tasks. Teaching, supporting people, interpreting needs and making decisions are not shown as completely replaced. Human figures therefore remain even when industry delivers many robots. The chart shows covered tasks, not teachers or professionals eliminated. At the end of the journey, think back to where arrivals originate: robots helping produce robots, growing suppliers, and new facilities that take time to construct. That loop can accelerate available capacity. Its effect on the economy and on people's lives depends on many decisions this simulation does not calculate.",
+  "duration_ms": 42156,
+  "billed_characters": 665,
+  "sample_rate": 32000,
+  "size_bytes": 676212,
+  "generated_at": "2026-09-15T21:23:15.776217+00:00"
+}

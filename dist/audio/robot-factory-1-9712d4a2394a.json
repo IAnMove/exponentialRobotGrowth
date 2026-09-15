@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "People or robots assemble the torso, limbs and supporting structure. Watch the bodies moving along the conveyor. They are not operational robots yet: movement systems, calibration and testing are still needed. Automating this station while another is slower can fill a queue without producing many additional robots. Automatic mode reinforces stations with lower daily capacity. You can turn it off to decide where to send a robot the line itself has already finished.",
+  "duration_ms": 30852,
+  "billed_characters": 468,
+  "sample_rate": 32000,
+  "size_bytes": 495348,
+  "generated_at": "2026-09-15T21:22:47.612171+00:00"
+}

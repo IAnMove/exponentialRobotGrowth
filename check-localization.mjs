@@ -5,6 +5,12 @@ import * as en from './dist/factory-model.js';
 import * as es from './dist/es/factory-model.js';
 import * as regionEN from './dist/region-model.js';
 import * as regionES from './dist/es/region-model.js';
+import * as cityEN from './dist/city-model.js';
+import * as cityES from './dist/es/city-model.js';
+for(const scenario of [0,1,2]){
+  const a=cityEN.advanceCity(cityEN.createCity(scenario),120),b=cityES.advanceCity(cityES.createCity(scenario),120);
+  assert.deepEqual(a,b,'Language must not change city outcomes');
+}
 for(const share of [0,.2,.4,.7]){
   const a=regionEN.advanceRegion(regionEN.createRegion(share),120),b=regionES.advanceRegion(regionES.createRegion(share),120);
   assert.deepEqual(a,b,'Language must not change regional outcomes');

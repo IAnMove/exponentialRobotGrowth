@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This station installs movement mechanisms, the battery and connections. The body begins to resemble the robot that will later work in the factory. Fast assembly is not enough: structures must arrive from the previous station and space must remain at the next. Queues show those dependencies. Robots have more available hours in this example, but charging and maintenance are still necessary. Rate differences are illustrative assumptions. The important improvement is how many operational robots the entire line can finish.",
+  "duration_ms": 34020,
+  "billed_characters": 523,
+  "sample_rate": 32000,
+  "size_bytes": 546036,
+  "generated_at": "2026-09-15T21:22:52.001449+00:00"
+}

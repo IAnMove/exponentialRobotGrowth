@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "The city starts with six hundred equivalent tasks performed by humans. These are not six hundred jobs: one person performs many different tasks. An industrial region alongside it builds new facilities and produces robots. You can decide what share of those robots comes to the city. The rest remains in industry to support future capacity. Arrivals are automatically distributed across logistics, retail, construction, cleaning, care and education. Each sector has an automation limit chosen for this scenario. The three hypotheses have no assigned dates or probabilities. The curve can accelerate because industry produces more robots, not because urban tasks multiply by themselves. This is the mechanism we explore when discussing robot-driven growth: productive capacity helping expand the next round of capacity, with materials, energy, construction and human limits still present.",
+  "duration_ms": 57276,
+  "billed_characters": 886,
+  "sample_rate": 32000,
+  "size_bytes": 918132,
+  "generated_at": "2026-09-15T21:22:59.144924+00:00"
+}

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "A robot does not make another out of nothing. This district shows its dependencies. The mine extracts ore and the refinery turns it into materials. Structures, motors, batteries and electronics are then produced. Logistics combines all four families into kits. Assembly builds robots, and testing allows them to join the workforce. New robots automatically reinforce the chain, although you can compare other strategies. Homes and the dining hall show human breaks. Charging and service remind us that robots stop too. Energy and some inputs come from outside. The compounding effect appears when more robots increase the capacity to build the next ones. If we speed up assembly alone, parts or testing can become the new limit. Sustaining expansion also requires new facilities.",
+  "duration_ms": 50940,
+  "billed_characters": 779,
+  "sample_rate": 32000,
+  "size_bytes": 816756,
+  "generated_at": "2026-09-15T21:22:41.974771+00:00"
+}

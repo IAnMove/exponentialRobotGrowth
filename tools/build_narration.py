@@ -10,14 +10,21 @@ import argparse
 ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser()
 parser.add_argument('--language', choices=['es', 'en'], default='es')
+parser.add_argument('--voice', default=None)
 args = parser.parse_args()
 MODEL = 'speech-2.8-hd'
-VOICE = 'Spanish_Narrator' if args.language == 'es' else 'English_expressive_narrator'
+settings_file=ROOT/'narration/voices.json'
+settings=json.loads(settings_file.read_text(encoding='utf-8')) if settings_file.exists() else {}
+VOICE = args.voice or settings.get(args.language) or ('Spanish_Narrator' if args.language == 'es' else 'English_expressive_narrator')
 LANGUAGE = 'Spanish' if args.language == 'es' else 'English'
 catalog = json.loads((ROOT / ('narration/places.json' if args.language == 'es' else 'narration/places.en.json')).read_text(encoding='utf-8'))
 region_file = ROOT / ('narration/region.es.json' if args.language == 'es' else 'narration/region.en.json')
 if region_file.exists():
     catalog.update(json.loads(region_file.read_text(encoding='utf-8')))
+lesson_file=ROOT/f'narration/lessons.{args.language}.json'
+if lesson_file.exists():
+    catalog={k:v for k,v in catalog.items() if not k.startswith('factory-')}
+    catalog.update(json.loads(lesson_file.read_text(encoding='utf-8')))
 def generate(item):
     key, entry = item
     digest = hashlib.sha256((MODEL + VOICE + entry['text']).encode()).hexdigest()[:12]

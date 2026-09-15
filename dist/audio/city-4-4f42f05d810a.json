@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This sector represents internal transport, material preparation and some physical support tasks. We do not assume a robot completely replaces a healthcare professional or caregiver. Clinical judgment, human relationships, responsibility and many care situations remain outside the automated tasks in this example. Even the broadest hypothesis retains human tasks. The percentage is a scenario choice, not medical advice or an employment forecast. We want to show that having more robots does not make every activity equally automatable.",
+  "duration_ms": 36648,
+  "billed_characters": 536,
+  "sample_rate": 32000,
+  "size_bytes": 588084,
+  "generated_at": "2026-09-15T21:23:15.411624+00:00"
+}
