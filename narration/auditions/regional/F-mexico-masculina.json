@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606410326-KZ7n70HU",
+  "language": "Spanish",
+  "text": "Los primeros robots se construyen con ayuda humana. Después, algunos vuelven a la fábrica para construir más robots. La producción se acelera, siempre que también aumenten los materiales, la energía y el transporte.",
+  "duration_ms": 14040,
+  "billed_characters": 215,
+  "sample_rate": 32000,
+  "size_bytes": 226356,
+  "generated_at": "2026-09-15T22:41:16.783584+00:00"
+}

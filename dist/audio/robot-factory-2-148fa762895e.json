@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "En este puesto se instalan los mecanismos de movimiento, la batería y las conexiones. El cuerpo empieza a parecerse al robot que después podrá trabajar en la fábrica. No basta con montar rápido: hay que recibir estructuras desde el puesto anterior y dejar espacio en el siguiente. Las colas muestran esas dependencias. Los robots tienen más horas disponibles en este ejemplo, pero también necesitan recarga y mantenimiento. Las diferencias de ritmo son supuestos ilustrativos. La mejora importante es cuántos robots operativos consigue terminar toda la línea.",
+  "duration_ms": 33876,
+  "billed_characters": 559,
+  "sample_rate": 32000,
+  "size_bytes": 543732,
+  "generated_at": "2026-09-16T00:03:03.340310+00:00"
+}

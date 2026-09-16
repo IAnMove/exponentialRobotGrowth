@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Esta fábrica produce las estructuras del robot: bastidores, carcasas y piezas que sostienen el resto de sus componentes. En el modelo necesita materiales refinados y entrega estructuras al centro logístico. Sigue la conexión entre ambas instalaciones. Tener muchas estructuras almacenadas no equivale a tener muchos robots terminados: todavía hacen falta motores, batería y electrónica. Si esta fábrica se queda atrás, faltarán estructuras para completar los kits. Si se adelanta demasiado, acumulará existencias que no se pueden aprovechar todavía. La mejora útil consiste en aumentar la producción de toda la cadena, manteniendo el equilibrio entre sus componentes.",
+  "duration_ms": 39816,
+  "billed_characters": 667,
+  "sample_rate": 32000,
+  "size_bytes": 638772,
+  "generated_at": "2026-09-16T00:01:38.571959+00:00"
+}

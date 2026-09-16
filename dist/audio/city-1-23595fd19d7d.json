@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "En tiendas y servicios de alimentación puede haber tareas físicas repetidas, como reponer, preparar o limpiar. Este escenario permite que los robots cubran algunas de ellas mientras las personas siguen atendiendo, resolviendo excepciones y tomando decisiones. Mira cómo llegan robots a medida que aumenta la producción industrial. No se asignan todos desde el principio. Tampoco se interpreta una tarea automatizada como un comercio sin personas. La cobertura se detiene en el límite de la hipótesis seleccionada, aunque sigan llegando más robots a la ciudad.",
+  "duration_ms": 34884,
+  "billed_characters": 559,
+  "sample_rate": 32000,
+  "size_bytes": 559860,
+  "generated_at": "2026-09-16T00:03:20.258365+00:00"
+}

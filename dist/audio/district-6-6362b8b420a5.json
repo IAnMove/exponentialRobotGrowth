@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Aquí se reúnen las piezas que necesita el montaje. Un kit completo requiere una estructura, un conjunto de actuadores, una batería y un conjunto electrónico. La regla es sencilla: si falta cualquiera de las cuatro familias, ese kit no sale. Mira las existencias una por una. Es posible tener grandes cantidades de tres componentes y seguir fabricando muy pocos robots porque escasea el cuarto. Los robots destinados a logística ayudan a preparar y mover kits, pero no sustituyen los componentes que faltan. Este punto explica por qué la producción de una cadena depende de que sus partes avancen juntas, y no de sumar sin más la capacidad de cada fábrica.",
+  "duration_ms": 40284,
+  "billed_characters": 655,
+  "sample_rate": 32000,
+  "size_bytes": 646260,
+  "generated_at": "2026-09-16T00:01:49.501644+00:00"
+}

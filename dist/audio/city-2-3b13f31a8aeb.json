@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Este sector representa movimiento de materiales y operaciones repetibles de construcción y reparación. Los entornos cambiantes, la coordinación y las decisiones técnicas dejan tareas humanas. En esta escena medimos cuántas tareas urbanas pasan a los robots. No aplicamos un aumento mágico a todas las obras por ver más figuras robóticas. La fabricación de los robots y la ampliación de sus proveedores ocurren en el modelo industrial que alimenta esta ciudad. Separar ambas cosas permite entender de dónde sale realmente la aceleración.",
+  "duration_ms": 30348,
+  "billed_characters": 536,
+  "sample_rate": 32000,
+  "size_bytes": 487284,
+  "generated_at": "2026-09-16T00:03:20.307433+00:00"
+}

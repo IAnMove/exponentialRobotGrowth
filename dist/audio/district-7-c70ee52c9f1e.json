@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Aquí los kits completos se convierten en robots ensamblados. Al principio realizan las tareas personas; después pueden incorporarse robots fabricados por la propia red. Este es el comienzo de la reinversión: parte de lo producido ayuda a producir lo siguiente. Todavía faltan las pruebas antes de que esos robots puedan trabajar. Mira si el montaje recibe suficientes kits y si sus máquinas tienen capacidad libre. Añadir robots aquí no sirve de mucho cuando las piezas llegan demasiado despacio. El crecimiento puede acelerarse cuando también aumentan los suministros, las pruebas y la maquinaria. Para verlo, compara la estrategia de reforzar toda la cadena con la de concentrar los robots únicamente en montaje.",
+  "duration_ms": 44136,
+  "billed_characters": 714,
+  "sample_rate": 32000,
+  "size_bytes": 707892,
+  "generated_at": "2026-09-16T00:01:50.083273+00:00"
+}

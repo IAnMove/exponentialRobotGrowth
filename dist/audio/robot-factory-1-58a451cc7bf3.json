@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Las personas o los robots ensamblan el torso, las extremidades y la estructura que sostiene los componentes. Mira los cuerpos que avanzan por la cinta. Todavía no son robots operativos: faltan sistemas de movimiento, calibración y pruebas. Si automatizas este puesto mientras otro es más lento, puedes llenar una cola sin conseguir muchos robots adicionales. El modo automático refuerza los puestos con menor capacidad diaria. Puedes desactivarlo para elegir dónde destinar un robot que la propia línea ya haya terminado.",
+  "duration_ms": 31032,
+  "billed_characters": 521,
+  "sample_rate": 32000,
+  "size_bytes": 498228,
+  "generated_at": "2026-09-16T00:03:02.555351+00:00"
+}

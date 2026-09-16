@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Aquí representamos transporte interno, preparación de material y algunas tareas de apoyo físico. No suponemos que un robot sustituya por completo a profesionales sanitarios o cuidadores. El juicio clínico, el vínculo humano, la responsabilidad y muchas situaciones de cuidado permanecen fuera de las tareas automatizadas del ejemplo. Incluso la hipótesis más amplia conserva tareas humanas. El porcentaje expresa una elección del escenario, no una recomendación sanitaria ni una predicción laboral. Lo que queremos mostrar es que disponer de más robots no hace que todas las actividades sean igual de automatizables.",
+  "duration_ms": 38628,
+  "billed_characters": 616,
+  "sample_rate": 32000,
+  "size_bytes": 619764,
+  "generated_at": "2026-09-16T00:03:26.002219+00:00"
+}

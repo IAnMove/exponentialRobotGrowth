@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Este sector agrupa apoyo logístico, gestión de espacios y algunas tareas administrativas sencillas. Enseñar, acompañar, interpretar necesidades y decidir no aparecen sustituidos por completo. Por eso las figuras humanas permanecen aunque la industria entregue muchos robots. La gráfica muestra tareas cubiertas, no docentes o profesionales eliminados. Al final del recorrido, vuelve a pensar en el origen de las llegadas: robots que ayudan a producir robots, proveedores que crecen y nuevas instalaciones que tardan en construirse. Ese circuito puede acelerar la capacidad disponible; su efecto en la economía y en la vida de las personas depende de muchas decisiones que esta simulación no calcula.",
+  "duration_ms": 43524,
+  "billed_characters": 699,
+  "sample_rate": 32000,
+  "size_bytes": 698100,
+  "generated_at": "2026-09-16T00:03:31.568620+00:00"
+}

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Ahora la maquinaria está marcando el máximo que puede hacer esta instalación. Añadir trabajadores a los mismos equipos no aumenta ese límite. Para seguir creciendo hacen falta más equipos o una ampliación, además de materiales suficientes.",
+  "duration_ms": 13968,
+  "billed_characters": 239,
+  "sample_rate": 32000,
+  "size_bytes": 225204,
+  "generated_at": "2026-09-16T00:02:17.249247+00:00"
+}

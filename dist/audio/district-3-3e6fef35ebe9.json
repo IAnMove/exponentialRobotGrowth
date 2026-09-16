@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Aquí se fabrican los mecanismos que permiten moverse al robot: motores, transmisiones y articulaciones. Es una parte interesante del circuito, porque los robots que ya funcionan pueden ayudar a producir los mecanismos de los siguientes. Pero siguen necesitando materiales, máquinas y operaciones especializadas. Observa las existencias de entrada y los conjuntos que salen hacia logística. Un robot nuevo solo puede montarse cuando también hay estructura, batería y electrónica. Si los actuadores son el componente que falta, reforzar esta fábrica puede desbloquear el montaje. Si sobra capacidad aquí, enviar más robots a este puesto tendrá menos efecto que reforzar el proveedor que está frenando al conjunto.",
+  "duration_ms": 46512,
+  "billed_characters": 711,
+  "sample_rate": 32000,
+  "size_bytes": 745908,
+  "generated_at": "2026-09-16T00:01:38.961070+00:00"
+}

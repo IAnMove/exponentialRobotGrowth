@@ -1,0 +1,1 @@
+Ahora está llegando un robot para cubrir una de las tareas. Durante la incorporación todavía no aporta producción. Cuando llegue a su puesto podrá trabajar según su horario de disponibilidad, siempre que tenga piezas y capacidad de maquinaria.

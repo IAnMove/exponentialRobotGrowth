@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Ahora la salida de este puesto está llena. Tiene trabajo terminado que el siguiente proceso todavía no puede recibir. Por eso debe esperar. Mira el puesto siguiente: incorporar otro robot aquí no elimina esa cola.",
+  "duration_ms": 13320,
+  "billed_characters": 213,
+  "sample_rate": 32000,
+  "size_bytes": 214836,
+  "generated_at": "2026-09-16T00:02:20.488891+00:00"
+}

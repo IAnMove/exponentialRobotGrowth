@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Este es el punto de salida y distribución de los robots terminados. Una parte puede volver a la industria para reforzar sus procesos; otra parte se destina a otros usos. En este modelo la reinversión llega hasta el setenta por ciento cuando existe capacidad útil para incorporarlos. Los nuevos trabajadores necesitan además un tiempo de traslado antes de empezar. Sigue a los robots que salen de aquí y observa qué instalación recibe el refuerzo. El efecto acumulativo aparece cuando esa incorporación permite fabricar más robots, y parte de los siguientes vuelve a ampliar la capacidad. Si faltan suministros o maquinaria, la reinversión por sí sola no garantiza una expansión cada vez más rápida.",
+  "duration_ms": 43740,
+  "billed_characters": 698,
+  "sample_rate": 32000,
+  "size_bytes": 701556,
+  "generated_at": "2026-09-16T00:02:06.892105+00:00"
+}

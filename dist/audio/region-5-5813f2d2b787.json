@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Esta red conecta minas, refinerías, componentes y fábricas de robots. Los vehículos representan el movimiento de cargas, no entregas individuales exactas. La barra compara el flujo que las instalaciones podrían necesitar con la capacidad de transporte disponible. Si la demanda supera el cien por cien, la logística reduce el ritmo industrial. Ampliar el transporte puede liberar capacidad de varias fábricas a la vez. Una instalación logística también necesita trabajadores, material y tiempo de construcción. La región crece como una red de procesos conectados: añadir edificios sin poder intercambiar sus productos no completa el ciclo.",
+  "duration_ms": 39420,
+  "billed_characters": 639,
+  "sample_rate": 32000,
+  "size_bytes": 632436,
+  "generated_at": "2026-09-16T00:02:45.029885+00:00"
+}

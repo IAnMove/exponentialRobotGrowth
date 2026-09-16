@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Ahora este proceso espera materiales o piezas de los anteriores. Tiene capacidad disponible, pero no todo lo necesario para utilizarla. El refuerzo útil puede estar en sus proveedores, porque un trabajador adicional no sustituye una pieza que falta.",
+  "duration_ms": 14796,
+  "billed_characters": 249,
+  "sample_rate": 32000,
+  "size_bytes": 238452,
+  "generated_at": "2026-09-16T00:02:13.854462+00:00"
+}

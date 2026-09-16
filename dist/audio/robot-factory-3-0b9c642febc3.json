@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Aquí se calibran sensores, movimiento y control. En la configuración inicial es el puesto con menor capacidad diaria, de modo que puede acumular piezas delante. Un robot terminado que regrese aquí puede ayudar a liberar ese trabajo. El nuevo límite podría pasar entonces a otro puesto o al suministro. La escena representa tiempo de verificación, pero no simula averías ni rechazos. Una estructura ensamblada no se cuenta como robot disponible hasta completar todos los pasos. Esa distinción evita confundir piezas a medio hacer con capacidad real para fabricar más.",
+  "duration_ms": 37980,
+  "billed_characters": 566,
+  "sample_rate": 32000,
+  "size_bytes": 609396,
+  "generated_at": "2026-09-16T00:03:08.640203+00:00"
+}

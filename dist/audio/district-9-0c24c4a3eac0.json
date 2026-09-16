@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Este barrio permite seguir a las personas cuando dejan la línea industrial. En el escenario, descansan por la noche y regresan a su turno cuando corresponde. Cuando un robot cubre una tarea, la persona que la realizaba permanece en el mundo y se desplaza al barrio o al parque. Es una representación de tareas cubiertas, no una predicción sobre lo que ocurriría con el empleo. Aquí usamos un único turno humano para que los descansos se vean con claridad, aunque una fábrica real puede organizar varios turnos. El contraste permite entender cómo cambia el tiempo de utilización de los equipos, además del número de trabajadores disponibles.",
+  "duration_ms": 37188,
+  "billed_characters": 640,
+  "sample_rate": 32000,
+  "size_bytes": 596724,
+  "generated_at": "2026-09-16T00:01:55.436007+00:00"
+}

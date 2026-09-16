@@ -1,6 +1,6 @@
 # Robots que refuerzan su cadena de fabricación
 
-## Recorrido de cuatro escalas (preparado; voz española pendiente de elección)
+## Recorrido de cuatro escalas
 
 La entrada `index.html` ahora corresponde a `factory.html`, una fábrica de robots con cinco puestos. El distrito anterior se conserva en `district.html`, seguido de `region.html` y `city.html`. Una navegación común presenta el orden, la explicación general y un recorrido narrado por los sectores con enfoque de cámara. Cada escala mantiene condiciones iniciales propias.
 
@@ -8,9 +8,11 @@ La fábrica solo puede incorporar robots que ya haya terminado. El modo automát
 
 La ciudad añade 600 tareas equivalentes, seis sectores y tres hipótesis de alcance. Su industria usa el modelo regional y exporta una fracción de los robots fabricados: esas unidades dejan de trabajar en industria. Los traslados tardan un ciclo y la asignación urbana es automática. Se conservan robots, materiales y tareas; nunca se equipara una tarea automatizada a un empleo eliminado. `node check-city.mjs` verifica conservación, demoras y límites.
 
-Los guiones generales, los de la nueva fábrica y los urbanos están en `narration/lessons.es.json` y `narration/lessons.en.json`. El constructor omite los cinco clips antiguos de la fábrica de móviles. La voz inglesa ya está generada; hay 46 clips vigentes por idioma. Muestras españolas en `narration/auditions/`: `Spanish_ReliableMan`, `Spanish_SereneWoman`, `Spanish_Steadymentor`. Falta la elección del usuario antes de regenerar los 46 clips españoles y publicar. La web pública sigue en la versión anterior mientras se cierra esta elección.
+Los guiones generales, los de la nueva fábrica y los urbanos están en `narration/lessons.es.json` y `narration/lessons.en.json`. El constructor omite los cinco clips antiguos de la fábrica de móviles. La versión inglesa tiene sus 46 clips vigentes generados. El usuario ha elegido la muestra E para español: `ttv-voice-2026091606404326-GjG0y5Nk`, guardada en `narration/voices.json`. Aunque su archivo de audición se llama `E-espana-femenina`, el usuario describe el resultado como voz masculina; el nombre procedía del prompt y no describe de forma fiable el audio. Debe conservarse el ID exacto aprobado.
 
-Tras elegir la voz: guardar `narration/voices.json` con claves `es` y `en` (`English_expressive_narrator` para inglés), ejecutar `python tools/build_narration.py --language es`, `python tools/build_site.py`, las comprobaciones del sitio y modelos y `node check-narrator.mjs`. Este último permite `--english` para validar solo la versión inglesa mientras está pendiente el español. Empaquetar y publicar en el checkout dedicado de Pages una vez completado.
+La regrabación española se completó el 16 de septiembre de 2026 tras renovarse la cuota: 46 clips, 26.791 caracteres y unos 27,5 minutos, todos con la voz E aprobada. Los 92 audios de ambos idiomas decodifican correctamente, coinciden con sus guiones y tienen cobertura completa. También pasan las comprobaciones de rutas, sintaxis, modelos, conservación, equivalencia EN/ES y control de narración. Las cuatro escalas están publicadas en GitHub Pages (commit `593b7cd`, ejecución `35038428752` completada). Se verificaron las diez rutas de página y ambos catálogos contra la compilación, normalizando finales de línea, y los 92 audios públicos responden correctamente con el tamaño esperado.
+
+Para futuras ediciones: `python tools/build_narration.py --language es` reutiliza clips válidos con la voz guardada; `python tools/build_site.py` construye las rutas. Ejecutar las comprobaciones relevantes, `node check-narrator.mjs`, empaquetar y publicar desde el checkout dedicado de Pages. Las credenciales siguen exclusivamente en el estudio externo.
 
 ## Región industrial
 
@@ -18,15 +20,15 @@ Tras elegir la voz: guardar `narration/voices.json` con claves `es` y `en` (`Eng
 
 Hay seis tipos de industria, seis parcelas por tipo y hasta tres proyectos simultáneos. Cada proyecto consume 48 lotes y necesita 24 unidades de trabajo, con hasta cuatro robots. La electricidad limita producción y construcción; la logística limita flujos industriales. La referencia también incorpora los robots fabricados, pero mantiene sus seis instalaciones originales. Los ciclos no son días ni años. Los robots se dibujan individualmente hasta que hace falta agruparlos para mantener legible el mapa; la equivalencia se indica en pantalla.
 
-El modelo está en `site-src/region-model.js`; `node check-region.mjs` comprueba conservación, existencias, demoras, límites, construcción manual, coste inicial de la inversión y mayor capacidad posterior. Las narraciones adicionales están en `narration/region.es.json` y `narration/region.en.json` y se generan con el mismo comando de narración. `check-site.py` valida las seis rutas y `check-localization.mjs` también compara ambos modelos regionales.
+El modelo está en `site-src/region-model.js`; `node check-region.mjs` comprueba conservación, existencias, demoras, límites, construcción manual, coste inicial de la inversión y mayor capacidad posterior. Las narraciones adicionales están en `narration/region.es.json` y `narration/region.en.json` y se generan con el mismo comando de narración. `check-site.py` valida las cuatro escenas y su entrada en ambos idiomas y `check-localization.mjs` también compara ambos modelos regionales.
 
 ## Inglés, español y GitHub Pages
 
 Web pública: https://ianmove.github.io/exponentialRobotGrowth/ · Repositorio público: https://github.com/IAnMove/exponentialRobotGrowth
 
-El inglés es el idioma inicial en `/`; el español está en `/es/`. EN/ES cambia interfaz y narración conservando la escena (distrito o fábrica). Hay 28 grabaciones por idioma, con texto y controles de reproducción. El cambio de idioma recarga la escena desde el inicio.
+El inglés es el idioma inicial en `/`; el español está en `/es/`. EN/ES cambia interfaz y narración conservando la escena. Hay 46 grabaciones por idioma, con texto y controles de reproducción. El cambio de idioma recarga la escena desde el inicio.
 
-Editar HTML/CSS/JS en `site-src/`, traducciones en `site-src/en.tsv`, y los modelos industriales clásicos en los archivos de la raíz. `python tools/build_site.py` genera las cuatro rutas con referencias relativas, compatibles con el subdirectorio de GitHub Pages. `python build-site.py` también actualiza el proveedor Three.js desde las dependencias instaladas. No editar las traducciones directamente en `dist/`.
+Editar HTML/CSS/JS en `site-src/`, traducciones en `site-src/en.tsv`, y los modelos industriales clásicos en los archivos de la raíz. `python tools/build_site.py` genera las cuatro escenas y su entrada en ambos idiomas con referencias relativas, compatibles con el subdirectorio de GitHub Pages. `python build-site.py` también actualiza el proveedor Three.js desde las dependencias instaladas. No editar las traducciones directamente en `dist/`.
 
 Guiones: `narration/places.json` y `narration/places.en.json`. Generar únicamente clips nuevos mediante `python tools/build_narration.py --language es` o `--language en`. Los audios existentes se reutilizan. No hace falta generar voces para compilar o servir la web.
 
@@ -34,7 +36,7 @@ Validación: `python check-site.py`, `node check-localization.mjs`, `node check-
 
 El checkout público de publicación está en `C:/Users/ina/.codex/artifacts/robot-lab-pages`. Su remoto `origin` apunta a `IAnMove/exponentialRobotGrowth`; `previous-site` conserva el destino anterior `IAnMove/robot-lab`. `python tools/package_pages.py --output C:/Users/ina/.codex/artifacts/robot-lab-pages` copia únicamente los recursos públicos de `dist/` (sin `.env`, metadatos de generación ni configuración de Sites). Publicar sus cambios en `main` actualiza GitHub Pages. Las credenciales MiniMax siguen fuera de ambos repositorios y no son necesarias para reproducir la web.
 
-## Escena de la fábrica de móviles
+## Archivo: antigua fábrica de móviles (sustituida por fábrica de robots)
 
 La narración al seleccionar cubre los 14 lugares del distrito y los 5 puestos de la fábrica. Cada lugar tiene una explicación grabada con MiniMax; los procesos añaden un segundo fragmento elegido según el estado del modelo. La simulación se pausa para conservar ese contexto. Reanudar o modificar la simulación detiene la explicación; seleccionar otro lugar sustituye el audio anterior. El reproductor incluye pausa, repetición, salto al estado actual, texto y desactivación global.
 

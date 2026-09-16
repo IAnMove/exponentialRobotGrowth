@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Aquí se reúnen la estructura, los actuadores, la batería, los controladores y los sensores. Los kits llegan de proveedores externos. En esta escena no fabricamos todas esas piezas: eso se explica en el distrito industrial. Cada robot terminado consume un kit y tiene que pasar por los cinco puestos. Al principio trabajan dos personas aquí. Un robot que ya haya salido del último puesto puede regresar y cubrir una de sus tareas. Si faltan kits, ese robot también espera. El suministro es uno de los límites que impide que esta línea crezca sin fin.",
+  "duration_ms": 34920,
+  "billed_characters": 549,
+  "sample_rate": 32000,
+  "size_bytes": 560436,
+  "generated_at": "2026-09-16T00:02:57.798700+00:00"
+}
