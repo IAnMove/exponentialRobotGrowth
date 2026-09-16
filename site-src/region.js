@@ -1,3 +1,5 @@
+import {createLiveHeader} from './live/header.js';
+import {createLedger} from './live/metrics.js';
 import {idealFleet} from './learning-model.js';
 import {TYPES,STEP,END,COST,WORK,MAX_PROJECTS,SLOTS,createRegion,tickRegion,counts,metrics,startBuild} from './region-model.js';
 import {createUrbanWorld} from './urban-world.js';
@@ -5,6 +7,10 @@ import {createTerritory,tickTerritory,TOWNS,covered,townCapacity} from './territ
 import {createNarrator} from './narrator.js';
 const $=id=>document.getElementById(id),fmt=(n,d=0)=>n.toLocaleString('es-ES',{maximumFractionDigits:d});
 let state=createTerritory(),reference=createTerritory(0,false),playing=false,speed=1,motion=0,selected=-1,last=performance.now(),accumulator=0,uiTime=0,world,referenceWorld;let mapView='expanded';
+let liveLedger=createLedger(),livePoints=[];
+const live=createLiveHeader({anchor:'.region-layout',kind:'region',onPlay:()=>$('r-play').click(),onReset:()=>$('r-reset').click()});
+function liveRow(){return {time:state.time,total:state.built,reference:reference.built,fleet:state.fleet+state.exported,referenceFleet:reference.fleet+reference.exported,...liveLedger.values()};}
+function updateLive(){const row=liveRow();live.update({time:state.time,playing,horizon:END,points:[...livePoints.filter(p=>p.time<state.time),row],message:limits[state.reason][1]});}
 const narrator=createNarrator({toggleHost:document.querySelector('.region-top'),onBegin(){playing=false;update();}});
 try{world=createUrbanWorld($('r-canvas'),{regional:true});referenceWorld=createUrbanWorld($('r-reference-canvas'),{regional:true});$('r-loading').hidden=true;}catch(e){$('r-loading').textContent='No se pudo iniciar el mundo 3D. Los controles y la comparación siguen disponibles.';console.error(e);}
 const labels=[],tabs=[],townLabels=[],townCards=[];let townSelected=-1;
@@ -27,6 +33,7 @@ function chart(element,series,maxTime=END){
   series.forEach((s,i)=>{const points=s.values.map(([x,y])=>(left+x/maxTime*(right-left)).toFixed(2)+','+(bottom-y/peak*(bottom-top)).toFixed(2)).join(' ');svg+='<polyline points="'+points+'" fill="none" stroke="'+s.color+'" stroke-width="'+(i?2.5:1.7)+'" '+(i?'':'stroke-dasharray="4 4"')+' stroke-linecap="round" stroke-linejoin="round"/>';});element.innerHTML=svg;
 }
 function update(){
+  updateLive();
   const n=counts(state),m=metrics(state),projects=state.sites.filter(p=>p.status==='building'),limit=limits[state.reason];
   $('r-cycle').textContent='CICLO '+String(Math.floor(state.time)).padStart(2,'0');$('r-play-state').textContent=playing?'En marcha':'En pausa';$('r-play').textContent=playing?'Ⅱ Pausar':state.time>=END?'↺ Repetir':'▶ Reproducir';$('r-progress').style.width=state.time/END*100+'%';
   updateLearning();$('r-fleet').textContent=fmt(state.fleet+state.exported);$('r-fleet-note').textContent='24 iniciales + '+fmt(state.built)+' nuevos';$('r-buildings').textContent=n.reduce((a,b)=>a+b,0);$('r-projects').textContent=projects.length+' obras en marcha';$('r-rate').textContent=fmt(state.flow[3],1);$('r-multiple').textContent=fmt(reference.flow[3],1)+' / ciclo sin nuevas instalaciones';
@@ -50,8 +57,8 @@ function inspect(){const p=state.sites[selected],t=TYPES[p.type];$('r-selected-n
   $('r-ore').textContent=fmt(state.ore,1);$('r-material').textContent=fmt(state.material,1);$('r-kits').textContent=fmt(state.kits,1);
 }
 function select(i,narrate=true){if(i<0)return;if(i>=36){selectTown(i-36,narrate);return;}townSelected=-1;$('r-town-inspector').hidden=true;selected=i;$('r-inspector').hidden=false;cameraAction('select',i);update();const p=state.sites[i];if(narrate)narrator.explain('region-'+p.type,p.status==='building'?'region-project':p.status==='open'?'region-operation':null);if(narrate&&matchMedia('(max-width:760px)').matches)$('r-inspector').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});}
-function step(){tickTerritory(state);tickTerritory(reference);if(state.time>=END)playing=false;}
-function reset(){narrator.stop();state=createTerritory(Number($('r-share').value)/100,$('r-auto').checked,Number($('r-delivery').value)/100);reference=createTerritory(0,false,Number($('r-delivery').value)/100);townSelected=-1;$('r-town-inspector').hidden=true;playing=false;motion=0;accumulator=0;selected=-1;$('r-inspector').hidden=true;cameraAction('select',-1,false);cameraAction('fit');update();}
+function step(){liveLedger.add(STEP,{sites:counts(state).reduce((a,b)=>a+b,0)},{sites:counts(reference).reduce((a,b)=>a+b,0)});tickTerritory(state);tickTerritory(reference);if(!livePoints.length||state.time-livePoints.at(-1).time>=1-1e-7)livePoints.push(liveRow());if(state.time>=END)playing=false;}
+function reset(){narrator.stop();liveLedger=createLedger();livePoints=[];state=createTerritory(Number($('r-share').value)/100,$('r-auto').checked,Number($('r-delivery').value)/100);reference=createTerritory(0,false,Number($('r-delivery').value)/100);townSelected=-1;$('r-town-inspector').hidden=true;playing=false;motion=0;accumulator=0;selected=-1;$('r-inspector').hidden=true;cameraAction('select',-1,false);cameraAction('fit');update();}
 document.addEventListener('click',e=>{if(e.target.closest('#r-play,#r-jump,#r-reset,#r-build,#r-close,#r-help,#r-assumptions'))narrator.stop();},true);
 $('r-play').onclick=()=>{if(state.time>=END)reset();playing=!playing;last=performance.now();update();};$('r-speed').onchange=e=>speed=Number(e.target.value);$('r-reset').onclick=reset;
 $('r-jump').onclick=()=>{playing=false;for(let i=0;i<10/STEP&&state.time<END;i++)step();update();};$('r-share').oninput=e=>{narrator.stop();state.share=Number(e.target.value)/100;update();};$('r-auto').onchange=e=>{narrator.stop();state.auto=e.target.checked;update();};

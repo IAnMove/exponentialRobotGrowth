@@ -142,3 +142,14 @@ Ejecutar `node check-model.js` y después `python build-demo.py`.
 - Fuentes técnicas: ASML Annual Report 2021 (separación entre exposición, revelado y grabado), Lam Research (deposición, grabado, limpieza), Applied Materials (CMP), Intel (encapsulado), Universal Robots (elementos de coste), iRobot (limpieza especializada). Fuentes enlazadas en cada explicación.
 - Los escenarios 3D anteriores mantienen cifras didácticas distintas: fábrica con ritmo robótico 1,4× y distrito con ritmo igual. No son mediciones de humanoides. Se integraron las mejoras de primera reincorporación, cadenas proveedoras y comparación de producción procedentes de `codex/robot-learning`.
 - Validación adicional: `node check-explanations.mjs` verifica conservación del trabajo, flota fabricada/pendiente, turnos equivalentes, sensibilidad de costes, cambios de material en la oblea y tiempo doméstico neto.
+
+
+## Cabeceras sincronizadas con las simulaciones (17 septiembre 2026)
+
+Las cuatro escenas 3D incluyen una cabecera con tres gráficas y controles de reproducción/reinicio conectados a su reloj. La portada vuelve a entrar en la fábrica; la calculadora independiente permanece accesible como complemento.
+
+- Fábrica/distrito: producción acumulada y robots asignados, comparados con su referencia humana. El índice parcial de coste suma horas humanas remuneradas y horas de robots asignados (también paradas), ponderadas por un supuesto editable, y divide por la producción acumulada real del escenario. Materiales y costes adicionales de instalaciones quedan fuera.
+- Ciudad: cobertura de las mismas 600 tareas, flota industrial e índice de coste de tareas según la fracción robótica editable. No se inventa una referencia humana de producción industrial.
+- Región: producción y flota de los escenarios con/sin ampliación; coste fijo parcial por unidad, suponiendo igual carga por instalación y ciclo. Excluye inversión de construcción y costes variables. No se impone una bajada del índice.
+- Los gráficos solo muestran datos hasta el instante visible; las escalas verticales indican su máximo. Reinicio, saltos de tiempo y cambios de estrategia actualizan también la cabecera.
+- `node check-live-metrics.mjs`: igualdad del coste de referencia, cobro del tiempo robot en espera, ausencia de división por cero, costes crecientes, contabilidad horaria del distrito y correspondencia con sus unidades producidas.

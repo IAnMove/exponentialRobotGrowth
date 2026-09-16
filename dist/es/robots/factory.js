@@ -1,8 +1,14 @@
+import {createLiveHeader} from '../live/header.js';
+import {createLedger,sum} from '../live/metrics.js';
 import {STATIONS,BUFFER,STEP,createFactory,tick,automate,status,period,forecast,constraint} from './factory-model.js';
 import {createFactoryWorld} from './factory-world.js';
 import {createNarrator} from './narrator.js';
 const $=id=>document.getElementById(id),fmt=n=>Math.round(n).toLocaleString('es-ES');
 let state=createFactory(undefined,true),reference=createFactory(),selected=1,playing=false,speed=1,motion=0,last=performance.now(),accumulator=0,uiClock=0;
+let liveLedger=createLedger(),livePoints=[];
+const live=createLiveHeader({anchor:'.factory-layout',kind:'factory',onPlay:()=>$('f-play').click(),onReset:()=>$('f-reset').click()});
+function liveRow(){return {time:state.time,total:state.total,reference:reference.total,fleet:sum(state.robots.map(r=>r.length)),referenceFleet:0,...liveLedger.values()};}
+function updateLive(){const row=liveRow();live.update({time:state.time,playing,horizon:Math.max(24,Math.ceil(state.time/24)*24),points:[...livePoints.filter(p=>p.time<state.time),row],saturated:state.deployed>=10});}
 const baseDay=forecast([0,0,0,0,0]);let planDay=baseDay;
 const narrator=createNarrator({toggleHost:document.querySelector('.topbar'),onBegin(){playing=false;updateUI();}});
 document.addEventListener('click',e=>{if(e.target.closest('#f-play,#f-reset,#f-automate,#f-lunch,#f-night,#f-day-end,#help,#f-assumptions'))narrator.stop();},true);
@@ -18,6 +24,7 @@ for(let i=0;i<16;i++)$('f-queue-dots').append(document.createElement('i'));
 function select(i,focus=true,narrate=true){if(focus)$('f-follow-first').checked=false;selected=i;world?.select(i,focus);updateUI();if(focus&&narrate){let code=status(state,i).code;if(code==='starved')code=i===0?'kits':'waiting';if(code==='rest'&&state.robots[i].some(t=>t>state.time))code='arriving';narrator.explain('robot-factory-'+i,'state-'+code);}}
 function recalculate(){planDay=forecast(state.robots.map(r=>r.length));}
 function updateUI(){
+  updateLive();
   const hour=(state.time+8)%24,h=Math.floor(hour),m=Math.min(59,Math.floor((hour-h)*60+1e-5)),st=STATIONS[selected],s=status(state,selected),bound=constraint(state);
   updateFirstLoop();$('f-clock').textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');$('f-day').textContent='DÍA '+String(state.day).padStart(2,'0');$('f-sun').textContent=h>=7&&h<20?'☀':'☾';$('f-period').textContent=period(state.time);
   $('f-run').textContent=playing?'EN MARCHA':'EN PAUSA';$('f-play').textContent=playing?'Ⅱ Pausar':'▶ Reproducir';$('f-play').setAttribute('aria-label',playing?'Pausar fábrica':'Reproducir fábrica');$('f-timeline').style.width=(state.time%24)/24*100+'%';
@@ -42,14 +49,14 @@ function updateUI(){
   $('f-base-day').textContent=fmt(baseDay);$('f-plan-day').textContent=fmt(planDay);const max=Math.max(baseDay,planDay,1);$('f-base-bar').style.width=baseDay/max*100+'%';$('f-plan-bar').style.width=planDay/max*100+'%';
   labels.forEach((el,i)=>{el.setAttribute('aria-pressed',selected===i);el.classList.toggle('bottleneck',i===bound.index);el.dataset.status=status(state,i).code;el.querySelector('small').textContent=state.queues[i]+(i===0?' kits':' en cola');tabs[i].setAttribute('aria-pressed',selected===i);tabs[i].querySelector('small').textContent=(2-state.robots[i].length)+' H · '+state.robots[i].length+' R';});
 }
-function step(){const before=state.deployed;tick(state);tick(reference);if(state.deployed!==before)recalculate();}
+function step(){liveLedger.add(STEP,{humans:sum(STATIONS.map((_,i)=>status(state,i).humans)),robots:sum(state.robots.map(r=>r.length))},{humans:sum(STATIONS.map((_,i)=>status(reference,i).humans)),robots:0});const before=state.deployed;tick(state);tick(reference);if(!livePoints.length||state.time-livePoints.at(-1).time>=1-1e-7)livePoints.push(liveRow());if(state.deployed!==before)recalculate();}
 function jumpTo(target){const ticks=Math.round((target-state.time)/STEP);for(let n=0;n<ticks;n++)step();accumulator=0;updateUI();}
 $('f-auto').addEventListener('change',e=>{narrator.stop();state.automatic=e.target.checked;updateUI();});
 document.addEventListener('narration-focus',e=>{if(e.detail.startsWith('robot-factory-'))select(Number(e.detail.split('-').at(-1)),true,false);});
 $('f-play').addEventListener('click',()=>{playing=!playing;last=performance.now();updateUI();});
 $('f-speed').addEventListener('change',e=>speed=Number(e.target.value));
 $('f-automate').addEventListener('click',()=>{if(automate(state,selected)){recalculate();playing=true;last=performance.now();updateUI();}});
-$('f-reset').addEventListener('click',()=>{state=createFactory(undefined,true);reference=createFactory();playing=false;accumulator=0;recalculate();world?.fit();$('f-follow-first').checked=true;select(1,false);});
+$('f-reset').addEventListener('click',()=>{state=createFactory(undefined,true);reference=createFactory();liveLedger=createLedger();livePoints=[];playing=false;accumulator=0;recalculate();world?.fit();$('f-follow-first').checked=true;select(1,false);});
 $('f-lunch').addEventListener('click',()=>{const day=Math.floor(state.time/24),at=day*24+5;jumpTo(at>state.time?at:at+24);});
 $('f-night').addEventListener('click',()=>{const day=Math.floor(state.time/24),at=day*24+15;jumpTo(at>state.time?at:at+24);});
 $('f-day-end').addEventListener('click',()=>{jumpTo(state.day*24);playing=false;updateUI();});

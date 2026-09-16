@@ -36,7 +36,7 @@ for language in ['en', 'es']:
                 if scene_index<3:
                     url,name,_=SCENES[scene_index+1]
                     content=content.replace('</main>',f'<a class="journey-next" href="./{url}"><span>Siguiente escala</span>{name} →</a></main>',1)
-                content=content.replace('</head>','<link rel="stylesheet" href="./journey.css"></head>')
+                content=content.replace('</head>','<link rel="stylesheet" href="./journey.css"><link rel="stylesheet" href="./live/header.css"></head>')
             en_link = './' + page if language == 'en' else '../' + page
             es_link = './es/' + page if language == 'en' else './' + page
             switch = '<nav class="language-switch" aria-label="Language / Idioma">' + ''.join(
@@ -61,7 +61,7 @@ for language in ['en', 'es']:
             home_label = '← All explorations' if language == 'en' else '← Todas las explicaciones'
             content = content.replace('</head>', '<link rel="stylesheet" href="./atlas-navigation.css"></head>')
             growth_label = 'Production, exponential growth and costs →' if language == 'en' else 'Producción, crecimiento exponencial y costes →'
-            content = content.replace('</header>', f'</header><p class="growth-entry"><a href="./growth/index.html">{growth_label}</a></p>', 1)
+            content = content.replace('</main>', f'<p class="growth-entry"><a href="./growth/index.html">{growth_label}</a></p></main>', 1)
             content = content.replace('<body>', f'<body><div class="atlas-return"><a href="./index.html">{home_label}</a><a href="./terafab/index.html">Terafab ↗</a></div>', 1)
         (destination / source.name).write_text(content, encoding='utf-8')
     # Robot scenes get a dedicated namespace; retain the old scene URLs too.
@@ -72,11 +72,13 @@ for language in ['en', 'es']:
             continue
         content = (destination / source.name).read_text(encoding='utf-8')
         if source.suffix == '.js':
+            content = content.replace("'./live/", "'../live/")
             content = content.replace("'./vendor/", "'../vendor/") if language == 'en' else content.replace("'../vendor/", "'../../vendor/")
             if source.name == 'narrator.js':
                 content = content.replace("'./narration-catalog-en.js'", "'../narration-catalog-en.js'") if language == 'en' else content.replace("'../narration-catalog.js'", "'../../narration-catalog.js'")
         if source.suffix == '.html':
             content = content.replace('href="./atlas-navigation.css"', 'href="../atlas-navigation.css"')
+            content = content.replace('href="./live/header.css"', 'href="../live/header.css"')
             content = content.replace('href="./index.html"', 'href="../index.html"')
             content = content.replace('href="./terafab/index.html"', 'href="../terafab/index.html"')
             content = content.replace('href="./growth/index.html"', 'href="../growth/index.html"')
@@ -84,7 +86,7 @@ for language in ['en', 'es']:
         (robots / source.name).write_text(content, encoding='utf-8')
     (robots / 'index.html').write_text((robots / 'factory.html').read_text(encoding='utf-8'), encoding='utf-8')
     # Standalone explanations use their own modules and bilingual content.
-    for folder in ['hub', 'terafab', 'growth', 'home']:
+    for folder in ['hub', 'terafab', 'growth', 'home', 'live']:
         target = destination if folder == 'hub' else destination / folder
         target.mkdir(exist_ok=True)
         for source in (ROOT / 'site-src' / folder).iterdir():
