@@ -19,7 +19,7 @@ export function createFactoryWorld(container){
   box(floor,-1,.05,1,36,.9,28,0x1b3545);box(floor,-1,.55,1,35.6,.15,27.6,0x8caeab);
   for(let x=-18;x<17;x+=2)for(let z=-12;z<15;z+=2)box(floor,x+.8,.643,z+.8,1.94,.025,1.94,(x+z)%4?0x9db7af:0x98b3af);
   function floorSign(text,x,z,width){const c=document.createElement('canvas');c.width=768;c.height=96;const ctx=c.getContext('2d');ctx.font='600 40px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#254957';ctx.fillText(text,384,48);const texture=new THREE.CanvasTexture(c);texture.colorSpace=THREE.SRGBColorSpace;const sign=new THREE.Mesh(new THREE.PlaneGeometry(width,1.2),new THREE.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false}));sign.rotation.x=-Math.PI/2;sign.position.set(x,.685,z);floor.add(sign);}
-  floorSign('KITS · BOARD + RAM + COMPONENTS',-9,-7.6,14);floorSign('FINISHED PHONES',-11,7.6,8);floorSign('REST AREA',-10,14.1,5.5);floorSign('CHARGING AND SERVICE',7,14.1,9);
+  floorSign('KITS · STRUCTURE + ACTUATORS + CONTROL',-9,-7.6,14);floorSign('FINISHED ROBOTS',-11,7.6,8);floorSign('REST AREA',-10,14.1,5.5);floorSign('CHARGING AND SERVICE',7,14.1,9);
   // A roofless miniature: back wall, windows, conduit and a loading entrance.
   box(floor,-1,2.25,-12.7,35.7,3.35,.3,0xc7d9d4);box(floor,-1,4,-12.7,36,.2,.5,0x3e6271);
   const windowMat=mat(0xa1d8e1,.2);
@@ -40,7 +40,8 @@ export function createFactoryWorld(container){
     for(let x=-length/2+1.5;x<length/2-1;x+=2.5){for(const d of [-1,1]){const a=box(g,x,.72,1.35,.48,.02,.08,0xe2dfb5);a.rotation.y=d*.6*sign;a.position.z+=d*.13;}}
   }
   const stations=[],selectMeshes=[],phones=[],stockMeshes=[],people=[],robots=[],lamps=[],scanners=[];
-  function phone(parent,stage=0){const g=new THREE.Group();parent.add(g);box(g,0,0,0,.49,.07,.82,0x203746);box(g,0,.055,0,.41,.035,.72,stage>=2?0x77c5d5:0x75bfa4);if(stage<2){box(g,0,.09,-.04,.17,.025,.18,0x354752);box(g,.14,.09,.19,.07,.03,.16,0xedd59a);}else{box(g,0,.08,-.24,.13,.012,.025,0x183643);}return g;}
+  function phone(parent,stage=0){const g=new THREE.Group();parent.add(g);box(g,0,.02,0,.38,.16,.42,stage>0?0xddebdc:0x6d9f9b);box(g,0,.03,-.38,.28,.18,.25,stage>0?0xe5efe0:0x81afa7);if(stage>0)box(g,0,.13,-.39,.19,.025,.12,0x29495b);for(const sign of [-1,1]){box(g,sign*.1,.01,.45,.13,.13,.42,stage>=2?0x385568:0x779b94);if(stage>=1)box(g,sign*.32,.02,.04,.12,.13,.44,0xddebdc);}return g;}
+
   POSITIONS.forEach(([x,z],i)=>{
     const g=new THREE.Group();g.position.set(x,.66,z);floor.add(g);
     const platform=box(g,0,.015,0,7.5,.03,5.9,0x759b98);platform.userData.station=i;selectMeshes.push(platform);
@@ -60,7 +61,7 @@ export function createFactoryWorld(container){
   // Supply racks and dispatch boxes make the input and output distinct.
   for(let n=0;n<3;n++){const x=-14+n*3.2;box(floor,x,1.95,-9.3,2.8,2.6,.12,0x36596a);for(const y of [.85,1.8,2.75]){box(floor,x,y,-9.8,2.8,.12,1.7,0x597d87);for(let a=0;a<3;a++)box(floor,x-1+a*.9,y+.34,-9.6,.68,.57,1.05,n===0?0xc3ac85:n===1?0x93b5be:0x88bcae);}}
   box(floor,-12, .8,5,5,.27,3,0x9e8d70);const packages=[];
-  for(let n=0;n<20;n++){const b=box(floor,-13.6+(n%4)*1.05,1.15+Math.floor(n/8)*.42,4.2+Math.floor(n%8/4)*1.1,.87,.4,.9,0xe0c79b);box(b,0,.1,0,.12,1.03,1.02,0xf1e4c4);packages.push(b);}
+  for(let n=0;n<20;n++){const b=phone(floor,4);b.rotation.x=Math.PI/2;b.position.set(-14+(n%5)*.85,1.3,3+Math.floor(n/5)*.75);packages.push(b);}
   // Break room and charging bays remain inside the same scene.
   box(floor,-10,.69,12.15,12,.035,4.2,0x7eaaa4);box(floor,-12,1.13,13.3,5,.8,.9,0xe5b17f);box(floor,-12,1.63,13.75,5,.65,.14,0xe5b17f);
   for(let n=0;n<3;n++){const x=-13+n*3.2;cyl(floor,x,1.37,11.5,.8,.12,0xe2dcc5);cyl(floor,x,1,11.5,.1,.7,0x446574);cyl(floor,x+.2,1.53,11.5,.09,.2,0xeaf0dc);}
@@ -89,6 +90,9 @@ export function createFactoryWorld(container){
   const staticBatches=new Map();floor.updateMatrixWorld(true);
   floor.traverse(o=>{if(!o.isMesh)return;for(let p=o;p&&p!==floor;p=p.parent)if(animated.has(p))return;const key=o.geometry.uuid+o.material.uuid;if(!staticBatches.has(key))staticBatches.set(key,[]);staticBatches.get(key).push(o);});
   for(const parts of staticBatches.values()){const m=new THREE.InstancedMesh(parts[0].geometry,parts[0].material,parts.length);m.castShadow=true;m.receiveShadow=true;parts.forEach((o,i)=>{m.setMatrixAt(i,o.matrixWorld);o.removeFromParent();});m.instanceMatrix.needsUpdate=true;scene.add(m);}
+  const productBatches=new Map();
+  for(const owner of [...phones,...stockMeshes.flat(),...packages])owner.traverse(o=>{if(!o.isMesh)return;const key=o.geometry.uuid+o.material.uuid;if(!productBatches.has(key))productBatches.set(key,{parts:[],mesh:null});productBatches.get(key).parts.push({o,owner});o.visible=false;});
+  for(const b of productBatches.values()){b.mesh=new THREE.InstancedMesh(b.parts[0].o.geometry,b.parts[0].o.material,b.parts.length);b.mesh.castShadow=true;b.mesh.frustumCulled=false;b.mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);scene.add(b.mesh);}
   const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2(),look=new THREE.Vector3(-1,0,1),targetLook=look.clone();let zoom=1,targetZoom=1,w=1,h=1,selected=1,lastMotion=0;
   function resize(){w=container.clientWidth;h=container.clientHeight;renderer.setSize(w,h,false);updateCamera();}
   function updateCamera(){const aspect=w/h,size=Math.max(16,24/aspect);camera.left=-size*aspect/zoom;camera.right=size*aspect/zoom;camera.top=size/zoom;camera.bottom=-size/zoom;camera.position.set(look.x+26,37,look.z+43);camera.lookAt(look);camera.updateProjectionMatrix();camera.updateMatrixWorld();}
@@ -121,7 +125,7 @@ export function createFactoryWorld(container){
       stockMeshes[i].forEach((p,n)=>{p.visible=n<s.queues[i];});
     });
     scanners.forEach(o=>o.position.z=status(s,3).code==='working'?Math.sin(motion*2)*.5:0);
-    packages.forEach((p,n)=>p.visible=n<Math.min(20,s.total));
+    packages.forEach((p,n)=>p.visible=n<Math.min(20,s.total-s.deployed));
     people.forEach((a,id)=>{
       const i=Math.floor(id/2),slot=id%2,[x,z]=POSITIONS[i],replaced=slot<s.robots[i].length;
       const atWork=!replaced&&humanWorking(s.time),dest=atWork?new THREE.Vector3(x+(slot?1:-1),.68,z+1.7):new THREE.Vector3(-14+(id%5)*1.9,.68,11+(id<5?0:1.9));
@@ -130,12 +134,13 @@ export function createFactoryWorld(container){
     robots.forEach((a,id)=>{
       const i=Math.floor(id/2),slot=id%2,[x,z]=POSITIONS[i];a.g.visible=slot<s.robots[i].length;if(!a.g.visible)return;
       const duty=robotDuty(s,i,slot),ready=s.robots[i][slot],atWork=duty==='working'||duty==='arriving';
-      const origin=new THREE.Vector3(1.4+id*1.18,.68,12.6),work=new THREE.Vector3(x+(slot?1:-1),.68,z+1.7);
+      const origin=duty==='arriving'?new THREE.Vector3(-12,.68,5):new THREE.Vector3(1.4+id*1.18,.68,12.6),work=new THREE.Vector3(x+(slot?1:-1),.68,z+1.7);
       const dest=duty==='arriving'?origin.clone().lerp(work,THREE.MathUtils.clamp(1-(ready-s.time)/.25,0,1)):atWork?work:origin;
       if(!a.initialized){a.pos.copy(origin);a.initialized=true;}pose(a,dest,duty==='working'&&status(s,i).code==='working',motion,delta);
     });
     for(const a of [...people,...robots])a.g.updateMatrixWorld(true);
     for(const b of actorBatches.values()){let n=0;for(const {o,a} of b.parts)if(a.g.visible)b.mesh.setMatrixAt(n++,o.matrixWorld);b.mesh.count=n;b.mesh.instanceMatrix.needsUpdate=true;}
+    floor.updateMatrixWorld(true);for(const b of productBatches.values()){let n=0;for(const {o,owner} of b.parts)if(owner.visible)b.mesh.setMatrixAt(n++,o.matrixWorld);b.mesh.count=n;b.mesh.instanceMatrix.needsUpdate=true;}
     renderer.render(scene,camera);
   }
   new ResizeObserver(resize).observe(container);resize();

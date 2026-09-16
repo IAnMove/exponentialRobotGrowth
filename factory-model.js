@@ -1,19 +1,19 @@
 // A deliberately small, deterministic flow model. All quantities are illustrative.
 export const STATIONS = [
-  {name:'Preparation',short:'Prepare',task:'Gather the circuit board, RAM, sensors and the rest of the kit.',humanRate:12,machine:36,color:0x92cfc2},
-  {name:'Assembly',short:'Assemble',task:'Secure the circuit board and connect components inside the housing.',humanRate:8,machine:28,color:0xffad77},
-  {name:'Screen and battery',short:'Complete',task:'Install the screen, connect the battery and close the phone.',humanRate:10,machine:32,color:0x92bde7},
-  {name:'Testing',short:'Test',task:'Check the screen, charging, cameras and connections.',humanRate:5,machine:18,color:0xe1c47c},
-  {name:'Packaging',short:'Pack',task:'Protect and package the finished phone for dispatch.',humanRate:9,machine:32,color:0xb8acdc}
+  {name:'Preparation',short:'Prepare',task:'Prepare the structure, actuators, battery, controllers and sensors.',humanRate:12,machine:36,color:0x92cfc2},
+  {name:'Assembly',short:'Assemble',task:'Assemble the torso, limbs and robot structure.',humanRate:8,machine:28,color:0xffad77},
+  {name:'Actuators and battery',short:'Complete',task:'Install actuators, battery, wiring and movement mechanisms.',humanRate:10,machine:32,color:0x92bde7},
+  {name:'Testing',short:'Test',task:'Calibrate sensors, motion, control and system safety.',humanRate:5,machine:18,color:0xe1c47c},
+  {name:'Commissioning',short:'Pack',task:'Verify the complete robot and enable its deployment.',humanRate:9,machine:32,color:0xb8acdc}
 ];
 export const BUFFER = 16;
 export const SUPPLY = 160;
 export const STEP = 1 / 120;
 export function humanWorking(t){const h=(t+8)%24;return (h>=8&&h<12)||(h>=14&&h<18);}
 export function period(t){const h=(t+8)%24;return humanWorking(t)?'Human shift':h>=12&&h<14?'Lunch break':'Human rest';}
-export function createFactory(config=[0,0,0,0,0]){
+export function createFactory(config=[0,0,0,0,0],automatic=false){
   return {time:0,day:1,total:0,today:0,history:[],delivered:SUPPLY,queues:[SUPPLY,0,0,0,0],jobs:[null,null,null,null,null],
-    robots:config.map(n=>Array.from({length:n},()=>-1)),flow:[0,0,0,0,0],completed:[0,0,0,0,0],blockedTime:[0,0,0,0,0]};
+    robots:config.map(n=>Array.from({length:n},()=>-1)),deployed:0,automatic,lastDeployment:-1,flow:[0,0,0,0,0],completed:[0,0,0,0,0],blockedTime:[0,0,0,0,0]};
 }
 export function robotDuty(s,i,j){
   if(s.time<s.robots[i][j])return 'arriving';
@@ -26,8 +26,8 @@ export function capacity(s,i){
   return {humans,robots,rate:Math.min(STATIONS[i].machine,STATIONS[i].humanRate*(humans+robots*1.4))};
 }
 export function automate(s,i){
-  if(!Number.isInteger(i)||i<0||i>=5||s.robots[i].length>=2)return false;
-  s.robots[i].push(s.time+.25);return true;
+  if(!Number.isInteger(i)||i<0||i>=5||s.robots[i].length>=2||s.total-s.deployed<1)return false;
+  s.robots[i].push(s.time+.25);s.deployed++;s.lastDeployment=s.time;return true;
 }
 export function status(s,i){
   const cap=capacity(s,i),job=s.jobs[i];
@@ -53,6 +53,10 @@ export function tick(s,dt=STEP){
   s.time+=dt;
   const day=Math.floor((s.time+1e-6)/24)+1;
   if(day>s.day){s.history.push(s.today);s.today=0;s.day=day;const shipment=Math.min(SUPPLY,320-s.queues[0]);s.queues[0]+=shipment;s.delivered+=shipment;}
+  if(s.automatic&&s.total>s.deployed&&s.time-s.lastDeployment>=.5){
+    const available=STATIONS.map((st,i)=>({i,rate:st.humanRate*((2-s.robots[i].length)*8+s.robots[i].length*21*1.4)})).filter(p=>s.robots[p.i].length<2).sort((a,b)=>a.rate-b.rate);
+    if(available.length)automate(s,available[0].i);
+  }
 }
 export function advance(s,hours){const n=Math.round(hours/STEP);for(let i=0;i<n;i++)tick(s);return s;}
 export function forecast(config){const s=createFactory(config);advance(s,24);return s.total;}

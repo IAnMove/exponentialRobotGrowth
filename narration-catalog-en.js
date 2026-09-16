@@ -83,36 +83,6 @@ export const NARRATIONS = {
     "src": "./audio/district-13-088b01b7a555.mp3",
     "duration": 40.068
   },
-  "factory-0": {
-    "title": "Component preparation",
-    "text": "This is the first station in the phone factory. A kit is prepared with the circuit board, RAM, sensors and other required components. The screen and battery will be installed later. In this scenario components arrive from outside: we begin with one hundred and sixty kits and receive up to one hundred and sixty more each day. A robot can cover the task of one of the station's two people, but it cannot manufacture components that have not arrived. Watch the available kits and the parts waiting before assembly. Preparing more kits only improves final output if the following stations can process them.",
-    "src": "./audio/factory-0-3b286266ddd0.mp3",
-    "duration": 37.476
-  },
-  "factory-1": {
-    "title": "Phone assembly",
-    "text": "Here the circuit board goes into the housing and the phone's components are connected. The two people share the station's work. You can add one robot to cover one task, then another to cover the second. In this example each robot works faster and has more available hours, but machinery also has a limit. Watch the queue at the next station and count the phones leaving packaging. If testing is the bottleneck, faster assembly can create many unfinished units and very few additional phones. An improvement at this station does not automatically become the same improvement for the whole factory.",
-    "src": "./audio/factory-1-b36352ac15e0.mp3",
-    "duration": 34.416
-  },
-  "factory-2": {
-    "title": "Screen and battery",
-    "text": "The phone receives its screen and battery here, and its housing is closed. Each arriving unit has already passed preparation and assembly. Waiting parts show how much work is available to this station. If its queue is empty, adding a robot does not guarantee more output: phones must first arrive from assembly. If its exit fills up, the problem is further down the line. Space between stations is limited, so a backlog eventually forces earlier stations to stop. Watch how a local decision spreads through the line, then compare finished phones over a full day.",
-    "src": "./audio/factory-2-cd6c57fb9c2f.mp3",
-    "duration": 34.308
-  },
-  "factory-3": {
-    "title": "Phone testing",
-    "text": "This station checks the screen, charging, cameras and connections. In the initial configuration it has the lowest daily capacity on the line. That is why parts often pile up in front of it even when assembly is working quickly. Adding robots here can increase finished phones until another station or the component supply becomes the new limit. Watch the queue before and after the change, and compare it with output from packaging. The simulation does not introduce defective phones: it represents the time needed to test them. We want to discover where reinforcing the chain improves its final result.",
-    "src": "./audio/factory-3-ec3116cba221.mp3",
-    "duration": 36.072
-  },
-  "factory-4": {
-    "title": "Packaging and dispatch",
-    "text": "This is the final station. Phones that have passed testing are protected and packaged for dispatch. Only when they finish here does the production counter increase. This avoids confusing a warehouse of unfinished parts with useful output. Compare your factory with the same line staffed only by humans, at the same moment. The twenty-four-hour trial answers a different question: how much would each configuration produce if maintained for a whole day from the start? It includes breaks and waiting. If packaging is waiting for phones, reinforcing it will not solve a bottleneck earlier in the line.",
-    "src": "./audio/factory-4-f27394b1c126.mp3",
-    "duration": 38.052
-  },
   "state-working": {
     "title": "Now: in production",
     "text": "At the moment you selected, this process has work and available workers. It is producing. Look at its output and stocks. This rate can only continue while materials keep arriving and the rest of the chain has capacity to receive its work.",
@@ -163,9 +133,9 @@ export const NARRATIONS = {
   },
   "state-kits": {
     "title": "Now: no component kits",
-    "text": "The component kits have run out. The next delivery arrives at eight in the morning. More robots cannot manufacture phones without those parts. This limit comes from outside the factory.",
-    "src": "./audio/state-kits-a036ec7c887d.mp3",
-    "duration": 10.98
+    "text": "The component kits have run out. The next delivery arrives at eight in the morning. More robots cannot manufacture robots without those parts. This limit comes from outside the factory.",
+    "src": "./audio/state-kits-e892e98eafde.mp3",
+    "duration": 10.584
   },
   "region-overview": {
     "title": "A region that expands its capacity",
@@ -220,6 +190,90 @@ export const NARRATIONS = {
     "text": "This plot has a construction project in progress. Its construction material has already been deducted from inventory. The percentage shows how much work is complete, but the facility adds no capacity until it reaches one hundred percent. Up to four robots can work on this project. The investment control limits the robots assigned to construction. If you lower it to zero, projects wait. This lets you observe the tradeoff between producing now and having more capacity later.",
     "src": "./audio/region-project-f6d06e28e926.mp3",
     "duration": 28.008
+  },
+  "guide-factory": {
+    "title": "First scale: robots making robots",
+    "text": "We begin at the smallest scale: one line with five stations and ten people. Components are prepared, the structure is assembled, actuators and a battery are installed, the system is calibrated, and the finished robot is verified. Initially there are no operational robots. The first ones must pass every station before returning to work in this same factory. Press Play and watch the automatic handover. Each new robot covers a task and can help finish the next robots. This is the first reinvestment loop. But workstations, machinery and supply are limited. When those limits appear, more robots are not enough. We need to move up a scale and expand the chain supplying them. Quantities and schedules are teaching assumptions, not Tesla data or a prediction of dates.",
+    "src": "./audio/guide-factory-a4bcc2990c64.mp3",
+    "duration": 48.816
+  },
+  "guide-district": {
+    "title": "Second scale: the chain that makes a robot possible",
+    "text": "A robot does not make another out of nothing. This district shows its dependencies. The mine extracts ore and the refinery turns it into materials. Structures, motors, batteries and electronics are then produced. Logistics combines all four families into kits. Assembly builds robots, and testing allows them to join the workforce. New robots automatically reinforce the chain, although you can compare other strategies. Homes and the dining hall show human breaks. Charging and service remind us that robots stop too. Energy and some inputs come from outside. The compounding effect appears when more robots increase the capacity to build the next ones. If we speed up assembly alone, parts or testing can become the new limit. Sustaining expansion also requires new facilities.",
+    "src": "./audio/guide-district-20f5a3a08663.mp3",
+    "duration": 50.94
+  },
+  "robot-factory-0": {
+    "title": "Prepare the next robot's kit",
+    "text": "This station gathers the structure, actuators, battery, controllers and sensors. Kits arrive from external suppliers. This scene does not manufacture all those parts: the industrial district explains that step. Every finished robot consumes one kit and must pass all five stations. Two people work here initially. A robot that has already left the final station can return and cover one of their tasks. Without kits, that robot waits too. Supply is one of the limits preventing this line from growing forever.",
+    "src": "./audio/robot-factory-0-87a51f5dc317.mp3",
+    "duration": 32.4
+  },
+  "robot-factory-1": {
+    "title": "Assemble the structure",
+    "text": "People or robots assemble the torso, limbs and supporting structure. Watch the bodies moving along the conveyor. They are not operational robots yet: movement systems, calibration and testing are still needed. Automating this station while another is slower can fill a queue without producing many additional robots. Automatic mode reinforces stations with lower daily capacity. You can turn it off to decide where to send a robot the line itself has already finished.",
+    "src": "./audio/robot-factory-1-9712d4a2394a.mp3",
+    "duration": 30.852
+  },
+  "robot-factory-2": {
+    "title": "Actuators, battery and motion",
+    "text": "This station installs movement mechanisms, the battery and connections. The body begins to resemble the robot that will later work in the factory. Fast assembly is not enough: structures must arrive from the previous station and space must remain at the next. Queues show those dependencies. Robots have more available hours in this example, but charging and maintenance are still necessary. Rate differences are illustrative assumptions. The important improvement is how many operational robots the entire line can finish.",
+    "src": "./audio/robot-factory-2-3b87372f5dee.mp3",
+    "duration": 34.02
+  },
+  "robot-factory-3": {
+    "title": "Calibrate and check",
+    "text": "Sensors, motion and control are calibrated here. This station initially has the lowest daily capacity, so parts can pile up before it. A finished robot returning here can help release that work. Another station or supply can then become the new limit. The scene represents verification time, but does not simulate failures or rejected units. An assembled structure is not counted as an available robot until every step is complete. That distinction avoids confusing unfinished parts with real capacity to manufacture more.",
+    "src": "./audio/robot-factory-3-02e841df55a1.mp3",
+    "duration": 32.04
+  },
+  "robot-factory-4": {
+    "title": "A robot ready to return to work",
+    "text": "This is the final station. Completing it increases the number of robots built and makes a robot available to deploy. In automatic mode, the factory sends it to a station that still has a human task and low daily capacity. Deployment takes a short simulated time. Follow that robot as it returns to the line. Some of what the factory produced is now helping produce the next units. Once all ten tasks are covered, additional robots remain available outside the line. Machinery and supply do not multiply themselves. That is why we explore the district and the region next.",
+    "src": "./audio/robot-factory-4-5f43fb38c61e.mp3",
+    "duration": 35.928
+  },
+  "guide-city": {
+    "title": "Fourth scale: from production to the city",
+    "text": "The city starts with six hundred equivalent tasks performed by humans. These are not six hundred jobs: one person performs many different tasks. An industrial region alongside it builds new facilities and produces robots. You can decide what share of those robots comes to the city. The rest remains in industry to support future capacity. Arrivals are automatically distributed across logistics, retail, construction, cleaning, care and education. Each sector has an automation limit chosen for this scenario. The three hypotheses have no assigned dates or probabilities. The curve can accelerate because industry produces more robots, not because urban tasks multiply by themselves. This is the mechanism we explore when discussing robot-driven growth: productive capacity helping expand the next round of capacity, with materials, energy, construction and human limits still present.",
+    "src": "./audio/guide-city-1a65b8a971e2.mp3",
+    "duration": 57.276
+  },
+  "city-0": {
+    "title": "Urban logistics",
+    "text": "This sector groups delivery, sorting and warehouse tasks. Robots arrive from industry and cover part of the work represented here. Orange figures indicate human tasks and light figures indicate robot-covered tasks. We do not show autonomous vehicles solving every street. Access, driving, exceptions and supervision remain necessary conditions. The bar and chart explain how much this sector has changed under the selected hypothesis. A different outcome requires different assumptions, not an imaginary date.",
+    "src": "./audio/city-0-9234199edabf.mp3",
+    "duration": 34.452
+  },
+  "city-1": {
+    "title": "Retail and food services",
+    "text": "Shops and food services contain repeated physical tasks such as stocking, preparation and cleaning. This scenario lets robots cover some of them while people continue serving customers, handling exceptions and making decisions. Watch robots arrive as industrial output increases. They are not all assigned at the start. An automated task is not interpreted as a business without people. Coverage stops at the selected hypothesis's limit, even if more robots keep arriving in the city.",
+    "src": "./audio/city-1-a9a6989018fd.mp3",
+    "duration": 29.988
+  },
+  "city-2": {
+    "title": "Construction and repair",
+    "text": "This sector represents material handling and repeatable construction and repair operations. Changing environments, coordination and technical decisions leave human tasks. Here we measure how many urban tasks move to robots. More robotic figures do not apply a magical boost to every construction project. Robot manufacturing and supplier expansion happen in the industrial model feeding the city. Keeping the two separate makes it clear where acceleration actually comes from.",
+    "src": "./audio/city-2-0dc8179ee4ff.mp3",
+    "duration": 30.06
+  },
+  "city-3": {
+    "title": "Cleaning and maintenance",
+    "text": "Repeatable cleaning tasks can be a destination for robots, provided spaces and equipment allow them to work. That is why this hypothesis gives this sector a different scope from education or care. But not all maintenance is repeatable. Breakdowns, difficult access and unexpected situations require capabilities the model does not demonstrate. Watch progressive arrivals and compare tasks performed by humans and robots. The scene illustrates how capacity would be distributed under these assumptions, not what the real outcome will be.",
+    "src": "./audio/city-3-b716959fd405.mp3",
+    "duration": 33.804
+  },
+  "city-4": {
+    "title": "Support in care and health",
+    "text": "This sector represents internal transport, material preparation and some physical support tasks. We do not assume a robot completely replaces a healthcare professional or caregiver. Clinical judgment, human relationships, responsibility and many care situations remain outside the automated tasks in this example. Even the broadest hypothesis retains human tasks. The percentage is a scenario choice, not medical advice or an employment forecast. We want to show that having more robots does not make every activity equally automatable.",
+    "src": "./audio/city-4-4f42f05d810a.mp3",
+    "duration": 36.648
+  },
+  "city-5": {
+    "title": "Education and services",
+    "text": "This sector groups logistical support, space management and some simple administrative tasks. Teaching, supporting people, interpreting needs and making decisions are not shown as completely replaced. Human figures therefore remain even when industry delivers many robots. The chart shows covered tasks, not teachers or professionals eliminated. At the end of the journey, think back to where arrivals originate: robots helping produce robots, growing suppliers, and new facilities that take time to construct. That loop can accelerate available capacity. Its effect on the economy and on people's lives depends on many decisions this simulation does not calculate.",
+    "src": "./audio/city-5-1c9e581d53e6.mp3",
+    "duration": 42.156
   }
 };
 for (const item of Object.values(NARRATIONS)) item.src = new URL(item.src, import.meta.url).href;
