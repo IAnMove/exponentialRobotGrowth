@@ -310,6 +310,12 @@ export const NARRATIONS = {
     "text": "Estos dos mapas empiezan con los mismos recursos y avanzan con el mismo reloj. Una región dedica robots y materiales a nuevas instalaciones; la otra mantiene las seis originales. Construir cuesta producción al principio, pero después puede ampliar la capacidad. Mira cuánto tarda cada región en pasar de veinticuatro a cuarenta y ocho robots, y luego a noventa y seis. La tabla mide el tiempo de cada duplicación, no el tiempo total desde el inicio. En un crecimiento exponencial sostenido, esos intervalos serían parecidos. Aquí los recursos y las parcelas son finitos, por lo que crecer más no garantiza mantener ese ritmo. La curva violeta es una referencia matemática opcional, no el resultado ni una predicción de esta simulación.",
     "src": "./audio/region-growth-lesson-3fc9753567a5.mp3",
     "duration": 44.676
+  },
+  "district-productivity-lesson": {
+    "title": "Cuánto produce la cadena frente al trabajo humano",
+    "text": "Esta comparación mantiene las mismas setenta y cuatro personas, existencias y equipos iniciales. En la referencia humana, los robots fabricados salen del distrito: no vuelven a trabajar y no se construyen ampliaciones. Tu estrategia sí puede incorporar robots y ampliar instalaciones. Los contadores y la gráfica suman la producción de las últimas veinticuatro horas, o las horas transcurridas al principio. Al seleccionar una industria puedes comparar también su salida. En este distrito una persona y un robot tienen el mismo ritmo por hora activa. La diferencia empieza en la disponibilidad: ocho horas humanas frente a veintiuna robóticas, descontando recarga y servicio. Después importan las piezas, las máquinas y las ampliaciones. Por eso el porcentaje expresa el cambio en la producción de toda la cadena, no cuánto rinde un robot individual. Si la referencia todavía no ha producido, no mostramos un porcentaje.",
+    "src": "./audio/district-productivity-lesson-93fef2eb2f85.mp3",
+    "duration": 55.62
   }
 };
 for (const item of Object.values(NARRATIONS)) item.src = new URL(item.src, import.meta.url).href;

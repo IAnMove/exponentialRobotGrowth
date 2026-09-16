@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This comparison starts with the same seventy-four people, stocks and equipment. In the human reference, finished robots leave the district: they do not return to work and no new facilities are built. Your strategy can deploy robots and expand facilities. The counters and chart sum output over the previous twenty-four hours, or elapsed hours at the start. Select an industry to compare its output too. In this district, a person and a robot have the same pace per active working hour. The initial difference is availability: eight human hours versus twenty-one robot hours, allowing for charging and maintenance. Parts, equipment and expansion then matter as well. The percentage therefore describes the change in output across the supply chain, not how productive an individual robot is. If the reference has not produced anything yet, we do not show a percentage.",
+  "duration_ms": 55080,
+  "billed_characters": 866,
+  "sample_rate": 32000,
+  "size_bytes": 882996,
+  "generated_at": "2026-09-16T15:17:27.559549+00:00"
+}

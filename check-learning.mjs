@@ -5,6 +5,7 @@ import {createFactory,tick,advance,automate,capacity} from './dist/factory-model
 import {createTerritory,tickTerritory} from './dist/territory-model.js';
 import {END,STEP} from './dist/region-model.js';
 import {idealFleet,explainConstraint} from './dist/learning-model.js';
+import {productionSeries,productionComparison} from './dist/district-productivity.js';
 
 // A completed robot must exist before its return can be shown or add capacity.
 const factory=createFactory(undefined,true);
@@ -51,6 +52,23 @@ for(let t=0;t<frames.length-1;t++)for(let i=0;i<9;i++){
  if(d.kind==='staff'){rest++;assert.equal(f.capacity[i],0);}
 }
 assert(shortages>0&&rest>0);
+const humanRun=vm.runInContext("simulateIndustry('none',false)",context);
+for(const policy of ['none','assembly','network'])for(const expansion of [false,true]){
+ const run=vm.runInContext(`simulateIndustry('${policy}',${expansion})`,context);
+ for(let industry=0;industry<9;industry++){
+  const values=productionSeries(run.frames,industry),human=productionSeries(humanRun.frames,industry);
+  for(const index of [0,1,23,24,25,80,run.frames.length-1]){
+   const direct=run.frames.slice(Math.max(1,index-23),index+1).reduce((n,f)=>n+f.flow[industry]*(industry===1?4:1),0);
+   assert.equal(values[index],direct,'Only completed output inside the trailing window is counted');
+   const p=productionComparison(values,human,index);
+   assert.equal(p.hours,Math.min(24,index));
+   if(policy==='none'){assert.equal(p.actual,p.human);assert(p.percent===0||p.percent===null);}
+   if(human[index]===0)assert.equal(p.percent,null);
+  }
+ }
+}
+const plan=productionSeries(frames),human=productionSeries(humanRun.frames);
+console.log('Final 24-hour window:',productionComparison(plan,human,frames.length-1));
 const f={capacity:Array(9).fill(.5),hardware:Array(9).fill(2),inventory:Array(8).fill(0),flow:Array(9).fill(0)};
 assert.equal(explainConstraint(f,{worked:{cap:Array(9).fill(0)},flow:f.flow},0).kind,'working');
 console.log('First robot causality, measured doubling intervals, ideal reference and real supply constraints: OK');

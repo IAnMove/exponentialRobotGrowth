@@ -310,6 +310,12 @@ export const NARRATIONS = {
     "text": "These two maps start with the same resources and advance on the same clock. One region invests robots and materials in new facilities; the other keeps its original six. Construction costs output at first, but can increase capacity later. Watch how long each region takes to go from twenty-four to forty-eight robots, then to ninety-six. The table measures each doubling interval, not the total time since the start. In sustained exponential growth, these intervals would be similar. Here resources and plots are finite, so growing more does not guarantee that pace will continue. The purple curve is an optional mathematical reference, not the result or a prediction of this simulation.",
     "src": "./audio/region-growth-lesson-d07d7113e1ec.mp3",
     "duration": 42.66
+  },
+  "district-productivity-lesson": {
+    "title": "How much the supply chain produces compared with human work",
+    "text": "This comparison starts with the same seventy-four people, stocks and equipment. In the human reference, finished robots leave the district: they do not return to work and no new facilities are built. Your strategy can deploy robots and expand facilities. The counters and chart sum output over the previous twenty-four hours, or elapsed hours at the start. Select an industry to compare its output too. In this district, a person and a robot have the same pace per active working hour. The initial difference is availability: eight human hours versus twenty-one robot hours, allowing for charging and maintenance. Parts, equipment and expansion then matter as well. The percentage therefore describes the change in output across the supply chain, not how productive an individual robot is. If the reference has not produced anything yet, we do not show a percentage.",
+    "src": "./audio/district-productivity-lesson-e9edaac3c2d0.mp3",
+    "duration": 55.08
   }
 };
 for (const item of Object.values(NARRATIONS)) item.src = new URL(item.src, import.meta.url).href;
