@@ -12,7 +12,7 @@ export const STEP = 1 / 120;
 export function humanWorking(t){const h=(t+8)%24;return (h>=8&&h<12)||(h>=14&&h<18);}
 export function period(t){const h=(t+8)%24;return humanWorking(t)?'Human shift':h>=12&&h<14?'Lunch break':'Human rest';}
 export function createFactory(config=[0,0,0,0,0],automatic=false){
-  return {time:0,day:1,total:0,today:0,history:[],delivered:SUPPLY,queues:[SUPPLY,0,0,0,0],jobs:[null,null,null,null,null],
+  return {time:0,day:1,total:0,today:0,history:[],firstFinished:null,firstReturn:null,delivered:SUPPLY,queues:[SUPPLY,0,0,0,0],jobs:[null,null,null,null,null],
     robots:config.map(n=>Array.from({length:n},()=>-1)),deployed:0,automatic,lastDeployment:-1,flow:[0,0,0,0,0],completed:[0,0,0,0,0],blockedTime:[0,0,0,0,0]};
 }
 export function robotDuty(s,i,j){
@@ -27,7 +27,8 @@ export function capacity(s,i){
 }
 export function automate(s,i){
   if(!Number.isInteger(i)||i<0||i>=5||s.robots[i].length>=2||s.total-s.deployed<1)return false;
-  s.robots[i].push(s.time+.25);s.deployed++;s.lastDeployment=s.time;return true;
+  const slot=s.robots[i].length;s.robots[i].push(s.time+.25);s.deployed++;s.lastDeployment=s.time;
+  if(!s.firstReturn)s.firstReturn={station:i,slot,depart:s.time,ready:s.time+.25};return true;
 }
 export function status(s,i){
   const cap=capacity(s,i),job=s.jobs[i];
@@ -45,7 +46,7 @@ export function tick(s,dt=STEP){
     if(s.jobs[i]===null)continue;
     if(s.jobs[i]<1){s.jobs[i]=Math.min(1,s.jobs[i]+cap.rate*dt);s.flow[i]=cap.rate;}
     if(s.jobs[i]>=1){
-      if(i===4){s.total++;s.today++;s.completed[i]++;s.jobs[i]=null;}
+      if(i===4){s.total++;s.today++;s.completed[i]++;s.jobs[i]=null;if(s.firstFinished===null)s.firstFinished=s.time+dt;}
       else if(s.queues[i+1]<BUFFER){s.queues[i+1]++;s.completed[i]++;s.jobs[i]=null;}
       else{s.blockedTime[i]+=dt;s.flow[i]=0;}
     }

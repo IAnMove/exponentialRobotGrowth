@@ -93,7 +93,7 @@ export function createFactoryWorld(container){
   const productBatches=new Map();
   for(const owner of [...phones,...stockMeshes.flat(),...packages])owner.traverse(o=>{if(!o.isMesh)return;const key=o.geometry.uuid+o.material.uuid;if(!productBatches.has(key))productBatches.set(key,{parts:[],mesh:null});productBatches.get(key).parts.push({o,owner});o.visible=false;});
   for(const b of productBatches.values()){b.mesh=new THREE.InstancedMesh(b.parts[0].o.geometry,b.parts[0].o.material,b.parts.length);b.mesh.castShadow=true;b.mesh.frustumCulled=false;b.mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);scene.add(b.mesh);}
-  const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2(),look=new THREE.Vector3(-1,0,1),targetLook=look.clone();let zoom=1,targetZoom=1,w=1,h=1,selected=1,lastMotion=0;
+  const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2(),look=new THREE.Vector3(-1,0,1),targetLook=look.clone();let zoom=1,targetZoom=1,w=1,h=1,selected=1,lastMotion=0,previousTime=-1;
   function resize(){w=container.clientWidth;h=container.clientHeight;renderer.setSize(w,h,false);updateCamera();}
   function updateCamera(){const aspect=w/h,size=Math.max(16,24/aspect);camera.left=-size*aspect/zoom;camera.right=size*aspect/zoom;camera.top=size/zoom;camera.bottom=-size/zoom;camera.position.set(look.x+26,37,look.z+43);camera.lookAt(look);camera.updateProjectionMatrix();camera.updateMatrixWorld();}
   function select(i,focus=true){selected=i;if(focus){targetZoom=w<680?2.4:1.8;targetLook.set(POSITIONS[i][0],0,POSITIONS[i][1]);}}
@@ -111,7 +111,9 @@ export function createFactoryWorld(container){
     a.legs.forEach((leg,n)=>leg.rotation.x=walking?(n?-gait:gait):0);
     a.g.position.y+=walking?Math.abs(Math.sin(motion*9))*.035:0;
   }
-  function render(s,motion,bottleneck){
+  const firstRing=new THREE.Mesh(new THREE.TorusGeometry(.8,.055,6,40),new THREE.MeshBasicMaterial({color:0xffc878}));firstRing.rotation.x=Math.PI/2;scene.add(firstRing);
+  function render(s,motion,bottleneck,followFirst=false){
+    if(s.time<previousTime)for(const a of [...people,...robots]){a.initialized=false;a.lastDuty=null;}previousTime=s.time;
     const delta=Math.min(.08,Math.max(0,motion-lastMotion));lastMotion=motion;zoom+=(targetZoom-zoom)*.13;look.lerp(targetLook,.13);updateCamera();
     const hour=(s.time+8)%24,light=THREE.MathUtils.smoothstep(Math.sin((hour-6)/24*Math.PI*2),-.12,.45);
     hemi.intensity=.7+light*2;sun.intensity=.12+light*3.1;fill.intensity=.7+(1-light)*.8;windowMat.emissiveIntensity=.12+(1-light)*1.1;
@@ -137,10 +139,14 @@ export function createFactoryWorld(container){
       const origin=duty==='arriving'?new THREE.Vector3(-12,.68,5):new THREE.Vector3(1.4+id*1.18,.68,12.6),work=new THREE.Vector3(x+(slot?1:-1),.68,z+1.7);
       const dest=duty==='arriving'?origin.clone().lerp(work,THREE.MathUtils.clamp(1-(ready-s.time)/.25,0,1)):atWork?work:origin;
       if(!a.initialized){a.pos.copy(origin);a.initialized=true;}pose(a,dest,duty==='working'&&status(s,i).code==='working',motion,delta);
+      // Transit position uses the same clock as deployment, including skips and fast playback.
+      if(duty==='arriving'||a.lastDuty==='arriving'){a.pos.copy(dest);a.g.position.copy(dest);}a.lastDuty=duty;
     });
     for(const a of [...people,...robots])a.g.updateMatrixWorld(true);
     for(const b of actorBatches.values()){let n=0;for(const {o,a} of b.parts)if(a.g.visible)b.mesh.setMatrixAt(n++,o.matrixWorld);b.mesh.count=n;b.mesh.instanceMatrix.needsUpdate=true;}
     floor.updateMatrixWorld(true);for(const b of productBatches.values()){let n=0;for(const {o,owner} of b.parts)if(owner.visible)b.mesh.setMatrixAt(n++,o.matrixWorld);b.mesh.count=n;b.mesh.instanceMatrix.needsUpdate=true;}
+    const first=s.firstReturn,actor=first?robots[first.station*2+first.slot]:null;firstRing.visible=!!actor&&s.time<first.ready+2;
+    if(firstRing.visible){firstRing.position.copy(actor.g.position);firstRing.position.y=.72;if(followFirst){targetLook.set(actor.g.position.x,0,actor.g.position.z);targetZoom=w<680?2.4:1.8;}}
     renderer.render(scene,camera);
   }
   new ResizeObserver(resize).observe(container);resize();
