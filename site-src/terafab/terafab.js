@@ -1,0 +1,80 @@
+import {nodes,t,labels} from './content.js';
+import {capacity,DEFAULTS} from './model.js';
+const es=document.documentElement.lang==='es', $=s=>document.querySelector(s);
+const languageLinks=es?['../../terafab/index.html','./index.html']:['./index.html','../es/terafab/index.html'];
+$('#app').innerHTML=`
+<header class="topbar"><a class="brand" href="../index.html"><b>a.</b><span>ATLAS<small>${t('EXPLICACIONES INTERACTIVAS','INTERACTIVE EXPLANATIONS')}</small></span></a><nav class="topic-nav" aria-label="${t('Exploraciones','Explorations')}"><a href="../index.html">${t('← Colección','← Collection')}</a><a href="../robots/index.html">Robots</a><a href="./index.html" aria-current="page">Terafab</a></nav><nav class="language" aria-label="Language / Idioma"><a href="${languageLinks[0]}" ${!es?'aria-current="true"':''}>EN</a><a href="${languageLinks[1]}" ${es?'aria-current="true"':''}>ES</a></nav></header>
+<section class="heading"><div><span class="eyebrow">02 / ${t('SEMICONDUCTORES','SEMICONDUCTORS')}</span><h1>Terafab<span>${t('Del silicio a la inteligencia.','From silicon to intelligence.')}</span></h1></div><p>${t('Una fábrica integrada. Dos ramas que se encuentran.<br>Explora qué conecta cada etapa y qué limita el conjunto.','An integrated factory. Two branches coming together.<br>Explore what connects each stage and what limits the whole.')}</p></section>
+<section class="workspace"><div class="map-column"><div class="map-toolbar"><div class="layers" role="group" aria-label="${t('Capas del diagrama','Diagram layers')}"><button data-layer="process" aria-pressed="true">${t('Proceso','Process')}</button><button data-layer="utilities" aria-pressed="false">${t('Dependencias','Dependencies')}</button><button data-layer="feedback" aria-pressed="false">${t('Aprendizaje','Learning')}</button></div><span class="map-caption">${t('ESQUEMA CONCEPTUAL','CONCEPTUAL DIAGRAM')}</span></div>
+<div class="map" id="map"><svg id="diagram" viewBox="0 0 1000 610" role="group" aria-label="${t('Diagrama de Terafab. Selecciona una etapa para explorarla.','Terafab diagram. Select a stage to explore it.')}"><defs><pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse" patternTransform="skewY(-12)"><path d="M 36 0 L 0 0 0 36" fill="none" stroke="#91b4ce" stroke-opacity=".08"/></pattern><marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7" fill="none" stroke="#a7e0cf"/></marker><marker id="gold-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7" fill="none" stroke="#e7bd83"/></marker></defs><rect width="1000" height="610" fill="url(#grid)"/><g id="diagram-content"></g></svg></div>
+<div class="map-bottom"><span id="layer-note">${t('Las líneas continuas llevan componentes; las discontinuas, patrones.','Solid lines carry components; dashed lines carry patterns.')}</span><button id="motion" aria-pressed="false">${t('▶ Animar flujo','▶ Animate flow')}</button></div>
+<div class="stage-strip" role="group" aria-label="${t('Selecciona una etapa','Select a stage')}">${nodes.map(n=>`<button data-node="${n.id}" aria-pressed="false"><b>${n.n}</b><span>${n.title}</span></button>`).join('')}</div></div>
+<aside class="inspector" aria-label="${t('Etapa seleccionada','Selected stage')}"><div class="inspector-top"><span class="eyebrow" id="detail-kind"></span><span id="detail-number"></span></div><h2 id="detail-title"></h2><p id="detail-text"></p><dl><div><dt>${t('ENTRA','INPUT')}</dt><dd id="detail-in"></dd></div><div><dt>${t('SALE','OUTPUT')}</dt><dd id="detail-out"></dd></div></dl><div class="insight"><span>${t('LA CONEXIÓN IMPORTANTE','THE IMPORTANT CONNECTION')}</span><p id="detail-insight"></p></div><p id="detail-status" class="status"></p><div class="tour"><button id="previous" aria-label="${t('Etapa anterior','Previous stage')}">←</button><span id="tour-position"></span><button id="next">${t('Siguiente →','Next →')}</button></div><span id="selection-live" class="sr-only" role="status"></span></aside></section>
+<section class="lab"><div class="lab-intro"><span class="eyebrow">${t('PRUEBA LA IDEA','TRY THE IDEA')}</span><h2>${t('Más fábrica.<br>¿Más chips al final?','More fabrication.<br>More chips at the end?')}</h2><p>${t('Cambia una capacidad y observa el límite de la cadena. Las cifras son un índice didáctico, no la capacidad real de Terafab.','Change a capacity and watch the chain’s limit. Numbers are an educational index, not Terafab’s actual capacity.')}</p><button id="reset">${t('↺ Restablecer','↺ Reset')}</button></div><div class="controls">${[
+ ['logic',t('Capacidad de lógica','Logic capacity'),40,240,10,120,''],['yield',t('Rendimiento de lógica','Logic yield'),20,100,5,75,'%'],['packaging',t('Capacidad de encapsulado','Packaging capacity'),20,160,10,80,''],['utilities',t('Límite de servicios','Utilities limit'),20,140,10,100,'']
+].map(([id,name,min,max,step,value,unit])=>`<label for="${id}"><span>${name}<output id="${id}-value" for="${id}">${value}${unit}</output></span><input id="${id}" type="range" min="${min}" max="${max}" step="${step}" value="${value}"></label>`).join('')}<div class="presets"><button data-preset="wafers">${t('Duplicar lógica','Double logic')}</button><button data-preset="packaging">${t('Ampliar encapsulado','Expand packaging')}</button></div></div><div class="result"><span class="eyebrow">${t('SALIDA ÚTIL · ÍNDICE','USABLE OUTPUT · INDEX')}</span><div class="output"><strong id="output">80</strong><span id="delta"></span></div><div id="capacity-bars"></div><p id="bottleneck" role="status"></p></div></section>
+<details class="explanation"><summary>${t('Qué está anunciado y qué estamos simplificando','What is announced and what we are simplifying')}</summary><div class="facts"><section><h3>${t('El concepto anunciado','The announced concept')}</h3><p>${t('La web oficial propone integrar lógica, memoria y encapsulado avanzado, con chips para aplicaciones terrestres y espaciales. Publica una ambición de salida de 1 TW/año. Esa cifra no equivale a chips por segundo ni es el consumo eléctrico de la fábrica.','The official website proposes integrating logic, memory and advanced packaging, with chips for terrestrial and space applications. It publishes an output ambition of 1 TW/year. That figure is not chips per second or the factory’s electrical consumption.')}</p><p>${t('Presentamos objetivos del proyecto, no una planta terminada ni un calendario garantizado.','We present project goals, not a finished plant or a guaranteed schedule.')}</p></section><section><h3>${t('Nuestro modelo','Our model')}</h3><p>${t('Distribución espacial ilustrativa, sin escala física. Las flechas resumen relaciones; la fabricación real tiene cientos de operaciones y controles intermedios.','Illustrative spatial layout, with no physical scale. Arrows summarize relationships; real manufacturing has hundreds of operations and intermediate inspections.')}</p><p>${t('Salida = mínimo de lógica útil, memoria, encapsulado, pruebas, servicios y suministros. Lógica útil = capacidad × rendimiento. Memoria = 110, pruebas = 100, suministros = 120. Todas las capacidades usan conjuntos completos equivalentes.','Output = minimum of usable logic, memory, packaging, testing, utilities and supplies. Usable logic = capacity × yield. Memory = 110, testing = 100, supplies = 120. All capacities use equivalent complete sets.')}</p><p>${t('Es un equilibrio de capacidades: no modela inventarios, tiempos, costes ni pérdidas adicionales en memoria, encapsulado o pruebas. Los puntos animados indican dirección, no volumen ni velocidad real.','This is a capacity balance: it does not model inventories, time, costs or additional losses in memory, packaging or testing. Animated dots indicate direction, not real volume or speed.')}</p></section><section><h3>${t('Fuentes para seguir explorando','Sources for further exploration')}</h3><a href="https://www.terafab.ai/" target="_blank" rel="noreferrer">Terafab · ${t('visión oficial y aplicaciones','official vision and applications')} ↗</a><a href="https://www.asml.com/en/technology/all-about-microchips/how-microchips-are-made" target="_blank" rel="noreferrer">ASML · ${t('cómo se fabrican los chips','how microchips are made')} ↗</a><a href="https://www.intel.com/content/www/us/en/newsroom/news/intel-foundry/intels-us-advanced-packaging-enables-next-generation-ai-semiconductors.html" target="_blank" rel="noreferrer">Intel · ${t('encapsulado avanzado','advanced packaging')} ↗</a><p class="secondary">${t('Consultado el 16 de septiembre de 2026.','Consulted September 16, 2026.')}</p></section></div></details>
+<footer><span>${t('Una explicación independiente · sin afiliación con Terafab, Tesla o SpaceX.','An independent explanation · not affiliated with Terafab, Tesla or SpaceX.')}</span><a href="../robots/index.html">${t('Explorar Robots →','Explore Robots →')}</a></footer>`;
+
+const paths=[
+ {id:'design-logic',a:'design',b:'logic',d:'M242 151 L309 132',type:'patterns'},
+ {id:'design-memory',a:'design',b:'memory',d:'M166 186 L166 280 L203 300',type:'patterns'},
+ {id:'logic-packaging',a:'logic',b:'packaging',d:'M402 152 L402 232 L489 271',type:'material'},
+ {id:'memory-packaging',a:'memory',b:'packaging',d:'M282 330 L394 313',type:'material'},
+ {id:'packaging-test',a:'packaging',b:'test',d:'M577 308 L659 280',type:'material'},
+ {id:'test-earth',a:'test',b:'earth',d:'M765 303 L765 387 L832 410',type:'material'},
+ {id:'test-orbit',a:'test',b:'orbit',d:'M762 240 L762 160 L830 128',type:'material'},
+ {id:'feedback',a:'test',b:'design',d:'M725 243 L725 38 L167 38 L167 99',type:'feedback'},
+ {id:'utilities-logic',a:'utilities',b:'logic',d:'M420 493 L339 453 L339 214 L381 174',type:'utilities'},
+ {id:'utilities-memory',a:'utilities',b:'memory',d:'M386 511 L205 453 L205 383',type:'utilities'},
+ {id:'utilities-packaging',a:'utilities',b:'packaging',d:'M489 485 L489 362',type:'utilities'},
+ {id:'utilities-test',a:'utilities',b:'test',d:'M558 510 L683 462 L683 361 L731 316',type:'utilities'}
+];
+function building(n){
+ const {x,y,w,h,color}=n,l=x-w/2,r=x+w/2,top=y-h;
+ return `<g class="building" data-map-node="${n.id}" role="button" tabindex="0" aria-label="${n.n} ${n.title}" aria-pressed="false" style="--node:${color}"><title>${n.title}</title><polygon class="footprint" points="${l-13},${y-5} ${x},${y-38} ${r+13},${y-5} ${x},${y+31}"/><polygon class="wall-left" points="${l},${top} ${x},${top+23} ${x},${y+23} ${l},${y}"/><polygon class="wall-right" points="${x},${top+23} ${r},${top} ${r},${y} ${x},${y+23}"/><polygon class="roof" points="${l},${top} ${x},${top-23} ${r},${top} ${x},${top+23}"/>
+ ${[.22,.4,.58,.76].map(f=>`<path class="roof-detail" d="M${l+w*f/2} ${top-23*f} l${w/2} 23"/>`).join('')}
+ <path class="window" d="M${l+10} ${y-9} L${x-8} ${y+10}"/>
+ <text class="block-number" x="${x}" y="${top+5}">${n.n}</text><rect class="label-bg" x="${x-105}" y="${y+29}" width="210" height="31" rx="6"/><text class="node-label" x="${x}" y="${y+50}">${n.title}</text></g>`;
+}
+$('#diagram-content').innerHTML=`<path class="campus" d="M86 204 L461 66 L771 222 L550 456 L92 390 Z"/><text x="80" y="563" class="map-watermark">TERAFAB / ${t('MAPA DE RELACIONES','RELATIONSHIP MAP')}</text><g id="connections">${paths.map(p=>`<g class="connection ${p.type}" data-edge="${p.id}" data-a="${p.a}" data-b="${p.b}"><path id="path-${p.id}" d="${p.d}" marker-end="url(#${['utilities','feedback'].includes(p.type)?'gold-arrow':'arrow'})"/>${p.type==='material'?`<circle r="3.5" class="packet"><animateMotion dur="4s" repeatCount="indefinite"><mpath href="#path-${p.id}"/></animateMotion></circle>`:''}</g>`).join('')}</g>${nodes.map(building).join('')}`;
+let selected='design',layer='process',playing=false;
+const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
+function select(id,announce=true){
+ const n=nodes.find(n=>n.id===id);if(!n)return;selected=id;
+ for(const [target,value] of Object.entries({'detail-kind':n.kind,'detail-title':n.title,'detail-text':n.text,'detail-in':n.input,'detail-out':n.output,'detail-insight':n.insight,'detail-status':n.status,'detail-number':n.n+' / 08','tour-position':n.n+' / 08'}))$('#'+target).textContent=value;
+ document.querySelectorAll('[data-node]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.node===id)));
+ document.querySelectorAll('[data-map-node]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mapNode===id)));
+ document.querySelectorAll('[data-edge]').forEach(e=>e.classList.toggle('connected',e.dataset.a===id||e.dataset.b===id));
+ if(announce)$('#selection-live').textContent=n.title;
+ $('#previous').disabled=id===nodes[0].id;
+ $('#next').textContent=id===nodes.at(-1).id?t('Volver al inicio ↺','Back to start ↺'):t('Siguiente →','Next →');
+}
+document.querySelectorAll('[data-node]').forEach(b=>b.addEventListener('click',()=>select(b.dataset.node)));
+document.querySelectorAll('[data-map-node]').forEach(b=>{
+ b.addEventListener('click',()=>select(b.dataset.mapNode));
+ b.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select(b.dataset.mapNode);}});
+});
+$('#previous').onclick=()=>select(nodes[Math.max(0,nodes.findIndex(n=>n.id===selected)-1)].id);
+$('#next').onclick=()=>select(nodes[(nodes.findIndex(n=>n.id===selected)+1)%nodes.length].id);
+document.querySelectorAll('[data-layer]').forEach(b=>b.onclick=()=>{
+ layer=b.dataset.layer;$('#map').dataset.layer=layer;
+ document.querySelectorAll('[data-layer]').forEach(el=>el.setAttribute('aria-pressed',String(el===b)));
+ $('#layer-note').textContent=layer==='utilities'?t('Los servicios sostienen varias etapas a la vez.','Utilities support several stages at once.'):layer==='feedback'?t('Pruebas → diseño: vuelve información para mejorar la siguiente iteración.','Testing → design: information returns to improve the next iteration.'):t('Las líneas continuas llevan componentes; las discontinuas, patrones.','Solid lines carry components; dashed lines carry patterns.');
+ if(layer==='utilities')select('utilities');if(layer==='feedback')select('test');
+});
+function setMotion(on){playing=on;$('#diagram').classList.toggle('playing',playing);$('#motion').setAttribute('aria-pressed',String(playing));$('#motion').textContent=playing?t('Ⅱ Pausar flujo','Ⅱ Pause flow'):t('▶ Animar flujo','▶ Animate flow');if(playing)$('#diagram').unpauseAnimations();else $('#diagram').pauseAnimations();}
+$('#motion').onclick=()=>setMotion(!playing);reducedMotion.addEventListener('change',()=>{if(reducedMotion.matches)setMotion(false);});
+function update(){
+ const input={};for(const key of Object.keys(DEFAULTS)){input[key]=Number($('#'+key).value);$('#'+key+'-value').textContent=input[key]+(key==='yield'?'%':'');}
+ const result=capacity(input),format=n=>new Intl.NumberFormat(es?'es':'en',{maximumFractionDigits:1}).format(n);
+ $('#output').textContent=format(result.output);const change=result.output-capacity(DEFAULTS).output;
+ $('#delta').textContent=`${change>0?'+':''}${format(change)} ${t('frente al inicio','vs. initial')}`;
+ $('#capacity-bars').innerHTML=Object.entries(result.stages).map(([id,value])=>`<div class="capacity-row ${result.bottlenecks.includes(id)?'limited':''}"><span>${labels[id]}</span><div class="bar"><i style="width:${Math.min(100,value/240*100)}%"></i></div><b>${format(value)}</b></div>`).join('');
+ $('#bottleneck').textContent=t('El límite: ','The limit: ')+result.bottlenecks.map(id=>labels[id]).join(' + ')+'. '+(change===0?t('La salida final sigue igual.','Final output stays the same.'):t('La capacidad útil cambia con la etapa más lenta.','Usable capacity changes with the slowest stage.'));
+}
+Object.keys(DEFAULTS).forEach(id=>$('#'+id).addEventListener('input',update));
+function preset(values){for(const [k,v] of Object.entries({...DEFAULTS,...values}))$('#'+k).value=v;update();}
+$('#reset').onclick=()=>preset({});
+document.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>preset(b.dataset.preset==='wafers'?{logic:240}:{packaging:140}));
+$('#map').dataset.layer=layer;select('design',false);setMotion(false);update();

@@ -1,0 +1,31 @@
+.factory-entry{color:#bce9d9;background:#a7e0cf10;border:1px solid #a7e0cf40;border-radius:9px;text-decoration:none;padding:11px 14px;font-size:13px;line-height:1.35;white-space:nowrap}.factory-entry:hover{background:#a7e0cf22}@media(max-width:1000px){.masthead{flex-wrap:wrap}.factory-entry{margin-left:auto}}@media(max-width:680px){.factory-entry{order:4;width:100%;text-align:center;font-size:13px;padding:10px}}
+@media(pointer:coarse){
+  .camera-controls button{width:44px;height:44px}
+  .map-tools{right:76px}
+  .quiet-button,.day-shortcuts button,.milestones button,.segmented button{min-height:44px}
+  .place-label{min-width:36px;min-height:36px;display:flex;align-items:center;justify-content:center}
+  .inspector-head button{min-width:40px;min-height:40px}
+  .scene-legend .navigation-hint{display:none}
+  #world{overscroll-behavior:contain}
+}
+@media(max-width:680px){
+  main{padding-left:max(9px,env(safe-area-inset-left));padding-right:max(9px,env(safe-area-inset-right));padding-top:max(10px,env(safe-area-inset-top));padding-bottom:max(14px,env(safe-area-inset-bottom))}
+  .world-panel{min-height:380px;height:calc(100svh - 190px)}
+  .camera-controls{bottom:111px}.map-tools{top:147px}
+  .milestones button{flex-basis:calc(50% - 5px);min-height:40px}
+  .milestones button b{display:inline;font-size:10px}
+  .simulation-shell:fullscreen,.simulation-shell.expanded{padding:env(safe-area-inset-top) max(8px,env(safe-area-inset-right)) env(safe-area-inset-bottom) max(8px,env(safe-area-inset-left))}
+  .simulation-shell:fullscreen .milestones,.simulation-shell.expanded .milestones{display:none}
+}
+@media(orientation:landscape) and (max-height:520px){
+  main{padding:8px max(10px,env(safe-area-inset-right)) 12px max(10px,env(safe-area-inset-left))}
+  .masthead{display:none}.world-panel{height:calc(100svh - 88px);min-height:240px;border-radius:12px}
+  .population{top:12px;left:auto;right:114px}.population>div{padding:6px 10px;min-width:105px}.population strong{font-size:20px}.population small,.coverage,.fleet-stat{display:none}
+  .scene-header{top:10px;left:12px;right:12px}.clock-card{padding:6px 9px}#clock-time{font-size:20px}#period-label{display:none}
+  .map-card,.scene-legend{display:none}.event-toast{bottom:10px;min-height:35px;max-width:calc(100% - 165px);font-size:11px}
+  .camera-controls{right:10px;bottom:12px;flex-direction:row}.camera-controls button{width:36px;height:38px}.camera-controls button+button{border-top:0;border-left:1px solid #ffffff10}
+  .map-tools{top:76px;right:12px;bottom:auto}.map-tools button{padding:6px 9px;font-size:11px}
+  .inspector{top:78px;bottom:58px;left:auto;right:12px;width:260px;max-height:none;padding:12px}.inspector p{font-size:12px}.inspector-head{font-size:14px}
+  .world-panel:has(.inspector:not([hidden])) .map-tools{display:none}
+  .control-deck{display:flex;gap:16px;margin-top:8px}.timeline{flex:1}.total{min-width:100px}.total strong{font-size:24px}.play-button{min-width:125px;padding:11px 15px}.speed-control{font-size:9px}
+}

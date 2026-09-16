@@ -1,4 +1,18 @@
-# Robots que refuerzan su cadena de fabricación
+# Atlas: explicaciones interactivas
+
+## Portada común y Terafab (vista local, pendiente de publicar)
+
+La entrada `/` (inglés) y `/es/` (español) es ahora la colección Atlas. Robots tiene sus propias rutas `/robots/` y `/es/robots/`, con las cuatro escenas y narraciones existentes. Se conservan las rutas antiguas `factory.html`, `district.html`, `city.html` y `region.html`. Cada escena permite volver a la colección o entrar en Terafab.
+
+La nueva explicación vive en `site-src/terafab/` y se genera en `/terafab/` y `/es/terafab/`. Incluye un diagrama isométrico de ocho bloques seleccionables, conexiones de proceso, dependencias y aprendizaje, recorrido manual, animación de flujo opcional y un laboratorio de capacidades. Se puede usar con teclado; la animación está pausada inicialmente. En móvil, el mapa se desplaza horizontalmente y las etapas también se pueden seleccionar mediante botones.
+
+El modelo independiente `site-src/terafab/model.js` calcula una capacidad estacionaria normalizada: mínimo de lógica útil, memoria, encapsulado, pruebas, servicios y suministros. No simula existencias ni plazos, y las unidades no representan obleas, chips o vatios. El rendimiento afecta a la lógica; las pérdidas posteriores se omiten explícitamente. Diseño físico, conexiones y capacidades son didácticos. El panel de fuentes distingue estas simplificaciones de los objetivos publicados por Terafab. Fuentes consultadas el 16 de septiembre de 2026: [Terafab](https://www.terafab.ai/), [ASML](https://www.asml.com/en/technology/all-about-microchips/how-microchips-are-made), [Intel](https://www.intel.com/content/www/us/en/newsroom/news/intel-foundry/intels-us-advanced-packaging-enables-next-generation-ai-semiconductors.html).
+
+La portada está en `site-src/hub/`; su colección se define en `atlas.js`. Para añadir otra explicación: crear su carpeta fuente, registrarla en la colección y añadirla al bucle de carpetas independientes en `tools/build_site.py`. Los recursos compartidos de Robots siguen en la raíz de `dist/`; no se duplican los audios ni Three.js.
+
+Construir con `python build-site.py`. Validar con `python check-site.py`, `node check-terafab.mjs`, `node check-localization.mjs` y `node check-narrator.mjs`. No se han publicado estos cambios ni realizado QA visual en navegador.
+
+## Robots que refuerzan su cadena de fabricación
 
 ## Ciudad y región: dos escalas distintas
 

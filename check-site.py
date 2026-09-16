@@ -16,11 +16,14 @@ class References(HTMLParser):
                 self.ids.add(value)
             if key in ('href', 'src') and value and value.startswith(('./', '../')):
                 target = (self.directory / value).resolve()
-                assert target.is_relative_to(public.resolve())
+                assert target.is_relative_to(public.resolve()), f'Link leaves public directory: {self.directory}: {value}'
                 assert target.is_file(), f'Recurso ausente: {target}'
 
-for directory, language in [(public, 'en'), (public / 'es', 'es')]:
-    for page, module in [('index.html', 'factory.js'), ('factory.html', 'factory.js'), ('district.html', 'game.js'), ('region.html', 'region.js'), ('city.html', 'city.js')]:
+for directory, language in [(public, 'en'), (public / 'es', 'es'), (public / 'robots', 'en'), (public / 'es/robots', 'es')]:
+    scenes = [('factory.html', 'factory.js'), ('district.html', 'game.js'), ('region.html', 'region.js'), ('city.html', 'city.js')]
+    if directory.name == 'robots':
+        scenes.append(('index.html', 'factory.js'))
+    for page, module in scenes:
         references = References(directory)
         html = (directory / page).read_text(encoding='utf-8')
         references.feed(html)
@@ -30,6 +33,16 @@ for directory, language in [(public, 'en'), (public / 'es', 'es')]:
         assert f'hreflang="{language}" aria-current="true"' in html
         controls = set(re.findall(r"\$\('([^']+)'\)", (directory / module).read_text(encoding='utf-8')))
         assert controls <= references.ids, f'Controles ausentes en {page}: {controls - references.ids}'
+for file in public.rglob('*.html'):
+    references = References(file.parent)
+    references.feed(file.read_text(encoding='utf-8'))
+for directory, language in [(public, 'en'), (public / 'es', 'es')]:
+    for route in ['index.html', 'terafab/index.html']:
+        content = (directory / route).read_text(encoding='utf-8')
+        assert f'<html lang="{language}">' in content
+        assert '{{' not in content
+    for topic in ['robots', 'terafab']:
+        assert (directory / topic / 'index.html').is_file()
 for file in public.rglob('*.js'):
     result = subprocess.run(['node', '--check', str(file)], capture_output=True, text=True, encoding='utf-8')
     assert result.returncode == 0, result.stderr
@@ -38,4 +51,4 @@ for file in public.rglob('*.js'):
             assert (file.parent / link).is_file(), f'Missing import: {file}: {link}'
 for name in ['industrial-model.js', 'network-model.js']:
     assert (public / 'es' / name).read_text(encoding='utf-8') == (root / name).read_text(encoding='utf-8')
-print('Four scenes + factory entry alias, bilingual controls, language links, imports and syntax: OK')
+print('Atlas + Robots + Terafab, legacy scenes, bilingual controls, local links, imports and syntax: OK')
