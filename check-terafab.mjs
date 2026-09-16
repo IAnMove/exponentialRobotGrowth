@@ -1,22 +1,24 @@
 import assert from 'node:assert/strict';
-import {capacity,DEFAULTS} from './site-src/terafab/model.js';
-assert.equal(capacity().output,80);
-assert.equal(capacity({logic:240}).output,80,'More logic cannot bypass packaging');
-assert.equal(capacity({packaging:140}).output,90,'Logic yield limits an expanded packaging stage');
-assert.equal(capacity({logic:240,packaging:140}).output,100,'Testing and utilities limit the expanded factory');
-assert.deepEqual(capacity({logic:240,packaging:140}).bottlenecks,['test','utilities']);
-assert.equal(capacity({utilities:40}).output,40,'Infrastructure can limit all fabrication');
-assert.equal(capacity({yield:0}).output,0,'No usable logic means no usable output');
-for(let logic=40;logic<=240;logic+=10)for(let yieldValue=20;yieldValue<=100;yieldValue+=5)for(let packaging=20;packaging<=160;packaging+=10){
-  const c=capacity({logic,yield:yieldValue,packaging});
-  assert(c.output>=0&&c.output<=100);
-  for(const v of Object.values(c.stages))assert(c.output<=v+1e-8);
-  assert(c.bottlenecks.length>0);
-  if(logic<240)assert(capacity({logic:logic+10,yield:yieldValue,packaging}).output>=c.output);
+import * as THREE from './dist/vendor/three.module.js';
+import {buildCampus,carrierPosition,HALLS} from './dist/terafab/world.js';
+import * as spanishWorld from './dist/es/terafab/world.js';
+const world=buildCampus();
+assert.equal(HALLS.length,4);assert.equal(world.hallGroups.length,4);
+let instances=0,meshes=0;world.scene.updateMatrixWorld(true);
+world.scene.traverse(o=>{assert(o.matrixWorld.elements.every(Number.isFinite));if(o.isMesh)meshes++;if(o.isInstancedMesh){instances+=o.count;assert(Array.from(o.instanceMatrix.array).every(Number.isFinite));}});
+assert(instances>2000,'Detailed equipment and building geometry must exist');assert(meshes<300,'Static geometry should remain batched');
+world.mode('cleanroom');assert(world.roofs.every(r=>!r.visible));assert(world.hallGroups.every(g=>g.visible));
+world.mode('layers');assert.deepEqual(world.hallGroups.map(g=>g.visible),[true,false,false,false]);assert.equal(world.decks[0].position.y,9);assert(world.plenums[0].visible);
+world.mode('campus');assert(world.roofs.every(r=>r.visible));assert(world.hallGroups.every(g=>g.visible));assert(world.decks.every(d=>d.position.y===3.5));
+for(let time=0;time<100;time+=.1){const p=carrierPosition(time);assert(p[0]>=-3-1e-8&&p[0]<=7+1e-8);assert(p[1]>=-18-1e-8&&p[1]<=18+1e-8);assert(Math.abs(p[0]+3)<1e-8||Math.abs(p[0]-7)<1e-8||Math.abs(Math.abs(p[1])-18)<1e-8);assert.deepEqual(p,spanishWorld.carrierPosition(time));const q=carrierPosition(time+.001);assert(Math.hypot(p[0]-q[0],p[1]-q[1])<.003);}
+assert.deepEqual(carrierPosition(4),carrierPosition(5),'Carrier dwells at the lithography station');
+assert.deepEqual(carrierPosition(0),carrierPosition(116/2.5),'The closed route must loop continuously');
+// Geometry-only camera checks for desktop and narrow portrait screens (no browser/GPU).
+for(const [width,height] of [[1200,700],[390,500]]){
+ const span=Math.max(83,86/(width/height)),camera=new THREE.OrthographicCamera(-span*width/height,span*width/height,span,-span,.1,500);
+ camera.position.set(Math.sin(.62)*160*Math.cos(.65),2+160*Math.sin(.65),Math.cos(.62)*160*Math.cos(.65));camera.lookAt(0,2,0);camera.updateProjectionMatrix();camera.updateMatrixWorld();
+ for(const [x,z] of HALLS){const q=new THREE.Vector3(x,6,z).project(camera);assert(Math.abs(q.x)<.95&&Math.abs(q.y)<.95,'Hall must be visible in campus framing');}
 }
-for(const value of [NaN,Infinity,-1,241])assert.throws(()=>capacity({logic:value}),RangeError);
-assert.deepEqual(DEFAULTS,{logic:120,yield:75,packaging:80,utilities:100});
-// Language builds must retain identical model rules.
-const en=await import('./dist/terafab/model.js'),es=await import('./dist/es/terafab/model.js');
-for(const parameters of [{},{logic:240},{packaging:140},{yield:20,utilities:40}])assert.deepEqual(en.capacity(parameters),es.capacity(parameters));
-console.log('Terafab: bottlenecks, yield, infrastructure, bounds, monotonicity and EN/ES parity OK');
+globalThis.document={documentElement:{lang:'en'}};const en=await import('./dist/terafab/places.js');globalThis.document.documentElement.lang='es';const es=await import('./dist/es/terafab/places.js');
+assert.equal(en.places.length,16);assert.deepEqual(en.places.map(p=>[p.id,p.position,p.view]),es.places.map(p=>[p.id,p.position,p.view]));for(const p of es.places)assert(p.body&&p.equipment&&p.evidence&&es.sources[p.source]);
+console.log(`Terafab: ${instances} static instances, ${meshes} meshes; roof/layer views, carrier continuity and stops, camera framing, 16 bilingual areas OK`);

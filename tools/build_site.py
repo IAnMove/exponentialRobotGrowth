@@ -7,6 +7,7 @@ Audio and Three.js are shared by both languages, including on a Pages subpath.
 from pathlib import Path
 import re
 import html
+import shutil
 
 ROOT = Path(__file__).resolve().parents[1]
 translations = {}
@@ -84,9 +85,14 @@ for language in ['en', 'es']:
         target = destination if folder == 'hub' else destination / folder
         target.mkdir(exist_ok=True)
         for source in (ROOT / 'site-src' / folder).iterdir():
+            if source.suffix in ['.jpg', '.png', '.webp']:
+                shutil.copyfile(source, target / source.name)
+                continue
             if source.suffix not in ['.html', '.js', '.css']:
                 continue
             content = source.read_text(encoding='utf-8')
+            if folder == 'terafab' and language == 'es' and source.suffix == '.js':
+                content = content.replace("'../vendor/", "'../../vendor/")
             if source.suffix == '.html':
                 content = content.replace('{{EN}}', './index.html' if language == 'en' else '../index.html').replace('{{ES}}', './es/index.html' if language == 'en' else './index.html')
                 if language == 'en':
@@ -94,6 +100,8 @@ for language in ['en', 'es']:
                     content = content.replace('Atlas — Explicaciones interactivas', 'Atlas — Interactive explanations').replace('Terafab — Atlas interactivo', 'Terafab — Interactive Atlas')
                     content = content.replace('Explora cómo funcionan los sistemas: robots, fábricas de chips y sus conexiones.', 'Explore how systems work: robots, chip factories and their connections.')
                     content = content.replace('Explora la fábrica integrada de chips de Terafab, sigue sus conexiones y experimenta con los límites de producción.', 'Explore the Terafab integrated chip factory, follow its connections and experiment with production constraints.')
+                    content = content.replace('Recorre Terafab en 3D: abre las naves, explora la sala limpia y descubre los equipos de la fábrica prevista.', 'Explore Terafab in 3D: open the halls, enter the cleanroom and discover the planned factory equipment.')
+                    content = content.replace('Activa JavaScript para explorar la fábrica.', 'Enable JavaScript to explore the factory.')
                     content = content.replace('Activa JavaScript para las explicaciones interactivas.', 'Enable JavaScript for the interactive explanations.').replace('Activa JavaScript para explorar el diagrama.', 'Enable JavaScript to explore the diagram.').replace('aria-label="Exploraciones"', 'aria-label="Explorations"')
                 title = re.search(r'<title>(.*?)</title>', content).group(1)
                 description = re.search(r'name="description" content="([^"]+)"', content).group(1)
