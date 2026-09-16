@@ -11,6 +11,7 @@ for(let i=0;i<5;i++)assert(NARRATIONS['robot-factory-'+i]);
 for(let i=0;i<6;i++)assert(NARRATIONS['city-'+i]);
 for(const key of ['guide-factory','guide-district','guide-city'])assert(NARRATIONS[key]);
 for(let i=0;i<6;i++)assert(NARRATIONS['region-'+i]);
+for(let i=0;i<3;i++)assert(NARRATIONS['region-city-'+i]);
 for(const key of ['region-overview','region-operation','region-project'])assert(NARRATIONS[key]);
 for(const state of ['working','rest','waiting','supply','building','full','blocked','arriving','kits'])assert(NARRATIONS['state-'+state]);
 for(const entry of [...Object.values(NARRATIONS),...(englishOnly?[]:Object.values(ENGLISH))]){assert(entry.text.length>100);assert(entry.duration>0);assert(fs.statSync(new URL(entry.src)).size>1024);}

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Esta ciudad es la más cercana al punto de distribución: el traslado tarda un ciclo. Tiene ciento ochenta tareas equivalentes repartidas entre los mismos seis sectores que viste en la ciudad detallada. Su cercanía permite recibir antes un envío, pero no le da todos los robots. El reparto equilibra las tareas cubiertas y las reservas de cada ciudad según su alcance posible. La barra crece cuando los robots llegan, no cuando se fabrican ni cuando salen de viaje. Selecciona las otras ciudades para comparar la demora y la cobertura.",
+  "duration_ms": 33948,
+  "billed_characters": 533,
+  "sample_rate": 32000,
+  "size_bytes": 544884,
+  "generated_at": "2026-09-16T00:24:22.311689+00:00"
+}

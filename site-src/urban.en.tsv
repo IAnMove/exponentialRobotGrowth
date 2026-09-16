@@ -1,0 +1,49 @@
+Los robots llegan a los barrios y cubren tareas de la vida cotidiana.	Robots arrive in neighbourhoods and take on everyday tasks.
+Varias ciudades comparten una red industrial: producir, ampliar y distribuir compiten por los mismos recursos.	Several cities share an industrial network: production, expansion and delivery compete for the same resources.
+Ciudad del río	River city
+Ciudad central	Central city
+Ciudad del valle	Valley city
+ESCALA 03 · LA CIUDAD	SCALE 03 · THE CITY
+De las primeras entregas a todos los barrios.	From the first deliveries to every neighbourhood.
+Ver toda la ciudad	Fit the whole city
+Las barras muestran cobertura	Bars show task coverage
+Barrios con robots	Neighbourhoods with robots
+De camino	On the way
+Nuevas tareas · últimos 10 ciclos	New tasks · last 10 cycles
+01 · Primeras entregas	01 · First deliveries
+02 · Nuevos barrios	02 · New neighbourhoods
+03 · Presencia cotidiana	03 · Part of everyday life
+04 · Alcance cubierto	04 · Scenario coverage reached
+La industria del entorno fabrica y amplía sus instalaciones. Sus entregas entran por la terminal y se distribuyen entre seis barrios de actividad. Decide qué parte llega a la ciudad.	The surrounding industry produces robots and expands its facilities. Deliveries enter through the terminal and spread across six activity districts. Choose the share sent to the city.
+Quién realiza las tareas	Who performs the tasks
+Tareas humanas	Human tasks
+Tareas robóticas	Robot tasks
+La línea discontinua marca el alcance supuesto. Una ciudad más automatizada no significa que todos sus habitantes sean robots.	The dashed line marks the assumed scope. A more automated city does not mean all its inhabitants are robots.
+Siguiente: varias ciudades conectadas ↗	Next: several connected cities ↗
+ESCALA 04 · VARIAS CIUDADES	SCALE 04 · SEVERAL CITIES
+Una red que transforma varias ciudades.	One network, several changing cities.
+Tres ciudades conectadas por carreteras a seis industrias con parcelas y obras	Three cities connected by roads to six industries with plots and construction projects
+Vehículos: entregas a ciudades	Vehicles: city deliveries
+Ciudades conectadas	Connected cities
+Robots en las ciudades	Robots in cities
+En tránsito	In transit
+En la industria	In industry
+Robots en toda la red	Robots across the network
+Entregar a las ciudades	Deliver to cities
+Porcentaje de los robots nuevos. El resto refuerza la industria. Entregar hoy puede reducir la producción de mañana.	Share of newly built robots. The rest reinforce industry. Delivering today can reduce tomorrow's production.
+Robots en el depósito: 	Robots at the depot: 
+. Esperan si se cubre el alcance de las tres ciudades.	. They wait when all three cities reach their assumed scope.
+Mismo comienzo y porcentaje de entregas. La referencia conserva seis instalaciones. Ambas curvas incluyen industria, traslados y ciudades.	Same starting conditions and delivery share. The reference keeps six facilities. Both curves include industry, transit and cities.
+CIUDAD SELECCIONADA	SELECTED CITY
+Explorar los barrios de una ciudad ↗	Explore a city's neighbourhoods ↗
+Cobertura urbana con y sin ampliación industrial	Urban task coverage with and without industrial expansion
+Las ciudades reservan tareas antes del envío. La distancia retrasa las llegadas. Las carreteras representan esos traslados; no modelamos atascos urbanos ni creamos robots por dibujar vehículos.	Cities reserve tasks before dispatch. Distance delays arrivals. Roads represent those journeys; we do not model urban traffic jams or create extra robots by drawing vehicles.
+Tres ciudades suman 600 tareas equivalentes. La ciudad del río recibe entregas tras un ciclo; la central, tras tres; la del valle, tras cinco. Se equilibran las reservas según la cobertura posible de cada ciudad. El alcance por sector es el escenario intermedio de la ciudad. Estos valores ilustran diferencias y no son previsiones.	Three cities total 600 equivalent tasks. River city receives deliveries after one cycle; Central city after three; Valley city after five. Reservations balance each city's feasible coverage. Sector scope uses the city scene's intermediate scenario. These values illustrate differences; they are not forecasts.
+reparte los robots nuevos entre industria y ciudades con el mismo porcentaje.	allocates new robots between industry and cities using the same share.
+Figuras urbanas: hasta 	Urban figures: up to 
+ tareas · vehículos: entregas agrupadas	 tasks · vehicles: delivery batches
+ ciclos de traslado · 	 cycles in transit · 
+¿Se acelera la fabricación?	Is production accelerating?
+Robots fabricados por ciclo con y sin ampliaciones	Robots built per cycle with and without expansion
+Una flota acumulada puede subir a ritmo constante. Aquí vemos si también aumenta lo que se fabrica en cada ciclo. Los escalones aparecen al abrir instalaciones.	A cumulative fleet can rise at a constant pace. Here we see whether production per cycle also increases. Steps appear as facilities open.
+La comparación mantiene los mismos recursos iniciales y reparte los robots nuevos entre industria y ciudades con el mismo porcentaje. La referencia no construye instalaciones: termina teniendo robots disponibles que su maquinaria no puede aprovechar.	The comparison starts with the same resources and allocates new robots between industry and cities using the same share. The reference does not build facilities: it eventually has robots that its machinery cannot use.

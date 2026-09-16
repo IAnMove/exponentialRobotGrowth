@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Este barrio representa apoyo logístico, gestión de espacios y tareas administrativas sencillas. Enseñar, acompañar, interpretar necesidades y decidir no aparecen sustituidos por completo. Por eso siguen viéndose tareas humanas aunque lleguen muchos robots. La curva descendente representa tareas que dejan de requerir una asignación humana en este ejemplo, no personas que desaparecen de la ciudad. La escena no calcula nuevas ocupaciones. Hasta aquí hemos visto cómo se reparte la capacidad dentro de una ciudad. Ahora sube a la región: tres ciudades comparten fábricas y proveedores, y las distancias retrasan la llegada de robots. Podrás comparar entregar más hoy con reservar capacidad para fabricar más después.",
+  "duration_ms": 45360,
+  "billed_characters": 716,
+  "sample_rate": 32000,
+  "size_bytes": 727476,
+  "generated_at": "2026-09-16T00:24:33.800110+00:00"
+}

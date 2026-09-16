@@ -42,7 +42,7 @@ export function createNarrator({toggleHost,onBegin}){
   window.addEventListener('pagehide',()=>player.stop());
   document.addEventListener('fullscreenchange',()=>{(document.fullscreenElement??document.body).append(dock);});
   const scene=location.pathname.includes('district')?'district':location.pathname.includes('region')?'region':location.pathname.includes('city')?'city':'factory';
-  const tours={factory:['guide-factory',...Array.from({length:5},(_,i)=>'robot-factory-'+i)],district:['guide-district',...Array.from({length:14},(_,i)=>'district-'+i)],region:['region-overview',...Array.from({length:6},(_,i)=>'region-'+i)],city:['guide-city',...Array.from({length:6},(_,i)=>'city-'+i)]};
+  const tours={factory:['guide-factory',...Array.from({length:5},(_,i)=>'robot-factory-'+i)],district:['guide-district',...Array.from({length:14},(_,i)=>'district-'+i)],region:['region-overview',...Array.from({length:3},(_,i)=>'region-city-'+i),...Array.from({length:6},(_,i)=>'region-'+i)],city:['guide-city',...Array.from({length:6},(_,i)=>'city-'+i)]};
   document.getElementById('lesson-overview')?.addEventListener('click',()=>player.start([NARRATIONS[tours[scene][0]]].filter(Boolean)));
   document.getElementById('lesson-tour')?.addEventListener('click',()=>player.start(tours[scene].map(key=>NARRATIONS[key]?{...NARRATIONS[key],focus:key}:null).filter(Boolean)));
   return {explain(key,stateKey){if(!enabled)return;const items=[NARRATIONS[key],NARRATIONS[stateKey]].filter(Boolean);player.start(items);},stop:()=>player.stop()};

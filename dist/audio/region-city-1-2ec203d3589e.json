@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Central city has two hundred and forty equivalent tasks. It is larger than the other two in this scenario and needs more robots to reach the same relative coverage. Deliveries take three cycles. Automatic allocation also counts robots already on the way, so the same task is not reserved more than once. The chart compares this city's coverage when the industrial network expands and when it keeps its six original facilities. We are not comparing populations or wealth: we are observing robot availability under the same allocation rules.",
+  "duration_ms": 32580,
+  "billed_characters": 539,
+  "sample_rate": 32000,
+  "size_bytes": 522996,
+  "generated_at": "2026-09-16T00:25:43.923298+00:00"
+}

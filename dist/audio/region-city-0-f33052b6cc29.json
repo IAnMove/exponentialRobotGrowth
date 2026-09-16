@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This city is closest to the distribution point: delivery takes one cycle. It has one hundred and eighty equivalent tasks across the same six sectors you saw in the detailed city. Proximity allows a shipment to arrive sooner, but does not give this city all the robots. Allocation balances covered tasks and reservations against each city's feasible scope. The bar grows when robots arrive, not when they are built or dispatched. Select the other cities to compare travel delays and coverage.",
+  "duration_ms": 31284,
+  "billed_characters": 491,
+  "sample_rate": 32000,
+  "size_bytes": 502260,
+  "generated_at": "2026-09-16T00:25:43.758057+00:00"
+}

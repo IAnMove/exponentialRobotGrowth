@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Esta ciudad tiene ciento ochenta tareas equivalentes y recibe cada entrega tras cinco ciclos. Puede tener robots reservados y una barra todavía baja, porque esos robots siguen en tránsito. Esta diferencia permite separar fabricar, enviar y utilizar. Al avanzar, la cobertura puede acercarse a la de las otras ciudades, pero cada sector conserva sus límites de automatización. Si toda la cobertura posible está reservada o atendida, los robots adicionales esperan en el depósito. Una red industrial mayor puede ofrecer más capacidad; eso no significa que cualquier ciudad pueda utilizarla sin límites.",
+  "duration_ms": 39348,
+  "billed_characters": 600,
+  "sample_rate": 32000,
+  "size_bytes": 631284,
+  "generated_at": "2026-09-16T00:24:27.905235+00:00"
+}

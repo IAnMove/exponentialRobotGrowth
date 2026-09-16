@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "We now enter the city. Initially, humans perform the tasks in all six neighbourhoods. The surrounding industry delivers its first robots through the terminal. Watch them take on tasks in deliveries, retail, construction, cleaning, care and services. Orange figures represent human tasks; light figures represent tasks assigned to robots. Turquoise bars show coverage in each neighbourhood. They are not percentages of inhabitants or jobs eliminated. The chart compares both types of tasks. As industry expands, robots can arrive more frequently, but each sector has an assumed scope and retains human tasks. Sending many robots to the city has a cost: fewer remain to reinforce manufacturing. At the next scale, we will see several connected cities and how that capacity is distributed.",
+  "duration_ms": 50688,
+  "billed_characters": 786,
+  "sample_rate": 32000,
+  "size_bytes": 812724,
+  "generated_at": "2026-09-16T00:25:50.435164+00:00"
+}

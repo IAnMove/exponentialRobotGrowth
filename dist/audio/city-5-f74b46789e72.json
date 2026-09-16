@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This neighbourhood represents logistical support, management of spaces and simple administrative tasks. Teaching, supporting people, understanding needs and making decisions are not shown as fully replaced. Human tasks therefore remain visible even as many robots arrive. The descending curve represents tasks that no longer need a human assignment in this example, not people disappearing from the city. The scene does not calculate new occupations. We have seen how capacity spreads within one city. Now move up to the region: three cities share factories and suppliers, while distance delays robot arrivals. You can compare delivering more today with reserving capacity to produce more later.",
+  "duration_ms": 43704,
+  "billed_characters": 695,
+  "sample_rate": 32000,
+  "size_bytes": 700980,
+  "generated_at": "2026-09-16T00:25:55.129172+00:00"
+}

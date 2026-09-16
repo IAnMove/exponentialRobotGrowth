@@ -138,10 +138,10 @@ export const NARRATIONS = {
     "duration": 12.204
   },
   "region-overview": {
-    "title": "Una región que amplía su capacidad",
-    "text": "Hasta ahora observábamos cómo los robots ocupaban puestos en una fábrica. Aquí subimos de escala. Empezamos con veinticuatro robots y seis instalaciones ya construidas. Los nuevos robots pueden reforzar la producción o participar en nuevas obras. El control de inversión reserva una fracción máxima de la flota para construir y esa misma fracción del material refinado para futuras instalaciones. Al principio, invertir puede reducir los robots que terminas: faltan trabajadores y material en producción. Pero cuando una obra termina, aparece capacidad que antes no existía. Más capacidad permite fabricar más robots, y esos robots pueden ayudar a construir más instalaciones. La curva compara tu región con otra que conserva sus seis instalaciones iniciales. Ninguna mejora está garantizada: también deben crecer la extracción, los componentes, la energía y el transporte. Las parcelas son finitas, y los ciclos comprimen el proceso sin representar días ni años. Esto explica un mecanismo de crecimiento acumulativo, no una previsión de la economía.",
-    "src": "./audio/region-overview-9a2343ae32e1.mp3",
-    "duration": 63.72
+    "title": "Cuarta escala: una red y varias ciudades",
+    "text": "Esta región reúne tres ciudades y seis tipos de industria. La ciudad del río, la central y la del valle reciben robots de la misma red. Abajo están la extracción, el refinado, los componentes, las fábricas de robots, la electricidad y el transporte. Los robots nuevos tienen dos destinos: quedarse para producir o construir, o viajar a las ciudades. No pueden estar en ambos lugares a la vez. Un control reserva recursos para obras; otro decide el porcentaje de robots nuevos que se envía. Las ciudades reservan tareas antes del traslado, y la distancia introduce una demora de uno, tres o cinco ciclos. Los vehículos representan entregas agrupadas. Compara la flota acumulada con la producción por ciclo: sumar robots no basta para demostrar aceleración. La producción crece cuando entran en servicio nuevas instalaciones y sus proveedores las abastecen. Los límites de material, energía, parcelas y tareas siguen existiendo. Todo son supuestos ilustrativos, sin fechas ni una previsión económica.",
+    "src": "./audio/region-overview-1d0ce7ef838f.mp3",
+    "duration": 65.124
   },
   "region-0": {
     "title": "Extracción regional",
@@ -174,10 +174,10 @@ export const NARRATIONS = {
     "duration": 43.308
   },
   "region-5": {
-    "title": "Transporte entre industrias",
-    "text": "Esta red conecta minas, refinerías, componentes y fábricas de robots. Los vehículos representan el movimiento de cargas, no entregas individuales exactas. La barra compara el flujo que las instalaciones podrían necesitar con la capacidad de transporte disponible. Si la demanda supera el cien por cien, la logística reduce el ritmo industrial. Ampliar el transporte puede liberar capacidad de varias fábricas a la vez. Una instalación logística también necesita trabajadores, material y tiempo de construcción. La región crece como una red de procesos conectados: añadir edificios sin poder intercambiar sus productos no completa el ciclo.",
-    "src": "./audio/region-5-5813f2d2b787.mp3",
-    "duration": 39.42
+    "title": "Transporte industrial y conexión entre ciudades",
+    "text": "La logística tiene dos funciones en esta escena. Dentro de la industria, su capacidad limita cuánto material puede moverse entre proveedores y fábricas. Las nuevas instalaciones de transporte permiten aprovechar un flujo industrial mayor. Fuera de la industria, los vehículos muestran los robots ya enviados a las ciudades. Estos robots salen de la flota industrial y llegan después de una demora fija según el destino. Las carreteras no crean robots ni producen por sí solas un multiplicador. No simulamos atascos urbanos: los trayectos representan tiempo de traslado. El contador de tránsito y las reservas por ciudad permiten comprobar que un robot enviado no aparece simultáneamente trabajando en la fábrica y en la ciudad.",
+    "src": "./audio/region-5-bfc894989260.mp3",
+    "duration": 45.18
   },
   "region-operation": {
     "title": "Cómo leer esta instalación",
@@ -190,6 +190,24 @@ export const NARRATIONS = {
     "text": "Esta parcela tiene una obra en marcha. El material de construcción ya se ha descontado del almacén. El porcentaje indica cuánto trabajo se ha completado, pero la nueva instalación no aporta capacidad hasta llegar al cien por cien. Puede trabajar un máximo de cuatro robots en esta obra. El control de inversión limita cuántos robots se destinan a construir; si lo bajas a cero, las obras esperan. Así puedes observar el intercambio entre producir ahora y disponer de más capacidad después.",
     "src": "./audio/region-project-1aa411937738.mp3",
     "duration": 29.34
+  },
+  "region-city-0": {
+    "title": "Ciudad del río: las primeras llegadas",
+    "text": "Esta ciudad es la más cercana al punto de distribución: el traslado tarda un ciclo. Tiene ciento ochenta tareas equivalentes repartidas entre los mismos seis sectores que viste en la ciudad detallada. Su cercanía permite recibir antes un envío, pero no le da todos los robots. El reparto equilibra las tareas cubiertas y las reservas de cada ciudad según su alcance posible. La barra crece cuando los robots llegan, no cuando se fabrican ni cuando salen de viaje. Selecciona las otras ciudades para comparar la demora y la cobertura.",
+    "src": "./audio/region-city-0-196bc7af69a7.mp3",
+    "duration": 33.948
+  },
+  "region-city-1": {
+    "title": "Ciudad central: más tareas, más entregas",
+    "text": "La ciudad central reúne doscientas cuarenta tareas equivalentes. Es mayor que las otras dos en este escenario y necesita más robots para alcanzar la misma cobertura relativa. Sus entregas tardan tres ciclos. La asignación automática considera también los robots que ya van de camino, para no reservar la misma tarea varias veces. En la gráfica puedes comparar la cobertura de esta ciudad cuando se amplía la red industrial y cuando se conservan las seis instalaciones iniciales. No estamos comparando poblaciones ni riqueza: observamos la disponibilidad de robots bajo las mismas reglas de reparto.",
+    "src": "./audio/region-city-1-fabdd4f77fd7.mp3",
+    "duration": 34.56
+  },
+  "region-city-2": {
+    "title": "Ciudad del valle: la distancia también importa",
+    "text": "Esta ciudad tiene ciento ochenta tareas equivalentes y recibe cada entrega tras cinco ciclos. Puede tener robots reservados y una barra todavía baja, porque esos robots siguen en tránsito. Esta diferencia permite separar fabricar, enviar y utilizar. Al avanzar, la cobertura puede acercarse a la de las otras ciudades, pero cada sector conserva sus límites de automatización. Si toda la cobertura posible está reservada o atendida, los robots adicionales esperan en el depósito. Una red industrial mayor puede ofrecer más capacidad; eso no significa que cualquier ciudad pueda utilizarla sin límites.",
+    "src": "./audio/region-city-2-deb27f206c99.mp3",
+    "duration": 39.348
   },
   "guide-factory": {
     "title": "Primera escala: robots que fabrican robots",
@@ -234,10 +252,10 @@ export const NARRATIONS = {
     "duration": 40.104
   },
   "guide-city": {
-    "title": "Cuarta escala: de la producción a la ciudad",
-    "text": "La ciudad empieza con seiscientas tareas equivalentes atendidas por humanos. No son seiscientos empleos: una persona realiza muchas tareas distintas. A su lado funciona una región industrial que construye nuevas instalaciones y produce robots. Puedes decidir qué parte de esos robots llega a la ciudad; el resto permanece en la industria y sostiene su capacidad futura. Las llegadas se distribuyen automáticamente entre logística, comercio, construcción, limpieza, cuidados y educación. Cada sector tiene un límite de automatización elegido para este escenario. Las tres hipótesis no tienen fechas ni probabilidades asignadas. La curva puede acelerarse porque la industria fabrica cada vez más robots, no porque el número de tareas urbanas se multiplique por sí solo. Este es el mecanismo que queremos explorar al hablar de crecimiento impulsado por robots: capacidad productiva que ayuda a ampliar la capacidad siguiente, con materiales, energía, construcción y límites humanos todavía presentes.",
-    "src": "./audio/guide-city-244311205ba0.mp3",
-    "duration": 60.624
+    "title": "Tercera escala: una ciudad recibe robots",
+    "text": "Ahora entramos en la ciudad. Al principio, las tareas de los seis barrios están atendidas por humanos. La industria del entorno entrega los primeros robots por la terminal. Observa cómo se incorporan a reparto, comercio, construcción, limpieza, cuidados y servicios. Las figuras naranjas representan tareas humanas; las claras, tareas asignadas a robots. Las barras turquesas muestran la cobertura de cada barrio. No son porcentajes de habitantes ni empleos eliminados. La gráfica compara ambas clases de tareas. Al crecer la industria, pueden llegar robots con más frecuencia, pero cada sector tiene un alcance supuesto y conserva tareas humanas. Enviar muchos robots a la ciudad también tiene un coste: quedan menos reforzando la fabricación. En la siguiente escala veremos varias ciudades conectadas y el reparto de esa capacidad entre ellas.",
+    "src": "./audio/guide-city-149defaaaa87.mp3",
+    "duration": 53.856
   },
   "city-0": {
     "title": "Logística urbana",
@@ -270,10 +288,10 @@ export const NARRATIONS = {
     "duration": 38.628
   },
   "city-5": {
-    "title": "Educación y servicios",
-    "text": "Este sector agrupa apoyo logístico, gestión de espacios y algunas tareas administrativas sencillas. Enseñar, acompañar, interpretar necesidades y decidir no aparecen sustituidos por completo. Por eso las figuras humanas permanecen aunque la industria entregue muchos robots. La gráfica muestra tareas cubiertas, no docentes o profesionales eliminados. Al final del recorrido, vuelve a pensar en el origen de las llegadas: robots que ayudan a producir robots, proveedores que crecen y nuevas instalaciones que tardan en construirse. Ese circuito puede acelerar la capacidad disponible; su efecto en la economía y en la vida de las personas depende de muchas decisiones que esta simulación no calcula.",
-    "src": "./audio/city-5-70cd1b0cc80a.mp3",
-    "duration": 43.524
+    "title": "Educación, servicios y siguiente escala",
+    "text": "Este barrio representa apoyo logístico, gestión de espacios y tareas administrativas sencillas. Enseñar, acompañar, interpretar necesidades y decidir no aparecen sustituidos por completo. Por eso siguen viéndose tareas humanas aunque lleguen muchos robots. La curva descendente representa tareas que dejan de requerir una asignación humana en este ejemplo, no personas que desaparecen de la ciudad. La escena no calcula nuevas ocupaciones. Hasta aquí hemos visto cómo se reparte la capacidad dentro de una ciudad. Ahora sube a la región: tres ciudades comparten fábricas y proveedores, y las distancias retrasan la llegada de robots. Podrás comparar entregar más hoy con reservar capacidad para fabricar más después.",
+    "src": "./audio/city-5-9b664f7eb0c9.mp3",
+    "duration": 45.36
   }
 };
 for (const item of Object.values(NARRATIONS)) item.src = new URL(item.src, import.meta.url).href;

@@ -24,6 +24,8 @@ for directory, language in [(public, 'en'), (public / 'es', 'es')]:
         references = References(directory)
         html = (directory / page).read_text(encoding='utf-8')
         references.feed(html)
+        journey = re.search(r'<nav class="journey-steps".*?</nav>', html).group()
+        assert re.findall(r'href="./([^"]+)"', journey) == ['factory.html', 'district.html', 'city.html', 'region.html']
         assert f'<html lang="{language}">' in html
         assert f'hreflang="{language}" aria-current="true"' in html
         controls = set(re.findall(r"\$\('([^']+)'\)", (directory / module).read_text(encoding='utf-8')))

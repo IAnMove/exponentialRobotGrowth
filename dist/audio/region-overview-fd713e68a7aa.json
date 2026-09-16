@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This region brings together three cities and six types of industry. River city, Central city and Valley city receive robots from the same network. Below them are extraction, refining, components, robot factories, electricity and transport. New robots have two destinations: stay to produce or build, or travel to the cities. They cannot be in both places at once. One control reserves resources for construction; another sets the share of new robots sent out. Cities reserve tasks before dispatch, and distance introduces a delay of one, three or five cycles. Vehicles represent delivery batches. Compare the accumulated fleet with production per cycle: simply adding robots does not demonstrate acceleration. Production grows when new facilities open and suppliers can feed them. Material, energy, land and task limits remain. Everything uses illustrative assumptions, without dates or an economic forecast.",
+  "duration_ms": 62280,
+  "billed_characters": 908,
+  "sample_rate": 32000,
+  "size_bytes": 998196,
+  "generated_at": "2026-09-16T00:25:38.750315+00:00"
+}

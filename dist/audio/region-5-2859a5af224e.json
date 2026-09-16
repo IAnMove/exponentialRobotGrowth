@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Logistics plays two roles in this scene. Within industry, its capacity limits how much material can move between suppliers and factories. New transport facilities allow a larger industrial flow. Outside industry, vehicles show robots already dispatched to cities. These robots leave the industrial fleet and arrive after a fixed delay determined by their destination. Roads do not create robots or apply a growth multiplier by themselves. We do not simulate urban traffic jams: routes represent travel time. The transit counter and each city's reservations let you check that a dispatched robot is not simultaneously working in a factory and in a city.",
+  "duration_ms": 42084,
+  "billed_characters": 652,
+  "sample_rate": 32000,
+  "size_bytes": 675060,
+  "generated_at": "2026-09-16T00:25:37.987233+00:00"
+}

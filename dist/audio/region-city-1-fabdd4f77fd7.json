@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "La ciudad central reúne doscientas cuarenta tareas equivalentes. Es mayor que las otras dos en este escenario y necesita más robots para alcanzar la misma cobertura relativa. Sus entregas tardan tres ciclos. La asignación automática considera también los robots que ya van de camino, para no reservar la misma tarea varias veces. En la gráfica puedes comparar la cobertura de esta ciudad cuando se amplía la red industrial y cuando se conservan las seis instalaciones iniciales. No estamos comparando poblaciones ni riqueza: observamos la disponibilidad de robots bajo las mismas reglas de reparto.",
+  "duration_ms": 34560,
+  "billed_characters": 598,
+  "sample_rate": 32000,
+  "size_bytes": 554676,
+  "generated_at": "2026-09-16T00:24:22.618141+00:00"
+}

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This city has one hundred and eighty equivalent tasks and receives each delivery after five cycles. It can have robots reserved while its coverage bar is still low, because those robots are in transit. This separates manufacturing, dispatching and using robots. As the scenario advances, coverage can approach that of the other cities, but each sector retains its automation limits. If all feasible coverage is already reserved or filled, additional robots wait at the depot. A larger industrial network can offer more capacity; that does not mean every city can use it without limits.",
+  "duration_ms": 36180,
+  "billed_characters": 585,
+  "sample_rate": 32000,
+  "size_bytes": 580596,
+  "generated_at": "2026-09-16T00:25:49.625147+00:00"
+}

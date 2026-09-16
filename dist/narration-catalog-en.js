@@ -138,10 +138,10 @@ export const NARRATIONS = {
     "duration": 10.584
   },
   "region-overview": {
-    "title": "A region that expands its capacity",
-    "text": "Until now we watched robots take on tasks inside a factory. Here we move up a scale. We begin with twenty-four robots and six facilities already built. New robots can reinforce production or help build new facilities. The investment control reserves a maximum share of the fleet for construction and the same share of refined material for future facilities. Initially, investing can reduce the robots you finish: workers and materials are diverted from production. But when construction finishes, capacity exists that was not there before. More capacity can produce more robots, and those robots can help build more facilities. The chart compares your region with one that keeps its original six facilities. Improvement is not guaranteed. Extraction, components, energy and transport must expand too. Plots are finite, and cycles compress the process without representing days or years. This explains a mechanism of compounding growth, not an economic forecast.",
-    "src": "./audio/region-overview-69732f99f77f.mp3",
-    "duration": 64.656
+    "title": "Fourth scale: one network and several cities",
+    "text": "This region brings together three cities and six types of industry. River city, Central city and Valley city receive robots from the same network. Below them are extraction, refining, components, robot factories, electricity and transport. New robots have two destinations: stay to produce or build, or travel to the cities. They cannot be in both places at once. One control reserves resources for construction; another sets the share of new robots sent out. Cities reserve tasks before dispatch, and distance introduces a delay of one, three or five cycles. Vehicles represent delivery batches. Compare the accumulated fleet with production per cycle: simply adding robots does not demonstrate acceleration. Production grows when new facilities open and suppliers can feed them. Material, energy, land and task limits remain. Everything uses illustrative assumptions, without dates or an economic forecast.",
+    "src": "./audio/region-overview-fd713e68a7aa.mp3",
+    "duration": 62.28
   },
   "region-0": {
     "title": "Regional extraction",
@@ -174,10 +174,10 @@ export const NARRATIONS = {
     "duration": 41.076
   },
   "region-5": {
-    "title": "Transport between industries",
-    "text": "This network connects mines, refineries, component producers and robot factories. Vehicles represent cargo flow, not exact individual deliveries. The bar compares the potential flow facilities could require with available transport capacity. When demand exceeds one hundred percent, logistics reduces the industrial rate. Expanding transport can unlock capacity at several factories at once. A logistics facility also needs workers, materials and construction time. The region grows as a network of connected processes. Adding buildings without being able to exchange their products does not complete the loop.",
-    "src": "./audio/region-5-0c10ed1afe14.mp3",
-    "duration": 39.276
+    "title": "Industrial transport and links between cities",
+    "text": "Logistics plays two roles in this scene. Within industry, its capacity limits how much material can move between suppliers and factories. New transport facilities allow a larger industrial flow. Outside industry, vehicles show robots already dispatched to cities. These robots leave the industrial fleet and arrive after a fixed delay determined by their destination. Roads do not create robots or apply a growth multiplier by themselves. We do not simulate urban traffic jams: routes represent travel time. The transit counter and each city's reservations let you check that a dispatched robot is not simultaneously working in a factory and in a city.",
+    "src": "./audio/region-5-2859a5af224e.mp3",
+    "duration": 42.084
   },
   "region-operation": {
     "title": "Reading this facility",
@@ -190,6 +190,24 @@ export const NARRATIONS = {
     "text": "This plot has a construction project in progress. Its construction material has already been deducted from inventory. The percentage shows how much work is complete, but the facility adds no capacity until it reaches one hundred percent. Up to four robots can work on this project. The investment control limits the robots assigned to construction. If you lower it to zero, projects wait. This lets you observe the tradeoff between producing now and having more capacity later.",
     "src": "./audio/region-project-f6d06e28e926.mp3",
     "duration": 28.008
+  },
+  "region-city-0": {
+    "title": "River city: the first arrivals",
+    "text": "This city is closest to the distribution point: delivery takes one cycle. It has one hundred and eighty equivalent tasks across the same six sectors you saw in the detailed city. Proximity allows a shipment to arrive sooner, but does not give this city all the robots. Allocation balances covered tasks and reservations against each city's feasible scope. The bar grows when robots arrive, not when they are built or dispatched. Select the other cities to compare travel delays and coverage.",
+    "src": "./audio/region-city-0-f33052b6cc29.mp3",
+    "duration": 31.284
+  },
+  "region-city-1": {
+    "title": "Central city: more tasks, more deliveries",
+    "text": "Central city has two hundred and forty equivalent tasks. It is larger than the other two in this scenario and needs more robots to reach the same relative coverage. Deliveries take three cycles. Automatic allocation also counts robots already on the way, so the same task is not reserved more than once. The chart compares this city's coverage when the industrial network expands and when it keeps its six original facilities. We are not comparing populations or wealth: we are observing robot availability under the same allocation rules.",
+    "src": "./audio/region-city-1-2ec203d3589e.mp3",
+    "duration": 32.58
+  },
+  "region-city-2": {
+    "title": "Valley city: distance matters too",
+    "text": "This city has one hundred and eighty equivalent tasks and receives each delivery after five cycles. It can have robots reserved while its coverage bar is still low, because those robots are in transit. This separates manufacturing, dispatching and using robots. As the scenario advances, coverage can approach that of the other cities, but each sector retains its automation limits. If all feasible coverage is already reserved or filled, additional robots wait at the depot. A larger industrial network can offer more capacity; that does not mean every city can use it without limits.",
+    "src": "./audio/region-city-2-b718dc6c5aeb.mp3",
+    "duration": 36.18
   },
   "guide-factory": {
     "title": "First scale: robots making robots",
@@ -234,10 +252,10 @@ export const NARRATIONS = {
     "duration": 35.928
   },
   "guide-city": {
-    "title": "Fourth scale: from production to the city",
-    "text": "The city starts with six hundred equivalent tasks performed by humans. These are not six hundred jobs: one person performs many different tasks. An industrial region alongside it builds new facilities and produces robots. You can decide what share of those robots comes to the city. The rest remains in industry to support future capacity. Arrivals are automatically distributed across logistics, retail, construction, cleaning, care and education. Each sector has an automation limit chosen for this scenario. The three hypotheses have no assigned dates or probabilities. The curve can accelerate because industry produces more robots, not because urban tasks multiply by themselves. This is the mechanism we explore when discussing robot-driven growth: productive capacity helping expand the next round of capacity, with materials, energy, construction and human limits still present.",
-    "src": "./audio/guide-city-1a65b8a971e2.mp3",
-    "duration": 57.276
+    "title": "Third scale: robots arrive in a city",
+    "text": "We now enter the city. Initially, humans perform the tasks in all six neighbourhoods. The surrounding industry delivers its first robots through the terminal. Watch them take on tasks in deliveries, retail, construction, cleaning, care and services. Orange figures represent human tasks; light figures represent tasks assigned to robots. Turquoise bars show coverage in each neighbourhood. They are not percentages of inhabitants or jobs eliminated. The chart compares both types of tasks. As industry expands, robots can arrive more frequently, but each sector has an assumed scope and retains human tasks. Sending many robots to the city has a cost: fewer remain to reinforce manufacturing. At the next scale, we will see several connected cities and how that capacity is distributed.",
+    "src": "./audio/guide-city-9223f0a0e97d.mp3",
+    "duration": 50.688
   },
   "city-0": {
     "title": "Urban logistics",
@@ -270,10 +288,10 @@ export const NARRATIONS = {
     "duration": 36.648
   },
   "city-5": {
-    "title": "Education and services",
-    "text": "This sector groups logistical support, space management and some simple administrative tasks. Teaching, supporting people, interpreting needs and making decisions are not shown as completely replaced. Human figures therefore remain even when industry delivers many robots. The chart shows covered tasks, not teachers or professionals eliminated. At the end of the journey, think back to where arrivals originate: robots helping produce robots, growing suppliers, and new facilities that take time to construct. That loop can accelerate available capacity. Its effect on the economy and on people's lives depends on many decisions this simulation does not calculate.",
-    "src": "./audio/city-5-1c9e581d53e6.mp3",
-    "duration": 42.156
+    "title": "Education, services and the next scale",
+    "text": "This neighbourhood represents logistical support, management of spaces and simple administrative tasks. Teaching, supporting people, understanding needs and making decisions are not shown as fully replaced. Human tasks therefore remain visible even as many robots arrive. The descending curve represents tasks that no longer need a human assignment in this example, not people disappearing from the city. The scene does not calculate new occupations. We have seen how capacity spreads within one city. Now move up to the region: three cities share factories and suppliers, while distance delays robot arrivals. You can compare delivering more today with reserving capacity to produce more later.",
+    "src": "./audio/city-5-f74b46789e72.mp3",
+    "duration": 43.704
   }
 };
 for (const item of Object.values(NARRATIONS)) item.src = new URL(item.src, import.meta.url).href;

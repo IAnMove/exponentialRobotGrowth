@@ -17,7 +17,7 @@ for line in '\n'.join(p.read_text(encoding='utf-8') for p in sorted((ROOT / 'sit
     assert source not in translations, 'Duplicate translation: ' + source
     translations[source] = target
 pattern = re.compile('|'.join(re.escape(s) for s in sorted(translations, key=len, reverse=True)))
-SCENES=[('factory.html','Fábrica','Un robot terminado vuelve a la línea y ayuda a fabricar los siguientes.'),('district.html','Distrito','La fabricación necesita una cadena completa de materiales, componentes y pruebas.'),('region.html','Región','Los robots construyen nuevas instalaciones que amplían la capacidad de toda la red.'),('city.html','Ciudad','Parte de los robots llega a la ciudad; otra parte sigue ampliando la industria que los fabrica.')]
+SCENES=[('factory.html','Fábrica','Un robot terminado vuelve a la línea y ayuda a fabricar los siguientes.'),('district.html','Distrito','La fabricación necesita una cadena completa de materiales, componentes y pruebas.'),('city.html','Ciudad','Los robots llegan a los barrios y cubren tareas de la vida cotidiana.'),('region.html','Región','Varias ciudades comparten una red industrial: producir, ampliar y distribuir compiten por los mismos recursos.')]
 for language in ['en', 'es']:
     destination = ROOT / 'dist' / ('' if language == 'en' else 'es')
     destination.mkdir(exist_ok=True)

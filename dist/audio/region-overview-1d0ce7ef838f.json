@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Esta región reúne tres ciudades y seis tipos de industria. La ciudad del río, la central y la del valle reciben robots de la misma red. Abajo están la extracción, el refinado, los componentes, las fábricas de robots, la electricidad y el transporte. Los robots nuevos tienen dos destinos: quedarse para producir o construir, o viajar a las ciudades. No pueden estar en ambos lugares a la vez. Un control reserva recursos para obras; otro decide el porcentaje de robots nuevos que se envía. Las ciudades reservan tareas antes del traslado, y la distancia introduce una demora de uno, tres o cinco ciclos. Los vehículos representan entregas agrupadas. Compara la flota acumulada con la producción por ciclo: sumar robots no basta para demostrar aceleración. La producción crece cuando entran en servicio nuevas instalaciones y sus proveedores las abastecen. Los límites de material, energía, parcelas y tareas siguen existiendo. Todo son supuestos ilustrativos, sin fechas ni una previsión económica.",
+  "duration_ms": 65124,
+  "billed_characters": 998,
+  "sample_rate": 32000,
+  "size_bytes": 1043700,
+  "generated_at": "2026-09-16T00:24:17.421044+00:00"
+}

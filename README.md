@@ -1,8 +1,20 @@
 # Robots que refuerzan su cadena de fabricación
 
+## Ciudad y región: dos escalas distintas
+
+Publicado en GitHub Pages: commit `e4154c3`, ejecución `35040241911` completada. Se verificaron las diez rutas, los nuevos mundos/modelos/controladores/estilos, ambos catálogos y los 98 audios públicos.
+
+El recorrido es **fábrica → distrito → ciudad → región**. La ciudad muestra seis barrios de actividad, humanos y robots, una terminal de llegadas, cobertura por barrio y curvas de tareas humanas y robóticas. La región contiene tres ciudades conectadas con seis industrias. Usa `territory-model.js` sobre el motor industrial conservativo: 600 tareas equivalentes, reservas antes de envío, retrasos de 1/3/5 ciclos y un porcentaje configurable de robots nuevos destinado a ciudades. Los robots enviados salen de la flota industrial. Las reservas impiden asignar una tarea dos veces. El depósito conserva los excedentes.
+
+La comparación regional incluye todos los robots (industria, tránsito y ciudades), y muestra por separado la producción por ciclo: acumular robots no equivale por sí solo a acelerar. La referencia mantiene sus seis instalaciones y el mismo porcentaje de entregas. Las tres ciudades usan el alcance intermedio por sector; las cifras y distancias son supuestos ilustrativos.
+
+`urban-world.js` proporciona los dos nuevos mapas: barrios con edificios y calles a escala cercana; tres núcleos urbanos y un cinturón industrial en la vista regional. Geometría y figuras se agrupan en instancias. Las animaciones de llegada son ilustrativas; la contabilidad la determina el modelo. Las personas representan tareas y no poblaciones o empleos eliminados.
+
+Hay **49 narraciones por idioma**. Se actualizaron siete explicaciones por idioma, incluidas las tres ciudades regionales, conservando la voz E aprobada en español. Los 98 MP3 se decodificaron y verificaron contra sus textos y voces. `check-territory.mjs` valida conservación, reservas, retrasos, límites y equivalencia EN/ES; `check-urban-world.mjs` comprueba geometría y proyección a 390/1200 px sin navegador ni GPU. No se realizó QA visual en navegador. Las comprobaciones existentes de sitio, ciudad, idiomas y narración también pasan.
+
 ## Recorrido de cuatro escalas
 
-La entrada `index.html` ahora corresponde a `factory.html`, una fábrica de robots con cinco puestos. El distrito anterior se conserva en `district.html`, seguido de `region.html` y `city.html`. Una navegación común presenta el orden, la explicación general y un recorrido narrado por los sectores con enfoque de cámara. Cada escala mantiene condiciones iniciales propias.
+La entrada `index.html` ahora corresponde a `factory.html`, una fábrica de robots con cinco puestos. El distrito anterior se conserva en `district.html`, seguido de `city.html` y `region.html`. Una navegación común presenta el orden, la explicación general y un recorrido narrado por los sectores con enfoque de cámara. Cada escala mantiene condiciones iniciales propias.
 
 La fábrica solo puede incorporar robots que ya haya terminado. El modo automático está activado inicialmente y prioriza puestos con baja capacidad diaria. Puede desactivarse para elegir manualmente. Se mantiene la comparación con humanos y el ensayo de configuración fija. Los cuerpos robóticos sustituyen a los móviles en las cintas y la salida; vuelven desde la salida a sus puestos.
 

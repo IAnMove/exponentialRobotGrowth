@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "La logística tiene dos funciones en esta escena. Dentro de la industria, su capacidad limita cuánto material puede moverse entre proveedores y fábricas. Las nuevas instalaciones de transporte permiten aprovechar un flujo industrial mayor. Fuera de la industria, los vehículos muestran los robots ya enviados a las ciudades. Estos robots salen de la flota industrial y llegan después de una demora fija según el destino. Las carreteras no crean robots ni producen por sí solas un multiplicador. No simulamos atascos urbanos: los trayectos representan tiempo de traslado. El contador de tránsito y las reservas por ciudad permiten comprobar que un robot enviado no aparece simultáneamente trabajando en la fábrica y en la ciudad.",
+  "duration_ms": 45180,
+  "billed_characters": 727,
+  "sample_rate": 32000,
+  "size_bytes": 724596,
+  "generated_at": "2026-09-16T00:24:16.891458+00:00"
+}
