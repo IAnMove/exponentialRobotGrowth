@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Estos dos mapas empiezan con los mismos recursos y avanzan con el mismo reloj. Una región dedica robots y materiales a nuevas instalaciones; la otra mantiene las seis originales. Construir cuesta producción al principio, pero después puede ampliar la capacidad. Mira cuánto tarda cada región en pasar de veinticuatro a cuarenta y ocho robots, y luego a noventa y seis. La tabla mide el tiempo de cada duplicación, no el tiempo total desde el inicio. En un crecimiento exponencial sostenido, esos intervalos serían parecidos. Aquí los recursos y las parcelas son finitos, por lo que crecer más no garantiza mantener ese ritmo. La curva violeta es una referencia matemática opcional, no el resultado ni una predicción de esta simulación.",
+  "duration_ms": 44676,
+  "billed_characters": 735,
+  "sample_rate": 32000,
+  "size_bytes": 716532,
+  "generated_at": "2026-09-16T01:00:09.101831+00:00"
+}

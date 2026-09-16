@@ -15,11 +15,11 @@ STATIONS.forEach((st,i)=>{
   const tab=document.createElement('button');tab.type='button';tab.className='station-tab';tab.innerHTML=`<b>${String(i+1).padStart(2,'0')}</b><span>${st.name}<small></small></span>`;tab.addEventListener('click',()=>{select(i);if(matchMedia('(max-width:760px)').matches)document.querySelector('.station-panel').scrollIntoView({behavior:'smooth',block:'start'});});$('station-tabs').append(tab);tabs.push(tab);
 });
 for(let i=0;i<16;i++)$('f-queue-dots').append(document.createElement('i'));
-function select(i,focus=true,narrate=true){selected=i;world?.select(i,focus);updateUI();if(focus&&narrate){let code=status(state,i).code;if(code==='starved')code=i===0?'kits':'waiting';if(code==='rest'&&state.robots[i].some(t=>t>state.time))code='arriving';narrator.explain('robot-factory-'+i,'state-'+code);}}
+function select(i,focus=true,narrate=true){if(focus)$('f-follow-first').checked=false;selected=i;world?.select(i,focus);updateUI();if(focus&&narrate){let code=status(state,i).code;if(code==='starved')code=i===0?'kits':'waiting';if(code==='rest'&&state.robots[i].some(t=>t>state.time))code='arriving';narrator.explain('robot-factory-'+i,'state-'+code);}}
 function recalculate(){planDay=forecast(state.robots.map(r=>r.length));}
 function updateUI(){
   const hour=(state.time+8)%24,h=Math.floor(hour),m=Math.min(59,Math.floor((hour-h)*60+1e-5)),st=STATIONS[selected],s=status(state,selected),bound=constraint(state);
-  $('f-clock').textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');$('f-day').textContent='DÍA '+String(state.day).padStart(2,'0');$('f-sun').textContent=h>=7&&h<20?'☀':'☾';$('f-period').textContent=period(state.time);
+  updateFirstLoop();$('f-clock').textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');$('f-day').textContent='DÍA '+String(state.day).padStart(2,'0');$('f-sun').textContent=h>=7&&h<20?'☀':'☾';$('f-period').textContent=period(state.time);
   $('f-run').textContent=playing?'EN MARCHA':'EN PAUSA';$('f-play').textContent=playing?'Ⅱ Pausar':'▶ Reproducir';$('f-play').setAttribute('aria-label',playing?'Pausar fábrica':'Reproducir fábrica');$('f-timeline').style.width=(state.time%24)/24*100+'%';
   $('f-today').textContent=fmt(state.today);$('f-reference').textContent=fmt(reference.today);$('f-total').textContent=fmt(state.total)+' desde el inicio'+(state.history.length?' · ayer '+state.history.at(-1):'');
   $('f-day-result').hidden=!state.history.length;if(state.history.length)$('f-day-result').textContent='Día '+(state.day-1)+' completado: '+state.history.at(-1)+' robots en tu fábrica · '+reference.history.at(-1)+' solo con humanos.';
@@ -49,24 +49,34 @@ document.addEventListener('narration-focus',e=>{if(e.detail.startsWith('robot-fa
 $('f-play').addEventListener('click',()=>{playing=!playing;last=performance.now();updateUI();});
 $('f-speed').addEventListener('change',e=>speed=Number(e.target.value));
 $('f-automate').addEventListener('click',()=>{if(automate(state,selected)){recalculate();playing=true;last=performance.now();updateUI();}});
-$('f-reset').addEventListener('click',()=>{state=createFactory(undefined,true);reference=createFactory();playing=false;accumulator=0;recalculate();world?.fit();select(1,false);});
+$('f-reset').addEventListener('click',()=>{state=createFactory(undefined,true);reference=createFactory();playing=false;accumulator=0;recalculate();world?.fit();$('f-follow-first').checked=true;select(1,false);});
 $('f-lunch').addEventListener('click',()=>{const day=Math.floor(state.time/24),at=day*24+5;jumpTo(at>state.time?at:at+24);});
 $('f-night').addEventListener('click',()=>{const day=Math.floor(state.time/24),at=day*24+15;jumpTo(at>state.time?at:at+24);});
 $('f-day-end').addEventListener('click',()=>{jumpTo(state.day*24);playing=false;updateUI();});
-$('f-plus').addEventListener('click',()=>world?.zoomBy(1.25));$('f-minus').addEventListener('click',()=>world?.zoomBy(.8));$('f-fit').addEventListener('click',()=>world?.fit());
+$('f-plus').addEventListener('click',()=>{$('f-follow-first').checked=false;world?.zoomBy(1.25);});$('f-minus').addEventListener('click',()=>{$('f-follow-first').checked=false;world?.zoomBy(.8);});$('f-fit').addEventListener('click',()=>{$('f-follow-first').checked=false;world?.fit();});
 function help(){playing=false;updateUI();$('factory-about').showModal();}
 $('help').addEventListener('click',help);$('f-assumptions').addEventListener('click',help);$('f-close-help').addEventListener('click',()=>$('factory-about').close());
 const pointers=new Map();let moved=false,startPoint=null,lastPinch=0;
 const surface=$('factory-canvas');
+surface.addEventListener('pointerdown',()=>{$('f-follow-first').checked=false;});
+$('f-first-explain').onclick=()=>narrator.explain('factory-first-loop');
 surface.addEventListener('pointerdown',e=>{if(e.button!==0)return;surface.setPointerCapture(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size===1){startPoint={x:e.clientX,y:e.clientY};moved=false;}else{moved=true;const p=[...pointers.values()];lastPinch=Math.hypot(p[1].x-p[0].x,p[1].y-p[0].y);}});
 surface.addEventListener('pointermove',e=>{const prev=pointers.get(e.pointerId);if(!prev)return;const dx=e.clientX-prev.x,dy=e.clientY-prev.y;pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size>1){const p=[...pointers.values()],d=Math.hypot(p[1].x-p[0].x,p[1].y-p[0].y);if(lastPinch>0)world?.zoomBy(d/lastPinch);lastPinch=d;moved=true;}else{if(startPoint&&Math.hypot(e.clientX-startPoint.x,e.clientY-startPoint.y)>6)moved=true;if(moved)world?.pan(dx,dy);}});
 surface.addEventListener('pointerup',e=>{if(!moved&&pointers.size===1){const i=world?.pick(e.clientX,e.clientY);if(i!==undefined)select(i);}pointers.delete(e.pointerId);lastPinch=0;});
-surface.addEventListener('pointercancel',e=>{pointers.delete(e.pointerId);moved=true;lastPinch=0;});surface.addEventListener('wheel',e=>{e.preventDefault();world?.zoomBy(Math.exp(-e.deltaY*.001));},{passive:false});
+surface.addEventListener('pointercancel',e=>{pointers.delete(e.pointerId);moved=true;lastPinch=0;});surface.addEventListener('wheel',e=>{e.preventDefault();$('f-follow-first').checked=false;world?.zoomBy(Math.exp(-e.deltaY*.001));},{passive:false});
 document.addEventListener('visibilitychange',()=>{last=performance.now();});
 function frame(now){const dt=Math.min(.1,Math.max(0,(now-last)/1000));last=now;
   if(!document.hidden){if(playing){accumulator+=dt*speed*.32;while(accumulator>=STEP){step();accumulator-=STEP;}motion+=dt*Math.min(speed,2);}else motion+=dt*.25;
     uiClock+=dt;if(uiClock>.15){updateUI();uiClock=0;}
-    world?.render(state,motion,constraint(state).index);labels.forEach((b,i)=>{if(!world){b.hidden=true;return;}const p=world.project(i),w=surface.clientWidth,h=surface.clientHeight;b.style.left=p.x+'px';b.style.top=p.y+'px';b.hidden=p.x<20||p.x>w-20||p.y<75||p.y>h-48;});
+    world?.render(state,motion,constraint(state).index,$('f-follow-first').checked);labels.forEach((b,i)=>{if(!world){b.hidden=true;return;}const p=world.project(i),w=surface.clientWidth,h=surface.clientHeight;b.style.left=p.x+'px';b.style.top=p.y+'px';b.hidden=p.x<20||p.x>w-20||p.y<75||p.y>h-48;});
   }requestAnimationFrame(frame);
 }
 updateUI();requestAnimationFrame(frame);
+
+function updateFirstLoop(){const first=state.firstReturn;let title,text;
+ if(state.firstFinished===null){title='Las personas construyen el primer robot.';text='Observa la salida de la línea. Un robot terminado podrá volver y ayudar a fabricar los siguientes.';}
+ else if(!first){title='El primer robot está terminado.';text='Ya puedes incorporarlo a un puesto o activar el relevo automático. Fabricado no significa todavía trabajando.';}
+ else if(state.time<first.ready){title='El primer robot regresa a la línea.';text='Destino: '+STATIONS[first.station].name+'. Durante el traslado todavía no aumenta la capacidad del puesto.';}
+ else{title='Ya está incorporado a la línea.';text='Su tarea está en '+STATIONS[first.station].name+'. La salida total sigue dependiendo de los otros puestos y del suministro de componentes.';}
+ $('f-first-title').textContent=title;$('f-first-text').textContent=text;
+}

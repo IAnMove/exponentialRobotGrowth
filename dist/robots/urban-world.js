@@ -73,19 +73,20 @@ export function createUrbanWorld(container,{regional=false}={}){
   const p=[[0,.95,0,.4,.55,.3,c],[0,1.4,0,.36,.32,.32,robot?c:0xc9946e],[0,1.4,.17,.28,.08,.045,robot?0x1ccbc8:0x583c30],[-.29,.87,gait,.13,.5,.16,c],[.29,.87,-gait,.13,.5,.16,c],[-.13,.36,gait,.16,.6,.2,0x304862],[.13,.36,-gait,.16,.6,.2,0x304862]];
   p.forEach(([dx,y,dz,w,h,d,c],j)=>put(actors,i*7+j,x+dx*scale,.3+y*scale,z+dz*scale,w*scale,h*scale,d*scale,c));
  }
- let previousTime=-1;const priorRobots=[],births=new Map();
+ let focusIndex=-1;let previousTime=-1;const priorRobots=[],births=new Map();
  let zoom=1,targetZoom=1,look=new THREE.Vector3(),target=new THREE.Vector3();
- function cameraUpdate(){zoom+=(targetZoom-zoom)*.15;look.lerp(target,.15);const a=container.clientWidth/Math.max(1,container.clientHeight),half=Math.max(regional?58:42,(regional?76:57)/a)/zoom;Object.assign(camera,{left:-half*a,right:half*a,top:half,bottom:-half});camera.position.set(look.x+100,130,look.z+135);camera.lookAt(look);camera.updateProjectionMatrix();}
+ function cameraUpdate(){if(container.clientWidth<1||container.clientHeight<1)return;zoom+=(targetZoom-zoom)*.15;look.lerp(target,.15);const a=container.clientWidth/Math.max(1,container.clientHeight),half=Math.max(regional?58:42,(regional?76:57)/a)/zoom;Object.assign(camera,{left:-half*a,right:half*a,top:half,bottom:-half});camera.position.set(look.x+100,130,look.z+135);camera.lookAt(look);camera.updateProjectionMatrix();}
  new ResizeObserver(()=>{renderer.setSize(container.clientWidth,container.clientHeight,false);cameraUpdate();}).observe(container);renderer.setSize(container.clientWidth,container.clientHeight,false);cameraUpdate();
  const ray=new THREE.Raycaster(),plane=new THREE.Plane(new THREE.Vector3(0,1,0),0),hit=new THREE.Vector3();
  function project(x,z){const p=new THREE.Vector3(x,2,z).project(camera);return {x:(p.x+1)*container.clientWidth/2,y:(1-p.y)*container.clientHeight/2};}
  return {
-  select(i,focus=true){highlights.forEach((r,k)=>r.visible=k===(regional?i:Math.floor(i/6)));if(i<0)return;const p=regional?(i>=36?{x:TOWNS[i-36][0],z:TOWNS[i-36][1]}:pickPoints[i]):{x:DISTRICTS[Math.floor(i/6)][0],z:DISTRICTS[Math.floor(i/6)][1]};if(focus){target.set(p.x,0,p.z);targetZoom=container.clientWidth<700?2.8:2.1;}},
+  select(i,focus=true){focusIndex=i;highlights.forEach((r,k)=>r.visible=k===(regional?i:Math.floor(i/6)));if(i<0)return;const p=regional?(i>=36?{x:TOWNS[i-36][0],z:TOWNS[i-36][1]}:pickPoints[i]):{x:DISTRICTS[Math.floor(i/6)][0],z:DISTRICTS[Math.floor(i/6)][1]};if(focus){target.set(p.x,0,p.z);targetZoom=container.clientWidth<700?2.8:2.1;}},
+  getView(){return {x:target.x,z:target.z,zoom:targetZoom,selection:focusIndex};},setView(view){target.set(view.x,0,view.z);targetZoom=view.zoom;focusIndex=view.selection;highlights.forEach((r,k)=>r.visible=k===(regional?focusIndex:Math.floor(focusIndex/6)));},
   fit(){target.set(0,0,0);targetZoom=1;},zoomBy(f){targetZoom=THREE.MathUtils.clamp(targetZoom*f,.7,4);},
   pan(dx,dy){const u=(camera.top-camera.bottom)/container.clientHeight;target.x=THREE.MathUtils.clamp(target.x-dx*u*.8-dy*u*.8,-75,75);target.z=THREE.MathUtils.clamp(target.z+dx*u*.6-dy*u,-65,65);},
   pick(x,y){const r=container.getBoundingClientRect();ray.setFromCamera(new THREE.Vector2((x-r.left)/r.width*2-1,-(y-r.top)/r.height*2+1),camera);if(!ray.ray.intersectPlane(plane,hit))return -1;if(regional){const town=TOWNS.findIndex(([x,z])=>Math.abs(x-hit.x)<16&&Math.abs(z-hit.z)<14);if(town>=0)return 36+town;}return pickPoints.findIndex(p=>Math.abs(p.x-hit.x)<4&&Math.abs(p.z-hit.z)<4);},
   project(i){return project(centers[i][0],centers[i][1]-(regional?12:15));},projectTown(i){return project(TOWNS[i][0],TOWNS[i][1]-16);},
-  render(s,motion){const visualTime=performance.now()/1000;cameraUpdate();if((s.time??0)<previousTime){priorRobots.length=0;births.clear();}previousTime=s.time??0;let actorCount=0,vehicleCount=0;
+  render(s,motion){if(container.clientWidth<1||container.clientHeight<1)return regional?6:3;const visualTime=performance.now()/1000;cameraUpdate();if((s.time??0)<previousTime){priorRobots.length=0;births.clear();}previousTime=s.time??0;let actorCount=0,vehicleCount=0;
    if(regional)structures.forEach((g,i)=>{const p=s.sites[i];g.visible=p.status!=='empty';g.scale.y=p.status==='building'?.12+.88*p.progress/WORK:1;});
    dynamicRoot.updateMatrixWorld(true);for(const {mesh,parts} of dynamic){parts.forEach((p,i)=>{let visible=true;for(let a=p;a;a=a.parent)if(!a.visible)visible=false;mesh.setMatrixAt(i,visible?p.matrixWorld:zero);});mesh.instanceMatrix.needsUpdate=true;}
    const groups=regional?s.towns.map(t=>({tasks:t.tasks.reduce((a,b)=>a+b,0),robots:t.assigned.reduce((a,b)=>a+b,0)})):s.cityTasks.map((tasks,i)=>({tasks,robots:s.cityAssigned[i]}));

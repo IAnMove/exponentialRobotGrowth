@@ -1,5 +1,6 @@
 import {createRegion,tickRegion,STEP,END} from './region-model.js';
 import {SECTORS} from './city-model.js';
+import {recordDoublings} from './learning-model.js';
 export const TOWNS=[
  {name:'Ciudad del río',tasks:[24,36,30,24,30,36],travel:1},
  {name:'Ciudad central',tasks:[32,48,40,32,40,48],travel:3},
@@ -10,11 +11,11 @@ export const covered=t=>t.assigned.reduce((a,b)=>a+b,0);
 export function createTerritory(share=.4,auto=true,delivery=.35){
  const s=createRegion(share,auto);s.delivery=delivery;s.exportShare=delivery;
  s.towns=TOWNS.map(t=>({tasks:[...t.tasks],travel:t.travel,assigned:t.tasks.map(()=>0),reserved:0,received:0}));
- s.shipments=[];s.depot=0;s.delivered=0;s.urbanHistory=[];return s;
+ s.shipments=[];s.depot=0;s.delivered=0;s.urbanHistory=[];s.doublings=[];return s;
 }
 export function tickTerritory(s){
  if(s.time>=END)return;
- const before=s.exported;s.exportShare=s.delivery;tickRegion(s);s.depot+=s.exported-before;
+ const before=s.exported;s.exportShare=s.delivery;tickRegion(s);s.depot+=s.exported-before;recordDoublings(s);
  // Completed robots leave the industrial workforce before being dispatched.
  // Reserve only feasible tasks, so cities never receive duplicate allocations.
  while(s.depot>0){

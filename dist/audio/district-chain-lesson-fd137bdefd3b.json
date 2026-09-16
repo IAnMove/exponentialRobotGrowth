@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Select a stage to see what it needs. The mine supplies ore, the refinery produces materials, and four industries make structures, motors, batteries and electronics. Logistics combines those families into kits; assembly and testing finish the robot. If a stage produces less than its available capacity allows, we highlight the suppliers of its scarcest inputs. The four component industries share materials: reinforcing one can increase pressure on the others. This tour explains dependencies rather than tracking an individual batch. Check working hours and equipment too. Growth can be sustained when new robots reinforce the entire supply chain, not just final assembly.",
+  "duration_ms": 43020,
+  "billed_characters": 673,
+  "sample_rate": 32000,
+  "size_bytes": 690036,
+  "generated_at": "2026-09-16T01:00:04.645830+00:00"
+}

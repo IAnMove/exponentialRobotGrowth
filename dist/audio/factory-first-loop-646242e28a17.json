@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Mira la salida de la cinta. Al principio, las personas fabrican el primer robot. Solo cuando termina todos los puestos puede regresar y cubrir una tarea. El aro dorado permite seguir su primer recorrido. Durante el traslado aún no produce; después también necesitará recarga y servicio. Cuando trabaja, una parte de lo producido ayuda a fabricar los siguientes robots. Esa reinversión permite que aumente la capacidad. Pero no multiplica automáticamente la producción de toda la línea: otros puestos, la maquinaria o el suministro pueden frenarla. Las horas disponibles y el ritmo por hora son ventajas distintas. Una fábrica humana también puede organizar varios turnos.",
+  "duration_ms": 41832,
+  "billed_characters": 671,
+  "sample_rate": 32000,
+  "size_bytes": 671028,
+  "generated_at": "2026-09-16T01:00:03.658689+00:00"
+}

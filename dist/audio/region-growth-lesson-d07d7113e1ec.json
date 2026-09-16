@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "These two maps start with the same resources and advance on the same clock. One region invests robots and materials in new facilities; the other keeps its original six. Construction costs output at first, but can increase capacity later. Watch how long each region takes to go from twenty-four to forty-eight robots, then to ninety-six. The table measures each doubling interval, not the total time since the start. In sustained exponential growth, these intervals would be similar. Here resources and plots are finite, so growing more does not guarantee that pace will continue. The purple curve is an optional mathematical reference, not the result or a prediction of this simulation.",
+  "duration_ms": 42660,
+  "billed_characters": 686,
+  "sample_rate": 32000,
+  "size_bytes": 684276,
+  "generated_at": "2026-09-16T01:00:09.018600+00:00"
+}

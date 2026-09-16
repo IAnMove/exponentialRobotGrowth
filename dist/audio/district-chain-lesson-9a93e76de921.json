@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Selecciona una etapa para ver qué necesita. La mina aporta mineral, la refinería produce materiales y cuatro industrias hacen estructuras, motores, baterías y electrónica. Logística reúne esas familias en kits; montaje y pruebas terminan el robot. Si una etapa produce menos de lo que permite su capacidad disponible, resaltamos el proveedor de sus insumos más escasos. Las cuatro industrias de componentes comparten materiales: reforzar una puede aumentar la presión sobre las otras. Este recorrido explica las dependencias, no sigue un lote individual. Comprueba también los turnos y la maquinaria. El crecimiento se sostiene cuando los nuevos robots refuerzan toda la cadena, no solo el montaje final.",
+  "duration_ms": 45864,
+  "billed_characters": 704,
+  "sample_rate": 32000,
+  "size_bytes": 735540,
+  "generated_at": "2026-09-16T01:00:03.361551+00:00"
+}

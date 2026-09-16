@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Watch the end of the conveyor. At first, people build the first robot. Only after it completes every station can it return and take over a task. The golden ring lets you follow its first journey. In transit, it does not produce anything yet; later it also needs charging and maintenance. When it works, part of what the factory produced helps build the next robots. That reinvestment can increase capacity. But it does not automatically multiply output across the whole line: other stations, equipment or supplies can hold it back. Available hours and hourly pace are separate advantages. Human factories can also run multiple shifts.",
+  "duration_ms": 41220,
+  "billed_characters": 634,
+  "sample_rate": 32000,
+  "size_bytes": 661236,
+  "generated_at": "2026-09-16T01:00:03.828313+00:00"
+}

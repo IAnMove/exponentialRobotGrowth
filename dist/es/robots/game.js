@@ -1,3 +1,4 @@
+import {explainConstraint} from './learning-model.js';
 import * as THREE from '../../vendor/three.module.js';
 import {WORLD,createWorld,roadRoute,routePoint} from './world.js';
 import {createCharacters} from './characters.js';
@@ -16,7 +17,7 @@ const world=createWorld(scene,INDUSTRIES),characters=createCharacters(scene,INDU
 const activity=createActivity(scene,world,INDUSTRIES);
 let run=simulateIndustry(),baseline=simulateIndustry('assembly'),index=0,phase=0,playing=false,speed=1,policy='network',selected=-1,motionTime=0;
 let yaw=.58,yawTarget=.58,zoom=1.08,zoomTarget=1.08,look=new THREE.Vector3(-3,0,3),targetLook=look.clone();
-let showRoutes=false,needsFrame=true;
+let showRoutes=false,needsFrame=true,traceIndex=0;let traceSources=[];
 const nextFrame=()=>run.frames[Math.min(index+1,run.frames.length-1)];
 const narrator=createNarrator({toggleHost:document.querySelector('.masthead'),onBegin(){playing=false;updateUI();}});
 document.addEventListener('click',e=>{if(e.target.closest('#play,#next-day,[data-hour],.milestones button,.experiment-controls button,#close-inspector,#camera-reset,#about-button'))narrator.stop();},true);
@@ -31,7 +32,7 @@ function updateCargo(frame){cargo.forEach(c=>{c.g.visible=c.j<Math.min(3,frame.f
 function setLighting(){const h=(run.frames[index].hour+phase)%24,day=THREE.MathUtils.smoothstep(Math.sin((h-6)/24*Math.PI*2),-.13,.35);ambient.intensity=.6+day*1.9;sun.intensity=.08+day*3;sun.color.set(day<.8?0xffbe8b:0xffe9d2);moon.intensity=1.1-day*.6;world.windows.emissiveIntensity=.12+(1-day)*2;world.lamps.emissiveIntensity=.1+(1-day)*3;container.parentElement.style.background=day>.7?'radial-gradient(ellipse at 50% 35%,#293e50,#192a3a 70%)':day<.2?'radial-gradient(ellipse at 50% 35%,#162944,#0c182c 75%)':'radial-gradient(ellipse at 50% 35%,#423847,#202536 75%)';$('sun-icon').textContent=day>.7?'☀':day<.2?'☾':'◒';}
 function updateClock(){const f=run.frames[index],minutes=Math.min(59,Math.floor(phase*60));$('clock-time').textContent=String(f.hour).padStart(2,'0')+':'+String(minutes).padStart(2,'0');$('clock-day').textContent='DÍA '+String(f.day).padStart(2,'0');$('period-label').textContent=periods[humanPeriod(f.hour+phase)];}
 function explain(f){if(index===0)return '74 personas ponen en marcha la industria. Todavía no hay robots.';if(f.opened.length)return 'Abre una ampliación en '+INDUSTRIES[f.opened[0]].name.toLowerCase()+'. Más equipos, más capacidad.';if(f.started.length)return 'Los robots construyen una ampliación en '+INDUSTRIES[f.started[0]].name.toLowerCase()+'.';if(f.hour>=22||f.hour<6)return totals(f.active)?'Los humanos duermen. '+totals(f.active)+' robots disponibles; otros recargan o reciben mantenimiento.':'El barrio duerme. La cadena espera el siguiente turno.';if(f.period==='lunch')return 'Hora de comer. Las personas hacen una pausa; los robots disponibles siguen en sus puestos.';if(f.humansReplaced===74)return 'Todas las tareas humanas del escenario ya tienen relevo. El límite pasa a equipos y suministros.';const target=f.arrivals.indexOf(Math.max(...f.arrivals));if(f.arrivals[target])return 'Llega el relevo a '+INDUSTRIES[target].name.toLowerCase()+'. Los humanos liberados regresan al barrio.';return f.total?'Los nuevos robots refuerzan la cadena. Cada kit necesita las cuatro familias de componentes.':'Las primeras piezas avanzan hacia montaje y pruebas.';}
-function updateUI(){needsFrame=true;const f=run.frames[index],max=run.frames.length-1;$('time').max=max;$('time').value=index;$('time').style.background=`linear-gradient(to right,#ff9254 ${index/max*100}%,#35404f ${index/max*100}%)`;
+function updateUI(){updateTrace();needsFrame=true;const f=run.frames[index],max=run.frames.length-1;$('time').max=max;$('time').value=index;$('time').style.background=`linear-gradient(to right,#ff9254 ${index/max*100}%,#35404f ${index/max*100}%)`;
   $('cycle').textContent=String(f.day).padStart(2,'0');$('total').textContent=format(f.total);$('comparison').textContent=format(baseline.frames[index].total)+' robots';$('rate-label').textContent=f.flow[8]+' terminados en la última hora';
   $('play-symbol').textContent=playing?'Ⅱ':'▶';$('play-label').textContent=playing?'Pausar':index===max?'Repetir':'Reproducir';$('play').setAttribute('aria-label',playing?'Pausar simulación':'Reproducir simulación');$('state-icon').textContent=playing?'▶':'Ⅱ';$('state-label').textContent=playing?'En marcha':'En pausa';
   $('human-count').textContent=totals(f.humansWorking);$('human-detail').textContent=f.humansReplaced+' de 74 tareas con relevo';$('robot-count').textContent=totals(f.active);$('robot-detail').textContent=totals(f.charging)+totals(f.maintenance)+' en recarga / servicio';$('fleet-count').textContent=totals(f.robots);$('fleet-detail').textContent=f.pending.length+' de camino';
@@ -45,7 +46,7 @@ function updateInspector(){const f=run.frames[index],i=selected;$('place-title')
     $('stock-list').replaceChildren(...INPUTS[i].map(k=>{const row=document.createElement('div');row.className='stock-row'+(f.inventory[k]===0?' empty':'');const name=document.createElement('span');name.textContent=RESOURCES[k];const count=document.createElement('strong');count.textContent=format(f.inventory[k]);row.append(name,count);return row;}));$('stock-title').textContent=i===0?'Extracción limitada por equipos':'Existencias que necesita';$('stock-footnote').textContent=i===0?'Los insumos especializados y la energía vienen del exterior.':'Lotes en la red · pilas del mapa orientativas';$('capacity-fill').style.width=Math.min(100,status.rate/f.hardware[i]*100)+'%';$('capacity-label').textContent=status.rate+' / '+f.hardware[i]+' lotes por hora';
   }else{$('place-status').dataset.state='';$('place-status').textContent=i===9?f.humansReplaced+' personas con su tarea industrial cubierta por robots.':i===10?f.period==='lunch'?'Es la hora de comer.':'El comedor espera la siguiente pausa.':i===11?totals(f.charging)+' recargando · '+totals(f.maintenance)+' en mantenimiento':i===12?format(f.exported)+' robots destinados a otros usos.':'Suministro externo supuesto.';}
 }
-function selectPlace(i,narrate=true){selected=i;$('inspector').hidden=false;zoomTarget=container.clientWidth<680?4:2.8;targetLook.set(places[i].x,0,places[i].z);updateUI();if(narrate)narrator.explain('district-'+i,i<9?'state-'+processStatus(run.frames[index],nextFrame(),i).code:null);}
+function selectPlace(i,narrate=true){if(i<9)traceIndex=i;selected=i;$('inspector').hidden=false;zoomTarget=container.clientWidth<680?4:2.8;targetLook.set(places[i].x,0,places[i].z);updateUI();if(narrate)narrator.explain('district-'+i,i<9?'state-'+processStatus(run.frames[index],nextFrame(),i).code:null);}
 function resetCamera(){selected=-1;$('inspector').hidden=true;zoomTarget=1;yawTarget=.58;targetLook.set(-1,0,3);updateUI();}
 $('routes').addEventListener('click',()=>{showRoutes=!showRoutes;needsFrame=true;$('routes').setAttribute('aria-pressed',showRoutes);});
 $('close-inspector').addEventListener('click',()=>{selected=-1;$('inspector').hidden=true;updateUI();});
@@ -85,10 +86,24 @@ function changeScenario(next=policy){playing=false;phase=0;policy=next;run=simul
 ['network','assembly','none'].forEach(id=>$(id).addEventListener('click',()=>changeScenario(id)));$('expand').addEventListener('change',()=>changeScenario());
 $('about-button').addEventListener('click',()=>$('about').showModal());$('close-about').addEventListener('click',()=>$('about').close());$('about').addEventListener('click',e=>{if(e.target===$('about'))$('about').close();});
 characters.rebuild(run);resize();updateUI();characters.update(run.frames[index],phase,motionTime);$('loading').hidden=true;let lastMini=0;
-function render(){requestAnimationFrame(render);const now=performance.now(),dt=Math.min((now-motionClock)/1000,.05);motionClock=now;const movingCamera=Math.abs(yawTarget-yaw)>.0005||Math.abs(zoomTarget-zoom)>.0005||look.distanceToSquared(targetLook)>.00001;if(!playing&&!needsFrame&&!movingCamera)return;if(playing)motionTime+=dt*speed;const f=run.frames[index],next=nextFrame();updateCamera();setLighting();characters.update(f,phase,motionTime,next.flow);updateCargo({...f,flow:next.flow});world.update({...f,flow:next.flow},motionTime);activity.update(f,next,motionTime,phase,selected,showRoutes);positionLabels();if(now-lastMini>150){drawMiniMap();lastMini=now;}renderer.render(scene,camera);needsFrame=false;}requestAnimationFrame(render);
+function render(){requestAnimationFrame(render);const now=performance.now(),dt=Math.min((now-motionClock)/1000,.05);motionClock=now;const movingCamera=Math.abs(yawTarget-yaw)>.0005||Math.abs(zoomTarget-zoom)>.0005||look.distanceToSquared(targetLook)>.00001;if(!playing&&!needsFrame&&!movingCamera)return;if(playing)motionTime+=dt*speed;const f=run.frames[index],next=nextFrame();updateCamera();setLighting();characters.update(f,phase,motionTime,next.flow);updateCargo({...f,flow:next.flow});world.update({...f,flow:next.flow},motionTime);activity.update(f,next,motionTime,phase,selected,showRoutes,$('trace-active').checked?traceSources:[]);positionLabels();if(now-lastMini>150){drawMiniMap();lastMini=now;}renderer.render(scene,camera);needsFrame=false;}requestAnimationFrame(render);
 
 
 
 
 
 document.addEventListener('narration-focus',e=>{if(/^district-\d+$/.test(e.detail))selectPlace(Number(e.detail.split('-')[1]),false);});
+
+function updateTrace(){const frame=run.frames[index],next=nextFrame(),d=explainConstraint(frame,next,traceIndex);traceSources=d.sources;const names=d.sources.map(i=>INDUSTRIES[i].name).join(', ');let text;
+ if(d.kind==='staff')text='En esta etapa falta personal disponible en este momento. Revisa el turno y la recarga antes de atribuir la espera a los materiales.';
+ else if(d.kind==='inputs')text='Esta etapa no alcanza su capacidad disponible. Revisa el suministro desde '+names+'. Las existencias se comparten entre procesos; reforzar solo este puesto puede no resolver la espera.';
+ else if(d.kind==='equipment')text='El personal disponible alcanza el límite de la maquinaria. Aquí hace falta capacidad instalada, no solo más robots.';
+ else text='Esta etapa está produciendo con los recursos disponibles. La salida final todavía depende del resto de la cadena.';
+ $('trace-status').textContent=INDUSTRIES[traceIndex].name+': '+text;$('trace-supplier').disabled=!d.sources.length;
+ [...$('trace-stages').children].forEach((b,i)=>b.setAttribute('aria-pressed',String(i===traceIndex)));
+ labels.forEach((b,i)=>b.classList.toggle('trace-source',$('trace-active').checked&&d.sources.includes(i)));
+}
+INDUSTRIES.forEach((item,i)=>{const b=document.createElement('button');b.type='button';b.textContent=item.name;b.onclick=()=>{narrator.stop();playing=false;$('trace-active').checked=true;selectTrace(i);};$('trace-stages').append(b);});
+$('trace-active').onchange=()=>{needsFrame=true;updateUI();};$('trace-next').onclick=()=>{narrator.stop();playing=false;$('trace-active').checked=true;selectTrace((traceIndex+1)%9);};$('trace-supplier').onclick=()=>{if(traceSources.length){narrator.stop();playing=false;selectTrace(traceSources[0]);}};$('trace-explain').onclick=()=>narrator.explain('district-chain-lesson');updateTrace();
+
+function selectTrace(i){selectPlace(i,false);if(matchMedia('(max-width:760px)').matches)container.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});}

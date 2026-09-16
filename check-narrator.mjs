@@ -9,7 +9,7 @@ if(!englishOnly)assert.deepEqual(Object.keys(ENGLISH),Object.keys(SPANISH));
 for(let i=0;i<14;i++)assert(NARRATIONS['district-'+i]);
 for(let i=0;i<5;i++)assert(NARRATIONS['robot-factory-'+i]);
 for(let i=0;i<6;i++)assert(NARRATIONS['city-'+i]);
-for(const key of ['guide-factory','guide-district','guide-city'])assert(NARRATIONS[key]);
+for(const key of ['guide-factory','guide-district','guide-city','factory-first-loop','district-chain-lesson','region-growth-lesson'])assert(NARRATIONS[key]);
 for(let i=0;i<6;i++)assert(NARRATIONS['region-'+i]);
 for(let i=0;i<3;i++)assert(NARRATIONS['region-city-'+i]);
 for(const key of ['region-overview','region-operation','region-project'])assert(NARRATIONS[key]);
