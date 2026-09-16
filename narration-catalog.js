@@ -292,6 +292,30 @@ export const NARRATIONS = {
     "text": "Este barrio representa apoyo logístico, gestión de espacios y tareas administrativas sencillas. Enseñar, acompañar, interpretar necesidades y decidir no aparecen sustituidos por completo. Por eso siguen viéndose tareas humanas aunque lleguen muchos robots. La curva descendente representa tareas que dejan de requerir una asignación humana en este ejemplo, no personas que desaparecen de la ciudad. La escena no calcula nuevas ocupaciones. Hasta aquí hemos visto cómo se reparte la capacidad dentro de una ciudad. Ahora sube a la región: tres ciudades comparten fábricas y proveedores, y las distancias retrasan la llegada de robots. Podrás comparar entregar más hoy con reservar capacidad para fabricar más después.",
     "src": "./audio/city-5-9b664f7eb0c9.mp3",
     "duration": 45.36
+  },
+  "factory-first-loop": {
+    "title": "El primer robot vuelve a la línea",
+    "text": "Mira la salida de la cinta. Al principio, las personas fabrican el primer robot. Solo cuando termina todos los puestos puede regresar y cubrir una tarea. El aro dorado permite seguir su primer recorrido. Durante el traslado aún no produce; después también necesitará recarga y servicio. Cuando trabaja, una parte de lo producido ayuda a fabricar los siguientes robots. Esa reinversión permite que aumente la capacidad. Pero no multiplica automáticamente la producción de toda la línea: otros puestos, la maquinaria o el suministro pueden frenarla. Las horas disponibles y el ritmo por hora son ventajas distintas. Una fábrica humana también puede organizar varios turnos.",
+    "src": "./audio/factory-first-loop-646242e28a17.mp3",
+    "duration": 41.832
+  },
+  "district-chain-lesson": {
+    "title": "Por qué acelerar un puesto puede no bastar",
+    "text": "Selecciona una etapa para ver qué necesita. La mina aporta mineral, la refinería produce materiales y cuatro industrias hacen estructuras, motores, baterías y electrónica. Logística reúne esas familias en kits; montaje y pruebas terminan el robot. Si una etapa produce menos de lo que permite su capacidad disponible, resaltamos el proveedor de sus insumos más escasos. Las cuatro industrias de componentes comparten materiales: reforzar una puede aumentar la presión sobre las otras. Este recorrido explica las dependencias, no sigue un lote individual. Comprueba también los turnos y la maquinaria. El crecimiento se sostiene cuando los nuevos robots refuerzan toda la cadena, no solo el montaje final.",
+    "src": "./audio/district-chain-lesson-9a93e76de921.mp3",
+    "duration": 45.864
+  },
+  "region-growth-lesson": {
+    "title": "Crecer más no significa duplicarse siempre igual",
+    "text": "Estos dos mapas empiezan con los mismos recursos y avanzan con el mismo reloj. Una región dedica robots y materiales a nuevas instalaciones; la otra mantiene las seis originales. Construir cuesta producción al principio, pero después puede ampliar la capacidad. Mira cuánto tarda cada región en pasar de veinticuatro a cuarenta y ocho robots, y luego a noventa y seis. La tabla mide el tiempo de cada duplicación, no el tiempo total desde el inicio. En un crecimiento exponencial sostenido, esos intervalos serían parecidos. Aquí los recursos y las parcelas son finitos, por lo que crecer más no garantiza mantener ese ritmo. La curva violeta es una referencia matemática opcional, no el resultado ni una predicción de esta simulación.",
+    "src": "./audio/region-growth-lesson-3fc9753567a5.mp3",
+    "duration": 44.676
+  },
+  "district-productivity-lesson": {
+    "title": "Cuánto produce la cadena frente al trabajo humano",
+    "text": "Esta comparación mantiene las mismas setenta y cuatro personas, existencias y equipos iniciales. En la referencia humana, los robots fabricados salen del distrito: no vuelven a trabajar y no se construyen ampliaciones. Tu estrategia sí puede incorporar robots y ampliar instalaciones. Los contadores y la gráfica suman la producción de las últimas veinticuatro horas, o las horas transcurridas al principio. Al seleccionar una industria puedes comparar también su salida. En este distrito una persona y un robot tienen el mismo ritmo por hora activa. La diferencia empieza en la disponibilidad: ocho horas humanas frente a veintiuna robóticas, descontando recarga y servicio. Después importan las piezas, las máquinas y las ampliaciones. Por eso el porcentaje expresa el cambio en la producción de toda la cadena, no cuánto rinde un robot individual. Si la referencia todavía no ha producido, no mostramos un porcentaje.",
+    "src": "./audio/district-productivity-lesson-93fef2eb2f85.mp3",
+    "duration": 55.62
   }
 };
 for (const item of Object.values(NARRATIONS)) item.src = new URL(item.src, import.meta.url).href;

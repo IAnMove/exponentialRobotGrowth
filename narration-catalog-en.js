@@ -292,6 +292,30 @@ export const NARRATIONS = {
     "text": "This neighbourhood represents logistical support, management of spaces and simple administrative tasks. Teaching, supporting people, understanding needs and making decisions are not shown as fully replaced. Human tasks therefore remain visible even as many robots arrive. The descending curve represents tasks that no longer need a human assignment in this example, not people disappearing from the city. The scene does not calculate new occupations. We have seen how capacity spreads within one city. Now move up to the region: three cities share factories and suppliers, while distance delays robot arrivals. You can compare delivering more today with reserving capacity to produce more later.",
     "src": "./audio/city-5-f74b46789e72.mp3",
     "duration": 43.704
+  },
+  "factory-first-loop": {
+    "title": "The first robot returns to the line",
+    "text": "Watch the end of the conveyor. At first, people build the first robot. Only after it completes every station can it return and take over a task. The golden ring lets you follow its first journey. In transit, it does not produce anything yet; later it also needs charging and maintenance. When it works, part of what the factory produced helps build the next robots. That reinvestment can increase capacity. But it does not automatically multiply output across the whole line: other stations, equipment or supplies can hold it back. Available hours and hourly pace are separate advantages. Human factories can also run multiple shifts.",
+    "src": "./audio/factory-first-loop-69257cebf071.mp3",
+    "duration": 41.22
+  },
+  "district-chain-lesson": {
+    "title": "Why speeding up one station may not be enough",
+    "text": "Select a stage to see what it needs. The mine supplies ore, the refinery produces materials, and four industries make structures, motors, batteries and electronics. Logistics combines those families into kits; assembly and testing finish the robot. If a stage produces less than its available capacity allows, we highlight the suppliers of its scarcest inputs. The four component industries share materials: reinforcing one can increase pressure on the others. This tour explains dependencies rather than tracking an individual batch. Check working hours and equipment too. Growth can be sustained when new robots reinforce the entire supply chain, not just final assembly.",
+    "src": "./audio/district-chain-lesson-fd137bdefd3b.mp3",
+    "duration": 43.02
+  },
+  "region-growth-lesson": {
+    "title": "Growing faster does not mean a constant doubling time",
+    "text": "These two maps start with the same resources and advance on the same clock. One region invests robots and materials in new facilities; the other keeps its original six. Construction costs output at first, but can increase capacity later. Watch how long each region takes to go from twenty-four to forty-eight robots, then to ninety-six. The table measures each doubling interval, not the total time since the start. In sustained exponential growth, these intervals would be similar. Here resources and plots are finite, so growing more does not guarantee that pace will continue. The purple curve is an optional mathematical reference, not the result or a prediction of this simulation.",
+    "src": "./audio/region-growth-lesson-d07d7113e1ec.mp3",
+    "duration": 42.66
+  },
+  "district-productivity-lesson": {
+    "title": "How much the supply chain produces compared with human work",
+    "text": "This comparison starts with the same seventy-four people, stocks and equipment. In the human reference, finished robots leave the district: they do not return to work and no new facilities are built. Your strategy can deploy robots and expand facilities. The counters and chart sum output over the previous twenty-four hours, or elapsed hours at the start. Select an industry to compare its output too. In this district, a person and a robot have the same pace per active working hour. The initial difference is availability: eight human hours versus twenty-one robot hours, allowing for charging and maintenance. Parts, equipment and expansion then matter as well. The percentage therefore describes the change in output across the supply chain, not how productive an individual robot is. If the reference has not produced anything yet, we do not show a percentage.",
+    "src": "./audio/district-productivity-lesson-e9edaac3c2d0.mp3",
+    "duration": 55.08
   }
 };
 for (const item of Object.values(NARRATIONS)) item.src = new URL(item.src, import.meta.url).href;
