@@ -1,0 +1,1 @@
+export function timeBudget(tasks,selected,overhead){const total=tasks.reduce((n,t)=>n+t.minutes,0),delegated=tasks.filter(t=>selected.has(t.id)).reduce((n,t)=>n+t.minutes,0),support=delegated*overhead/100;return {total,delegated,support,freed:delegated-support,remaining:total-delegated+support};}

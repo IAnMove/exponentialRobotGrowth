@@ -37,7 +37,7 @@ for file in public.rglob('*.html'):
     references = References(file.parent)
     references.feed(file.read_text(encoding='utf-8'))
 for directory, language in [(public, 'en'), (public / 'es', 'es')]:
-    for route in ['index.html', 'terafab/index.html']:
+    for route in ['index.html', 'terafab/index.html', 'growth/index.html', 'home/index.html']:
         content = (directory / route).read_text(encoding='utf-8')
         assert f'<html lang="{language}">' in content
         assert '{{' not in content

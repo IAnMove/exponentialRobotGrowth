@@ -60,6 +60,8 @@ for language in ['en', 'es']:
             content = content.replace('</head>', tags + '</head>')
             home_label = '← All explorations' if language == 'en' else '← Todas las explicaciones'
             content = content.replace('</head>', '<link rel="stylesheet" href="./atlas-navigation.css"></head>')
+            growth_label = 'Production, exponential growth and costs →' if language == 'en' else 'Producción, crecimiento exponencial y costes →'
+            content = content.replace('</header>', f'</header><p class="growth-entry"><a href="./growth/index.html">{growth_label}</a></p>', 1)
             content = content.replace('<body>', f'<body><div class="atlas-return"><a href="./index.html">{home_label}</a><a href="./terafab/index.html">Terafab ↗</a></div>', 1)
         (destination / source.name).write_text(content, encoding='utf-8')
     # Robot scenes get a dedicated namespace; retain the old scene URLs too.
@@ -77,11 +79,12 @@ for language in ['en', 'es']:
             content = content.replace('href="./atlas-navigation.css"', 'href="../atlas-navigation.css"')
             content = content.replace('href="./index.html"', 'href="../index.html"')
             content = content.replace('href="./terafab/index.html"', 'href="../terafab/index.html"')
+            content = content.replace('href="./growth/index.html"', 'href="../growth/index.html"')
             content = content.replace(f'href="./es/{source.name}"', f'href="../es/robots/{source.name}"') if language == 'en' else content.replace(f'href="../{source.name}"', f'href="../../robots/{source.name}"')
         (robots / source.name).write_text(content, encoding='utf-8')
     (robots / 'index.html').write_text((robots / 'factory.html').read_text(encoding='utf-8'), encoding='utf-8')
     # Standalone explanations use their own modules and bilingual content.
-    for folder in ['hub', 'terafab']:
+    for folder in ['hub', 'terafab', 'growth', 'home']:
         target = destination if folder == 'hub' else destination / folder
         target.mkdir(exist_ok=True)
         for source in (ROOT / 'site-src' / folder).iterdir():
@@ -97,6 +100,8 @@ for language in ['en', 'es']:
                 content = content.replace('{{EN}}', './index.html' if language == 'en' else '../index.html').replace('{{ES}}', './es/index.html' if language == 'en' else './index.html')
                 if language == 'en':
                     content = content.replace('lang="es"', 'lang="en"', 1)
+                    for a,b in [('Robots — Crecimiento y producción','Robots — Growth and production'),('Hogar — Tareas y robots','Home — Tasks and robots'),('Compara trabajo humano, robots y reinversión: producción, costes y límites del crecimiento.','Compare human work, robots and reinvestment: output, costs and growth constraints.'),('Explora qué tareas de un hogar podrían delegarse a máquinas y robots.','Explore which household tasks could be delegated to machines and robots.')]:
+                        content=content.replace(a,b)
                     content = content.replace('Atlas — Explicaciones interactivas', 'Atlas — Interactive explanations').replace('Terafab — Atlas interactivo', 'Terafab — Interactive Atlas')
                     content = content.replace('Explora cómo funcionan los sistemas: robots, fábricas de chips y sus conexiones.', 'Explore how systems work: robots, chip factories and their connections.')
                     content = content.replace('Explora la fábrica integrada de chips de Terafab, sigue sus conexiones y experimenta con los límites de producción.', 'Explore the Terafab integrated chip factory, follow its connections and experiment with production constraints.')

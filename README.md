@@ -2,7 +2,7 @@
 
 ## Portada común y Terafab (publicación privada en Sites)
 
-Desplegado el 16 de septiembre de 2026 en https://robot-lab-el-relevo.merithion.chatgpt.site (acceso privado del propietario), versión 4, fuente `710a6113e65f7deed85db6f3b3c6156a4f344fec`. Despliegue `appgdep_6aaaad832668819184b75d15128c82d5` confirmado como `succeeded`. Entrada española: `/es/index.html`; Terafab: `/es/terafab/index.html`. GitHub Pages no se modificó y la iteración `codex/robot-learning` sigue pendiente de integración.
+Desplegado el 16 de septiembre de 2026 en https://robot-lab-el-relevo.merithion.chatgpt.site (acceso privado del propietario), versión 5, fuente `0a79031affeb5ec9599aed72264209b65bcc2f0b`. Despliegue `appgdep_6aaab65e84e481919ef510a1bf93238c` confirmado como `succeeded`. Entrada española: `/es/index.html`; Terafab: `/es/terafab/index.html`. GitHub Pages no se modificó y los commits de `codex/robot-learning` siguen pendientes de integración.
 
 La entrada `/` (inglés) y `/es/` (español) es ahora la colección Atlas. Robots tiene sus propias rutas `/robots/` y `/es/robots/`, con las cuatro escenas y narraciones existentes. Se conservan las rutas antiguas `factory.html`, `district.html`, `city.html` y `region.html`. Cada escena permite volver a la colección o entrar en Terafab.
 
@@ -131,3 +131,14 @@ Ejecutar `node check-model.js` y después `python build-demo.py`.
 4. Hacer visibles las demoras y los límites.
 5. Permitir explorar el tiempo sin asignarle fechas inventadas.
 6. Verificar las cantidades y probar la visualización en pantalla estrecha.
+
+
+## Revisión de realismo y lecciones cuantitativas (16 septiembre 2026)
+
+- `/growth/index.html` y `/es/growth/index.html`: comparación con turno humano simple o múltiple, robots fijos y reinversión. Los bienes genéricos consumen una hora equivalente por unidad; fabricar un robot consume trabajo configurado y tiene dos días completos de incorporación. Las instalaciones están disponibles desde el comienzo; el límite de materiales usa unidades equivalentes, no una lista de materiales real. No representa una cadena autónoma demostrada.
+- Los costes son un experimento independiente de capacidad plenamente utilizada. Incluyen material, trabajo humano o amortización del robot instalado, servicio, supervisión y electricidad. No son precios observados ni un coste fabril total; no financian el modelo de crecimiento.
+- `/home/`: plano esquemático con tiempo humano neto; solo aspirado/fregado se etiqueta como capacidad de robots especializados actuales. Las otras tareas son hipótesis de delegación futura, sin fechas.
+- Terafab: el render oficial y el expediente JETI sustentan el exterior y las familias previstas, no el plano interior ni cantidades de equipos. La maqueta interior es representativa. El transporte FOUP ya no se presenta como una oblea procesándose. La nueva sección permite inspeccionar transferencia de patrón con resina positiva, seguida de etapas resumidas hasta encapsulado y prueba, sin afirmar una receta de Terafab.
+- Fuentes técnicas: ASML Annual Report 2021 (separación entre exposición, revelado y grabado), Lam Research (deposición, grabado, limpieza), Applied Materials (CMP), Intel (encapsulado), Universal Robots (elementos de coste), iRobot (limpieza especializada). Fuentes enlazadas en cada explicación.
+- Los escenarios 3D anteriores mantienen cifras didácticas distintas: fábrica con ritmo robótico 1,4× y distrito con ritmo igual. No son mediciones de humanoides. Se integraron las mejoras de primera reincorporación, cadenas proveedoras y comparación de producción procedentes de `codex/robot-learning`.
+- Validación adicional: `node check-explanations.mjs` verifica conservación del trabajo, flota fabricada/pendiente, turnos equivalentes, sensibilidad de costes, cambios de material en la oblea y tiempo doméstico neto.
