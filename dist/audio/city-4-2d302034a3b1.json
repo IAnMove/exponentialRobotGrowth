@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Aquí agrupamos tareas de cuidados y salud. En los alcances parciales, la automatización se limita a una fracción y se conserva trabajo humano. La hipótesis total permite cubrir todas las tareas representadas para explorar ese extremo. No afirma que los robots actuales puedan sustituir a sanitarios o cuidadores, ni demuestra que el vínculo humano, el juicio clínico o la responsabilidad puedan delegarse. Las cifras son unidades del modelo, no profesiones eliminadas. Observa el relevo de las tareas y recuerda que su viabilidad técnica es una hipótesis independiente del número de robots disponibles.",
+  "duration_ms": 37584,
+  "billed_characters": 602,
+  "sample_rate": 32000,
+  "size_bytes": 603060,
+  "generated_at": "2026-09-17T00:03:19.854824+00:00"
+}

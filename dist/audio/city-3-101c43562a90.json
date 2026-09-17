@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Repeatable cleaning tasks can be a destination for robots when spaces and equipment allow it. Partial scopes assign different sector limits; the full hypothesis allows every represented task to be covered. This does not prove that every breakdown, difficult access or unexpected situation is technically solved. Follow deliveries and compare human tasks with robot tasks. Industrial growth determines how many robots arrive; the selected scope determines what we allow them to do in the model.",
+  "duration_ms": 29448,
+  "billed_characters": 493,
+  "sample_rate": 32000,
+  "size_bytes": 472884,
+  "generated_at": "2026-09-17T00:05:52.667280+00:00"
+}

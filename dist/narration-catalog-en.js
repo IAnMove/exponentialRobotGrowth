@@ -253,9 +253,9 @@ export const NARRATIONS = {
   },
   "guide-city": {
     "title": "Third scale: robots arrive in a city",
-    "text": "We now enter the city. Initially, humans perform the tasks in all six neighbourhoods. The surrounding industry delivers its first robots through the terminal. Watch them take on tasks in deliveries, retail, construction, cleaning, care and services. Orange figures represent human tasks; light figures represent tasks assigned to robots. Turquoise bars show coverage in each neighbourhood. They are not percentages of inhabitants or jobs eliminated. The chart compares both types of tasks. As industry expands, robots can arrive more frequently, but each sector has an assumed scope and retains human tasks. Sending many robots to the city has a cost: fewer remain to reinforce manufacturing. At the next scale, we will see several connected cities and how that capacity is distributed.",
-    "src": "./audio/guide-city-9223f0a0e97d.mp3",
-    "duration": 50.688
+    "text": "We now enter the city. Six hundred tasks begin with human workers. Industry manufactures robots and sends them to six neighborhoods. Each delivery takes time and removes a robot from the factory workforce. Press Play and follow the counters above: remaining human tasks, assigned robots and cost per task. The full hypothesis allows every represented task to be handed over, reaching zero remaining human tasks. This is a future assumption, not a proven capability or an employment forecast. The other three scopes retain human tasks. One task does not equal an entire profession. The displayed cost depends on your chosen robot cost fraction; it is not an observed price. Watch the curve accelerate as industry grows and flatten when demand is covered. Further growth needs new destinations, materials, energy and capacity.",
+    "src": "./audio/guide-city-b289744638df.mp3",
+    "duration": 54.324
   },
   "city-0": {
     "title": "Urban logistics",
@@ -265,33 +265,33 @@ export const NARRATIONS = {
   },
   "city-1": {
     "title": "Retail and food services",
-    "text": "Shops and food services contain repeated physical tasks such as stocking, preparation and cleaning. This scenario lets robots cover some of them while people continue serving customers, handling exceptions and making decisions. Watch robots arrive as industrial output increases. They are not all assigned at the start. An automated task is not interpreted as a business without people. Coverage stops at the selected hypothesis's limit, even if more robots keep arriving in the city.",
-    "src": "./audio/city-1-a9a6989018fd.mp3",
-    "duration": 29.988
+    "text": "This neighborhood groups retail and food tasks: restocking, preparation and cleaning. Robots arrive from industry; they are not all assigned at the start. Partial scopes retain human tasks. The full hypothesis assumes all represented tasks can be delegated, including exceptions simplified here. This does not mean a robot currently exists that can run any shop independently. Follow the bar and counters: each delivery increases coverage up to the chosen limit.",
+    "src": "./audio/city-1-2336b3fda192.mp3",
+    "duration": 29.484
   },
   "city-2": {
     "title": "Construction and repair",
-    "text": "This sector represents material handling and repeatable construction and repair operations. Changing environments, coordination and technical decisions leave human tasks. Here we measure how many urban tasks move to robots. More robotic figures do not apply a magical boost to every construction project. Robot manufacturing and supplier expansion happen in the industrial model feeding the city. Keeping the two separate makes it clear where acceleration actually comes from.",
-    "src": "./audio/city-2-0dc8179ee4ff.mp3",
-    "duration": 30.06
+    "text": "This sector groups construction and repair tasks. Moving materials, performing repeatable operations and resolving surprises require different capabilities. The full hypothesis assumes represented tasks can be automated; other scenarios retain human work. New robots must be manufactured and delivered before assignment. Expansion of the supplying industry allows deliveries to accelerate. Drawing more robots does not apply a magic multiplier to all construction work.",
+    "src": "./audio/city-2-2625c1eb929e.mp3",
+    "duration": 29.124
   },
   "city-3": {
     "title": "Cleaning and maintenance",
-    "text": "Repeatable cleaning tasks can be a destination for robots, provided spaces and equipment allow them to work. That is why this hypothesis gives this sector a different scope from education or care. But not all maintenance is repeatable. Breakdowns, difficult access and unexpected situations require capabilities the model does not demonstrate. Watch progressive arrivals and compare tasks performed by humans and robots. The scene illustrates how capacity would be distributed under these assumptions, not what the real outcome will be.",
-    "src": "./audio/city-3-b716959fd405.mp3",
-    "duration": 33.804
+    "text": "Repeatable cleaning tasks can be a destination for robots when spaces and equipment allow it. Partial scopes assign different sector limits; the full hypothesis allows every represented task to be covered. This does not prove that every breakdown, difficult access or unexpected situation is technically solved. Follow deliveries and compare human tasks with robot tasks. Industrial growth determines how many robots arrive; the selected scope determines what we allow them to do in the model.",
+    "src": "./audio/city-3-101c43562a90.mp3",
+    "duration": 29.448
   },
   "city-4": {
     "title": "Support in care and health",
-    "text": "This sector represents internal transport, material preparation and some physical support tasks. We do not assume a robot completely replaces a healthcare professional or caregiver. Clinical judgment, human relationships, responsibility and many care situations remain outside the automated tasks in this example. Even the broadest hypothesis retains human tasks. The percentage is a scenario choice, not medical advice or an employment forecast. We want to show that having more robots does not make every activity equally automatable.",
-    "src": "./audio/city-4-4f42f05d810a.mp3",
-    "duration": 36.648
+    "text": "Here we group care and health tasks. Partial scopes automate a fraction and retain human work. The full hypothesis permits all represented tasks to be covered to explore that extreme. It does not claim current robots can replace health professionals or caregivers, nor establish that human connection, clinical judgment or responsibility can be delegated. These numbers are model units, not eliminated professions. Follow the task handover and remember that technical feasibility is an assumption independent of how many robots are available.",
+    "src": "./audio/city-4-2dd50048adf3.mp3",
+    "duration": 33.012
   },
   "city-5": {
     "title": "Education, services and the next scale",
-    "text": "This neighbourhood represents logistical support, management of spaces and simple administrative tasks. Teaching, supporting people, understanding needs and making decisions are not shown as fully replaced. Human tasks therefore remain visible even as many robots arrive. The descending curve represents tasks that no longer need a human assignment in this example, not people disappearing from the city. The scene does not calculate new occupations. We have seen how capacity spreads within one city. Now move up to the region: three cities share factories and suppliers, while distance delays robot arrivals. You can compare delivering more today with reserving capacity to produce more later.",
-    "src": "./audio/city-5-f74b46789e72.mp3",
-    "duration": 43.704
+    "text": "This neighborhood groups education and services. Partial scopes retain human tasks; the full hypothesis allows every unit in this example to pass to robots. This is a choice for exploring the mechanism, not a demonstration that teaching, accompanying or deciding can be completely automated. The falling curve counts remaining human tasks, not disappearing people. When it reaches zero, residents remain in the city. In the region you can observe the same allocation across three connected cities with different delivery distances.",
+    "src": "./audio/city-5-fc106fe31167.mp3",
+    "duration": 33.732
   },
   "factory-first-loop": {
     "title": "The first robot returns to the line",

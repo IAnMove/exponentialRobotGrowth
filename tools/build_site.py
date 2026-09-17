@@ -62,7 +62,7 @@ for language in ['en', 'es']:
             content = content.replace('</head>', '<link rel="stylesheet" href="./atlas-navigation.css"></head>')
             growth_label = 'Production, exponential growth and costs →' if language == 'en' else 'Producción, crecimiento exponencial y costes →'
             content = content.replace('</main>', f'<p class="growth-entry"><a href="./growth/index.html">{growth_label}</a></p></main>', 1)
-            content = content.replace('<body>', f'<body><div class="atlas-return"><a href="./index.html">{home_label}</a><a href="./terafab/index.html">Terafab ↗</a></div>', 1)
+            content = content.replace('<body>', f'<body><div class="atlas-return"><a href="./index.html">{home_label}</a><a href="./home/index.html">{"Casa 3D ↗" if language == "es" else "Home 3D ↗"}</a><a href="./terafab/index.html">Terafab ↗</a></div>', 1)
         (destination / source.name).write_text(content, encoding='utf-8')
     # Robot scenes get a dedicated namespace; retain the old scene URLs too.
     robots = destination / 'robots'
@@ -82,6 +82,7 @@ for language in ['en', 'es']:
             content = content.replace('href="./index.html"', 'href="../index.html"')
             content = content.replace('href="./terafab/index.html"', 'href="../terafab/index.html"')
             content = content.replace('href="./growth/index.html"', 'href="../growth/index.html"')
+            content = content.replace('href="./home/index.html"', 'href="../home/index.html"')
             content = content.replace(f'href="./es/{source.name}"', f'href="../es/robots/{source.name}"') if language == 'en' else content.replace(f'href="../{source.name}"', f'href="../../robots/{source.name}"')
         (robots / source.name).write_text(content, encoding='utf-8')
     (robots / 'index.html').write_text((robots / 'factory.html').read_text(encoding='utf-8'), encoding='utf-8')
@@ -96,7 +97,7 @@ for language in ['en', 'es']:
             if source.suffix not in ['.html', '.js', '.css']:
                 continue
             content = source.read_text(encoding='utf-8')
-            if folder == 'terafab' and language == 'es' and source.suffix == '.js':
+            if folder in ['terafab', 'home'] and language == 'es' and source.suffix == '.js':
                 content = content.replace("'../vendor/", "'../../vendor/")
             if source.suffix == '.html':
                 content = content.replace('{{EN}}', './index.html' if language == 'en' else '../index.html').replace('{{ES}}', './es/index.html' if language == 'en' else './index.html')

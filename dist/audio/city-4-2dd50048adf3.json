@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Here we group care and health tasks. Partial scopes automate a fraction and retain human work. The full hypothesis permits all represented tasks to be covered to explore that extreme. It does not claim current robots can replace health professionals or caregivers, nor establish that human connection, clinical judgment or responsibility can be delegated. These numbers are model units, not eliminated professions. Follow the task handover and remember that technical feasibility is an assumption independent of how many robots are available.",
+  "duration_ms": 33012,
+  "billed_characters": 542,
+  "sample_rate": 32000,
+  "size_bytes": 529908,
+  "generated_at": "2026-09-17T00:03:19.557191+00:00"
+}

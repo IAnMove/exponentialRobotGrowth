@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This neighborhood groups education and services. Partial scopes retain human tasks; the full hypothesis allows every unit in this example to pass to robots. This is a choice for exploring the mechanism, not a demonstration that teaching, accompanying or deciding can be completely automated. The falling curve counts remaining human tasks, not disappearing people. When it reaches zero, residents remain in the city. In the region you can observe the same allocation across three connected cities with different delivery distances.",
+  "duration_ms": 33732,
+  "billed_characters": 531,
+  "sample_rate": 32000,
+  "size_bytes": 541428,
+  "generated_at": "2026-09-17T00:03:25.127825+00:00"
+}

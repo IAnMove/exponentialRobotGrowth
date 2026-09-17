@@ -2,3 +2,5 @@
 
 @media(max-width:650px){.live-toolbar h2{font-size:12px;letter-spacing:.03em}.live-number{min-height:46px;margin:4px 0}.live-card small{min-height:28px;font-size:12px;line-height:1.25}.live-chart{height:40px}.live-bottom p{display:none}.live-bottom{font-size:12px}.live-assumptions summary{font-size:12px;line-height:1.5}}
 
+
+.live-replacement{padding:12px 16px;background:#182e31;border-bottom:1px solid #315451}.live-replacement>div{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.live-replacement strong{color:#b9f3d9}.replacement-count{font-variant-numeric:tabular-nums;font-size:14px}.live-replacement progress{width:100%;height:8px;accent-color:#a7e0cf;display:block;margin:9px 0}.replacement-note{color:#a7bbc3;font-size:12px}

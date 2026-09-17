@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Ahora entramos en la ciudad. Seiscientas tareas empiezan en manos humanas. La industria fabrica robots y los envía a seis barrios; cada entrega necesita tiempo y deja de trabajar en la fábrica. Pulsa Reproducir y sigue los contadores de arriba: tareas humanas pendientes, robots asignados y coste por tarea. En la hipótesis total, todas las tareas representadas pueden recibir relevo, hasta llegar a cero tareas humanas pendientes. Es un supuesto futuro, no una capacidad demostrada ni una previsión de empleo. Los otros tres alcances conservan tareas humanas. Una tarea tampoco equivale a una profesión completa. El coste mostrado depende de la fracción que elijas para el robot; no es un precio observado. Observa cómo la curva se acelera mientras crece la industria y se aplana cuando se cubre la demanda. Para seguir creciendo hacen falta nuevos destinos, materiales, energía y capacidad.",
+  "duration_ms": 57312,
+  "billed_characters": 892,
+  "sample_rate": 32000,
+  "size_bytes": 918708,
+  "generated_at": "2026-09-17T00:03:14.492625+00:00"
+}

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "En este barrio agrupamos tareas de comercio y alimentación: reposición, preparación y limpieza. Los robots llegan desde la industria, no aparecen todos al principio. Los alcances parciales conservan tareas humanas. La hipótesis total supone que todas las tareas representadas pueden delegarse, incluidas las excepciones que aquí simplificamos. Eso no significa que exista hoy un robot capaz de operar cualquier comercio por sí solo. Mira la barra y los contadores: cada entrega aumenta la cobertura hasta el límite elegido.",
+  "duration_ms": 32832,
+  "billed_characters": 523,
+  "sample_rate": 32000,
+  "size_bytes": 527028,
+  "generated_at": "2026-09-17T00:03:14.142929+00:00"
+}

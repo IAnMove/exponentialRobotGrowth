@@ -253,9 +253,9 @@ export const NARRATIONS = {
   },
   "guide-city": {
     "title": "Tercera escala: una ciudad recibe robots",
-    "text": "Ahora entramos en la ciudad. Al principio, las tareas de los seis barrios están atendidas por humanos. La industria del entorno entrega los primeros robots por la terminal. Observa cómo se incorporan a reparto, comercio, construcción, limpieza, cuidados y servicios. Las figuras naranjas representan tareas humanas; las claras, tareas asignadas a robots. Las barras turquesas muestran la cobertura de cada barrio. No son porcentajes de habitantes ni empleos eliminados. La gráfica compara ambas clases de tareas. Al crecer la industria, pueden llegar robots con más frecuencia, pero cada sector tiene un alcance supuesto y conserva tareas humanas. Enviar muchos robots a la ciudad también tiene un coste: quedan menos reforzando la fabricación. En la siguiente escala veremos varias ciudades conectadas y el reparto de esa capacidad entre ellas.",
-    "src": "./audio/guide-city-149defaaaa87.mp3",
-    "duration": 53.856
+    "text": "Ahora entramos en la ciudad. Seiscientas tareas empiezan en manos humanas. La industria fabrica robots y los envía a seis barrios; cada entrega necesita tiempo y deja de trabajar en la fábrica. Pulsa Reproducir y sigue los contadores de arriba: tareas humanas pendientes, robots asignados y coste por tarea. En la hipótesis total, todas las tareas representadas pueden recibir relevo, hasta llegar a cero tareas humanas pendientes. Es un supuesto futuro, no una capacidad demostrada ni una previsión de empleo. Los otros tres alcances conservan tareas humanas. Una tarea tampoco equivale a una profesión completa. El coste mostrado depende de la fracción que elijas para el robot; no es un precio observado. Observa cómo la curva se acelera mientras crece la industria y se aplana cuando se cubre la demanda. Para seguir creciendo hacen falta nuevos destinos, materiales, energía y capacidad.",
+    "src": "./audio/guide-city-a11c8b5e280c.mp3",
+    "duration": 57.312
   },
   "city-0": {
     "title": "Logística urbana",
@@ -265,33 +265,33 @@ export const NARRATIONS = {
   },
   "city-1": {
     "title": "Comercio y alimentación",
-    "text": "En tiendas y servicios de alimentación puede haber tareas físicas repetidas, como reponer, preparar o limpiar. Este escenario permite que los robots cubran algunas de ellas mientras las personas siguen atendiendo, resolviendo excepciones y tomando decisiones. Mira cómo llegan robots a medida que aumenta la producción industrial. No se asignan todos desde el principio. Tampoco se interpreta una tarea automatizada como un comercio sin personas. La cobertura se detiene en el límite de la hipótesis seleccionada, aunque sigan llegando más robots a la ciudad.",
-    "src": "./audio/city-1-23595fd19d7d.mp3",
-    "duration": 34.884
+    "text": "En este barrio agrupamos tareas de comercio y alimentación: reposición, preparación y limpieza. Los robots llegan desde la industria, no aparecen todos al principio. Los alcances parciales conservan tareas humanas. La hipótesis total supone que todas las tareas representadas pueden delegarse, incluidas las excepciones que aquí simplificamos. Eso no significa que exista hoy un robot capaz de operar cualquier comercio por sí solo. Mira la barra y los contadores: cada entrega aumenta la cobertura hasta el límite elegido.",
+    "src": "./audio/city-1-232624d7959e.mp3",
+    "duration": 32.832
   },
   "city-2": {
     "title": "Construcción y reparación",
-    "text": "Este sector representa movimiento de materiales y operaciones repetibles de construcción y reparación. Los entornos cambiantes, la coordinación y las decisiones técnicas dejan tareas humanas. En esta escena medimos cuántas tareas urbanas pasan a los robots. No aplicamos un aumento mágico a todas las obras por ver más figuras robóticas. La fabricación de los robots y la ampliación de sus proveedores ocurren en el modelo industrial que alimenta esta ciudad. Separar ambas cosas permite entender de dónde sale realmente la aceleración.",
-    "src": "./audio/city-2-3b13f31a8aeb.mp3",
-    "duration": 30.348
+    "text": "Este sector agrupa tareas de construcción y reparación. Transportar material, ejecutar operaciones repetibles y resolver imprevistos requieren capacidades distintas. La hipótesis total supone que las tareas representadas pueden automatizarse; los otros escenarios conservan trabajo humano. Los nuevos robots tienen que fabricarse y llegar antes de asignarse. La expansión de la industria que los suministra es lo que permite acelerar las entregas. No aplicamos un multiplicador mágico a todas las obras por dibujar más robots.",
+    "src": "./audio/city-2-05f250437542.mp3",
+    "duration": 31.644
   },
   "city-3": {
     "title": "Limpieza y mantenimiento",
-    "text": "Las tareas repetibles de limpieza pueden ser un destino para los robots, siempre que los espacios y equipos permitan realizarlas. Por eso esta hipótesis da a este sector un alcance distinto al de educación o cuidados. Pero no todo mantenimiento es repetible. Averías, accesos difíciles y situaciones inesperadas siguen requiriendo capacidades que el modelo no demuestra. Observa la llegada progresiva y compara el número de tareas con humanos y con robots. La escena ilustra cómo se repartiría la capacidad bajo estos supuestos, no cuál será el resultado real.",
-    "src": "./audio/city-3-fceac41ca077.mp3",
-    "duration": 35.352
+    "text": "Las tareas repetibles de limpieza pueden ser un destino para los robots, siempre que los espacios y los equipos permitan realizarlas. Los alcances parciales asignan límites distintos por sector; la hipótesis total permite cubrir todas las tareas representadas. Eso no demuestra que cualquier avería, acceso difícil o situación inesperada esté resuelta técnicamente. Observa las entregas y compara las tareas con humanos y con robots. El crecimiento industrial determina cuántos robots llegan; el alcance elegido determina qué les permitimos hacer en el modelo.",
+    "src": "./audio/city-3-ec013d76062b.mp3",
+    "duration": 35.568
   },
   "city-4": {
     "title": "Apoyo en cuidados y salud",
-    "text": "Aquí representamos transporte interno, preparación de material y algunas tareas de apoyo físico. No suponemos que un robot sustituya por completo a profesionales sanitarios o cuidadores. El juicio clínico, el vínculo humano, la responsabilidad y muchas situaciones de cuidado permanecen fuera de las tareas automatizadas del ejemplo. Incluso la hipótesis más amplia conserva tareas humanas. El porcentaje expresa una elección del escenario, no una recomendación sanitaria ni una predicción laboral. Lo que queremos mostrar es que disponer de más robots no hace que todas las actividades sean igual de automatizables.",
-    "src": "./audio/city-4-d7e33c0be668.mp3",
-    "duration": 38.628
+    "text": "Aquí agrupamos tareas de cuidados y salud. En los alcances parciales, la automatización se limita a una fracción y se conserva trabajo humano. La hipótesis total permite cubrir todas las tareas representadas para explorar ese extremo. No afirma que los robots actuales puedan sustituir a sanitarios o cuidadores, ni demuestra que el vínculo humano, el juicio clínico o la responsabilidad puedan delegarse. Las cifras son unidades del modelo, no profesiones eliminadas. Observa el relevo de las tareas y recuerda que su viabilidad técnica es una hipótesis independiente del número de robots disponibles.",
+    "src": "./audio/city-4-2d302034a3b1.mp3",
+    "duration": 37.584
   },
   "city-5": {
     "title": "Educación, servicios y siguiente escala",
-    "text": "Este barrio representa apoyo logístico, gestión de espacios y tareas administrativas sencillas. Enseñar, acompañar, interpretar necesidades y decidir no aparecen sustituidos por completo. Por eso siguen viéndose tareas humanas aunque lleguen muchos robots. La curva descendente representa tareas que dejan de requerir una asignación humana en este ejemplo, no personas que desaparecen de la ciudad. La escena no calcula nuevas ocupaciones. Hasta aquí hemos visto cómo se reparte la capacidad dentro de una ciudad. Ahora sube a la región: tres ciudades comparten fábricas y proveedores, y las distancias retrasan la llegada de robots. Podrás comparar entregar más hoy con reservar capacidad para fabricar más después.",
-    "src": "./audio/city-5-9b664f7eb0c9.mp3",
-    "duration": 45.36
+    "text": "Este barrio agrupa educación y servicios. Los alcances parciales conservan tareas humanas; la hipótesis total permite que todas las unidades del ejemplo pasen a robots. Es una elección para explorar el mecanismo y no una demostración de que enseñar, acompañar o decidir sean automatizables por completo. La curva descendente cuenta tareas humanas pendientes, no personas que desaparecen. Cuando llega al cero, los habitantes siguen en la ciudad. En la región puedes observar el mismo reparto en tres ciudades conectadas, con distintas distancias de entrega.",
+    "src": "./audio/city-5-5814c067c815.mp3",
+    "duration": 35.496
   },
   "factory-first-loop": {
     "title": "El primer robot vuelve a la línea",

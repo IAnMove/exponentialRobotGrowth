@@ -6,9 +6,9 @@ import {createNarrator} from './narrator.js';
 const $=id=>document.getElementById(id),fmt=n=>Math.round(n).toLocaleString('en-US');
 let state=createFactory(undefined,true),reference=createFactory(),selected=1,playing=false,speed=1,motion=0,last=performance.now(),accumulator=0,uiClock=0;
 let liveLedger=createLedger(),livePoints=[];
-const live=createLiveHeader({anchor:'.factory-layout',kind:'factory',onPlay:()=>$('f-play').click(),onReset:()=>$('f-reset').click()});
+const live=createLiveHeader({anchor:'.factory-layout',kind:'factory',onFinish:()=>$('f-day-end').click(),onPlay:()=>$('f-play').click(),onReset:()=>$('f-reset').click()});
 function liveRow(){return {time:state.time,total:state.total,reference:reference.total,fleet:sum(state.robots.map(r=>r.length)),referenceFleet:0,...liveLedger.values()};}
-function updateLive(){const row=liveRow();live.update({time:state.time,playing,horizon:Math.max(24,Math.ceil(state.time/24)*24),points:[...livePoints.filter(p=>p.time<state.time),row],saturated:state.deployed>=10});}
+function updateLive(){const row=liveRow();live.update({time:state.time,playing,horizon:Math.max(24,Math.ceil(state.time/24)*24),points:[...livePoints.filter(p=>p.time<state.time),row],replacement:{done:state.deployed,total:10},saturated:state.deployed>=10});}
 const baseDay=forecast([0,0,0,0,0]);let planDay=baseDay;
 const narrator=createNarrator({toggleHost:document.querySelector('.topbar'),onBegin(){playing=false;updateUI();}});
 document.addEventListener('click',e=>{if(e.target.closest('#f-play,#f-reset,#f-automate,#f-lunch,#f-night,#f-day-end,#help,#f-assumptions'))narrator.stop();},true);

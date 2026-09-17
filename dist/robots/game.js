@@ -23,8 +23,8 @@ let yaw=.58,yawTarget=.58,zoom=1.08,zoomTarget=1.08,look=new THREE.Vector3(-3,0,
 let showRoutes=false,needsFrame=true,traceIndex=0;let traceSources=[];
 const humanReference=simulateIndustry('none',false);const humanProduction=INDUSTRIES.map((_,i)=>productionSeries(humanReference.frames,i));let planProduction=INDUSTRIES.map((_,i)=>productionSeries(run.frames,i));
 let liveRows=districtRows(run.frames,humanReference.frames);
-const live=createLiveHeader({anchor:'.simulation-shell',kind:'district',onPlay:()=>$('play').click(),onReset:()=>{narrator.stop();playing=false;phase=0;setHour(0);}});
-function updateLive(){live.update({time:index,playing,horizon:run.frames.length-1,points:liveRows.slice(0,index+1),saturated:false});}
+const live=createLiveHeader({anchor:'.simulation-shell',kind:'district',onFinish:()=>{narrator.stop();playing=false;phase=0;setHour(run.frames.length-1);},onPlay:()=>$('play').click(),onReset:()=>{narrator.stop();playing=false;phase=0;setHour(0);}});
+function updateLive(){live.update({time:index,playing,horizon:run.frames.length-1,points:liveRows.slice(0,index+1),replacement:{done:run.frames[index].humansReplaced,total:74},saturated:false});}
 const nextFrame=()=>run.frames[Math.min(index+1,run.frames.length-1)];
 const narrator=createNarrator({toggleHost:document.querySelector('.masthead'),onBegin(){playing=false;updateUI();}});
 document.addEventListener('click',e=>{if(e.target.closest('#play,#next-day,[data-hour],.milestones button,.experiment-controls button,#close-inspector,#camera-reset,#about-button'))narrator.stop();},true);

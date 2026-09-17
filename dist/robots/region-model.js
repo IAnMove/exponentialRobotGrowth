@@ -10,7 +10,7 @@ export const TYPES=[
 export const STEP=.125,END=120,COST=48,WORK=24,MAX_PROJECTS=3,SLOTS=6;
 export function createRegion(share=.4,auto=true){return {time:0,fleet:24,built:0,exportShare:0,exported:0,exportCredit:0,partial:0,share,auto,ore:80,material:120,kits:24,reserve:0,extracted:0,spent:0,sites:TYPES.flatMap((_,type)=>Array.from({length:SLOTS},(_,slot)=>({type,slot,status:slot===0?'open':'empty',progress:0,workers:0}))),history:[],events:[],flow:Array(6).fill(0),builders:0,working:24,idle:0,energyFactor:1,transportFactor:1,energyDemand:0,power:36,freight:0,reason:'start'};}
 export const counts=s=>TYPES.map((_,i)=>s.sites.filter(p=>p.type===i&&p.status==='open').length);
-export function startBuild(s,index){const p=s.sites[index];if(!p||p.status!=='empty'||s.material<COST||s.sites.filter(p=>p.status==='building').length>=MAX_PROJECTS||s.time>=END)return false;s.material-=COST;s.reserve=Math.min(s.material,Math.max(0,s.reserve-COST));s.spent+=COST;p.status='building';p.progress=0;s.events.push({time:s.time,type:p.type,event:'started'});return true;}
+export function startBuild(s,index){const p=s.sites[index];if(!p||p.status!=='empty'||s.material<COST||s.sites.filter(p=>p.status==='building').length>=MAX_PROJECTS||s.time>=(s.end??END))return false;s.material-=COST;s.reserve=Math.min(s.material,Math.max(0,s.reserve-COST));s.spent+=COST;p.status='building';p.progress=0;s.events.push({time:s.time,type:p.type,event:'started'});return true;}
 function nextType(s){
   const n=TYPES.map((_,i)=>s.sites.filter(p=>p.type===i&&p.status!=='empty').length);
   // Plan the suppliers together. Energy and transport reserve is physical capacity,
@@ -35,8 +35,8 @@ export function metrics(s){
 }
 export function tickRegion(s,dt=STEP){
   if(!(dt>0&&dt<=STEP))throw new Error('Use a bounded simulation step');
-  if(s.time>=END)return;
-  dt=Math.min(dt,END-s.time);
+  if(s.time>=(s.end??END))return;
+  dt=Math.min(dt,(s.end??END)-s.time);
   if(s.auto&&s.share>0){
     const planned=Math.min(MAX_PROJECTS,Math.floor(s.fleet*s.share/4));
     while(s.sites.filter(p=>p.status==='building').length<planned&&s.material>=COST){
@@ -60,6 +60,6 @@ export function tickRegion(s,dt=STEP){
   for(const p of s.sites){p.workers=0;if(p.status!=='building')continue;p.workers=Math.min(4,available);available-=p.workers;p.progress=Math.min(WORK,p.progress+p.workers*m.energyFactor*dt);if(p.progress>=WORK){p.status='open';p.workers=0;s.events.push({time:s.time+dt,type:p.type,event:'opened'});}}
   s.time+=dt;
   s.reason=s.sites.every(p=>p.status==='open')?'land':m.energyFactor<.99?'power':m.transportFactor<.99?'transport':s.kits<1?'kits':s.share>0&&s.material<COST?'material':m.idle>0?'machines':'balanced';
-  if(!s.history.length||s.time-s.history.at(-1).time>=1-1e-8||s.time>=END)s.history.push({time:s.time,fleet:s.fleet,built:s.built,buildings:counts(s).reduce((a,b)=>a+b,0),flow:[...s.flow],counts:counts(s),builders:m.builders});
+  if(!s.history.length||s.time-s.history.at(-1).time>=1-1e-8||s.time>=(s.end??END))s.history.push({time:s.time,fleet:s.fleet,built:s.built,buildings:counts(s).reduce((a,b)=>a+b,0),flow:[...s.flow],counts:counts(s),builders:m.builders});
 }
 export function advanceRegion(s,cycles){for(let n=0;n<Math.round(cycles/STEP);n++)tickRegion(s);return s;}

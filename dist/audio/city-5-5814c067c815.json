@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Este barrio agrupa educación y servicios. Los alcances parciales conservan tareas humanas; la hipótesis total permite que todas las unidades del ejemplo pasen a robots. Es una elección para explorar el mecanismo y no una demostración de que enseñar, acompañar o decidir sean automatizables por completo. La curva descendente cuenta tareas humanas pendientes, no personas que desaparecen. Cuando llega al cero, los habitantes siguen en la ciudad. En la región puedes observar el mismo reparto en tres ciudades conectadas, con distintas distancias de entrega.",
+  "duration_ms": 35496,
+  "billed_characters": 557,
+  "sample_rate": 32000,
+  "size_bytes": 569652,
+  "generated_at": "2026-09-17T00:03:24.765775+00:00"
+}

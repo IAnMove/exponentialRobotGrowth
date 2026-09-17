@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Este sector agrupa tareas de construcción y reparación. Transportar material, ejecutar operaciones repetibles y resolver imprevistos requieren capacidades distintas. La hipótesis total supone que las tareas representadas pueden automatizarse; los otros escenarios conservan trabajo humano. Los nuevos robots tienen que fabricarse y llegar antes de asignarse. La expansión de la industria que los suministra es lo que permite acelerar las entregas. No aplicamos un multiplicador mágico a todas las obras por dibujar más robots.",
+  "duration_ms": 31644,
+  "billed_characters": 526,
+  "sample_rate": 32000,
+  "size_bytes": 508020,
+  "generated_at": "2026-09-17T00:03:19.193107+00:00"
+}
