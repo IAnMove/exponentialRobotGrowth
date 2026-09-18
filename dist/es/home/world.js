@@ -55,19 +55,25 @@ export function createHomeWorld(host){
  const ring=new THREE.Mesh(new THREE.RingGeometry(.56,.63,48),new THREE.MeshBasicMaterial({color:0xa7ead0,side:THREE.DoubleSide}));ring.rotation.x=-Math.PI/2;ring.position.y=.09;scene.add(ring);
  // Plants soften the cutaway without obstructing a task.
  for(const [x,z] of [[-5.2,1.9],[5.3,-4.3]]){cylinder(.23,.38,x,.2,z,0xad8264);for(let i=0;i<5;i++){const leaf=new THREE.Mesh(new THREE.SphereGeometry(.23,8,6),mat(0x6e9077));leaf.scale.set(.6,1.5,.6);leaf.position.set(x+Math.sin(i)*.15,.65,z+Math.cos(i)*.15);scene.add(leaf);}}
- let top=false,zoom=1;function resize(){const w=host.clientWidth,h=host.clientHeight;renderer.setSize(w,h);const aspect=w/h,span=Math.max(7.6,8/aspect)/zoom;camera.left=-span*aspect;camera.right=span*aspect;camera.top=span;camera.bottom=-span;camera.position.set(top?0:11,top?22:16,top?0.01:15);camera.lookAt(0,0,0);camera.updateProjectionMatrix();}
+ let top=false,zoom=1;const focus=new THREE.Vector3();
+ function resize(){const w=host.clientWidth,h=host.clientHeight;renderer.setSize(w,h);const aspect=w/h,span=Math.max(7.6,8/aspect)/zoom;camera.left=-span*aspect;camera.right=span*aspect;camera.top=span;camera.bottom=-span;camera.updateProjectionMatrix();}
  new ResizeObserver(resize).observe(host);resize();
  const dock=new THREE.Vector3(-.55,0,4.2),pos=new THREE.Vector3();
  const paths=[[],[[-.55,4.2],[-.55,-.6],[-2.3,-1.1]],[[-2.3,-1.1],[-1.2,-1.1],[-1.2,-3.1],[-3,-3.1]],[[-3,-3.1],[-.55,-3.1],[-.55,.6],[2.4,.6],[2.4,2.8]],[[2.4,2.8],[2.4,.5],[3.35,.5],[3.35,-1.8]],[[3.35,-1.8],[3.35,.5],[3,1.8],[4.05,1.8],[4.05,2.2]]];
  function route(points,progress){const lengths=points.slice(1).map((p,i)=>Math.hypot(p[0]-points[i][0],p[1]-points[i][1]));let distance=progress*lengths.reduce((a,b)=>a+b,0);for(let i=0;i<lengths.length;i++){if(distance<=lengths[i]||i===lengths.length-1){const f=Math.min(1,distance/lengths[i]);return pos.set(points[i][0]+(points[i+1][0]-points[i][0])*f,0,points[i][1]+(points[i+1][1]-points[i][1])*f);}distance-=lengths[i];}}
- function render(s,snapshot){const {done,index,work,phase,complete}=snapshot;mess.forEach((objects,i)=>objects.forEach((m,j)=>m.visible=i>index||i===index&&work<(j+1)/objects.length&&done<=i));results.forEach((objects,i)=>objects.forEach(m=>m.visible=done>i));
+ function render(s,snapshot,selected=snapshot.index){const {done,index,work,phase,complete}=snapshot;mess.forEach((objects,i)=>objects.forEach((m,j)=>m.visible=i>index||i===index&&work<(j+1)/objects.length&&done<=i));results.forEach((objects,i)=>objects.forEach(m=>m.visible=done>i));
   const made=done>4?1:index===4?work:0;blanket.rotation.y=.2*(1-made);blanket.position.x=1.85+.05*made;pillow.rotation.y=-.22*(1-made);
   screen.material=mat(done===7?0x76cbb6:0xe2a56f);aiTicks.forEach((m,i)=>m.visible=done===7||index===6&&work>(i+1)/4);
-  const task=CHORES[index];
+  const task=CHORES[index],view=CHORES[Math.min(selected,CHORES.length-1)];
   if(task.actor==='robot'&&!complete){route(paths[index],Math.min(1,phase/.25));robot.g.position.copy(pos);robot.g.rotation.y=Math.PI;robot.arms.forEach((arm,i)=>arm.rotation.x=work>0?Math.sin(s.time*5+i)*.5:0);}else{robot.g.position.copy(dock);robot.arms.forEach(a=>a.rotation.x=0);}
   const v=done>0?1:index===0?phase:0;vacuum.position.set(-4.4+Math.sin(v*Math.PI*6)*1.2,0,1.1+v*2.5);if(done>0)vacuum.position.set(-5,0,3.6);
   human.g.position.set(complete?-2.4:-1.2,complete?.1:0,complete?3.65:-1.2);human.g.rotation.y=complete?Math.PI:0;
-  ring.visible=!complete;ring.position.x=task.position[0];ring.position.z=task.position[1];ring.material.color.set(task.actor==='ai'?0xb9b1ff:0xa7ead0);
+  ring.visible=!complete;ring.position.x=view.position[0];ring.position.z=view.position[1];ring.material.color.set(view.actor==='ai'?0xb9b1ff:0xa7ead0);
+  const pulse=1+.08*Math.sin(s.time*4);ring.scale.set(pulse,pulse,1);
+  const tx=complete?0:view.position[0],tz=complete?0:view.position[1];
+  focus.x+=(tx-focus.x)*.08;focus.z+=(tz-focus.z)*.08;
+  const ox=focus.x*.32,oz=focus.z*.32;
+  camera.position.set((top?0:11)+ox,top?22:16,(top?0.01:15)+oz);camera.lookAt(ox,0,oz);
   renderer.render(scene,camera);
  }
  function project(x,z){const p=new THREE.Vector3(x,.15,z).project(camera);return {x:(p.x+1)*host.clientWidth/2,y:(1-p.y)*host.clientHeight/2};}

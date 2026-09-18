@@ -62,7 +62,7 @@ for language in ['en', 'es']:
             content = content.replace('</head>', '<link rel="stylesheet" href="./atlas-navigation.css"></head>')
             growth_label = 'Production, exponential growth and costs →' if language == 'en' else 'Producción, crecimiento exponencial y costes →'
             content = content.replace('</main>', f'<p class="growth-entry"><a href="./growth/index.html">{growth_label}</a></p></main>', 1)
-            content = content.replace('<body>', f'<body><div class="atlas-return"><a href="./index.html">{home_label}</a><a href="./home/index.html">{"Casa 3D ↗" if language == "es" else "Home 3D ↗"}</a><a href="./terafab/index.html">Terafab ↗</a></div>', 1)
+            content = content.replace('<body>', f'<body><div class="atlas-return"><a href="./index.html">{home_label}</a><a href="./starlink/index.html">Starlink ↗</a><a href="./spacex/index.html">SpaceX ↗</a><a href="./dyson/index.html">{"Esfera de Dyson ↗" if language == "es" else "Dyson sphere ↗"}</a><a href="./terafab/index.html">Terafab ↗</a></div>', 1)
         (destination / source.name).write_text(content, encoding='utf-8')
     # Robot scenes get a dedicated namespace; retain the old scene URLs too.
     robots = destination / 'robots'
@@ -83,11 +83,14 @@ for language in ['en', 'es']:
             content = content.replace('href="./terafab/index.html"', 'href="../terafab/index.html"')
             content = content.replace('href="./growth/index.html"', 'href="../growth/index.html"')
             content = content.replace('href="./home/index.html"', 'href="../home/index.html"')
+            content = content.replace('href="./dyson/index.html"', 'href="../dyson/index.html"')
+            content = content.replace('href="./starlink/index.html"', 'href="../starlink/index.html"')
+            content = content.replace('href="./spacex/index.html"', 'href="../spacex/index.html"')
             content = content.replace(f'href="./es/{source.name}"', f'href="../es/robots/{source.name}"') if language == 'en' else content.replace(f'href="../{source.name}"', f'href="../../robots/{source.name}"')
         (robots / source.name).write_text(content, encoding='utf-8')
     (robots / 'index.html').write_text((robots / 'factory.html').read_text(encoding='utf-8'), encoding='utf-8')
     # Standalone explanations use their own modules and bilingual content.
-    for folder in ['hub', 'terafab', 'growth', 'home', 'live']:
+    for folder in ['hub', 'terafab', 'growth', 'home', 'dyson', 'starlink', 'spacex', 'live']:
         target = destination if folder == 'hub' else destination / folder
         target.mkdir(exist_ok=True)
         for source in (ROOT / 'site-src' / folder).iterdir():
@@ -97,20 +100,20 @@ for language in ['en', 'es']:
             if source.suffix not in ['.html', '.js', '.css']:
                 continue
             content = source.read_text(encoding='utf-8')
-            if folder in ['terafab', 'home'] and language == 'es' and source.suffix == '.js':
+            if folder in ['terafab', 'home', 'dyson', 'starlink', 'spacex'] and language == 'es' and source.suffix == '.js':
                 content = content.replace("'../vendor/", "'../../vendor/")
             if source.suffix == '.html':
                 content = content.replace('{{EN}}', './index.html' if language == 'en' else '../index.html').replace('{{ES}}', './es/index.html' if language == 'en' else './index.html')
                 if language == 'en':
                     content = content.replace('lang="es"', 'lang="en"', 1)
-                    for a,b in [('Robots — Crecimiento y producción','Robots — Growth and production'),('Hogar — Tareas y robots','Home — Tasks and robots'),('Compara trabajo humano, robots y reinversión: producción, costes y límites del crecimiento.','Compare human work, robots and reinvestment: output, costs and growth constraints.'),('Explora qué tareas de un hogar podrían delegarse a máquinas y robots.','Explore which household tasks could be delegated to machines and robots.')]:
+                    for a,b in [('Robots — Crecimiento y producción','Robots — Growth and production'),('Hogar — Tareas y robots','Home — Tasks and robots'),('Esfera de Dyson — Enjambre, cáscara y energía','Dyson sphere — Swarm, shell and energy'),('Starlink — Constelación, cobertura y láseres','Starlink — Constellation, coverage and lasers'),('SpaceX — Reutilizar el primer tramo','SpaceX — Reuse the first stage'),('Compara trabajo humano, robots y reinversión: producción, costes y límites del crecimiento.','Compare human work, robots and reinvestment: output, costs and growth constraints.'),('Explora qué tareas de un hogar podrían delegarse a máquinas y robots.','Explore which household tasks could be delegated to machines and robots.'),('Compara el enjambre de Dyson con la cáscara rígida: cobertura, calor residual y materia a escala estelar.','Compare the Dyson swarm with the rigid shell: coverage, waste heat and mass at stellar scale.'),('Cómo los satélites Starlink cubren la Tierra: capas orbitales, antena de usuario, pasarelas y enlaces láser.','How Starlink satellites cover Earth: orbital shells, user dish, gateways and laser links.'),('Falcon 9 y Starship en 3D: despegue, separación, aterrizaje o captura, y por qué la reutilización cambia el ritmo de lanzamiento.','Falcon 9 and Starship in 3D: liftoff, separation, landing or catch, and why reuse changes launch cadence.')]:
                         content=content.replace(a,b)
                     content = content.replace('Atlas — Explicaciones interactivas', 'Atlas — Interactive explanations').replace('Terafab — Atlas interactivo', 'Terafab — Interactive Atlas')
-                    content = content.replace('Explora cómo funcionan los sistemas: robots, fábricas de chips y sus conexiones.', 'Explore how systems work: robots, chip factories and their connections.')
+                    content = content.replace('Explora cómo funcionan los sistemas: robots, fábricas de chips, esferas de Dyson, el hogar, Starlink y SpaceX.', 'Explore how systems work: robots, chip factories, Dyson spheres, the home, Starlink and SpaceX.')
                     content = content.replace('Explora la fábrica integrada de chips de Terafab, sigue sus conexiones y experimenta con los límites de producción.', 'Explore the Terafab integrated chip factory, follow its connections and experiment with production constraints.')
                     content = content.replace('Recorre Terafab en 3D: abre las naves, explora la sala limpia y descubre los equipos de la fábrica prevista.', 'Explore Terafab in 3D: open the halls, enter the cleanroom and discover the planned factory equipment.')
                     content = content.replace('Activa JavaScript para explorar la fábrica.', 'Enable JavaScript to explore the factory.')
-                    content = content.replace('Activa JavaScript para las explicaciones interactivas.', 'Enable JavaScript for the interactive explanations.').replace('Activa JavaScript para explorar el diagrama.', 'Enable JavaScript to explore the diagram.').replace('aria-label="Exploraciones"', 'aria-label="Explorations"')
+                    content = content.replace('Activa JavaScript para las explicaciones interactivas.', 'Enable JavaScript for the interactive explanations.').replace('Activa JavaScript para explorar el diagrama.', 'Enable JavaScript to explore the diagram.').replace('aria-label="Exploraciones"', 'aria-label="Explorations"').replace('Esfera de Dyson</a>', 'Dyson sphere</a>')
                 title = re.search(r'<title>(.*?)</title>', content).group(1)
                 description = re.search(r'name="description" content="([^"]+)"', content).group(1)
                 content = content.replace('</head>', f'<meta property="og:type" content="website"><meta property="og:title" content="{html.escape(title, quote=True)}"><meta property="og:description" content="{description}"><meta name="twitter:card" content="summary"></head>')

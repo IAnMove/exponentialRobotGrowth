@@ -2,7 +2,7 @@ import {waferAt,stages} from './process-model.js';
 import {t,sources} from './places.js';
 export function mountProcess(container,onArea){
 const steps=[
- ['metrology',t('Oblea preparada','Prepared wafer'),t('El sustrato de silicio es la base. Aquí ampliamos solo una sección para seguir cómo cambia una capa.','The silicon substrate is the base. We magnify one section to follow changes in a single layer.')],
+ ['logistics',t('Oblea preparada','Prepared wafer'),t('El sustrato de silicio llega ya cortado y pulido. Aquí ampliamos solo una sección para seguir cómo cambia una capa; el lingote no se funde en esta fábrica.','The silicon substrate arrives already sliced and polished. We magnify one section to follow changes in a single layer; the ingot is not melted in this factory.')],
  ['deposition',t('Depositar una película','Deposit a film'),t('Se añade material sobre la superficie. El material y la técnica dependen de la estructura que se quiere fabricar.','Material is added to the surface. The material and method depend on the structure being made.')],
  ['lithography',t('Aplicar resina y hornear','Coat resist and bake'),t('Un equipo de recubrimiento aplica resina fotosensible y se acondiciona la película. Es un equipo distinto del escáner de exposición.','A coating tool applies photosensitive resist and conditions the film. This is separate from the exposure scanner.')],
  ['lithography',t('Exponer el patrón','Expose the pattern'),t('La luz modifica químicamente zonas de la resina. Todavía no se ha grabado el material de debajo. El dibujo muestra resina positiva.','Light chemically changes areas of the resist. The underlying material has not yet been etched. This example uses positive resist.')],

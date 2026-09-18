@@ -16,6 +16,14 @@ for(const limited of [true,false])for(const reinvest of [0,.7,1])for(const hours
 }
 const equal=simulate({...defaults,reinvest:0,hours:24,shifts:3});equal.forEach(r=>near(r.human,r.fixed));
 const one=simulate({...defaults,reinvest:1,hours:24,buildHours:120});assert.equal(one[1].fleet,10);assert.equal(one[2].fleet,10);assert.equal(one[3].fleet,12);
+const rows=simulate(defaults);let outputSum=0,humanSum=0;
+for(const r of rows){outputSum+=r.output;humanSum+=r.human;near(r.goodsToDate,outputSum);near(r.humanToDate,humanSum);}
+assert.equal(rows.at(-1).goodsToDate,outputSum,'Cumulative goods must include the visible day');
+const humansIgnoreSlots=simulate({...defaults,slots:8,supply:5000,shifts:3,hours:21,limited:true});
+assert.equal(humansIgnoreSlots[0].human,240,'Robot parking slots must not cap human-shift hours');
+assert.equal(humansIgnoreSlots[0].fleet,8);
+assert.equal(humansIgnoreSlots[0].work,8*21);
+humansIgnoreSlots.forEach(r=>assert(r.fleet+r.pending<=8));
 assert(!Number.isFinite(idealDoubling({...defaults,reinvest:0})));
 assert(unitCosts({...defaults,installed:120000}).robot>unitCosts(defaults).robot);
 assert(unitCosts({...defaults,hours:8}).robot>unitCosts(defaults).robot);
