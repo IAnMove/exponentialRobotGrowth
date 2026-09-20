@@ -25,8 +25,11 @@ for pattern in ['check-*.py', 'check-*.js', 'check-*.mjs']:
 for name in ['industrial-model.js', 'network-model.js', 'package.json', 'package-lock.json', 'serve.py']:
     shutil.copyfile(root/name, project/name)
 (project/'tools').mkdir(exist_ok=True)
-for name in ['build_site.py', 'package_pages.py']:
+for name in ['build_site.py', 'package_pages.py', 'generate_narration.py', 'build_kardashev_narration.py']:
     shutil.copyfile(root/'tools'/name, project/'tools'/name)
+(project/'narration').mkdir(exist_ok=True)
+for name in ['kardashev.json', 'voices.json']:
+    shutil.copyfile(root/'narration'/name, project/'narration'/name)
 # A fresh checkout seeds shared audio and catalogs from the published root.
 # Build output is ignored; only the root runtime files are committed.
 build = (root/'build-site.py').read_text(encoding='utf-8')
@@ -36,7 +39,7 @@ for catalog in ['narration-catalog.js','narration-catalog-en.js']:
     shutil.copyfile(root.parent/catalog,root/'dist'/catalog)
 vendor=root/'dist'/'vendor'""")
 (project/'build-site.py').write_text(build, encoding='utf-8')
-(output/'.gitignore').write_text('node_modules/\n__pycache__/\nproject/dist/\n.env\n.env.*\n', encoding='utf-8')
+(output/'.gitignore').write_text('node_modules/\n__pycache__/\nproject/dist/\nproject/narration/scripts/\n.env\n.env.*\n', encoding='utf-8')
 (output/'README.md').write_text('''# Atlas — interactive explanations
 
 Seven bilingual notebooks: Robots, Terafab, Dyson, Home, Starlink, SpaceX and Kardashev.
@@ -46,6 +49,11 @@ Kardashev adds a playable 3D planet → star → galaxy journey, live power and 
 linear/logarithmic charts and a conditional compound-growth calculator. It distinguishes the
 original 1964 categories from the continuous Sagan convention. Rates and scenarios are teaching
 assumptions, not forecasts. Sources and limitations are linked inside each notebook.
+
+The scenes use NASA's official MarCO CubeSat model and Blue Marble Earth texture, with an
+interactive component inspector. A MiniMax voice guide covers all four scales and the spacecraft
+in English and Spanish, with transcripts, pause/resume and a sequential guided tour.
+Asset credits are in `project/site-src/kardashev/ASSETS.md`.
 
 ## One repository for development and publication
 
@@ -62,6 +70,7 @@ npm ci
 python build-site.py
 python check-site.py
 node check-kardashev.mjs
+node check-kardashev-media.mjs
 node check-explanations.mjs
 node check-full-automation.mjs
 node check-narrator.mjs

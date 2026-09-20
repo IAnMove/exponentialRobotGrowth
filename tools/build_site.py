@@ -94,7 +94,7 @@ for language in ['en', 'es']:
         target = destination if folder == 'hub' else destination / folder
         target.mkdir(exist_ok=True)
         for source in (ROOT / 'site-src' / folder).iterdir():
-            if source.suffix in ['.jpg', '.png', '.webp']:
+            if source.suffix in ['.jpg', '.png', '.webp', '.glb']:
                 shutil.copyfile(source, target / source.name)
                 continue
             if source.suffix not in ['.html', '.js', '.css']:

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "La última escena amplía la perspectiva a una galaxia. Los brazos espirales contienen sistemas estelares; las regiones doradas representan una expansión hipotética de la infraestructura energética. No muestran civilizaciones detectadas. El tipo tres de esta convención corresponde a diez elevado a treinta y seis vatios, unos dos mil seiscientos millones de luminosidades solares. Desde el tipo dos vuelve a haber un factor de diez mil millones. No habría un control instantáneo de toda la galaxia: las distancias y el tiempo que tarda la luz siguen importando. Cambia la gráfica de logarítmica a lineal para ver por qué los niveles anteriores casi desaparecen. Esta escala mide potencia, no bienestar ni inteligencia.",
+  "duration_ms": 44280,
+  "billed_characters": 717,
+  "sample_rate": 32000,
+  "size_bytes": 710196,
+  "generated_at": "2026-09-20T05:30:42.812386+00:00"
+}

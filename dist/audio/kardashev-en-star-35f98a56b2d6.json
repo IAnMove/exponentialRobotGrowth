@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "At Type Two, the reference shifts from a planet to a star. You see a conceptual swarm of collectors in separate orbits, with surfaces to capture light and supporting equipment. This is not a rigid shell. Each unit is independent and would need orbital control, energy transmission and heat management. These collectors are hypothetical: they are not real MarCO spacecraft or a validated engineering design. In the continuous convention, the threshold is ten to the twenty sixth watts. The Sun emits about three point eight times that power. Sizes, distances and the number of units have been adjusted to make the scene understandable.",
+  "duration_ms": 41004,
+  "billed_characters": 634,
+  "sample_rate": 32000,
+  "size_bytes": 657780,
+  "generated_at": "2026-09-20T05:30:53.886189+00:00"
+}

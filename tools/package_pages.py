@@ -15,7 +15,7 @@ for file in (root / 'dist').rglob('*'):
     if not file.is_file():
         continue
     relative = file.relative_to(root / 'dist')
-    if file.suffix not in ['.html', '.js', '.css', '.mp3', '.jpg', '.png', '.webp'] and relative.as_posix() not in ['.nojekyll', 'vendor/THREE-LICENSE.txt']:
+    if file.suffix not in ['.html', '.js', '.css', '.mp3', '.jpg', '.png', '.webp', '.glb'] and relative.as_posix() not in ['.nojekyll', 'vendor/THREE-LICENSE.txt']:
         continue
     target = output / relative
     target.parent.mkdir(parents=True, exist_ok=True)

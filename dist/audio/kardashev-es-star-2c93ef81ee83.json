@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "En el tipo dos, la referencia pasa de un planeta a una estrella. Ves un enjambre conceptual de colectores en distintas órbitas, con superficies para captar luz y equipos de servicio. No es una esfera rígida. Cada unidad está separada y necesitaría control orbital, transmisión de energía y gestión del calor. Estos colectores son hipotéticos: no son satélites MarCO reales ni un diseño de ingeniería validado. En la convención continua, el umbral es diez elevado a veintiséis vatios. El Sol emite unas tres coma ocho veces esa potencia. Tamaños, distancias y cantidad de unidades se han adaptado para entender la escena.",
+  "duration_ms": 38016,
+  "billed_characters": 620,
+  "sample_rate": 32000,
+  "size_bytes": 609972,
+  "generated_at": "2026-09-20T05:30:42.865292+00:00"
+}
