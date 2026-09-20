@@ -30,4 +30,3 @@ for(const lang of ['es','en']){
   assert.equal(full.state,'finished');assert.equal(run.generated.join(''),run.data.completions[run.chosen]);assert.equal(ids.at(-1),'done');assert(ids.includes('loop-feedback'));assert.equal(ids.filter(x=>x==='feedback').length,1);
 }
 console.log('LLM guide: 26 clips, complete bilingual generation, audio gates, delay, pause/resume, manual mode, stale events and errors: OK');
-

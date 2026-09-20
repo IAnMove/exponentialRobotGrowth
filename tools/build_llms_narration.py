@@ -43,4 +43,3 @@ if __name__=='__main__':
     code+="const base = new URL(document.documentElement.lang === 'es' ? '../../audio/' : '../audio/', import.meta.url);\nfor (const entries of Object.values(VOICES)) for (const entry of entries) entry.src = new URL(entry.file, base).href;\n"
     (ROOT/'site-src/llms/voices.js').write_text(code,encoding='utf-8')
     print('LLMs: 26 recorded bilingual clips ready.')
-
