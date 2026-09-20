@@ -42,7 +42,7 @@ vendor=root/'dist'/'vendor'""")
 (output/'.gitignore').write_text('node_modules/\n__pycache__/\nproject/dist/\nproject/narration/scripts/\n.env\n.env.*\n', encoding='utf-8')
 (output/'README.md').write_text('''# Atlas — interactive explanations
 
-Seven bilingual notebooks: Robots, Terafab, Dyson, Home, Starlink, SpaceX and Kardashev.
+Eight bilingual notebooks: Robots, Terafab, Dyson, Home, Starlink, SpaceX, Kardashev and LLMs.
 English starts at `/`; Spanish at `/es/`. All links work beneath the GitHub Pages repository path.
 
 Kardashev adds a playable 3D planet → star → galaxy journey, live power and multiplier counters,
@@ -54,6 +54,14 @@ The scenes use NASA's official MarCO CubeSat model and Blue Marble Earth texture
 interactive component inspector. A MiniMax voice guide covers all four scales and the spacecraft
 in English and Spanish, with transcripts, pause/resume and a sequential guided tour.
 Asset credits are in `project/site-src/kardashev/ASSETS.md`.
+Scene motion has its own pause control and continues at fixed energy levels. The solar swarm
+contains up to 1,728 illustrative collectors; motion and distances are not physically to scale.
+
+The LLM notebook follows a question through context, optional retrieval, tokenization, vectors,
+causal attention, next-token probabilities and autoregressive output. Play, step and inspection
+controls accompany bilingual examples of ambiguity, current sources and stale sources. A separate
+training exercise distinguishes changing weights from supplying context. This is an explicitly
+labelled educational simulation: answers and logits are scripted, not output from a trained LLM.
 
 ## One repository for development and publication
 
@@ -71,6 +79,8 @@ python build-site.py
 python check-site.py
 node check-kardashev.mjs
 node check-kardashev-media.mjs
+node check-kardashev-motion.mjs
+node check-llms.mjs
 node check-explanations.mjs
 node check-full-automation.mjs
 node check-narrator.mjs
@@ -86,7 +96,7 @@ For a local preview run `python serve.py` from `project/`, or serve the reposito
 Three.js is bundled locally; see `vendor/THREE-LICENSE.txt`.
 
 This snapshot consolidates the source project's previous Atlas changes and the `added more places`
-work with the new Kardashev notebook. The robot learning improvements proposed in PR #1 are also
+work with the new Kardashev and LLM notebooks. The robot learning improvements proposed in PR #1 are also
 included. The older source checkout and this publishing repository originally had separate histories;
 this branch is based on GitHub `main` so the PR is normally reviewable and mergeable.
 ''', encoding='utf-8')
