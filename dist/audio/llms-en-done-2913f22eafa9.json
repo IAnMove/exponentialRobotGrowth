@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "We have reached the end of sequence token. The answer is complete. Every piece was generated using the preceding context. The weights did not change. You can replay the journey or compare another context and source.",
+  "duration_ms": 13932,
+  "billed_characters": 215,
+  "sample_rate": 32000,
+  "size_bytes": 224628,
+  "generated_at": "2026-09-20T18:04:14.203335+00:00"
+}

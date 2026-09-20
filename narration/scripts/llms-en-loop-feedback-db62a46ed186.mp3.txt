@@ -1,0 +1,1 @@
+The new piece is now part of both the answer and the context. Watch it return to the next computation. We leave a few seconds to observe it.

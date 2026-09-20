@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Cada token se transforma en un vector, una lista de números. Mira la matriz tridimensional: cada fila representa un token y cada columna una dimensión. Azul y naranja distinguen valores positivos y negativos; la altura muestra su magnitud. Selecciona una celda para leer su valor. Las dimensiones no son etiquetas como país o inteligencia. Estos seis números son ilustrativos, no pesos extraídos de un modelo real.",
+  "duration_ms": 27648,
+  "billed_characters": 414,
+  "sample_rate": 32000,
+  "size_bytes": 444084,
+  "generated_at": "2026-09-20T18:03:28.993663+00:00"
+}

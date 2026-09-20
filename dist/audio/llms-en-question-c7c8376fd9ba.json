@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "We start with your question. These cards represent the instructions and messages the application gathers before calling the model. If there is an earlier conversation, it may be included here. The model receives this input, not everything you know or the whole internet. Watch the information enter the same processing path. We will stop at every step.",
+  "duration_ms": 21816,
+  "billed_characters": 352,
+  "sample_rate": 32000,
+  "size_bytes": 350772,
+  "generated_at": "2026-09-20T18:03:50.329185+00:00"
+}

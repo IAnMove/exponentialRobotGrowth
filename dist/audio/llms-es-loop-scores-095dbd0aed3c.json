@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Se vuelve a calcular una distribución para la siguiente pieza. Aquí la continuación está guionizada. La columna más alta muestra el siguiente token previsto en esta demostración.",
+  "duration_ms": 12024,
+  "billed_characters": 178,
+  "sample_rate": 32000,
+  "size_bytes": 194100,
+  "generated_at": "2026-09-20T18:03:43.057514+00:00"
+}

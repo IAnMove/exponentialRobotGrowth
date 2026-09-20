@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Tras las capas, el modelo calcula puntuaciones para los posibles tokens siguientes. Softmax las convierte en probabilidades. Las columnas tridimensionales representan ese reparto y suman el cien por cien. Una columna alta significa texto más probable según esas puntuaciones, no una afirmación más verdadera. Puedes cambiar la temperatura y comparar. Nuestras puntuaciones están preparadas para explicar el mecanismo.",
+  "duration_ms": 25956,
+  "billed_characters": 417,
+  "sample_rate": 32000,
+  "size_bytes": 417012,
+  "generated_at": "2026-09-20T18:03:34.038117+00:00"
+}

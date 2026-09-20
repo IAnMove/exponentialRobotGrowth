@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Ahora el texto se divide en tokens. Cada bloque es una pieza: una palabra, un fragmento, un espacio o un signo. Debajo aparece su identificador. Dos piezas iguales comparten identificador. Puedes seleccionar un bloque para verlo de cerca. Estos cortes pertenecen a nuestro tokenizador didáctico; un modelo real utiliza un vocabulario propio. Todavía no hemos producido la respuesta.",
+  "duration_ms": 23616,
+  "billed_characters": 382,
+  "sample_rate": 32000,
+  "size_bytes": 379572,
+  "generated_at": "2026-09-20T18:03:27.696686+00:00"
+}

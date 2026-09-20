@@ -1,0 +1,1 @@
+A new token cycle begins. Attention combines the input with what has already been written. Future positions remain blocked and the model weights stay fixed.

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "We pause before emitting the next piece. When this step ends, just one token is added. It may be a word, a fragment, or even a space.",
+  "duration_ms": 10368,
+  "billed_characters": 133,
+  "sample_rate": 32000,
+  "size_bytes": 167604,
+  "generated_at": "2026-09-20T18:04:11.000900+00:00"
+}

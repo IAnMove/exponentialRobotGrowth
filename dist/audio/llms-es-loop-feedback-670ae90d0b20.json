@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Esta nueva pieza ya forma parte de la respuesta y del contexto. Mira cómo regresa al inicio del siguiente cálculo. Dejamos unos segundos para observarlo.",
+  "duration_ms": 10116,
+  "billed_characters": 153,
+  "sample_rate": 32000,
+  "size_bytes": 163572,
+  "generated_at": "2026-09-20T18:03:45.611528+00:00"
+}

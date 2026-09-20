@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Each token becomes a vector, a list of numbers. Look at the three dimensional matrix: every row represents a token and every column a dimension. Blue and orange distinguish positive and negative values; height shows magnitude. Select a cell to read its value. Dimensions are not labels such as country or intelligence. These six numbers are illustrative, not weights extracted from a real model.",
+  "duration_ms": 28692,
+  "billed_characters": 395,
+  "sample_rate": 32000,
+  "size_bytes": 460788,
+  "generated_at": "2026-09-20T18:03:57.066176+00:00"
+}

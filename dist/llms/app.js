@@ -1,4 +1,7 @@
-import {DEFAULTS,PHASES,createRun,advance,tick,tokenize,vector,attention,softmax,nextCandidates,trainStep,trainingStats} from './model.js';
+import {DEFAULTS,PHASES,createRun,advance,tokenize,vector,attention,softmax,nextCandidates,trainStep,trainingStats} from './model.js';
+import {createWorld} from './world.js';
+import {StepGuide,narrationId} from './guide.js';
+import {VOICES} from './voices.js';
 const es=document.documentElement.lang==='es',lang=es?'es':'en',t=(a,b)=>es?a:b,$=id=>document.getElementById(id);
 const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const number=(n,d=0)=>new Intl.NumberFormat(es?'es-ES':'en-US',{maximumFractionDigits:d}).format(n);
@@ -13,21 +16,20 @@ const phases=[
   [t('Elegir','Choose'),t('Sale una pieza, no la frase entera','One piece comes out, not the whole sentence'),t('Se puede elegir el token más probable o muestrear una distribución. La temperatura cambia el reparto, no consulta hechos. En este laboratorio modifica la primera elección; el resto de la frase es una continuación guiada.','Decoding can choose the most likely token or sample a distribution. Temperature changes the distribution, not the facts. In this lab it affects the first choice; the rest is a guided continuation.')],
   [t('Repetir','Repeat'),t('Lo escrito vuelve al contexto','The output returns to context'),t('El siguiente paso usa la entrada y lo que ya se ha generado. Se repite hasta terminar. Las implementaciones suelen reutilizar cálculos mediante caché; no necesitan releer todo desde cero.','The next step uses the input and the generated text. This repeats until completion. Implementations commonly cache computations; they need not recompute everything from scratch.')]
 ];
-let options={...DEFAULTS},run=createRun(lang,options),speed=1,last=performance.now(),selectedToken=0,queryIndex=7,trainingWeight=-1.2,trainingSteps=0,trainingPlaying=false,trainingClock=0,inspectStage=null;
+let options={...DEFAULTS},run=createRun(lang,options),last=performance.now(),selectedToken=0,queryIndex=7,trainingWeight=-1.2,trainingSteps=0,trainingPlaying=false,trainingClock=0,world=null,guide=null,voiceLanguage=lang;
 document.title=t('LLMs — Dentro de una respuesta','LLMs — Inside an answer');
 $('app').innerHTML=`<nav class="nav"><a href="../index.html">← Atlas</a><span>NOTEBOOK 08 · LLMs</span><div><a href="${es?'../../llms/index.html':'./index.html'}" lang="en">EN</a><a href="${es?'./index.html':'../es/llms/index.html'}" lang="es">ES</a></div></nav>
 <header><div><span class="eyebrow">${t('ABRE LA CAJA NEGRA','OPEN THE BLACK BOX')}</span><h1>${t('De tu pregunta<br>a una respuesta.','From your question<br>to an answer.')}</h1></div><p>${t('No hace falta llamarlos listos ni tontos. Sigue la información, cambia el contexto y mira dónde aciertan o pueden fallar.','No need to label them clever or stupid. Follow the information, change the context and see how they can succeed or fail.')}</p></header>
 <section class="setup"><div class="prompt-box"><label for="scenario">${t('01 · ELIGE UN EXPERIMENTO','01 · CHOOSE AN EXPERIMENT')}</label><select id="scenario"><option value="capital">${t('Una pregunta conocida','A familiar question')}</option><option value="bank">${t('La misma palabra, otro contexto','Same word, different context')}</option><option value="museum">${t('Un horario que necesita una fuente','Opening hours that need a source')}</option></select><blockquote id="question"></blockquote><small id="case-note"></small></div><div class="conditions"><label><input type="checkbox" id="context" checked> ${t('Incluir conversación anterior','Include previous conversation')}</label><p id="history-preview"></p><label><input type="checkbox" id="retrieval"> ${t('Consultar un documento','Retrieve a document')}</label><select id="source" aria-label="${t('Documento de ejemplo','Example document')}"><option value="current">${t('Ficha vigente','Current record')}</option><option value="archive">${t('Archivo antiguo','Old archive')}</option></select><small>${t('La búsqueda de este ejemplo usa fichas locales de un museo ficticio. No navega por internet.','This example retrieves local records for a fictional museum. It does not browse the internet.')}</small></div></section>
 <p class="model-note">${t('SIMULACIÓN DIDÁCTICA · respuestas y logits preparados; no ejecuta un LLM real.','EDUCATIONAL SIMULATION · curated answers and logits; does not run a real LLM.')}</p>
 <section class="metrics"><article><span>${t('Contexto disponible','Available context')}</span><strong id="context-count"></strong><small>${t('tokens de este tokenizador','tokens with this tokenizer')}</small></article><article><span>${t('Fuentes recuperadas','Retrieved sources')}</span><strong id="source-count">0</strong><small id="source-state"></small></article><article><span>${t('Respuesta generada','Generated output')}</span><strong id="output-count">0</strong><small>${t('tokens · uno tras otro','tokens · one after another')}</small></article><article><span>${t('Pesos modificados al responder','Weights changed while answering')}</span><strong>0</strong><small>${t('inferencia habitual · pesos fijos','standard inference · fixed weights')}</small></article></section>
-<div class="transport"><button id="play" class="primary">▶ ${t('Seguir la pregunta','Follow the question')}</button><button id="step">${t('Un paso →','One step →')}</button><button id="reset" aria-label="${t('Reiniciar','Reset')}">↺</button><label>${t('Velocidad','Speed')} <select id="speed"><option value="1">1×</option><option value="2">2×</option><option value="4">4×</option></select></label><span id="status" role="status"></span></div>
+<div class="transport"><button id="play" class="primary">▶ ${t('Seguir la pregunta','Follow the question')}</button><button id="step">${t('Un paso →','One step →')}</button><button id="reset" aria-label="${t('Reiniciar','Reset')}">↺</button><button id="replay-voice">${t('↺ Repetir explicación','↺ Replay explanation')}</button><span id="status" role="status"></span></div>
 <div class="workbench"><div class="machine-panel"><div class="panel-label"><span>${t('EL RECORRIDO DE LA INFORMACIÓN','THE INFORMATION PATH')}</span><span>${t('Pulsa una etapa para inspeccionarla','Select a stage to inspect it')}</span></div><div class="rail" id="rail">${phases.map((p,i)=>`<button data-phase="${i}" aria-pressed="false"><b>${String(i+1).padStart(2,'0')}</b><span>${p[0]}</span></button>`).join('')}</div>
-<div class="machine" id="machine"><svg viewBox="0 0 920 370" role="img" aria-label="${t('Los tokens atraviesan representaciones, capas y probabilidades. Un bucle devuelve la salida al contexto.','Tokens pass through representations, layers and probabilities. A loop returns the output to context.')}"><defs><linearGradient id="chip" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#354d73"/><stop offset="1" stop-color="#141f39"/></linearGradient><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10" fill="#6490b5"/></marker></defs><path class="wire" d="M132 185H780" marker-end="url(#arrow)"/><path id="feedback-wire" class="wire" d="M804 238V317H98V237" marker-end="url(#arrow)"/><text x="450" y="346" class="svg-label">${t('LA SALIDA SE AÑADE AL CONTEXTO','OUTPUT IS ADDED TO CONTEXT')}</text>
-<g id="input-rack"><rect x="25" y="117" width="132" height="130" rx="14"/><text x="91" y="94" class="svg-label">${t('ENTRADA','INPUT')}</text>${[0,1,2].map(i=>`<rect class="paper" x="42" y="${134+i*32}" width="98" height="22" rx="5"/><path class="paper-line" d="M53 ${145+i*32}H121"/>`).join('')}</g>
-<g id="vector-rack"><rect x="200" y="117" width="116" height="130" rx="14"/><text x="258" y="94" class="svg-label">${t('VECTORES','VECTORS')}</text>${Array.from({length:24},(_,i)=>`<rect class="vector-cell" x="${216+i%4*22}" y="${135+Math.floor(i/4)*16}" width="15" height="9" rx="2" style="opacity:${.2+(i*7%10)/13}"/>`).join('')}</g>
-<g class="fixed-weights"><rect x="365" y="12" width="215" height="27" rx="6"/><text x="472" y="30" class="svg-label">W · ${t('PESOS APRENDIDOS · FIJOS','LEARNED WEIGHTS · FIXED')}</text><path class="wire" d="M472 40V55"/></g><g id="layer-rack">${[0,1,2].map(i=>`<g transform="translate(${370+i*57},${120-i*14})"><path class="chip-side" d="M0 0L15 -12H107L92 0Z"/><rect fill="url(#chip)" width="92" height="146" rx="6"/>${Array.from({length:12},(_,n)=>`<circle class="neuron" cx="${20+n%3*26}" cy="${24+Math.floor(n/3)*31}" r="4"/>`).join('')}</g>`).join('')}<text x="472" y="69" class="svg-label">${t('CAPAS TRANSFORMER','TRANSFORMER LAYERS')}</text><text x="474" y="290" class="svg-small">${t('atención + MLP + conexiones residuales','attention + MLP + residual connections')}</text></g>
-<g id="score-rack"><rect x="629" y="117" width="120" height="130" rx="14"/><text x="689" y="94" class="svg-label">${t('OPCIONES','OPTIONS')}</text>${[0,1,2,3].map((i)=>`<rect class="score-bar" x="646" y="${137+i*25}" width="${80-i*19}" height="13" rx="3"/>`).join('')}</g>
-<g id="output-rack"><rect x="786" y="142" width="110" height="82" rx="12"/><text x="841" y="121" class="svg-label">TOKEN</text><text id="moving-token" x="841" y="190" class="token-label">?</text></g><circle id="packet" cx="95" cy="185" r="7"/></svg></div>
+<section class="voice-controls" aria-label="${t('Recorrido narrado','Narrated walkthrough')}"><label><input id="voice-enabled" type="checkbox" checked> MiniMax</label><label>${t('Voz','Voice')} <select id="voice-language" aria-label="${t('Idioma de la voz','Voice language')}"><option value="es" ${es?'selected':''}>Español</option><option value="en" ${!es?'selected':''}>English</option></select></label><label><input id="auto-next" type="checkbox" checked> ${t('Avanzar automáticamente','Advance automatically')}</label><label>${t('Pausa después de la voz','Pause after narration')} <select id="gap"><option value="3">3 s</option><option value="5">5 s</option><option value="8">8 s</option></select></label></section>
+<div class="voice-progress"><span id="voice-state" role="status"></span><span id="voice-time"></span><div><i id="voice-progress-bar"></i></div></div>
+<div class="machine" id="machine"><div class="scene-tools"><button id="view-reset">${t('Centrar vista','Reset view')}</button><button id="view-out" aria-label="${t('Alejar','Zoom out')}">−</button><button id="view-in" aria-label="${t('Acercar','Zoom in')}">＋</button></div><p class="scene-hint">${t('Arrastra para girar · pulsa bloques y celdas','Drag to orbit · select blocks and cells')}</p></div>
+<div class="selection-readout" id="world-selection" role="status">${t('Un recorrido en 3D por el cálculo de cada token.','A 3D walkthrough of the computation for each token.')}</div>
+<details class="voice-transcript"><summary>${t('Leer la narración de este paso','Read this step’s narration')}</summary><p id="voice-transcript"></p></details>
 <section class="output"><div><span>${t('LO QUE RECIBES','WHAT YOU RECEIVE')}</span><span id="loop-count"></span></div><p id="answer" aria-live="off"></p><small id="answer-note"></small></section></div>
 <aside class="inspector"><span class="eyebrow" id="stage-counter"></span><h2 id="stage-title"></h2><p id="stage-description"></p><div id="stage-detail"></div></aside></div>
 <section class="decoder"><div><span class="eyebrow">${t('CAMBIA UNA CONDICIÓN','CHANGE ONE CONDITION')}</span><h2>${t('Probable no significa verdadero.','Probable does not mean true.')}</h2><p>${t('Prueba el horario sin documento, con la ficha vigente y con una antigua. Después baja la temperatura: una respuesta equivocada puede volverse todavía más probable.','Try the opening hours without a document, with the current record and with an old one. Then lower the temperature: a wrong answer can become even more probable.')}</p><button id="try-museum">${t('Probar el caso del museo →','Try the museum example →')}</button></div><div class="decoder-controls"><label for="temperature">${t('Temperatura · primera elección','Temperature · first choice')} <output id="temperature-value"></output></label><input id="temperature" type="range" min="0" max="2" step=".1" value=".7"><label for="decoding">${t('Cómo se elige','How a token is chosen')}</label><select id="decoding"><option value="greedy">${t('El más probable','Most likely')}</option><option value="sample">${t('Muestrear según probabilidades','Sample from probabilities')}</option></select><button id="resample">${t('Otra semilla ↻','Another seed ↻')}</button><small>${t('Con elección máxima, la temperatura no cambia el ganador. La semilla afecta al muestreo, no a la verdad.','With greedy selection, temperature does not change the winner. The seed affects sampling, not truth.')}</small><div id="distribution"></div><p class="toy-label">${t('Softmax calculado de verdad sobre logits didácticos; no son mediciones de ningún LLM.','Actual softmax computed from teaching logits; not measurements from any LLM.')}</p></div></section>
@@ -48,9 +50,10 @@ function detail(phase){
   if(phase===5||phase===6){const c=nextCandidates(run);return `<div class="candidate-box">${bars(c.pieces,c.logits)}</div><p class="small">${run.outputTokens?t('Continuación guiada del ejemplo. El siguiente token se ha fijado para completar la demostración.','Guided continuation. The next token is fixed to complete the demonstration.'):t('Opciones prefijadas para comparar el efecto de la temperatura y el muestreo.','Curated options for comparing temperature and sampling.')}</p><div class="formula">pᵢ = exp(logitᵢ / T) / Σ exp(logitⱼ / T)</div><small>${t('Con T = 0 usamos elección máxima.','At T = 0 we use greedy selection.')}</small>`;}
   return `<div class="feedback-card"><span>${t('CONTEXTO ORIGINAL','ORIGINAL CONTEXT')}</span><b>＋</b><code>${esc(run.generated.join(''))||'…'}</code><b>↻</b><span>${run.done?t('EOS · respuesta terminada','EOS · answer complete'):t('Vuelve a las capas para el siguiente token','Back through the layers for the next token')}</span></div><p class="small">${t('El contenido generado se reutiliza como contexto. Una equivocación también puede influir en lo siguiente.','Generated content becomes context. A mistake can also influence what comes next.')}</p>`;
 }
-let renderedDetail='';
+let renderedDetail='',scenePhase=-1;
 function render(force=false){
-  const phase=inspectStage??run.phase;
+  const phase=run.phase;
+  if(scenePhase!==phase){scenePhase=phase;$('world-selection').textContent=t('Arrastra para girar. Selecciona un bloque o una celda para inspeccionar su valor.','Drag to orbit. Select a block or a cell to inspect its value.');}
   $('question').textContent=run.data.question;
   $('case-note').textContent=run.data.name;
   $('history-preview').textContent=run.data.history||t('Sin conversación adicional en este ejemplo.','No extra conversation in this example.');
@@ -65,34 +68,60 @@ function render(force=false){
   $('stage-counter').textContent=`${String(phase+1).padStart(2,'0')} / 08 · `+phases[phase][0];$('stage-title').textContent=phases[phase][1];$('stage-description').textContent=phases[phase][2];
   document.querySelectorAll('[data-phase]').forEach(b=>{b.setAttribute('aria-pressed',String(+b.dataset.phase===phase));b.classList.toggle('visited',+b.dataset.phase<=run.phase);});
   $('machine').dataset.phase=phase;$('machine').classList.toggle('running',run.playing&&!matchMedia('(prefers-reduced-motion: reduce)').matches);
-  const c=nextCandidates(run);$('moving-token').textContent=run.phase>=6?visibleToken(run.generated.at(-1)??c.pieces[0]):'?';
+  world?.update(run,phase,selectedToken,queryIndex);
+  renderVoice();
   $('answer').textContent=run.generated.join('')||(run.phase<6?t('La respuesta aparecerá aquí, pieza a pieza…','The answer will appear here, piece by piece…'):'…');
   $('answer').classList.toggle('has-output',run.generated.length>0);$('loop-count').textContent=run.loops?`${number(run.loops)} ${t('ciclos','cycles')}`:'';
   $('answer-note').textContent=run.generated.length?run.data.evidence:t('El modelo calcula una continuación; no recibe una respuesta terminada desde una base de datos.','The model computes a continuation; it does not receive a finished answer from a database.');
   const key=[phase,options.scenario,options.context,options.retrieval,options.source,selectedToken,queryIndex,run.generated.length,options.temperature,run.done].join(':');
   if(force||key!==renderedDetail){$('stage-detail').innerHTML=detail(phase);renderedDetail=key;
-    for(const b of document.querySelectorAll('[data-token]'))b.onclick=()=>{selectedToken=+b.dataset.token;inspectStage=3;run.playing=false;render();};
-    for(const b of document.querySelectorAll('[data-query]'))b.onclick=()=>{queryIndex=+b.dataset.query;run.playing=false;render();};
+    for(const b of document.querySelectorAll('[data-token]'))b.onclick=()=>{selectedToken=+b.dataset.token;seek(3,false);};
+    for(const b of document.querySelectorAll('[data-query]'))b.onclick=()=>{queryIndex=+b.dataset.query;guide.pause();run.playing=false;render();};
   }
   $('distribution').innerHTML=bars(run.data.completions.map(c=>tokenize(c)[0]),run.data.logits);
   $('temperature-value').textContent=number(options.temperature,1);$('resample').disabled=options.decoding!=='sample';
 }
-function restart(){run=createRun(lang,options);inspectStage=null;selectedToken=0;queryIndex=7;render(true);}
+function getClip(){
+  const id=narrationId(run);
+  return VOICES[voiceLanguage].find(c=>c.id===id);
+}
+function renderVoice(){
+  if(!guide)return;
+  const clip=guide.clip??getClip();$('voice-transcript').textContent=clip.text;
+  const labels={idle:t('Pulsa reproducir para escuchar cada paso','Press play to hear each step'),loading:t('Cargando narración…','Loading narration…'),speaking:t('Escuchando · la escena espera','Listening · the scene waits'),waiting:t('Observa la escena · siguiente paso en ','Observe the scene · next step in ')+Math.ceil(guide.remaining)+' s',reading:t('Tiempo para leer · ','Reading time · ')+Math.ceil(guide.remaining)+' s',paused:t('Recorrido en pausa','Walkthrough paused'),ready:t('Listo · pulsa Siguiente paso','Ready · press Next step'),finished:t('Recorrido completado','Walkthrough complete'),blocked:t('Pulsa Reproducir para permitir el audio','Press Play to allow audio'),error:t('No se pudo cargar la voz. Reintenta o avanza manualmente.','Audio could not load. Retry or advance manually.')};
+  $('voice-state').textContent=labels[guide.state]??'';
+  const elapsed=guide.audio?.currentTime??0,duration=guide.audio?.duration||clip.duration;
+  $('voice-time').textContent=guide.enabled?`${Math.floor(elapsed)} / ${Math.ceil(duration)} s` : t('Lectura sin audio','Reading without audio');
+  $('voice-progress-bar').style.width=(guide.enabled?Math.min(1,elapsed/duration)*100:0)+'%';
+  $('play').textContent=guide.running?'Ⅱ '+t('Pausar recorrido','Pause walkthrough'):guide.state==='finished'?'↺ '+t('Repetir recorrido','Replay walkthrough'):'▶ '+t('Reproducir paso a paso','Play step by step');
+  $('step').textContent=t('Siguiente paso →','Next step →');$('step').disabled=guide.state==='finished';
+  $('status').textContent=run.done?t('Respuesta terminada','Answer complete'):t('Token de salida ','Output token ')+(run.phase===7?run.generated.length:run.generated.length+1)+' · '+(run.phase+1)+'/8';
+}
+guide=new StepGuide({getClip,onAdvance(){if(run.done)return false;advance(run);render(true);return true;},onChange(){run.playing=guide.running;render();}});
+function restart(){guide.stop();run=createRun(lang,options);selectedToken=0;queryIndex=7;render(true);}
+function seek(phase,resetRun=true){guide.stop();if(resetRun){run=createRun(lang,options);selectedToken=0;queryIndex=7;}run.phase=Math.min(6,phase);if(phase===7)advance(run);render(true);guide.enter();}
 for(const key of ['scenario','source','decoding'])$(key).onchange=e=>{options[key]=e.target.value;restart();};
 for(const key of ['context','retrieval'])$(key).onchange=e=>{options[key]=e.target.checked;restart();};
 $('temperature').oninput=e=>{options.temperature=+e.target.value;restart();};
 $('resample').onclick=()=>{options.seed=(options.seed+977)>>>0;restart();};
-$('try-museum').onclick=()=>{options.scenario='museum';options.retrieval=false;$('scenario').value='museum';$('retrieval').checked=false;restart();$('question').scrollIntoView({behavior:'auto',block:'center'});};
-$('play').onclick=()=>{if(run.done)restart();inspectStage=null;run.playing=!run.playing;last=performance.now();render();};
-$('step').onclick=()=>{run.playing=false;inspectStage=null;advance(run);render();};$('reset').onclick=restart;$('speed').onchange=e=>speed=+e.target.value;
-for(const b of document.querySelectorAll('[data-phase]'))b.onclick=()=>{run.playing=false;inspectStage=+b.dataset.phase;render();};
+$('try-museum').onclick=()=>{options.scenario='museum';options.retrieval=false;$('scenario').value='museum';restart();$('question').scrollIntoView({behavior:'auto',block:'center'});};
+$('play').onclick=()=>{if(guide.state==='finished')restart();if(guide.running)guide.pause();else guide.resume();};
+$('step').onclick=()=>guide.next();$('reset').onclick=restart;$('replay-voice').onclick=()=>guide.replay();
+$('voice-language').onchange=e=>{voiceLanguage=e.target.value;const active=guide.running;guide.stop();if(active)guide.enter();else renderVoice();};
+$('voice-enabled').onchange=e=>guide.setEnabled(e.target.checked);
+$('auto-next').onchange=e=>{guide.automatic=e.target.checked;};
+$('gap').onchange=e=>{guide.gap=+e.target.value;if(guide.state==='waiting')guide.remaining=guide.gap;renderVoice();};
+for(const b of document.querySelectorAll('[data-phase]'))b.onclick=()=>seek(+b.dataset.phase);
+try{world=createWorld($('machine'),{language:lang,onSelect(info){guide.pause();run.playing=false;$('world-selection').textContent=info.text;if(info.kind==='token')selectedToken=info.index;if(info.kind==='attention')queryIndex=info.index;render(true);}});}
+catch{const fallback=document.createElement('p');fallback.className='world-fallback';fallback.textContent=t('No se ha podido iniciar WebGL. Las explicaciones, los valores y la voz siguen disponibles.','WebGL could not start. Explanations, values and narration remain available.');$('machine').prepend(fallback);}
+$('view-reset').onclick=()=>world?.reset();$('view-in').onclick=()=>world?.zoom(.85);$('view-out').onclick=()=>world?.zoom(1.15);
 function renderTraining(){const s=trainingStats(trainingWeight);$('weight').textContent=number(trainingWeight,2);$('train-prob').textContent=number(s.probability*100,1)+' %';$('train-loss').textContent=number(s.loss,3);$('train-meter').style.width=s.probability*100+'%';$('train-steps').textContent=number(trainingSteps)+' '+t('actualizaciones del peso','weight updates');$('train-play').textContent=trainingPlaying?'Ⅱ '+t('Pausar','Pause'):'▶ '+t('Ver cómo aprende','Watch it learn');}
 $('train-play').onclick=()=>{trainingPlaying=!trainingPlaying;renderTraining();};$('train-reset').onclick=()=>{trainingPlaying=false;trainingWeight=-1.2;trainingSteps=0;renderTraining();};
-document.addEventListener('visibilitychange',()=>{last=performance.now();if(document.hidden){run.playing=false;trainingPlaying=false;render();renderTraining();}});
+document.addEventListener('visibilitychange',()=>{last=performance.now();if(document.hidden){guide.pause();trainingPlaying=false;renderTraining();}});
+window.addEventListener('pagehide',e=>{guide.stop();if(!e.persisted)world?.dispose();});
 render();renderTraining();let uiClock=0;
-function frame(now){const dt=Math.min(.1,(now-last)/1000);last=now;if(!document.hidden){const before=run.phase,beforeOutput=run.generated.length;tick(run,dt,speed);uiClock+=dt;
-  if(run.playing){const x=[90,140,210,275,475,688,840,840][run.phase],progress=Math.min(1,run.elapsed/(run.loops ? .28 : 1.1));$('packet').setAttribute('cx',run.phase===7?840-progress*740:x);$('packet').setAttribute('cy',run.phase===7?317:185);}
-  if(before!==run.phase||beforeOutput!==run.generated.length||uiClock>.3){render();uiClock=0;}
+function frame(now){const dt=Math.min(.1,(now-last)/1000);last=now;if(!document.hidden){guide.tick(dt);uiClock+=dt;world?.render(dt);
+  if(uiClock>.15){renderVoice();uiClock=0;}
   if(trainingPlaying){trainingClock+=dt;if(trainingClock>.45){trainingClock=0;trainingWeight=trainStep(trainingWeight);trainingSteps++;if(trainingSteps>=80)trainingPlaying=false;renderTraining();}}}
   requestAnimationFrame(frame);
 }requestAnimationFrame(frame);

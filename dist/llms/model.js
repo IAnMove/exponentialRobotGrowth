@@ -54,6 +54,11 @@ export function nextCandidates(run){
   if(run.outputTokens){const next=run.outputTokens[run.generated.length];return next===undefined?{pieces:['<EOS>'],logits:[0],scripted:true}:{pieces:[next,'…','<EOS>'],logits:[4.6,.1,-1],scripted:true};}
   return {pieces:run.data.completions.map(c=>tokenize(c)[0]),logits:run.data.logits,scripted:true};
 }
+export function pendingToken(run){
+  if(run.outputTokens)return run.outputTokens[run.generated.length]??'<EOS>';
+  const logits=run.data.logits,choice=run.options.decoding==='greedy'?logits.indexOf(Math.max(...logits)):sample(softmax(logits,run.options.temperature),randomStep(run.seed).value);
+  return tokenize(run.data.completions[choice])[0];
+}
 export function advance(run){
   if(run.done)return run;
   if(run.phase<6){run.phase++;return run;}

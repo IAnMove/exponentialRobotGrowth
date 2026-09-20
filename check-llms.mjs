@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {tokenize,softmax,attention,createRun,advance,tick,nextCandidates,trainStep,trainingStats} from './site-src/llms/model.js';
+import {tokenize,softmax,attention,createRun,advance,tick,nextCandidates,pendingToken,trainStep,trainingStats} from './site-src/llms/model.js';
 for(const text of ['¿Qué significa «banco»?','Pregunta  con\n espacios.','👋 Transformers!',''])assert.equal(tokenize(text).join(''),text);
 for(const temperature of [0,.1,.7,2]){const ps=softmax([1000,999,-1000],temperature);assert(Math.abs(ps.reduce((a,b)=>a+b,0)-1)<1e-10);assert(ps.every(p=>p>=0&&p<=1));}
 assert.deepEqual(softmax([1,4,2],0),[0,1,0]);assert.throws(()=>softmax([NaN]));
@@ -19,4 +19,8 @@ const x=createRun('es',{decoding:'sample',seed:73,temperature:2}),y=createRun('e
 const b1=createRun('es',{scenario:'bank',context:false}),b2=createRun('es',{scenario:'bank',context:true});assert.notEqual(b1.prompt,b2.prompt);assert.notDeepEqual(b1.data.logits,b2.data.logits);
 let w=-1.2;for(let i=0;i<80;i++){const next=trainStep(w);assert(trainingStats(next).loss<trainingStats(w).loss);w=next;}assert(trainingStats(w).probability>.97);
 assert.equal(nextCandidates(createRun('en',{scenario:'bank'})).pieces[0],tokenize('Financial')[0]);
+for(const decoding of ['greedy','sample'])for(const seed of [42,73,9942]){
+  const r=createRun('es',{scenario:'museum',decoding,seed,temperature:2});r.phase=6;
+  while(!r.done){const before=r.generated.length,next=pendingToken(r),state=JSON.stringify(r);assert.equal(JSON.stringify(r),state);advance(r);assert.equal(r.generated.length,before+(next==='<EOS>'?0:1));assert.equal(next,next==='<EOS>'?'<EOS>':r.generated.at(-1));r.phase=6;}
+}
 console.log('LLMs: reversible tokens and IDs, stable softmax, causal masking, source/context effects, deterministic sampling, full generation and training loss: OK');

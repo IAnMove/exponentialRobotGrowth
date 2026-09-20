@@ -1,0 +1,1 @@
+After the layers, the model computes scores for possible next tokens. Softmax turns them into probabilities. The three dimensional columns represent that distribution and add up to one hundred percent. A tall column means more likely text under these scores, not a more truthful statement. Change the temperature to compare. Our scores are prepared to explain the mechanism.

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Now one piece is selected. We can take the most likely option or sample from the distribution. Look at the options around the platform: a complete sentence does not come out at once. When this step finishes, exactly one new token appears in the answer. In this lab, the first choice uses probabilities; the rest follows a scripted continuation so we can study the path.",
+  "duration_ms": 23148,
+  "billed_characters": 369,
+  "sample_rate": 32000,
+  "size_bytes": 372084,
+  "generated_at": "2026-09-20T18:04:05.461126+00:00"
+}

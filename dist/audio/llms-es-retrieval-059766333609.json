@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Aquí la aplicación puede recuperar una fuente. En el experimento del museo, activar la consulta añade una ficha al contexto. Si no hay documento, seguimos sin esa evidencia. El texto recuperado no modifica los pesos del modelo. Una fuente antigua puede inducir una respuesta equivocada. La búsqueda es una herramienta adicional, no algo que todos los modelos hagan automáticamente.",
+  "duration_ms": 24912,
+  "billed_characters": 381,
+  "sample_rate": 32000,
+  "size_bytes": 400308,
+  "generated_at": "2026-09-20T18:03:23.902214+00:00"
+}

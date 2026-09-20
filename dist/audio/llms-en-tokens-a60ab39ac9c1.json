@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "The text is now split into tokens. Each block is a piece: a word, a fragment, a space or punctuation. Its identifier appears underneath. Identical pieces share an identifier. Select a block to inspect it. These splits belong to our teaching tokenizer; a real model uses its own vocabulary. We have not generated the answer yet.",
+  "duration_ms": 24624,
+  "billed_characters": 327,
+  "sample_rate": 32000,
+  "size_bytes": 395700,
+  "generated_at": "2026-09-20T18:03:55.767682+00:00"
+}

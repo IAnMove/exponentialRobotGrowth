@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This matrix shows which positions can exchange information. Each row is a querying token; each column is a position it can attend to. Dark cells block the future. Bright columns show attention weights computed in our example. A real Transformer combines multiple heads, transformations and residual connections. Here we show one small head. This is not a picture of thoughts or a measure of truth.",
+  "duration_ms": 27540,
+  "billed_characters": 397,
+  "sample_rate": 32000,
+  "size_bytes": 442356,
+  "generated_at": "2026-09-20T18:04:00.342658+00:00"
+}

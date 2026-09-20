@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Empezamos con tu pregunta. Estas tarjetas representan las instrucciones y los mensajes que la aplicación reúne antes de llamar al modelo. Si existe una conversación anterior, puede incluirse aquí. El modelo recibe esta entrada, no todo lo que sabes ni todo internet. Observa cómo la información entra por el mismo recorrido. Vamos a detenernos en cada paso.",
+  "duration_ms": 22212,
+  "billed_characters": 357,
+  "sample_rate": 32000,
+  "size_bytes": 357108,
+  "generated_at": "2026-09-20T18:03:23.339889+00:00"
+}

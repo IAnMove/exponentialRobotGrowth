@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Comienza el siguiente token. La atención combina la entrada con lo que ya se escribió. El futuro sigue bloqueado y los pesos del modelo siguen fijos.",
+  "duration_ms": 8352,
+  "billed_characters": 149,
+  "sample_rate": 32000,
+  "size_bytes": 135348,
+  "generated_at": "2026-09-20T18:03:40.834440+00:00"
+}

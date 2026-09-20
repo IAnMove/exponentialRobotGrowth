@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Nos detenemos antes de emitir la siguiente pieza. Al terminar este paso, solo se añade un token: puede ser una palabra, un fragmento o incluso un espacio.",
+  "duration_ms": 9576,
+  "billed_characters": 154,
+  "sample_rate": 32000,
+  "size_bytes": 154932,
+  "generated_at": "2026-09-20T18:03:43.256828+00:00"
+}

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Esta matriz muestra qué posiciones pueden intercambiar información. Cada fila es un token que consulta; cada columna, una posición a la que puede atender. Las casillas oscuras bloquean el futuro. Las columnas luminosas muestran pesos de atención calculados en nuestro ejemplo. Un Transformer real combina múltiples cabezas, transformaciones y conexiones residuales. Aquí vemos una cabeza pequeña; no es una imagen de pensamientos ni una medida de verdad.",
+  "duration_ms": 29052,
+  "billed_characters": 454,
+  "sample_rate": 32000,
+  "size_bytes": 466548,
+  "generated_at": "2026-09-20T18:03:32.471075+00:00"
+}

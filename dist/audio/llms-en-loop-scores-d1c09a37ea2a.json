@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "A new distribution describes the next piece. The continuation here is scripted. The tallest column shows the next token planned for this demonstration.",
+  "duration_ms": 9684,
+  "billed_characters": 151,
+  "sample_rate": 32000,
+  "size_bytes": 156660,
+  "generated_at": "2026-09-20T18:04:09.341571+00:00"
+}

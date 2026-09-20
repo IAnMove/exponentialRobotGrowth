@@ -25,10 +25,10 @@ for pattern in ['check-*.py', 'check-*.js', 'check-*.mjs']:
 for name in ['industrial-model.js', 'network-model.js', 'package.json', 'package-lock.json', 'serve.py']:
     shutil.copyfile(root/name, project/name)
 (project/'tools').mkdir(exist_ok=True)
-for name in ['build_site.py', 'package_pages.py', 'generate_narration.py', 'build_kardashev_narration.py']:
+for name in ['build_site.py', 'package_pages.py', 'generate_narration.py', 'build_kardashev_narration.py', 'build_llms_narration.py']:
     shutil.copyfile(root/'tools'/name, project/'tools'/name)
 (project/'narration').mkdir(exist_ok=True)
-for name in ['kardashev.json', 'voices.json']:
+for name in ['kardashev.json', 'llms.json', 'voices.json']:
     shutil.copyfile(root/'narration'/name, project/'narration'/name)
 # A fresh checkout seeds shared audio and catalogs from the published root.
 # Build output is ignored; only the root runtime files are committed.
@@ -62,6 +62,11 @@ causal attention, next-token probabilities and autoregressive output. Play, step
 controls accompany bilingual examples of ambiguity, current sources and stale sources. A separate
 training exercise distinguishes changing weights from supplying context. This is an explicitly
 labelled educational simulation: answers and logits are scripted, not output from a trained LLM.
+Interactive Three.js scenes replace the original SVG. Select token blocks, vector cells and
+causal-attention rows to inspect their values. Twenty-six MiniMax recordings cover each step and
+subsequent token cycles in English and Spanish, with transcripts and language selection. Playback
+waits for the audio to finish and then pauses for 3, 5 or 8 seconds. Manual advancement, pause/resume
+and silent reading are supported; unavailable audio never silently skips a step.
 
 ## One repository for development and publication
 
@@ -81,6 +86,7 @@ node check-kardashev.mjs
 node check-kardashev-media.mjs
 node check-kardashev-motion.mjs
 node check-llms.mjs
+node check-llms-guide.mjs
 node check-explanations.mjs
 node check-full-automation.mjs
 node check-narrator.mjs
