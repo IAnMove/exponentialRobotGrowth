@@ -1,0 +1,15 @@
+import {strict as assert} from 'node:assert';
+import {createLedger,laborIndex,fixedIndex,taskIndex,districtRows} from './site-src/live/metrics.js';
+import model from './industrial-model.js';
+const ledger=createLedger();ledger.add(8,{humans:10,robots:0},{humans:10,robots:0});
+assert.equal(laborIndex({total:80,reference:80,...ledger.values()}),100);
+ledger.add(16,{humans:0,robots:10},{humans:0,robots:0});
+assert.equal(laborIndex({total:240,reference:80,...ledger.values()},.2),100*112/240);
+assert.equal(laborIndex({total:0,reference:0,...ledger.values()}),null);
+assert.equal(fixedIndex({total:20,reference:10,siteTime:60,referenceSiteTime:60}),50);
+assert.equal(taskIndex(300,600,.2),60);assert.equal(taskIndex(300,600,1.5),125);
+const ref=model.simulateIndustry('none',false),run=model.simulateIndustry();const rows=districtRows(run.frames,ref.frames);
+assert.equal(rows[0].humanHours,0);assert.equal(rows[24].referenceHumanHours,74*8);
+assert(rows.every((r,i)=>r.total===run.frames[i].total&&r.reference===ref.frames[i].total));
+assert(rows.every((r,i)=>!i||r.robotHours>=rows[i-1].robotHours));
+console.log('Live cost indices: equal baseline, idle-time charge, zero output, cost increase, district hour accounting and output parity OK');

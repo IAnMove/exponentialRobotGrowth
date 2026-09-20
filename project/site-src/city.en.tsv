@@ -1,0 +1,97 @@
+Escalas del crecimiento	Scales of growth
+Un robot terminado vuelve a la línea y ayuda a fabricar los siguientes.	A finished robot returns to the line and helps build the next ones.
+La fabricación necesita una cadena completa de materiales, componentes y pruebas.	Manufacturing needs a complete chain of materials, components and testing.
+Los robots construyen nuevas instalaciones que amplían la capacidad de toda la red.	Robots build new facilities that expand the capacity of the whole network.
+Parte de los robots llega a la ciudad; otra parte sigue ampliando la industria que los fabrica.	Some robots reach the city; others keep expanding the industry that builds them.
+Explicación general	General explanation
+Recorrer los sectores →	Tour the sectors →
+Siguiente sector →	Next sector →
+Siguiente escala	Next scale
+Escenarios ilustrativos: cada escala empieza con sus propios supuestos. Sin fechas ni previsiones de empleo.	Illustrative scenarios: each scale starts with its own assumptions. No dates or employment forecasts.
+Los primeros robots construyen los siguientes.	The first robots build the next ones.
+Pulsa Reproducir. Los humanos empiezan.<br>Los robots terminados regresan a la línea.	Press Play. Humans start the work.<br>Finished robots return to the line.
+Reincorporar robots automáticamente	Automatically reinvest finished robots
+trabajando en su propia fabricación	help manufacture the next robots
+terminados disponibles	finished and available
+Esperando un robot terminado	Waiting for a finished robot
+Usa un robot ya terminado. Cubre una tarea humana tras 15 minutos simulados.	Uses a finished robot. Covers one human task after 15 simulated minutes.
+Empiezas con diez personas y ningún robot operativo. Cada robot terminado puede volver a un puesto de esta misma fábrica. No llegan robots gratis del exterior: hay que fabricarlos antes de incorporarlos. El modo automático refuerza los puestos con menor capacidad diaria; puedes desactivarlo y elegir tú.	You start with ten people and no operational robots. Each finished robot can return to a station in this same factory. No free robots arrive from outside: they must be built before deployment. Automatic mode reinforces stations with the lowest daily capacity; you can turn it off and choose yourself.
+Preparar estructura, actuadores, batería, controladores y sensores.	Prepare the structure, actuators, battery, controllers and sensors.
+Montar el torso, las extremidades y la estructura del robot.	Assemble the torso, limbs and robot structure.
+Instalar actuadores, batería, cableado y mecanismos de movimiento.	Install actuators, battery, wiring and movement mechanisms.
+Calibrar sensores, movimiento, control y seguridad del conjunto.	Calibrate sensors, motion, control and system safety.
+Verificar el robot completo y habilitar su incorporación al trabajo.	Verify the complete robot and enable its deployment.
+KITS · ESTRUCTURA + ACTUADORES + CONTROL	KITS · STRUCTURE + ACTUATORS + CONTROL
+Robot Lab — De la industria a la ciudad	Robot Lab — From industry to the city
+Explora cómo los robots fabricados por una industria en expansión llegan a distintos sectores de una ciudad. Escenarios de tareas, no predicciones de empleos.	Explore how robots produced by a growing industry reach different city sectors. Task scenarios, not employment forecasts.
+ESCALA 04 · LA CIUDAD	SCALE 04 · THE CITY
+La capacidad llega a la vida cotidiana.	Capacity reaches everyday life.
+Ciudad isométrica con personas y robots en seis sectores de actividad	Isometric city with people and robots in six activity sectors
+Preparando la ciudad…	Preparing the city…
+La ciudad empieza con tareas realizadas por humanos.	The city begins with tasks performed by humans.
+Figuras que representan tareas, no empleos	Figures represent tasks, not jobs
+Reiniciar ciudad	Reset city
+Tareas con humanos	Tasks with humans
+No es un número de empleos	This is not a count of jobs
+Tareas cubiertas por robots	Tasks covered by robots
+ % del escenario	% of the scenario
+Robots aún en la industria	Robots still in industry
+ instalaciones	 facilities
+FABRICAR	BUILD ROBOTS
+REINVERTIR	REINVEST
+AMPLIAR	EXPAND
+LLEGAR A LA CIUDAD	REACH THE CITY
+DOS DESTINOS PARA CADA ROBOT	TWO DESTINATIONS FOR EACH ROBOT
+Servir hoy. Producir mañana.	Serve today. Produce tomorrow.
+Los robots salen de una región industrial que también construye nuevas instalaciones. Decide qué parte llega a la ciudad.	Robots come from an industrial region that also builds new facilities. Decide what share reaches the city.
+Enviar a la ciudad	Send to the city
+El resto permanece en la industria. Enviar más puede acelerar las primeras llegadas y reducir la capacidad de fabricar después.	The rest remains in industry. Sending more can accelerate early arrivals and reduce later manufacturing capacity.
+Alcance supuesto de automatización	Assumed scope of automation
+Son tres hipótesis elegidas para explorar. Cambiar de hipótesis reinicia la escena. No tienen probabilidad ni fecha asignada.	Three hypotheses chosen for exploration. Changing the hypothesis resets the scene. They have no assigned probability or date.
+Las llegadas se acumulan	Arrivals accumulate
+Tareas cubiertas	Covered tasks
+Límite del escenario	Scenario limit
+Tareas cubiertas por robots a lo largo del escenario	Robot-covered tasks throughout the scenario
+120 ciclos	120 cycles
+ robots de camino	 robots in transit
+DÓNDE NACE LA ACELERACIÓN	WHERE ACCELERATION STARTS
+Las tareas urbanas no crecen exponencialmente por sí solas. La aceleración procede de una industria que reinvierte, amplía su capacidad y puede entregar más robots. Cada sector conserva tareas humanas.	Urban tasks do not grow exponentially on their own. Acceleration comes from an industry that reinvests, expands capacity and can deliver more robots. Every sector retains human tasks.
+Ver cómo se amplía la industria ↗	See how industry expands ↗
+SECTOR SELECCIONADO	SELECTED SECTOR
+Evolución del sector seleccionado	Selected sector over time
+LO QUE REPRESENTAMOS	WHAT WE REPRESENT
+Cada unidad es una tarea equivalente del escenario. Una persona realiza muchas tareas: cubrir una no equivale a eliminar su profesión. Las personas liberadas pueden hacer otras tareas, algo que esta escena no calcula.	Each unit is an equivalent task in the scenario. A person performs many tasks: covering one does not eliminate their profession. People can move to other tasks, which this scene does not calculate.
+Hipótesis ilustrativas · sin fechas, cifras de Tesla ni previsiones laborales.	Illustrative hypotheses · no dates, Tesla figures or employment forecasts.
+Una ciudad, tres hipótesis.	One city, three hypotheses.
+Partimos de 600 tareas equivalentes atendidas por humanos, repartidas entre seis sectores. La industria empieza por separado con 24 robots y seis instalaciones. Cada robot enviado a la ciudad deja de estar disponible para trabajar en esa industria. El traslado tarda un ciclo ilustrativo.	We start with 600 equivalent human tasks across six sectors. Industry starts separately with 24 robots and six facilities. Every robot sent to the city becomes unavailable for work in that industry. Transit takes one illustrative cycle.
+La asignación urbana es automática y equilibra la cobertura relativa de los sectores. Cada hipótesis establece límites distintos por sector; son parámetros del modelo, no estimaciones publicadas. No se automatizan todas las tareas de cuidados, salud o educación.	Urban allocation is automatic and balances relative sector coverage. Each hypothesis sets different sector limits: model parameters, not published estimates. Not all care, health or education tasks are automated.
+La ciudad cuenta tareas cubiertas, no productividad económica ni puestos de trabajo eliminados. No calcula demanda, salarios, precios, calidad del servicio, regulación o nuevas ocupaciones. La capacidad robótica presupone que las tareas elegidas son técnicamente viables. La recarga y los turnos se omiten en esta escala agregada. Los recursos, la construcción y los límites de la industria se conservan en su modelo regional.	The city counts covered tasks, not economic productivity or eliminated jobs. It does not calculate demand, wages, prices, service quality, regulation or new occupations. Robot capabilities assume the selected tasks are technically feasible. Charging and shifts are omitted at this aggregate scale. Industrial resources, construction and limits are preserved in the regional model.
+Logística urbana	Urban logistics
+Comercio y alimentación	Retail and food
+Construcción y reparación	Construction and repair
+Limpieza y mantenimiento	Cleaning and maintenance
+Cuidados y salud	Care and health
+Educación y servicios	Education and services
+Reparto, clasificación y almacenes. Las tareas de conducción y acceso dependen del entorno y de la supervisión.	Delivery, sorting and warehouses. Driving and access depend on the environment and supervision.
+Reposición, preparación y limpieza. La atención, las excepciones y las decisiones siguen requiriendo personas.	Stocking, preparation and cleaning. Service, exceptions and decisions still require people.
+Transporte de material y operaciones repetibles. Diseñar, coordinar y trabajar en entornos cambiantes mantiene tareas humanas.	Material handling and repeatable operations. Design, coordination and changing environments retain human tasks.
+Limpieza de espacios y mantenimiento rutinario. El acceso, las averías y las situaciones inesperadas limitan la automatización.	Cleaning spaces and routine maintenance. Access, breakdowns and unexpected situations limit automation.
+Transporte interno, material y apoyo físico. El cuidado personal, el juicio clínico y la responsabilidad permanecen en manos humanas.	Internal transport, materials and physical support. Personal care, clinical judgment and responsibility remain human.
+Apoyo logístico, espacios y tareas administrativas simples. Enseñar, acompañar y decidir no se representan como sustituidos por completo.	Logistics, spaces and simple administrative support. Teaching, supporting people and deciding are not shown as fully replaced.
+ disponibles sin tarea asignada	 available without an assigned task
+Fin del escenario. Cambia la hipótesis o compara otra distribución.	Scenario complete. Change the hypothesis or compare another distribution.
+Se alcanzó el alcance de esta hipótesis. Los robots adicionales esperan nuevas tareas.	This hypothesis has reached its scope. Additional robots wait for new tasks.
+Los nuevos robots llegan desde la industria y se distribuyen automáticamente.	New robots arrive from industry and are allocated automatically.
+ tareas cubiertas de 	 covered tasks out of 
+Esta hipótesis permite cubrir hasta 	This hypothesis allows up to 
+ tareas de este sector.	 tasks in this sector to be covered.
+Una figura ≈ 	One figure ≈ 
+ tareas · naranja: humanos · claro: robots	 tasks · orange: humans · light: robots
+Limitado	Limited
+Intermedio	Intermediate
+Amplio	Broad
+Ciudad	City
+ESCALA 01	SCALE 01
+ESCALA 02	SCALE 02
+ sobre 	 out of 
+Incluyen estructura, actuadores, batería, controladores y sensores.	They include the structure, actuators, battery, controllers and sensors.

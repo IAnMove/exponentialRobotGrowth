@@ -1,0 +1,123 @@
+Robot Lab — La región que se construye	Robot Lab — A region that builds itself
+Robots que construyen fábricas que construyen robots. Explora la reinversión, los materiales y la energía en una región industrial interactiva.	Robots building factories that build robots. Explore reinvestment, materials and energy in an interactive industrial region.
+EXPERIMENTO 003 · CAMBIAR DE ESCALA	EXPERIMENT 003 · ZOOMING OUT
+Construir lo que construye.	Build what builds the next.
+Entender el ciclo ↗	Understand the loop ↗
+Región industrial isométrica	Isometric industrial region
+Seis zonas industriales, parcelas disponibles, robots y nuevas instalaciones en construcción	Six industrial zones, available plots, robots and new facilities under construction
+Preparando la región…	Preparing the region…
+24 robots. Seis instalaciones. Una nueva escala.	24 robots. Six facilities. A new scale.
+Cada figura representa un robot	Each figure represents one robot
+Cada figura representa hasta 	Each figure represents up to 
+Ver toda la región	Fit the whole region
++10 ciclos →	+10 cycles →
+Reiniciar región	Reset region
+Capacidad de la región	Regional capacity
+Flota total	Total fleet
+24 iniciales + 0 nuevos	24 initial + 0 new
+24 iniciales + 	24 initial + 
+ nuevos	 new
+Instalaciones abiertas	Open facilities
+ obras en marcha	 construction projects
+Robots terminados / ciclo	Robots finished / cycle
+Comparación desde el mismo inicio	Comparison from the same starting point
+Ciclo de reinversión	Reinvestment loop
+MÁS ROBOTS	MORE ROBOTS
+CAPACIDAD	CAPACITY
+OBRAS	CONSTRUCTION
+LA DECISIÓN QUE CAMBIA EL FUTURO	THE DECISION THAT CHANGES THE FUTURE
+Producir o construir.	Produce or build.
+Reserva una parte de los robots y del material refinado para ampliar la región. Invertir reduce lo que puedes producir ahora.	Reserve a share of robots and refined material to expand the region. Investing reduces what you can produce now.
+Reserva para obras	Share for construction
+ produciendo	 in production
+ construyendo	 building
+ disponibles	 available
+Ampliar la cadena automáticamente	Expand the chain automatically
+El porcentaje limita los robots en obras y reserva esa parte del nuevo material refinado. También puedes construir en una parcela concreta.	The percentage limits construction workers and reserves that share of newly refined material. You can also build on a specific plot.
+La flota que acumulas	Your growing fleet
+Tu región	Your region
+Sin nuevas instalaciones	No new facilities
+Evolución de la flota, comparada con una región que no construye instalaciones	Fleet growth compared with a region that builds no new facilities
+Inicio · 24	Start · 24
+Ciclo 0 / 120	Cycle 0 / 120
+Mismo comienzo y misma reinversión de robots. La referencia conserva sus seis instalaciones.	Same start and robot reinvestment. The reference keeps its six facilities.
+EL LÍMITE SE MUEVE	THE LIMIT MOVES
+Equilibrio inicial	Initial balance
+La región necesita reforzar toda su cadena para seguir creciendo.	The region needs to reinforce its entire chain to keep growing.
+Energía utilizada	Energy used
+Demanda de transporte	Transport demand
+Demanda frente a capacidad. Superar el 100 % reduce el ritmo de la red.	Demand against capacity. Exceeding 100% slows the network.
+Construir aquí	Build here
+Ver cadena detallada ↗	Explore the detailed chain ↗
+Producción de esta industria	Output from this industry
+Producción de la industria seleccionada a lo largo del tiempo	Selected industry output over time
+Total de esta industria en la región, incluidas sus nuevas instalaciones.	Total for this industry across the region, including its new facilities.
+ALMACÉN COMPARTIDO	SHARED INVENTORY
+Material refinado	Refined material
+Kits de robot	Robot kits
+Escenario independiente · 120 ciclos ilustrativos, sin fechas reales.	Independent scenario · 120 illustrative cycles, no real dates.
+DEL ROBOT A LA REGIÓN	FROM ROBOT TO REGION
+Una fábrica produce robots.<br>Una red puede ampliar su capacidad.	A factory produces robots.<br>A network can expand its capacity.
+Esta escena empieza con 24 robots y seis instalaciones ya construidas. No importa el progreso de las otras escenas. Puedes dedicar parte de la flota a obras: al principio resta trabajadores a la producción; después abre nuevas instalaciones.	This scene starts with 24 robots and six completed facilities. It does not import progress from the other scenes. You can dedicate part of the fleet to construction: initially it diverts workers from production; later it opens new facilities.
+Las minas entregan mineral. Las refinerías lo convierten en material. Dos lotes de material forman un kit, y cada kit permite montar un robot. Las obras también consumen ese mismo material: 48 lotes por instalación.	Mines supply ore. Refineries turn it into material. Two material batches form a kit, and each kit becomes one robot. Construction consumes the same material: 48 batches per facility.
+La misma fracción de inversión se reserva del nuevo material refinado para futuras obras. Cada obra necesita 24 unidades de trabajo robótico y admite hasta cuatro robots. Hay tres obras simultáneas como máximo. La energía insuficiente ralentiza tanto las obras como la producción. El transporte limita el flujo industrial.	The same investment share of newly refined material is reserved for future construction. Each project requires 24 robot work units and accepts up to four robots. At most three projects can run simultaneously. Insufficient energy slows construction and production. Transport limits industrial flow.
+La comparación mantiene los mismos recursos iniciales y permite que todos los robots nuevos se incorporen. La referencia no construye instalaciones: termina teniendo robots disponibles que su maquinaria no puede aprovechar.	The comparison starts with the same resources and lets all new robots join the fleet. The reference builds no facilities: it eventually has available robots its machinery cannot use.
+Los ciclos no son días ni años. Todas las tasas y costes son supuestos didácticos. La región agrupa procesos complejos; no modela turnos, averías, permisos, costes monetarios, química especializada ni fabricación de maquinaria. Se supone que esos equipos e insumos especializados llegan del exterior. La electricidad es una capacidad por ciclo, no una batería acumulada. Hay seis parcelas por industria y no se abren nuevas regiones: el crecimiento acaba limitado. No es una predicción de Tesla ni un cálculo del PIB.	Cycles are not days or years. All rates and costs are teaching assumptions. The region groups complex processes together; it does not model shifts, failures, permits, monetary costs, specialized chemistry or equipment manufacturing. Specialized equipment and inputs are assumed to arrive from outside. Electricity is capacity per cycle, not stored in a battery. There are six plots per industry and no new regions open: growth eventually becomes limited. This is not a Tesla forecast or a GDP calculation.
+Escuchar la explicación	Listen to the explanation
+Seleccionar una industria	Select an industry
+Falta potencia eléctrica	Not enough electrical power
+La demanda supera la generación. Ampliar energía permite aprovechar mejor las fábricas y las obras.	Demand exceeds generation. Expanding energy lets factories and construction use more of their capacity.
+Transporte saturado	Transport at capacity
+La red no puede mover todo el flujo potencial. Más capacidad logística permite conectar las ampliaciones.	The network cannot move the full potential flow. More logistics capacity connects the expansions.
+Faltan componentes	Components are missing
+Las fábricas de robots esperan kits. Reforzar componentes o sus proveedores puede desbloquearlas.	Robot factories are waiting for kits. Reinforcing components or their suppliers can unlock them.
+Material para la próxima obra	Material for the next project
+La construcción y los componentes comparten material. Ampliar el refinado puede liberar recursos para invertir.	Construction and components share material. Expanding refining can release resources for investment.
+El mapa tiene un límite	The map has a limit
+Todas las parcelas están ocupadas. La flota puede seguir creciendo, pero la capacidad regional ya no se amplía.	Every plot is occupied. The fleet can keep growing, but regional capacity no longer expands.
+Robots sin un puesto disponible	Robots without a workstation
+Hay más robots que puestos en las instalaciones actuales. Las nuevas obras pueden crear capacidad útil.	There are more robots than workstations in current facilities. New construction can create useful capacity.
+La cadena avanza junta	The chain moves together
+La próxima ampliación necesita trabajadores, material y tiempo. La producción aumenta cuando la nueva capacidad entra en servicio.	The next expansion needs workers, material and time. Output increases when new capacity enters service.
+ / ciclo sin nuevas instalaciones	 / cycle without new facilities
+Flota: 	Fleet: 
+; sin nuevas instalaciones: 	; without new facilities: 
+Fin del escenario. Compara la flota y prueba otra inversión.	Scenario complete. Compare fleets and try a different investment.
+Nueva instalación abierta: 	New facility opened: 
+Obra iniciada: 	Construction started: 
+La capacidad ya está disponible.	The capacity is now available.
+El material ya se ha reservado.	The material has been reserved.
+ · obra	 · building
+INSTALACIÓN OPERATIVA	OPERATING FACILITY
+PARCELA DISPONIBLE	AVAILABLE PLOT
+OBRA · 	CONSTRUCTION · 
+Tres obras en marcha	Three projects in progress
+Falta material	Not enough material
+ robots en esta obra · 	 robots on this project · 
+ unidades de trabajo pendientes.	 work units remaining.
+Coste: 48 lotes de material. Trabajo: 24 unidades. Asigna robots a obras para avanzar.	Cost: 48 material batches. Work: 24 units. Assign robots to construction to make progress.
+Capacidad instalada. Su producción depende de los trabajadores, la energía y los suministros.	Installed capacity. Output depends on workers, energy and supplies.
+Las minas abastecen a las refinerías. Más plantas necesitan más mineral.	Mines supply refineries. More facilities need more ore.
+El material refinado se reparte entre componentes y construcción. Invertir también consume recursos.	Refined material is shared between components and construction. Investing consumes resources too.
+Agrupa estructuras, actuadores, baterías y electrónica. Dos lotes de material forman un kit.	Groups structures, actuators, batteries and electronics. Two material batches form one kit.
+Un kit se transforma en un robot. Los nuevos robots pueden producir o construir más instalaciones.	One kit becomes one robot. New robots can produce or build more facilities.
+La potencia disponible limita a toda la región. La red eléctrica también tiene que crecer.	Available power limits the whole region. The electrical grid has to grow too.
+Conecta extracción, transformación y montaje. Una red saturada frena a todas las plantas.	Connects extraction, processing and assembly. A saturated network slows every facility.
+Componentes robóticos	Robot components
+Fábricas de robots	Robot factories
+Generación eléctrica	Power generation
+Transporte regional	Regional transport
+mineral / ciclo	ore / cycle
+material / ciclo	material / cycle
+kits / ciclo	kits / cycle
+robots / ciclo	robots / cycle
+energía / ciclo	energy / cycle
+cargas / ciclo	loads / cycle
+Explorar la región ↗	Explore the region ↗
+Extracción	Extraction
+Refinado	Refining
+Región	Region
+Fábrica	Factory
+CICLO 	CYCLE 
+Ciclo 	Cycle 
+1,0×	1.0×
