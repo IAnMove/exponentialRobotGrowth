@@ -2,6 +2,8 @@ import * as THREE from '../../vendor/three.module.js';
 import {GLTFLoader} from '../../vendor/GLTFLoader.js';
 import {RoomEnvironment} from '../../vendor/RoomEnvironment.js';
 
+export const COLLECTOR_COUNT=1728;
+
 // NASA geometry is used for MarCO; the Dyson assemblies are illustrative.
 export function createWorld(host,{onAsset=()=>{}}={}) {
   const renderer=new THREE.WebGLRenderer({antialias:true});
@@ -64,20 +66,20 @@ export function createWorld(host,{onAsset=()=>{}}={}) {
   const panelMat=new THREE.MeshStandardMaterial({map:cells,metalness:.6,roughness:.32,side:THREE.DoubleSide});
   const busMat=new THREE.MeshStandardMaterial({color:0xc8aa65,metalness:.65,roughness:.4});
   const radiatorMat=new THREE.MeshStandardMaterial({color:0xe4edf1,metalness:.35,roughness:.5});
-  const count=288,components=[
+  const count=COLLECTOR_COUNT,components=[
     [new THREE.BoxGeometry(.10,.065,.08),busMat,0,0,0],
     [new THREE.BoxGeometry(.19,.009,.18),panelMat,-.155,0,0],
     [new THREE.BoxGeometry(.19,.009,.18),panelMat,.155,0,0],
     [new THREE.BoxGeometry(.07,.012,.14),radiatorMat,0,-.065,0]
   ].map(([g,m,x,y,z])=>({mesh:new THREE.InstancedMesh(g,m,count),offset:new THREE.Vector3(x,y,z)}));
   components.forEach(c=>{star.add(c.mesh);c.mesh.frustumCulled=false;});
-  const dummy=new THREE.Object3D(),orient=new THREE.Quaternion();
-  for(let ring=0;ring<8;ring++){
-    const r=2.5+ring*.14,plane=orbit(star,r,(ring-3.5)*.23);plane.rotation.y=ring*.63;plane.updateMatrixWorld();
-    for(let i=0;i<36;i++){
-      const a=(i/36+ring*.013)*Math.PI*2,pos=new THREE.Vector3(Math.cos(a)*r,0,Math.sin(a)*r).applyMatrix4(plane.matrixWorld);
+  const dummy=new THREE.Object3D(),orient=new THREE.Quaternion();dummy.scale.setScalar(.65);
+  for(let ring=0;ring<24;ring++){
+    const r=2.5+ring*.045,plane=orbit(star,r,(ring-11.5)*.085);plane.rotation.y=ring*.63;plane.updateMatrixWorld();
+    for(let i=0;i<72;i++){
+      const a=(i/72+ring*.013)*Math.PI*2,pos=new THREE.Vector3(Math.cos(a)*r,0,Math.sin(a)*r).applyMatrix4(plane.matrixWorld);
       orient.setFromUnitVectors(new THREE.Vector3(0,1,0),pos.clone().normalize().negate());
-      for(const c of components){dummy.position.copy(c.offset).applyQuaternion(orient).add(pos);dummy.quaternion.copy(orient);dummy.updateMatrix();c.mesh.setMatrixAt(ring*36+i,dummy.matrix);}
+      for(const c of components){dummy.position.copy(c.offset).applyQuaternion(orient).add(pos);dummy.quaternion.copy(orient);dummy.updateMatrix();c.mesh.setMatrixAt(ring*72+i,dummy.matrix);}
     }
   }
   let seed=1729;const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
@@ -91,7 +93,7 @@ export function createWorld(host,{onAsset=()=>{}}={}) {
   points(galaxy,positions,colors,.09,.95);points(galaxy,positions.slice(0,9000),colors.slice(0,9000),.26,.14);
   const active=points(galaxy,positions,expansion,.10,.28);halo(galaxy,0xffd2a5,3.1,.75);
   const bg=[],bgColor=[];for(let i=0;i<1100;i++){const p=new THREE.Vector3(random()-.5,random()-.5,random()-.5).normalize().multiplyScalar(65+random()*35);bg.push(p.x,p.y,p.z);bgColor.push(.6+random()*.4,.65+random()*.35,1);}points(scene,bg,bgColor,.14,.6);
-  let yaw=.35,pitch=.24,distance=10.6,lastView='planet';const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let yaw=.35,pitch=.24,distance=10.6,lastView='planet';
   function resize(){const w=host.clientWidth,h=Math.max(1,host.clientHeight);renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();}new ResizeObserver(resize).observe(host);resize();
   function fit(){yaw=lastView==='satellite'?.3:.35;pitch=lastView==='galaxy'?.7:.24;distance=lastView==='galaxy'?18:lastView==='satellite'?10:lastView==='planet'?10.6:13;}
   let down=null;host.addEventListener('pointerdown',e=>{if(e.button!==0||e.target!==renderer.domElement)return;down={id:e.pointerId,x:e.clientX,y:e.clientY};host.setPointerCapture(e.pointerId);});
@@ -102,9 +104,9 @@ export function createWorld(host,{onAsset=()=>{}}={}) {
   host.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','+','-'].includes(e.key))return;e.preventDefault();if(e.key==='Home')fit();if(e.key==='ArrowLeft')yaw-=.1;if(e.key==='ArrowRight')yaw+=.1;if(e.key==='ArrowUp')pitch=Math.min(1.3,pitch+.1);if(e.key==='ArrowDown')pitch=Math.max(-1.2,pitch-.1);if(e.key==='+')zoomBy(1.15);if(e.key==='-')zoomBy(1/1.15);});
   function render(state,v,inspect=false){const view=inspect?'satellite':v.view;if(view!==lastView){lastView=view;fit();}
     planet.visible=view==='planet';star.visible=view==='star';galaxy.visible=view==='galaxy';detail.visible=view==='satellite';sunlight.visible=star.visible;key.intensity=star.visible?1:3.1;
-    const spin=reduced?0:state.motion*.045;globe.rotation.y=spin-.4;
+    const spin=state.motion*.12;globe.rotation.y=spin-.4;
     spacecraft.forEach((s,i)=>{const a=.6+i*2.1+spin*(.7+i*.2),r=i===0?3.4:3.05;s.position.set(Math.cos(a)*r,Math.sin(a*.7)*.8,Math.sin(a)*r);s.rotation.set(.4,a,-.3);});
-    star.rotation.y=spin*.35;sunMat.uniforms.time.value=state.motion;galaxy.rotation.y=spin*.12;
+    star.rotation.y=spin*.35;sunMat.uniforms.time.value=state.motion;galaxy.rotation.y=spin*.6;
     const visible=Math.max(8,Math.round(count*Math.min(1,Math.max(0,(v.k-1.35)/.65))));components.forEach(c=>c.mesh.count=visible);
     active.geometry.setDrawRange(0,Math.round(20000*Math.min(1,Math.max(0,(v.k-2.35)/.65))));
     const d=distance*Math.max(1,Math.min(1.75,1/camera.aspect));camera.position.set(Math.sin(yaw)*Math.cos(pitch)*d,Math.sin(pitch)*d,Math.cos(yaw)*Math.cos(pitch)*d);camera.lookAt(0,0,0);renderer.render(scene,camera);
