@@ -8,6 +8,11 @@ linear/logarithmic charts and a conditional compound-growth calculator. It disti
 original 1964 categories from the continuous Sagan convention. Rates and scenarios are teaching
 assumptions, not forecasts. Sources and limitations are linked inside each notebook.
 
+The scenes use NASA's official MarCO CubeSat model and Blue Marble Earth texture, with an
+interactive component inspector. A MiniMax voice guide covers all four scales and the spacecraft
+in English and Spanish, with transcripts, pause/resume and a sequential guided tour.
+Asset credits are in `project/site-src/kardashev/ASSETS.md`.
+
 ## One repository for development and publication
 
 - `project/site-src/`: editable bilingual source, models and Three.js scenes.
@@ -23,6 +28,7 @@ npm ci
 python build-site.py
 python check-site.py
 node check-kardashev.mjs
+node check-kardashev-media.mjs
 node check-explanations.mjs
 node check-full-automation.mjs
 node check-narrator.mjs
