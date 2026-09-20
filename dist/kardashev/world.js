@@ -91,9 +91,9 @@ export function createWorld(host,{onAsset=()=>{}}={}) {
   points(galaxy,positions,colors,.09,.95);points(galaxy,positions.slice(0,9000),colors.slice(0,9000),.26,.14);
   const active=points(galaxy,positions,expansion,.10,.28);halo(galaxy,0xffd2a5,3.1,.75);
   const bg=[],bgColor=[];for(let i=0;i<1100;i++){const p=new THREE.Vector3(random()-.5,random()-.5,random()-.5).normalize().multiplyScalar(65+random()*35);bg.push(p.x,p.y,p.z);bgColor.push(.6+random()*.4,.65+random()*.35,1);}points(scene,bg,bgColor,.14,.6);
-  let yaw=.35,pitch=.24,distance=13,lastView='planet';const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let yaw=.35,pitch=.24,distance=10.6,lastView='planet';const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   function resize(){const w=host.clientWidth,h=Math.max(1,host.clientHeight);renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();}new ResizeObserver(resize).observe(host);resize();
-  function fit(){yaw=lastView==='satellite'?.3:.35;pitch=lastView==='galaxy'?.7:.24;distance=lastView==='galaxy'?18:lastView==='satellite'?10:13;}
+  function fit(){yaw=lastView==='satellite'?.3:.35;pitch=lastView==='galaxy'?.7:.24;distance=lastView==='galaxy'?18:lastView==='satellite'?10:lastView==='planet'?10.6:13;}
   let down=null;host.addEventListener('pointerdown',e=>{if(e.button!==0||e.target!==renderer.domElement)return;down={id:e.pointerId,x:e.clientX,y:e.clientY};host.setPointerCapture(e.pointerId);});
   host.addEventListener('pointermove',e=>{if(!down||down.id!==e.pointerId)return;yaw-=(e.clientX-down.x)*.006;pitch=Math.max(-1.2,Math.min(1.3,pitch+(e.clientY-down.y)*.005));down.x=e.clientX;down.y=e.clientY;});
   host.addEventListener('pointerup',()=>down=null);host.addEventListener('pointercancel',()=>down=null);
