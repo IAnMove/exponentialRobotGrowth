@@ -2,5 +2,6 @@ node_modules/
 __pycache__/
 project/dist/
 project/narration/scripts/
+project/narration/.audio-cache/
 .env
 .env.*

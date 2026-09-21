@@ -25,6 +25,13 @@ causal-attention rows to inspect their values. Twenty-six MiniMax recordings cov
 subsequent token cycles in English and Spanish, with transcripts and language selection. Playback
 waits for the audio to finish and then pauses for 3, 5 or 8 seconds. Manual advancement, pause/resume
 and silent reading are supported; unavailable audio never silently skips a step.
+The attention view now follows paper-style tensor operations: distinct Q/K/V projections,
+scaled dot products, a causal mask, row softmax, AV, residual connections and a feed-forward
+network. Values are computed using fixed synthetic weights in a small post-norm block.
+Five separately recorded narration segments supply measured scene cue times in both languages;
+a gold activation signal moves along the dependency arrows and pauses with the audio.
+The visible token window and scripted answer are explicitly separate. Paper references and
+differences from Llama's architecture are explained in the notebook.
 
 ## One repository for development and publication
 
@@ -45,6 +52,7 @@ node check-kardashev-media.mjs
 node check-kardashev-motion.mjs
 node check-llms.mjs
 node check-llms-guide.mjs
+node check-llms-tensors.mjs
 node check-explanations.mjs
 node check-full-automation.mjs
 node check-narrator.mjs
