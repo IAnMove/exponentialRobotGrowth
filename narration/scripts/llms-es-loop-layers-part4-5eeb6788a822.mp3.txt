@@ -1,0 +1,1 @@
+Las conexiones residuales y la red transforman el resultado. Esta pequeña ventana se recalcula para mostrar las operaciones; una implementación real puede reutilizar una caché.

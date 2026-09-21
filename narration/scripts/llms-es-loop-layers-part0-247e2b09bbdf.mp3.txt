@@ -1,0 +1,1 @@
+Otra pieza: la entrada produce nuevas consultas, claves y valores.

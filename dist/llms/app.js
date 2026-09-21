@@ -1,7 +1,8 @@
-import {DEFAULTS,PHASES,createRun,advance,tokenize,vector,attention,softmax,nextCandidates,trainStep,trainingStats} from './model.js';
+import {DEFAULTS,PHASES,contextWindow,createRun,advance,tokenize,vector,attention,softmax,nextCandidates,trainStep,trainingStats} from './model.js';
 import {createWorld} from './world.js';
 import {StepGuide,narrationId} from './guide.js';
 import {VOICES} from './voices.js';
+import {OPERATIONS,cueAt,guideProgress} from './flow.js';
 const es=document.documentElement.lang==='es',lang=es?'es':'en',t=(a,b)=>es?a:b,$=id=>document.getElementById(id);
 const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const number=(n,d=0)=>new Intl.NumberFormat(es?'es-ES':'en-US',{maximumFractionDigits:d}).format(n);
@@ -16,7 +17,7 @@ const phases=[
   [t('Elegir','Choose'),t('Sale una pieza, no la frase entera','One piece comes out, not the whole sentence'),t('Se puede elegir el token más probable o muestrear una distribución. La temperatura cambia el reparto, no consulta hechos. En este laboratorio modifica la primera elección; el resto de la frase es una continuación guiada.','Decoding can choose the most likely token or sample a distribution. Temperature changes the distribution, not the facts. In this lab it affects the first choice; the rest is a guided continuation.')],
   [t('Repetir','Repeat'),t('Lo escrito vuelve al contexto','The output returns to context'),t('El siguiente paso usa la entrada y lo que ya se ha generado. Se repite hasta terminar. Las implementaciones suelen reutilizar cálculos mediante caché; no necesitan releer todo desde cero.','The next step uses the input and the generated text. This repeats until completion. Implementations commonly cache computations; they need not recompute everything from scratch.')]
 ];
-let options={...DEFAULTS},run=createRun(lang,options),last=performance.now(),selectedToken=0,queryIndex=7,trainingWeight=-1.2,trainingSteps=0,trainingPlaying=false,trainingClock=0,world=null,guide=null,voiceLanguage=lang;
+let options={...DEFAULTS},run=createRun(lang,options),last=performance.now(),selectedToken=0,queryIndex=7,trainingWeight=-1.2,trainingSteps=0,trainingPlaying=false,trainingClock=0,world=null,guide=null,voiceLanguage=lang,manualFlow=null,lastFlowLabel='';
 document.title=t('LLMs — Dentro de una respuesta','LLMs — Inside an answer');
 $('app').innerHTML=`<nav class="nav"><a href="../index.html">← Atlas</a><span>NOTEBOOK 08 · LLMs</span><div><a href="${es?'../../llms/index.html':'./index.html'}" lang="en">EN</a><a href="${es?'./index.html':'../es/llms/index.html'}" lang="es">ES</a></div></nav>
 <header><div><span class="eyebrow">${t('ABRE LA CAJA NEGRA','OPEN THE BLACK BOX')}</span><h1>${t('De tu pregunta<br>a una respuesta.','From your question<br>to an answer.')}</h1></div><p>${t('No hace falta llamarlos listos ni tontos. Sigue la información, cambia el contexto y mira dónde aciertan o pueden fallar.','No need to label them clever or stupid. Follow the information, change the context and see how they can succeed or fail.')}</p></header>
@@ -27,9 +28,10 @@ $('app').innerHTML=`<nav class="nav"><a href="../index.html">← Atlas</a><span>
 <div class="workbench"><div class="machine-panel"><div class="panel-label"><span>${t('EL RECORRIDO DE LA INFORMACIÓN','THE INFORMATION PATH')}</span><span>${t('Pulsa una etapa para inspeccionarla','Select a stage to inspect it')}</span></div><div class="rail" id="rail">${phases.map((p,i)=>`<button data-phase="${i}" aria-pressed="false"><b>${String(i+1).padStart(2,'0')}</b><span>${p[0]}</span></button>`).join('')}</div>
 <section class="voice-controls" aria-label="${t('Recorrido narrado','Narrated walkthrough')}"><label><input id="voice-enabled" type="checkbox" checked> MiniMax</label><label>${t('Voz','Voice')} <select id="voice-language" aria-label="${t('Idioma de la voz','Voice language')}"><option value="es" ${es?'selected':''}>Español</option><option value="en" ${!es?'selected':''}>English</option></select></label><label><input id="auto-next" type="checkbox" checked> ${t('Avanzar automáticamente','Advance automatically')}</label><label>${t('Pausa después de la voz','Pause after narration')} <select id="gap"><option value="3">3 s</option><option value="5">5 s</option><option value="8">8 s</option></select></label></section>
 <div class="voice-progress"><span id="voice-state" role="status"></span><span id="voice-time"></span><div><i id="voice-progress-bar"></i></div></div>
+<section class="flow-dashboard" aria-label="${t('Operación activa','Active operation')}"><div class="flow-heading"><span class="signal-dot"></span><strong id="flow-title"></strong><span id="flow-counter"></span></div><div id="operation-rail" class="operation-rail" hidden>${OPERATIONS.map((op,i)=>`<button data-operation="${i}" aria-pressed="false"><b>${i+1}</b>${op.name[es?0:1]}</button>`).join('')}</div><code id="flow-formula"></code><p id="flow-caption"></p><div class="flow-legend"><span class="gold">● ${t('Consulta / activación activa','Active query / activation')}</span><span>▦ ${t('Filas = tokens · columnas = dimensiones','Rows = tokens · columns = dimensions')}</span></div></section>
 <div class="machine" id="machine"><div class="scene-tools"><button id="view-reset">${t('Centrar vista','Reset view')}</button><button id="view-out" aria-label="${t('Alejar','Zoom out')}">−</button><button id="view-in" aria-label="${t('Acercar','Zoom in')}">＋</button></div><p class="scene-hint">${t('Arrastra para girar · pulsa bloques y celdas','Drag to orbit · select blocks and cells')}</p></div>
 <div class="selection-readout" id="world-selection" role="status">${t('Un recorrido en 3D por el cálculo de cada token.','A 3D walkthrough of the computation for each token.')}</div>
-<details class="voice-transcript"><summary>${t('Leer la narración de este paso','Read this step’s narration')}</summary><p id="voice-transcript"></p></details>
+<details class="paper-note"><summary>${t('¿Por qué se representa así?','Why represent it this way?')}</summary><p>${t('Los papers usan diagramas de bloques, matrices y flechas para expresar dependencias. Esta vista 3D desarrolla la atención de la figura 2 de Vaswani: Q/K/V → producto matricial → máscara → softmax → mezcla. La luz sigue vectores de activaciones; no representa un bit físico ni pensamientos. Las ramas Q/K/V pueden calcularse en paralelo.','Papers use block diagrams, matrices and arrows to express dependencies. This 3D view expands attention from Vaswani’s Figure 2: Q/K/V → matrix product → mask → softmax → mixture. Light follows activation vectors; it does not represent a physical bit or thoughts. Q/K/V branches can run in parallel.')}</p><p>${t('Aquí calculamos una cabeza con pesos sintéticos, posición aditiva y un bloque post-norm. No copiamos el encoder-decoder completo del paper de 2017: ilustramos un flujo causal de texto. Llama, por ejemplo, usa pre-normalización, SwiGLU y posiciones rotatorias. La ventana visible de 8 tokens se calcula por separado para poder inspeccionarla; no reproduce todo el contexto del modelo ni genera las respuestas preparadas.','We compute one head with synthetic weights, additive position and a post-norm block. We do not copy the full 2017 encoder-decoder: we illustrate a causal text flow. Llama, for example, uses pre-normalization, SwiGLU and rotary positions. The visible 8-token window is computed separately for inspection; it neither reproduces the model’s full context nor generates the curated answers.')}</p><a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">Vaswani et al. · Fig. 1–2 / §3</a> · <a href="https://arxiv.org/abs/2302.13971" target="_blank" rel="noopener">LLaMA · §2.2</a></details><details class="voice-transcript"><summary>${t('Leer la narración de este paso','Read this step’s narration')}</summary><p id="voice-transcript"></p></details>
 <section class="output"><div><span>${t('LO QUE RECIBES','WHAT YOU RECEIVE')}</span><span id="loop-count"></span></div><p id="answer" aria-live="off"></p><small id="answer-note"></small></section></div>
 <aside class="inspector"><span class="eyebrow" id="stage-counter"></span><h2 id="stage-title"></h2><p id="stage-description"></p><div id="stage-detail"></div></aside></div>
 <section class="decoder"><div><span class="eyebrow">${t('CAMBIA UNA CONDICIÓN','CHANGE ONE CONDITION')}</span><h2>${t('Probable no significa verdadero.','Probable does not mean true.')}</h2><p>${t('Prueba el horario sin documento, con la ficha vigente y con una antigua. Después baja la temperatura: una respuesta equivocada puede volverse todavía más probable.','Try the opening hours without a document, with the current record and with an old one. Then lower the temperature: a wrong answer can become even more probable.')}</p><button id="try-museum">${t('Probar el caso del museo →','Try the museum example →')}</button></div><div class="decoder-controls"><label for="temperature">${t('Temperatura · primera elección','Temperature · first choice')} <output id="temperature-value"></output></label><input id="temperature" type="range" min="0" max="2" step=".1" value=".7"><label for="decoding">${t('Cómo se elige','How a token is chosen')}</label><select id="decoding"><option value="greedy">${t('El más probable','Most likely')}</option><option value="sample">${t('Muestrear según probabilidades','Sample from probabilities')}</option></select><button id="resample">${t('Otra semilla ↻','Another seed ↻')}</button><small>${t('Con elección máxima, la temperatura no cambia el ganador. La semilla afecta al muestreo, no a la verdad.','With greedy selection, temperature does not change the winner. The seed affects sampling, not truth.')}</small><div id="distribution"></div><p class="toy-label">${t('Softmax calculado de verdad sobre logits didácticos; no son mediciones de ningún LLM.','Actual softmax computed from teaching logits; not measurements from any LLM.')}</p></div></section>
@@ -46,14 +48,14 @@ function detail(phase){
   if(phase===1)return run.data.source?`<div class="document"><span>↳ ${t('DOCUMENTO LOCAL','LOCAL DOCUMENT')}</span><h3>${esc(run.data.source.title)}</h3><p>${esc(run.data.source.text)}</p><small>${t('Texto que se añade al contexto, no a los pesos.','Text added to context, not to model weights.')}</small></div>`:`<div class="empty-source">${t('Sin documento recuperado','No document retrieved')}</div><p class="small">${t('El recorrido continúa con la pregunta, las instrucciones y los patrones aprendidos. En el caso del museo, activa la consulta y compara.','The path continues with the question, instructions and learned patterns. Enable retrieval for the museum example and compare.')}</p>`;
   if(phase===2)return `<div class="token-list">${tokens.map((token,i)=>`<button data-token="${i}" aria-pressed="${i===selectedToken}" title="${esc(token)}">${esc(visibleToken(token))}<small>ID ${run.tokenIds[i]}</small></button>`).join('')}</div><p class="small">${t('Selecciona una pieza para inspeccionarla en Vectores. ␠ = espacio. Los IDs pertenecen solo al vocabulario didáctico de esta entrada.','Select a piece to inspect it under Vectors. ␠ = space. These IDs belong only to the teaching vocabulary for this input.')}</p>`;
   if(phase===3){const token=tokens[selectedToken]??tokens[0],values=vector(token,selectedToken);return `<div class="vector-example"><code>${esc(visibleToken(token))}</code><span>→</span><div>${values.map(v=>`<b style="--value:${Math.abs(v)*65}%;--sign:${v<0?'#eeaf9a':'#8daef4'}">${number(v,2)}</b>`).join('')}</div></div><p class="small">${t('Valores ilustrativos; no son etiquetas como «país» o «inteligente». El significado está distribuido y cambia al atravesar capas.','Illustrative values, not labels such as “country” or “intelligent”. Meaning is distributed and changes through layers.')}</p>`;}
-  if(phase===4){const window=[...run.tokens,...run.generated].filter(x=>x.trim()).slice(-8),q=Math.min(queryIndex,window.length-1),a=attention(window,q);return `<div class="attention"><p class="small">${t('Elige qué token consulta. Solo puede atender a su pasado y a sí mismo.','Choose a querying token. It can attend only to earlier tokens and itself.')}</p><div class="query-tokens">${window.map((token,i)=>`<button data-query="${i}" aria-pressed="${i===q}">${esc(token)}</button>`).join('')}</div>${window.map((token,i)=>`<div class="attention-row ${i>q?'masked':''}"><code>${esc(token)}</code><span style="--strength:${a.weights[i]*100}%"></span><b>${i>q?'🔒':number(a.weights[i]*100,0)+'%'}</b></div>`).join('')}<small>${t('Ventana de hasta 8 piezas · una cabeza de atención de juguete. No mide importancia factual.','Window of up to 8 pieces · one toy attention head. Does not measure factual importance.')}</small></div>`;}
+  if(phase===4){const {tokens:window,offset}=contextWindow(run),q=Math.min(queryIndex,window.length-1),a=attention(window,q,offset);return `<div class="attention"><p class="small">${t('Elige qué token consulta. Solo puede atender a su pasado y a sí mismo.','Choose a querying token. It can attend only to earlier tokens and itself.')}</p><div class="query-tokens">${window.map((token,i)=>`<button data-query="${i}" aria-pressed="${i===q}">${esc(visibleToken(token))}</button>`).join('')}</div>${window.map((token,i)=>`<div class="attention-row ${i>q?'masked':''}"><code>${esc(visibleToken(token))}</code><span style="--strength:${a.weights[i]*100}%"></span><b>${i>q?'🔒':number(a.weights[i]*100,0)+'%'}</b></div>`).join('')}<small>${t('Ventana de hasta 8 piezas · una cabeza de atención de juguete. No mide importancia factual.','Window of up to 8 pieces · one toy attention head. Does not measure factual importance.')}</small></div>`;}
   if(phase===5||phase===6){const c=nextCandidates(run);return `<div class="candidate-box">${bars(c.pieces,c.logits)}</div><p class="small">${run.outputTokens?t('Continuación guiada del ejemplo. El siguiente token se ha fijado para completar la demostración.','Guided continuation. The next token is fixed to complete the demonstration.'):t('Opciones prefijadas para comparar el efecto de la temperatura y el muestreo.','Curated options for comparing temperature and sampling.')}</p><div class="formula">pᵢ = exp(logitᵢ / T) / Σ exp(logitⱼ / T)</div><small>${t('Con T = 0 usamos elección máxima.','At T = 0 we use greedy selection.')}</small>`;}
   return `<div class="feedback-card"><span>${t('CONTEXTO ORIGINAL','ORIGINAL CONTEXT')}</span><b>＋</b><code>${esc(run.generated.join(''))||'…'}</code><b>↻</b><span>${run.done?t('EOS · respuesta terminada','EOS · answer complete'):t('Vuelve a las capas para el siguiente token','Back through the layers for the next token')}</span></div><p class="small">${t('El contenido generado se reutiliza como contexto. Una equivocación también puede influir en lo siguiente.','Generated content becomes context. A mistake can also influence what comes next.')}</p>`;
 }
 let renderedDetail='',scenePhase=-1;
 function render(force=false){
   const phase=run.phase;
-  if(scenePhase!==phase){scenePhase=phase;$('world-selection').textContent=t('Arrastra para girar. Selecciona un bloque o una celda para inspeccionar su valor.','Drag to orbit. Select a block or a cell to inspect its value.');}
+  if(scenePhase!==phase){manualFlow=null;scenePhase=phase;$('world-selection').textContent=t('Arrastra para girar. Selecciona un bloque o una celda para inspeccionar su valor.','Drag to orbit. Select a block or a cell to inspect its value.');}
   $('question').textContent=run.data.question;
   $('case-note').textContent=run.data.name;
   $('history-preview').textContent=run.data.history||t('Sin conversación adicional en este ejemplo.','No extra conversation in this example.');
@@ -66,9 +68,10 @@ function render(force=false){
   $('play').textContent=run.playing?'Ⅱ '+t('Pausar','Pause'):run.done?'↺ '+t('Repetir','Replay'):'▶ '+t('Seguir la pregunta','Follow the question');
   $('step').disabled=run.done;$('status').textContent=run.done?t('Respuesta terminada','Answer complete'):run.playing?t('Recorriendo el proceso','Following the process'):t('En pausa · puedes inspeccionar cualquier etapa','Paused · inspect any stage');
   $('stage-counter').textContent=`${String(phase+1).padStart(2,'0')} / 08 · `+phases[phase][0];$('stage-title').textContent=phases[phase][1];$('stage-description').textContent=phases[phase][2];
-  document.querySelectorAll('[data-phase]').forEach(b=>{b.setAttribute('aria-pressed',String(+b.dataset.phase===phase));b.classList.toggle('visited',+b.dataset.phase<=run.phase);});
+  document.querySelectorAll('#rail [data-phase]').forEach(b=>{b.setAttribute('aria-pressed',String(+b.dataset.phase===phase));b.classList.toggle('visited',+b.dataset.phase<=run.phase);});
   $('machine').dataset.phase=phase;$('machine').classList.toggle('running',run.playing&&!matchMedia('(prefers-reduced-motion: reduce)').matches);
   world?.update(run,phase,selectedToken,queryIndex);
+
   renderVoice();
   $('answer').textContent=run.generated.join('')||(run.phase<6?t('La respuesta aparecerá aquí, pieza a pieza…','The answer will appear here, piece by piece…'):'…');
   $('answer').classList.toggle('has-output',run.generated.length>0);$('loop-count').textContent=run.loops?`${number(run.loops)} ${t('ciclos','cycles')}`:'';
@@ -81,6 +84,27 @@ function render(force=false){
   $('distribution').innerHTML=bars(run.data.completions.map(c=>tokenize(c)[0]),run.data.logits);
   $('temperature-value').textContent=number(options.temperature,1);$('resample').disabled=options.decoding!=='sample';
 }
+function currentFlow(){
+  if(manualFlow)return manualFlow;
+  const clip=guide.clip??getClip(),progress=guideProgress(guide,clip);
+  return run.phase===4?cueAt(clip.cues,progress*clip.duration):{index:0,progress};
+}
+function renderFlow(flow){
+  const layers=run.phase===4,op=OPERATIONS[flow.index]??OPERATIONS[0],key=run.phase+':'+flow.index;
+  if(lastFlowLabel===key)return;lastFlowLabel=key;
+  $('operation-rail').hidden=!layers;
+  $('flow-title').textContent=layers?op.name[es?0:1]:phases[run.phase][1];
+  $('flow-counter').textContent=layers?`${flow.index+1} / 5`:t('Sigue la señal dorada','Follow the gold signal');
+  $('flow-formula').textContent=layers?op.formula:['messages → context','context + document','text → token IDs','X = E[token ID] + P','', 'logits → softmax(logits / T) → p','p → decode → 1 token','context + token → next step'][run.phase];
+  $('flow-caption').textContent=layers?op.text[es?0:1]:t('La señal representa el recorrido de la información. Se detiene con la voz. Puedes girar la vista e inspeccionar celdas.','The signal represents information flow. It pauses with narration. Orbit the view and inspect cells.');
+  document.querySelectorAll('[data-operation]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.operation===flow.index)));
+}
+for(const b of document.querySelectorAll('[data-operation]'))b.onclick=()=>{
+  guide.pause();const index=+b.dataset.operation,clip=guide.clip??getClip(),cue=clip.cues?.[index];
+  if(cue&&guide.audio)guide.audio.currentTime=cue.start+.01;
+  else if(cue&&!guide.enabled){const reading=Math.max(6,Math.min(14,clip.text.length/32));guide.remaining=guide.gap+reading*(1-cue.start/clip.duration);}
+  manualFlow={index,progress:.3};renderFlow(manualFlow);
+};
 function getClip(){
   const id=narrationId(run);
   return VOICES[voiceLanguage].find(c=>c.id===id);
@@ -97,7 +121,7 @@ function renderVoice(){
   $('step').textContent=t('Siguiente paso →','Next step →');$('step').disabled=guide.state==='finished';
   $('status').textContent=run.done?t('Respuesta terminada','Answer complete'):t('Token de salida ','Output token ')+(run.phase===7?run.generated.length:run.generated.length+1)+' · '+(run.phase+1)+'/8';
 }
-guide=new StepGuide({getClip,onAdvance(){if(run.done)return false;advance(run);render(true);return true;},onChange(){run.playing=guide.running;render();}});
+guide=new StepGuide({getClip,onAdvance(){if(run.done)return false;advance(run);render(true);return true;},onChange(){run.playing=guide.running;if(guide.running)manualFlow=null;render();}});
 function restart(){guide.stop();run=createRun(lang,options);selectedToken=0;queryIndex=7;render(true);}
 function seek(phase,resetRun=true){guide.stop();if(resetRun){run=createRun(lang,options);selectedToken=0;queryIndex=7;}run.phase=Math.min(6,phase);if(phase===7)advance(run);render(true);guide.enter();}
 for(const key of ['scenario','source','decoding'])$(key).onchange=e=>{options[key]=e.target.value;restart();};
@@ -111,7 +135,7 @@ $('voice-language').onchange=e=>{voiceLanguage=e.target.value;const active=guide
 $('voice-enabled').onchange=e=>guide.setEnabled(e.target.checked);
 $('auto-next').onchange=e=>{guide.automatic=e.target.checked;};
 $('gap').onchange=e=>{guide.gap=+e.target.value;if(guide.state==='waiting')guide.remaining=guide.gap;renderVoice();};
-for(const b of document.querySelectorAll('[data-phase]'))b.onclick=()=>seek(+b.dataset.phase);
+for(const b of document.querySelectorAll('#rail [data-phase]'))b.onclick=()=>seek(+b.dataset.phase);
 try{world=createWorld($('machine'),{language:lang,onSelect(info){guide.pause();run.playing=false;$('world-selection').textContent=info.text;if(info.kind==='token')selectedToken=info.index;if(info.kind==='attention')queryIndex=info.index;render(true);}});}
 catch{const fallback=document.createElement('p');fallback.className='world-fallback';fallback.textContent=t('No se ha podido iniciar WebGL. Las explicaciones, los valores y la voz siguen disponibles.','WebGL could not start. Explanations, values and narration remain available.');$('machine').prepend(fallback);}
 $('view-reset').onclick=()=>world?.reset();$('view-in').onclick=()=>world?.zoom(.85);$('view-out').onclick=()=>world?.zoom(1.15);
@@ -120,7 +144,7 @@ $('train-play').onclick=()=>{trainingPlaying=!trainingPlaying;renderTraining();}
 document.addEventListener('visibilitychange',()=>{last=performance.now();if(document.hidden){guide.pause();trainingPlaying=false;renderTraining();}});
 window.addEventListener('pagehide',e=>{guide.stop();if(!e.persisted)world?.dispose();});
 render();renderTraining();let uiClock=0;
-function frame(now){const dt=Math.min(.1,(now-last)/1000);last=now;if(!document.hidden){guide.tick(dt);uiClock+=dt;world?.render(dt);
+function frame(now){const dt=Math.min(.1,(now-last)/1000);last=now;if(!document.hidden){guide.tick(dt);uiClock+=dt;const flow=currentFlow();world?.render(dt,flow);renderFlow(flow);
   if(uiClock>.15){renderVoice();uiClock=0;}
   if(trainingPlaying){trainingClock+=dt;if(trainingClock>.45){trainingClock=0;trainingWeight=trainStep(trainingWeight);trainingSteps++;if(trainingSteps>=80)trainingPlaying=false;renderTraining();}}}
   requestAnimationFrame(frame);

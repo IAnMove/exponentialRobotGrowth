@@ -1,0 +1,1 @@
+Finalmente proyectamos la mezcla y sumamos la entrada por la conexión residual. Normalizamos y aplicamos una red a cada posición, seguida de otra suma y normalización. Aquí usamos una cabeza, seis dimensiones y pesos sintéticos. Los modelos reales combinan cabezas y repiten bloques; la luz ilustra el flujo de activaciones, no un bit físico ni un pensamiento.

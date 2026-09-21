@@ -6,20 +6,37 @@ export function tokenize(text){
     /^\p{L}{8,}$/u.test(part)?[part.slice(0,4),part.slice(4)]:[part]);
 }
 export function hash(text){let h=2166136261;for(const c of text){h^=c.codePointAt(0);h=Math.imul(h,16777619);}return h>>>0;}
-export function vector(token,position=0){const h=hash(token);return Array.from({length:6},(_,i)=>Math.sin((h%997)*(i+1)*.017)+.2*Math.cos(position/(i+1)));}
+export function embedding(token){const h=hash(token);return Array.from({length:6},(_,i)=>Math.sin((h%997)*(i+1)*.017));}
+export function positionEncoding(position){return Array.from({length:6},(_,i)=>.2*Math.cos(position/(i+1)));}
+export function vector(token,position=0){return embedding(token).map((x,i)=>x+positionEncoding(position)[i]);}
 export function softmax(logits,temperature=1){
   if(!logits.length||logits.some(x=>!Number.isFinite(x)))throw new RangeError('Finite nonempty logits required');
   if(!Number.isFinite(temperature)||temperature<0)throw new RangeError('Nonnegative temperature required');
   if(temperature===0){const max=Math.max(...logits);const index=logits.indexOf(max);return logits.map((_,i)=>i===index?1:0);}
   const max=Math.max(...logits),weights=logits.map(x=>Math.exp((x-max)/temperature)),sum=weights.reduce((a,b)=>a+b,0);return weights.map(x=>x/sum);
 }
-export function attention(tokens,query=tokens.length-1){
-  if(!tokens.length)return {weights:[],mixed:[]};
-  const q=Math.max(0,Math.min(tokens.length-1,query)),vectors=tokens.map(vector);
-  const scores=vectors.slice(0,q+1).map(v=>v.reduce((a,x,i)=>a+x*vectors[q][i],0)/Math.sqrt(6));
-  const weights=[...softmax(scores),...Array(tokens.length-q-1).fill(0)];
-  return {weights,mixed:Array.from({length:6},(_,i)=>vectors.reduce((a,v,j)=>a+v[i]*weights[j],0))};
+// Fixed, untrained weights: real tensor operations, not a pretrained model.
+const matrix=(rows,cols,seed)=>Array.from({length:rows},(_,i)=>Array.from({length:cols},(_,j)=>Math.sin((i+1)*13+(j+1)*7+seed)*.45));
+export const TOY_WEIGHTS={Q:matrix(6,3,1),K:matrix(6,3,8),V:matrix(6,3,17),O:matrix(3,6,21),F1:matrix(6,12,29),F2:matrix(12,6,35)};
+export function matmul(a,b){return a.map(row=>b[0].map((_,j)=>row.reduce((sum,x,k)=>sum+x*b[k][j],0)));}
+const norm=row=>{const mean=row.reduce((a,b)=>a+b,0)/row.length,variance=row.reduce((a,b)=>a+(b-mean)**2,0)/row.length;return row.map(x=>(x-mean)/Math.sqrt(variance+1e-5));};
+const add=(a,b)=>a.map((row,i)=>row.map((v,j)=>v+b[i][j]));
+export function transformerTrace(tokens,offset=0){
+  if(!tokens.length)throw new RangeError('At least one token required');
+  const X=tokens.map((token,i)=>vector(token,i+offset)),Q=matmul(X,TOY_WEIGHTS.Q),K=matmul(X,TOY_WEIGHTS.K),V=matmul(X,TOY_WEIGHTS.V);
+  const scores=Q.map(q=>K.map(k=>q.reduce((s,x,i)=>s+x*k[i],0)/Math.sqrt(3)));
+  const masked=scores.map((row,i)=>row.map((x,j)=>j>i?-Infinity:x));
+  const A=scores.map((row,i)=>[...softmax(row.slice(0,i+1)),...Array(tokens.length-i-1).fill(0)]);
+  const mixed=matmul(A,V),projected=matmul(mixed,TOY_WEIGHTS.O),residual=add(X,projected),H=residual.map(norm);
+  const hidden=matmul(H,TOY_WEIGHTS.F1).map(row=>row.map(x=>Math.max(0,x))),ffn=matmul(hidden,TOY_WEIGHTS.F2),Y=add(H,ffn).map(norm);
+  return {X,Q,K,V,scores,masked,A,mixed,projected,residual,H,hidden,ffn,Y};
 }
+export function attention(tokens,query=tokens.length-1,offset=0){
+  if(!tokens.length)return {weights:[],mixed:[]};
+  const trace=transformerTrace(tokens,offset),q=Math.max(0,Math.min(tokens.length-1,query));
+  return {weights:trace.A[q],mixed:trace.mixed[q]};
+}
+export function contextWindow(run){const all=[...run.tokens,...run.generated],offset=Math.max(0,all.length-8);return {tokens:all.slice(offset),offset};}
 export function randomStep(seed){const next=(Math.imul(seed,1664525)+1013904223)>>>0;return {seed:next,value:next/4294967296};}
 export function sample(probabilities,value){let sum=0;for(let i=0;i<probabilities.length;i++){sum+=probabilities[i];if(value<sum)return i;}return probabilities.length-1;}
 export const DEFAULTS={scenario:'capital',context:true,retrieval:false,source:'current',temperature:.7,decoding:'greedy',seed:42};

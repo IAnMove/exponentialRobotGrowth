@@ -1,0 +1,1 @@
+We apply the causal mask. Future positions receive negative infinity, shown as crosses. Then softmax turns the row into coefficients that sum to one. Future positions have exactly zero weight. This does not measure whether a claim is true.

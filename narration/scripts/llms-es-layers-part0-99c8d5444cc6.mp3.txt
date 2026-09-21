@@ -1,0 +1,1 @@
+Seguimos una fila de la entrada, marcada en dorado. Primero multiplicamos la matriz X por tres matrices de pesos diferentes. Así obtenemos Q, consultas; K, claves; y V, valores. Esas ramas pueden calcularse en paralelo. Los pesos permanecen fijos.

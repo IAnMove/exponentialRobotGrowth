@@ -1,0 +1,1 @@
+Residual connections and the network transform the result. This small window is recomputed to show the operations; a real implementation can reuse a cache.

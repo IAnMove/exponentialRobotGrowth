@@ -25,16 +25,45 @@ export const VOICES = {
     {
       "id": "vectors",
       "title": "Una matriz de números",
-      "text": "Cada token se transforma en un vector, una lista de números. Mira la matriz tridimensional: cada fila representa un token y cada columna una dimensión. Azul y naranja distinguen valores positivos y negativos; la altura muestra su magnitud. Selecciona una celda para leer su valor. Las dimensiones no son etiquetas como país o inteligencia. Estos seis números son ilustrativos, no pesos extraídos de un modelo real.",
-      "file": "llms-es-vectors-2ee35a2fd330.mp3",
-      "duration": 27.648
+      "text": "El identificador de cada token selecciona una fila de la tabla de embeddings. A la izquierda vemos esas representaciones; en el centro, una codificación de posición; a la derecha, su suma, X. Cada fila es un token y cada columna una dimensión. La fila dorada sigue el token seleccionado. Azul y naranja distinguen signos; la intensidad indica magnitud. Todos los valores son sintéticos. Usamos una suma de posición ilustrativa; otros modelos, como Llama, usan posiciones rotatorias en consultas y claves. Puedes pulsar una celda para ver su valor.",
+      "file": "llms-es-vectors-162224d0bf01.mp3",
+      "duration": 36.828
     },
     {
       "id": "layers",
       "title": "Atención y capas",
-      "text": "Esta matriz muestra qué posiciones pueden intercambiar información. Cada fila es un token que consulta; cada columna, una posición a la que puede atender. Las casillas oscuras bloquean el futuro. Las columnas luminosas muestran pesos de atención calculados en nuestro ejemplo. Un Transformer real combina múltiples cabezas, transformaciones y conexiones residuales. Aquí vemos una cabeza pequeña; no es una imagen de pensamientos ni una medida de verdad.",
-      "file": "llms-es-layers-76ac4111b3df.mp3",
-      "duration": 29.052
+      "text": "Seguimos una fila de la entrada, marcada en dorado. Primero multiplicamos la matriz X por tres matrices de pesos diferentes. Así obtenemos Q, consultas; K, claves; y V, valores. Esas ramas pueden calcularse en paralelo. Los pesos permanecen fijos. Ahora comparamos la consulta activa con las claves. Cada producto escalar da una puntuación. Dividimos por la raíz de la dimensión, aquí tres. La fila dorada de la matriz muestra esas comparaciones. Aún no son probabilidades. Aplicamos la máscara causal. Las posiciones futuras reciben menos infinito, representado con una cruz. Después, softmax convierte la fila en coeficientes que suman uno. El futuro tiene exactamente cero. Esto no mide si una afirmación es verdadera. Esos coeficientes ponderan los vectores de valores. Sigue los pulsos desde la fila activa hacia V y hasta el resultado Z. Un pulso mayor indica mayor peso en la mezcla. El resultado es un vector de números, no una palabra sacada de una biblioteca. Finalmente proyectamos la mezcla y sumamos la entrada por la conexión residual. Normalizamos y aplicamos una red a cada posición, seguida de otra suma y normalización. Aquí usamos una cabeza, seis dimensiones y pesos sintéticos. Los modelos reales combinan cabezas y repiten bloques; la luz ilustra el flujo de activaciones, no un bit físico ni un pensamiento.",
+      "segments": [
+        "Seguimos una fila de la entrada, marcada en dorado. Primero multiplicamos la matriz X por tres matrices de pesos diferentes. Así obtenemos Q, consultas; K, claves; y V, valores. Esas ramas pueden calcularse en paralelo. Los pesos permanecen fijos.",
+        "Ahora comparamos la consulta activa con las claves. Cada producto escalar da una puntuación. Dividimos por la raíz de la dimensión, aquí tres. La fila dorada de la matriz muestra esas comparaciones. Aún no son probabilidades.",
+        "Aplicamos la máscara causal. Las posiciones futuras reciben menos infinito, representado con una cruz. Después, softmax convierte la fila en coeficientes que suman uno. El futuro tiene exactamente cero. Esto no mide si una afirmación es verdadera.",
+        "Esos coeficientes ponderan los vectores de valores. Sigue los pulsos desde la fila activa hacia V y hasta el resultado Z. Un pulso mayor indica mayor peso en la mezcla. El resultado es un vector de números, no una palabra sacada de una biblioteca.",
+        "Finalmente proyectamos la mezcla y sumamos la entrada por la conexión residual. Normalizamos y aplicamos una red a cada posición, seguida de otra suma y normalización. Aquí usamos una cabeza, seis dimensiones y pesos sintéticos. Los modelos reales combinan cabezas y repiten bloques; la luz ilustra el flujo de activaciones, no un bit físico ni un pensamiento."
+      ],
+      "file": "llms-es-layers-45273a92de98.mp3",
+      "duration": 86.80709375,
+      "cues": [
+        {
+          "start": 0,
+          "end": 16.79546875
+        },
+        {
+          "start": 16.79546875,
+          "end": 30.739062500000003
+        },
+        {
+          "start": 30.739062500000003,
+          "end": 46.86534375000001
+        },
+        {
+          "start": 46.86534375000001,
+          "end": 62.99162500000001
+        },
+        {
+          "start": 62.99162500000001,
+          "end": 86.80709375
+        }
+      ]
     },
     {
       "id": "scores",
@@ -60,9 +89,38 @@ export const VOICES = {
     {
       "id": "loop-layers",
       "title": "Otro token · atención",
-      "text": "Comienza el siguiente token. La atención combina la entrada con lo que ya se escribió. El futuro sigue bloqueado y los pesos del modelo siguen fijos.",
-      "file": "llms-es-loop-layers-4cf3ad957b2c.mp3",
-      "duration": 8.352
+      "text": "Otra pieza: la entrada produce nuevas consultas, claves y valores. La consulta se compara con las claves mediante productos escalares. La máscara bloquea el futuro. Softmax normaliza la fila. Los coeficientes mezclan los valores para obtener otro vector. Las conexiones residuales y la red transforman el resultado. Esta pequeña ventana se recalcula para mostrar las operaciones; una implementación real puede reutilizar una caché.",
+      "segments": [
+        "Otra pieza: la entrada produce nuevas consultas, claves y valores.",
+        "La consulta se compara con las claves mediante productos escalares.",
+        "La máscara bloquea el futuro. Softmax normaliza la fila.",
+        "Los coeficientes mezclan los valores para obtener otro vector.",
+        "Las conexiones residuales y la red transforman el resultado. Esta pequeña ventana se recalcula para mostrar las operaciones; una implementación real puede reutilizar una caché."
+      ],
+      "file": "llms-es-loop-layers-7c741daa2b2e.mp3",
+      "duration": 28.688312500000002,
+      "cues": [
+        {
+          "start": 0,
+          "end": 5.41025
+        },
+        {
+          "start": 5.41025,
+          "end": 9.16028125
+        },
+        {
+          "start": 9.16028125,
+          "end": 13.5953125
+        },
+        {
+          "start": 13.5953125,
+          "end": 17.80975
+        },
+        {
+          "start": 17.80975,
+          "end": 28.688312500000002
+        }
+      ]
     },
     {
       "id": "loop-scores",
@@ -118,16 +176,45 @@ export const VOICES = {
     {
       "id": "vectors",
       "title": "A matrix of numbers",
-      "text": "Each token becomes a vector, a list of numbers. Look at the three dimensional matrix: every row represents a token and every column a dimension. Blue and orange distinguish positive and negative values; height shows magnitude. Select a cell to read its value. Dimensions are not labels such as country or intelligence. These six numbers are illustrative, not weights extracted from a real model.",
-      "file": "llms-en-vectors-979325ce3909.mp3",
-      "duration": 28.692
+      "text": "Each token identifier selects a row from the embedding table. On the left are those representations; in the center, a position encoding; on the right, their sum, X. Each row is a token and each column a dimension. The gold row follows the selected token. Blue and orange distinguish signs; intensity indicates magnitude. All values are synthetic. We use an illustrative position sum; other models, such as Llama, use rotary positions in queries and keys. Select a cell to inspect its value.",
+      "file": "llms-en-vectors-0506a9ce0edc.mp3",
+      "duration": 35.28
     },
     {
       "id": "layers",
       "title": "Attention and layers",
-      "text": "This matrix shows which positions can exchange information. Each row is a querying token; each column is a position it can attend to. Dark cells block the future. Bright columns show attention weights computed in our example. A real Transformer combines multiple heads, transformations and residual connections. Here we show one small head. This is not a picture of thoughts or a measure of truth.",
-      "file": "llms-en-layers-c30261d9eb19.mp3",
-      "duration": 27.54
+      "text": "Follow one input row, outlined in gold. First, we multiply X by three different weight matrices. This produces Q, queries; K, keys; and V, values. These branches can be computed in parallel. The weights remain fixed. Now we compare the active query with the keys. Each dot product produces a score. We divide by the square root of the dimension, three in this example. The gold row shows those comparisons. They are not probabilities yet. We apply the causal mask. Future positions receive negative infinity, shown as crosses. Then softmax turns the row into coefficients that sum to one. Future positions have exactly zero weight. This does not measure whether a claim is true. Those coefficients weight the value vectors. Follow the pulses from the active row through V to the result Z. A larger pulse means a larger weight in the mixture. The result is a vector of numbers, not a word retrieved from a library. Finally, we project the mixture and add the input through a residual connection. We normalize and apply a network to each position, followed by another addition and normalization. Our example uses one head, six dimensions and synthetic weights. Real models combine heads and repeat blocks. The light illustrates activation flow, not a physical bit or a thought.",
+      "segments": [
+        "Follow one input row, outlined in gold. First, we multiply X by three different weight matrices. This produces Q, queries; K, keys; and V, values. These branches can be computed in parallel. The weights remain fixed.",
+        "Now we compare the active query with the keys. Each dot product produces a score. We divide by the square root of the dimension, three in this example. The gold row shows those comparisons. They are not probabilities yet.",
+        "We apply the causal mask. Future positions receive negative infinity, shown as crosses. Then softmax turns the row into coefficients that sum to one. Future positions have exactly zero weight. This does not measure whether a claim is true.",
+        "Those coefficients weight the value vectors. Follow the pulses from the active row through V to the result Z. A larger pulse means a larger weight in the mixture. The result is a vector of numbers, not a word retrieved from a library.",
+        "Finally, we project the mixture and add the input through a residual connection. We normalize and apply a network to each position, followed by another addition and normalization. Our example uses one head, six dimensions and synthetic weights. Real models combine heads and repeat blocks. The light illustrates activation flow, not a physical bit or a thought."
+      ],
+      "file": "llms-en-layers-ad466b333af3.mp3",
+      "duration": 88.72009375,
+      "cues": [
+        {
+          "start": 0,
+          "end": 18.954625
+        },
+        {
+          "start": 18.954625,
+          "end": 33.757374999999996
+        },
+        {
+          "start": 33.757374999999996,
+          "end": 50.47575
+        },
+        {
+          "start": 50.47575,
+          "end": 64.976625
+        },
+        {
+          "start": 64.976625,
+          "end": 88.72009375
+        }
+      ]
     },
     {
       "id": "scores",
@@ -153,9 +240,38 @@ export const VOICES = {
     {
       "id": "loop-layers",
       "title": "Next token · attention",
-      "text": "A new token cycle begins. Attention combines the input with what has already been written. Future positions remain blocked and the model weights stay fixed.",
-      "file": "llms-en-loop-layers-622196adc834.mp3",
-      "duration": 9.72
+      "text": "Another piece: the input produces queries, keys and values. The query is compared with the keys using dot products. The mask blocks the future. Softmax normalizes the row. The coefficients mix the values into another vector. Residual connections and the network transform the result. This small window is recomputed to show the operations; a real implementation can reuse a cache.",
+      "segments": [
+        "Another piece: the input produces queries, keys and values.",
+        "The query is compared with the keys using dot products.",
+        "The mask blocks the future. Softmax normalizes the row.",
+        "The coefficients mix the values into another vector.",
+        "Residual connections and the network transform the result. This small window is recomputed to show the operations; a real implementation can reuse a cache."
+      ],
+      "file": "llms-en-loop-layers-5ae9eec88b71.mp3",
+      "duration": 25.00796875,
+      "cues": [
+        {
+          "start": 0,
+          "end": 5.0735625
+        },
+        {
+          "start": 5.0735625,
+          "end": 8.394031250000001
+        },
+        {
+          "start": 8.394031250000001,
+          "end": 12.3530625
+        },
+        {
+          "start": 12.3530625,
+          "end": 15.499375
+        },
+        {
+          "start": 15.499375,
+          "end": 25.00796875
+        }
+      ]
     },
     {
       "id": "loop-scores",

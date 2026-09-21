@@ -1,0 +1,1 @@
+Ahora comparamos la consulta activa con las claves. Cada producto escalar da una puntuación. Dividimos por la raíz de la dimensión, aquí tres. La fila dorada de la matriz muestra esas comparaciones. Aún no son probabilidades.

@@ -1,0 +1,1 @@
+Esos coeficientes ponderan los vectores de valores. Sigue los pulsos desde la fila activa hacia V y hasta el resultado Z. Un pulso mayor indica mayor peso en la mezcla. El resultado es un vector de números, no una palabra sacada de una biblioteca.

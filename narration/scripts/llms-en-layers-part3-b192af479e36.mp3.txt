@@ -1,0 +1,1 @@
+Those coefficients weight the value vectors. Follow the pulses from the active row through V to the result Z. A larger pulse means a larger weight in the mixture. The result is a vector of numbers, not a word retrieved from a library.

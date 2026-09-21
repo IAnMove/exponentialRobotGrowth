@@ -1,0 +1,1 @@
+Aplicamos la máscara causal. Las posiciones futuras reciben menos infinito, representado con una cruz. Después, softmax convierte la fila en coeficientes que suman uno. El futuro tiene exactamente cero. Esto no mide si una afirmación es verdadera.

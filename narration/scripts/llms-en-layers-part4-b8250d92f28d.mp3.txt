@@ -1,0 +1,1 @@
+Finally, we project the mixture and add the input through a residual connection. We normalize and apply a network to each position, followed by another addition and normalization. Our example uses one head, six dimensions and synthetic weights. Real models combine heads and repeat blocks. The light illustrates activation flow, not a physical bit or a thought.

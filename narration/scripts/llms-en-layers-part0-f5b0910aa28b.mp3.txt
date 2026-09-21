@@ -1,0 +1,1 @@
+Follow one input row, outlined in gold. First, we multiply X by three different weight matrices. This produces Q, queries; K, keys; and V, values. These branches can be computed in parallel. The weights remain fixed.

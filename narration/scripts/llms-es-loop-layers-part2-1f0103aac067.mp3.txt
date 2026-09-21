@@ -1,0 +1,1 @@
+La máscara bloquea el futuro. Softmax normaliza la fila.
