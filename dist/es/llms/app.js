@@ -86,6 +86,7 @@ function render(force=false){
 }
 function currentFlow(){
   if(manualFlow)return manualFlow;
+  if(guide.seekPending&&run.phase===4)return cueAt((guide.clip??getClip()).cues,guide.seekTarget);
   const clip=guide.clip??getClip(),progress=guideProgress(guide,clip);
   return run.phase===4?cueAt(clip.cues,progress*clip.duration):{index:0,progress};
 }
@@ -101,7 +102,7 @@ function renderFlow(flow){
 }
 for(const b of document.querySelectorAll('[data-operation]'))b.onclick=()=>{
   guide.pause();const index=+b.dataset.operation,clip=guide.clip??getClip(),cue=clip.cues?.[index];
-  if(cue&&guide.audio)guide.audio.currentTime=cue.start+.01;
+  if(cue&&guide.audio)guide.seek(cue.start+.01);
   else if(cue&&!guide.enabled){const reading=Math.max(6,Math.min(14,clip.text.length/32));guide.remaining=guide.gap+reading*(1-cue.start/clip.duration);}
   manualFlow={index,progress:.3};renderFlow(manualFlow);
 };

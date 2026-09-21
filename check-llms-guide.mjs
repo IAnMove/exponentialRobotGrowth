@@ -30,3 +30,12 @@ for(const lang of ['es','en']){
   assert.equal(full.state,'finished');assert.equal(run.generated.join(''),run.data.completions[run.chosen]);assert.equal(ids.at(-1),'done');assert(ids.includes('loop-feedback'));assert.equal(ids.filter(x=>x==='feedback').length,1);
 }
 console.log('LLM guide: 26 clips, complete bilingual generation, audio gates, delay, pause/resume, manual mode, stale events and errors: OK');
+let resolveBlob;const revoked=[];
+const seeking=new StepGuide({AudioClass:FakeAudio,getClip:()=>({src:'full.mp3',text:'Narration'}),onAdvance:()=>true,loadBlob:()=>new Promise(resolve=>{resolveBlob=resolve;}),objectUrls:{createObjectURL:()=> 'blob:clip',revokeObjectURL:url=>revoked.push(url)}});
+seeking.enter();const seekPromise=seeking.seek(30);seeking.resume();assert(seeking.seekPending);assert.equal(seeking.state,'loading');
+resolveBlob({});await seekPromise;assert.equal(seeking.audio.src,'blob:clip');
+// A second selection before metadata must replace the pending seek safely.
+await seeking.seek(50);seeking.audio.onloadedmetadata();assert.equal(seeking.audio.currentTime,50);assert.equal(seeking.seekPending,false);assert.equal(seeking.running,false);
+seeking.resume();assert.equal(seeking.state,'speaking');seeking.stop();assert.deepEqual(revoked,['blob:clip']);
+seeking.enter();const staleSeek=seeking.seek(15);const staleAudio=seeking.audio;seeking.stop();resolveBlob({});await staleSeek;assert.notEqual(staleAudio.src,'blob:clip');assert.equal(seeking.audio,null);
+console.log('Audio seeking: host-independent Blob playback, pending resume, repeated selections, cleanup and stale downloads: OK');
