@@ -1,7 +1,17 @@
 # Atlas — interactive explanations
 
-Eight bilingual notebooks: Robots, Terafab, Dyson, Home, Starlink, SpaceX, Kardashev and LLMs.
+Bilingual notebooks: Robots, Terafab, Dyson, Home, Starlink, SpaceX, Kardashev, LLMs,
+Mind and Models, connected by an explorable 3D museum.
 English starts at `/`; Spanish at `/es/`. All links work beneath the GitHub Pages repository path.
+
+The museum's LLM painting now offers two formats: the existing web notebook and
+`immersive/index.html?experience=llms`, a walkable Three.js world with eight stations.
+Walk with WASD/arrows, drag to look, or use touch buttons. The guided route moves the camera,
+plays the existing bilingual MiniMax narration and waits three seconds after each clip.
+Walking interrupts the guide; instant travel supports reduced motion. Inspect tokens,
+vector cells, attention matrices and probabilities, then emit a token and return it to context.
+This is teaching geometry with synthetic weights and curated answers, not a physical CPU model.
+Only LLMs currently has an immersive world; the catalog marks other experiences as pending.
 
 Kardashev adds a playable 3D planet → star → galaxy journey, live power and multiplier counters,
 linear/logarithmic charts and a conditional compound-growth calculator. It distinguishes the
@@ -53,6 +63,8 @@ node check-kardashev-motion.mjs
 node check-llms.mjs
 node check-llms-guide.mjs
 node check-llms-tensors.mjs
+node check-immersive.mjs
+node check-museo.mjs
 node check-explanations.mjs
 node check-full-automation.mjs
 node check-narrator.mjs
