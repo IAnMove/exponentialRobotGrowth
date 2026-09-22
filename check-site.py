@@ -41,7 +41,7 @@ for directory, language in [(public, 'en'), (public / 'es', 'es')]:
         content = (directory / route).read_text(encoding='utf-8')
         assert f'<html lang="{language}">' in content
         assert '{{' not in content
-    for topic in ['robots', 'terafab', 'home', 'dyson', 'starlink', 'spacex', 'kardashev', 'llms', 'mente', 'modelos', 'museo']:
+    for topic in ['robots', 'terafab', 'home', 'dyson', 'starlink', 'spacex', 'kardashev', 'llms', 'mente', 'modelos', 'museo', 'immersive']:
         assert (directory / topic / 'index.html').is_file()
 for file in public.rglob('*.js'):
     result = subprocess.run(['node', '--check', str(file)], capture_output=True, text=True, encoding='utf-8')

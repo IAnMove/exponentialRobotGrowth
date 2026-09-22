@@ -33,3 +33,4 @@ button:focus-visible,a:focus-visible{outline:2px solid #f3d39a;outline-offset:3p
 @media(max-width:760px){.stick{display:block}#help{display:none}.top .where{display:none}#voice-transcript{right:14px;bottom:210px}}
 @media(pointer:coarse){.stick{display:block}}
 [hidden]{display:none!important}
+.crossing-portal .hud,.crossing-portal .card,.crossing-portal #help,.crossing-portal #voice-transcript{opacity:0;pointer-events:none;transition:opacity .2s}.crossing-portal #view{pointer-events:none}.card button:disabled{opacity:.45;cursor:default}

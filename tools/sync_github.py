@@ -25,10 +25,10 @@ for pattern in ['check-*.py', 'check-*.js', 'check-*.mjs']:
 for name in ['industrial-model.js', 'network-model.js', 'package.json', 'package-lock.json', 'serve.py']:
     shutil.copyfile(root/name, project/name)
 (project/'tools').mkdir(exist_ok=True)
-for name in ['build_site.py', 'package_pages.py', 'generate_narration.py', 'build_kardashev_narration.py', 'build_llms_narration.py']:
+for name in ['build_site.py', 'package_pages.py', 'generate_narration.py', 'build_kardashev_narration.py', 'build_llms_narration.py', 'build_visit_narration.py']:
     shutil.copyfile(root/'tools'/name, project/'tools'/name)
 (project/'narration').mkdir(exist_ok=True)
-for name in ['kardashev.json', 'llms.json', 'voices.json']:
+for name in ['kardashev.json', 'llms.json', 'voices.json', 'museo.json', 'modelos.json']:
     shutil.copyfile(root/'narration'/name, project/'narration'/name)
 # A fresh checkout seeds shared audio and catalogs from the published root.
 # Build output is ignored; only the root runtime files are committed.
@@ -42,8 +42,18 @@ vendor=root/'dist'/'vendor'""")
 (output/'.gitignore').write_text('node_modules/\n__pycache__/\nproject/dist/\nproject/narration/scripts/\nproject/narration/.audio-cache/\n.env\n.env.*\n', encoding='utf-8')
 (output/'README.md').write_text('''# Atlas — interactive explanations
 
-Eight bilingual notebooks: Robots, Terafab, Dyson, Home, Starlink, SpaceX, Kardashev and LLMs.
+Bilingual notebooks: Robots, Terafab, Dyson, Home, Starlink, SpaceX, Kardashev, LLMs,
+Mind and Models, connected by an explorable 3D museum.
 English starts at `/`; Spanish at `/es/`. All links work beneath the GitHub Pages repository path.
+
+The museum's LLM painting now offers two formats: the existing web notebook and
+`immersive/index.html?experience=llms`, a walkable Three.js world with eight stations.
+Walk with WASD/arrows, drag to look, or use touch buttons. The guided route moves the camera,
+plays the existing bilingual MiniMax narration and waits three seconds after each clip.
+Walking interrupts the guide; instant travel supports reduced motion. Inspect tokens,
+vector cells, attention matrices and probabilities, then emit a token and return it to context.
+This is teaching geometry with synthetic weights and curated answers, not a physical CPU model.
+Only LLMs currently has an immersive world; the catalog marks other experiences as pending.
 
 Kardashev adds a playable 3D planet → star → galaxy journey, live power and multiplier counters,
 linear/logarithmic charts and a conditional compound-growth calculator. It distinguishes the
@@ -95,6 +105,8 @@ node check-kardashev-motion.mjs
 node check-llms.mjs
 node check-llms-guide.mjs
 node check-llms-tensors.mjs
+node check-immersive.mjs
+node check-museo.mjs
 node check-explanations.mjs
 node check-full-automation.mjs
 node check-narrator.mjs

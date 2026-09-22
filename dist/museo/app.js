@@ -2,6 +2,7 @@ import {spawn, exhibits, stepVisitor, lookDelta, nearestExhibit, roomName, stand
 import {createMuseum} from './world.js';
 import {StepGuide} from '../llms/guide.js';
 import {VOICES} from './voices.js';
+import {immersiveHref} from '../immersive/catalog.js';
 const es = document.documentElement.lang === 'es', t = (a, b) => es ? a : b, $ = id => document.getElementById(id);
 const nf = new Intl.NumberFormat(es ? 'es-ES' : 'en-US', {maximumFractionDigits: 1});
 const TOUR = [
@@ -12,7 +13,7 @@ const TOUR = [
 ];
 const player = { ...spawn };
 let step = 0, voiceLanguage = es ? 'es' : 'en';
-let world, entered = null, last = performance.now();
+let world, entered = null, portal = null, last = performance.now();
 let basis = { x: 0, z: -1, rx: 1, rz: 0 };
 const keys = new Set();
 const stick = { id: null, x: 0, y: 0, ox: 0, oy: 0 };
@@ -26,8 +27,8 @@ $('app').innerHTML = `<div id="view" tabindex="0"></div>
 <aside class="card" id="card">
 <span class="eyebrow" id="card-num"></span>
 <h2 id="card-name"></h2>
-<p>${t('Estás delante de la pantalla. Entrar abre la experiencia a tamaño completo. La página web es la otra visita, sin el pasillo.', 'You are in front of the screen. Step in and the experience opens full size. The web page is the other visit, without the gallery.')}</p>
-<div class="actions"><button class="primary" id="enter" type="button">${t('Entrar', 'Step in')}</button><a id="web" href="../index.html">${t('Abrir en web', 'Open on the web')}</a></div>
+<p id="format-description"></p>
+<div class="actions"><button class="primary" id="enter-3d" type="button">${t('Atravesar el cuadro · 3D', 'Through the frame · 3D')}</button><button id="enter" type="button">${t('Ver notebook aquí', 'View notebook here')}</button><a id="web" href="../index.html">${t('Abrir en web', 'Open on the web')}</a></div>
 </aside>
 <div id="entered" hidden>
 <div class="entered-bar"><button id="leave" type="button">${t('← Volver al pasillo', '← Back to the gallery')}</button><a id="entered-web" href="../index.html">${t('Abrir en web', 'Open on the web')}</a><span id="entered-name"></span></div>
@@ -99,6 +100,7 @@ const guide = new StepGuide({
 });
 function enter(exhibit) {
   if (!exhibit) return;
+  keys.clear();
   guide.pause();
   entered = exhibit;
   $('frame').src = exhibit.href;
@@ -106,6 +108,12 @@ function enter(exhibit) {
   $('entered-name').textContent = (es ? exhibit.es : exhibit.en);
   $('entered').hidden = false;
   document.exitPointerLock?.();
+}
+function enter3D(exhibit){
+  const href=exhibit&&immersiveHref(exhibit.id);if(!href||portal)return;
+  guide.pause();keys.clear();document.exitPointerLock?.();
+  portal={exhibit,href,elapsed:0,from:{...player},duration:matchMedia('(prefers-reduced-motion: reduce)').matches?.05:.85};
+  document.body.classList.add('crossing-portal');
 }
 function leave() {
   entered = null;
@@ -121,6 +129,10 @@ function paint(near) {
   $('card-num').textContent = near.num + (es ? ' · PANTALLA' : ' · SCREEN');
   $('card-name').textContent = es ? near.es : near.en;
   $('web').href = near.href;
+  const available=Boolean(immersiveHref(near.id));
+  $('enter-3d').disabled=!available;
+  $('enter-3d').textContent=available?t('Atravesar el cuadro · 3D','Through the frame · 3D'):t('Inmersivo 3D · próximamente','Immersive 3D · coming later');
+  $('format-description').textContent=available?t('Elige: el notebook web o un mundo 3D por el que caminar, con ocho estaciones y guía.','Choose the web notebook or a walkable 3D world with eight stops and a guide.'):t('El notebook web está disponible. La versión inmersiva se construirá por separado.','The web notebook is available. The immersive version will be built separately.');
 }
 $('narrate').onclick = () => {
   if (guide.state === 'finished') step = 0;
@@ -132,10 +144,11 @@ $('narrate').onclick = () => {
 };
 $('voice-language').onchange = e => { voiceLanguage = e.target.value; const active = guide.running; guide.stop(); if (active) guide.enter(); else renderVoice(); };
 $('enter').onclick = () => enter(nearestExhibit(player.x, player.z, basis.x, basis.z));
+$('enter-3d').onclick = () => enter3D(nearestExhibit(player.x, player.z, basis.x, basis.z));
 $('leave').onclick = leave;
 window.addEventListener('keydown', e => {
   keys.add(e.code);
-  if (e.code === 'KeyE' && !entered) enter(nearestExhibit(player.x, player.z, basis.x, basis.z));
+  if (e.code === 'KeyE' && !entered&&!portal){const exhibit=nearestExhibit(player.x, player.z, basis.x, basis.z);if(exhibit&&immersiveHref(exhibit.id))enter3D(exhibit);else enter(exhibit);}
   if (e.code === 'Escape' && entered) leave();
 });
 window.addEventListener('keyup', e => keys.delete(e.code));
@@ -180,8 +193,9 @@ window.addEventListener('pointerup', e => {
 function frame(now) {
   const dt = Math.min(0.05, (now - last) / 1000);
   last = now;
-  if (!entered) guide.tick(dt);
-  if (!entered && world) {
+  if (!entered&&!portal) guide.tick(dt);
+  if(portal){portal.elapsed+=dt;const p=Math.max(0,Math.min(1,portal.elapsed/portal.duration)),s=p*p*(3-2*p),e=portal.exhibit;player.x=portal.from.x+(e.x+e.nx*.05-portal.from.x)*s;player.z=portal.from.z+(e.z+e.nz*.05-portal.from.z)*s;const angle=standAt(e).yaw-portal.from.yaw;player.yaw=portal.from.yaw+Math.atan2(Math.sin(angle),Math.cos(angle))*s;player.pitch=portal.from.pitch*(1-s);if(p===1){location.assign(portal.href);portal.elapsed=-1e5;}}
+  if (!entered && !portal && world) {
     const next = stepVisitor(player, { x: basis.x, z: basis.z }, { x: basis.rx, z: basis.rz }, input(), dt);
     player.x = next.x;
     player.z = next.z;
@@ -195,3 +209,6 @@ function frame(now) {
 renderVoice();
 paint(null);
 requestAnimationFrame(frame);
+window.addEventListener('blur',()=>{keys.clear();stick.x=stick.y=0;});
+window.addEventListener('pagehide',()=>{guide.stop();keys.clear();if(portal){Object.assign(player,portal.from);portal=null;document.body.classList.remove('crossing-portal');}});
+window.addEventListener('pageshow',()=>{last=performance.now();});
