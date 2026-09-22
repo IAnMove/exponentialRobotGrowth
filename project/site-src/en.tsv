@@ -1,0 +1,315 @@
+Robot Lab — El relevo	Robot Lab — The compounding loop
+Robot Lab — Dentro de la fábrica	Robot Lab — Inside the factory
+Un mundo isométrico donde humanos y robots construyen una industria que crece. Explora su cadena de componentes, el día y la noche.	An interactive world where humans and robots build a growing industry. Explore the component chain, day and night.
+Automatiza una fábrica de robots, sigue las piezas y descubre por qué más robots no siempre significan más producción.	Automate a robot factory, follow its parts and discover why more robots do not always mean more output.
+EXPERIMENTO	EXPERIMENT
+Una industria que crece.	An industry that grows.
+Cada nuevo robot puede ayudar a construir el siguiente.	Each new robot can help build the next.
+Entrar en la fábrica de robots ↗	Enter the robot factory ↗
+Cómo funciona	How it works
+Mundo industrial en 3D	3D industrial world
+Distrito isométrico con nueve industrias, humanos, robots, comedor, viviendas y estaciones de recarga	Isometric district with nine industries, humans, robots, a dining hall, homes and charging stations
+Construyendo el distrito…	Building the district…
+Turno de trabajo	Working shift
+Humanos en turno	Humans on shift
+Robots en turno	Robots on shift
+Robots incorporados	Robots deployed
+de 74 tareas con relevo	of 74 tasks covered by robots
+en recarga / servicio	charging / in service
+de camino	on the way
+Cerrar detalle	Close details
+Ritmo esta hora	Rate this hour
+Existencias que necesita	Required stock
+DISTRITO INDUSTRIAL	INDUSTRIAL DISTRICT
+Mapa: haz clic para explorar. Flechas para desplazarte. Intro para ver todo.	Map: click to explore. Arrow keys to move. Enter to fit the whole world.
+Haz clic para explorar	Click to explore
+Conexiones	Connections
+Pantalla completa	Full screen
+Acercar cámara	Zoom in
+Alejar cámara	Zoom out
+Ver todo el mundo	Fit the whole world
+74 personas ponen en marcha la industria. Todavía no hay robots.	74 people start the industry. No robots yet.
+Relevo en camino	Robot arriving
+Recarga / servicio	Charging / service
+Arrastra para explorar · rueda para acercar · ⇧ para girar	Drag to explore · scroll to zoom · ⇧ to rotate
+Controles de reproducción	Playback controls
+terminados en la última hora	finished in the last hour
+Hora de la simulación	Simulation hour
+robots fabricados	robots built
+EXPLORAR EL DÍA	EXPLORE THE DAY
+☀ Trabajo	☀ Work
+☕ Comida	☕ Lunch
+☾ Noche	☾ Night
+Día siguiente →	Next day →
+Tiempo ilustrativo · no son plazos industriales reales	Illustrative time · not real industrial timelines
+Momentos de la transformación	Moments of transformation
+IR A UN MOMENTO	JUMP TO A MOMENT
+Estrategia industrial	Industrial strategy
+DESTINAR LOS NUEVOS ROBOTS A	SEND NEW ROBOTS TO
+Toda la cadena	The whole chain
+Solo el montaje	Assembly only
+Sin reinvertir	No reinvestment
+Construir ampliaciones	Build expansions
+ROBOTS FABRICADOS	ROBOTS BUILT
+Tu estrategia	Your strategy
+Solo montaje	Assembly only
+Evolución de los robots fabricados	Robots built over time
+Con refuerzos solo en montaje	With assembly-only reinvestment
+Una simulación para entender un mecanismo, no una predicción.	A simulation to explain a mechanism, not a forecast.
+Sin fechas ni cifras atribuidas a Tesla.	No timelines or figures attributed to Tesla.
+EL EXPERIMENTO	THE EXPERIMENT
+El relevo.<br>Después, la expansión.	First, the handover.<br>Then, expansion.
+Empiezas con 74 personas, materiales y piezas disponibles, y ningún robot operativo. Mina → refinería → estructuras, motores, baterías y electrónica → kits → montaje → pruebas. Las existencias se consumen: si falta una familia de componentes, la cadena espera.	You start with 74 people, materials and parts in stock, and no operational robots. Mine → refinery → structures, motors, batteries and electronics → kits → assembly → testing. Stocks are consumed: if one component family is missing, the chain waits.
+Los robots nuevos pueden reforzar todos esos procesos. Cubren tareas humanas y, cuando la maquinaria limita, ayudan a construir ampliaciones. Acelerar únicamente el montaje deja otros cuellos de botella.	New robots can reinforce all these processes. They cover human tasks and, when machinery limits output, help build expansions. Speeding up assembly alone leaves other bottlenecks in place.
+Hasta el 70 %, según la capacidad útil	Up to 70%, depending on useful capacity
+08–12 y 14–18; comida y descanso	08–12 and 14–18; lunch and rest
+21 h disponible, 2 h recarga, 1 h servicio	21 h available, 2 h charging, 1 h service
+2 horas simuladas de traslado	2 simulated hours of travel
+2 robots, 12 horas de trabajo; hasta 3 obras	2 robots, 12 work hours; up to 3 projects
+Energía, equipos e insumos especializados	Energy, equipment and specialized inputs
+Horarios, cantidades, productividad y sustitución son supuestos didácticos, no datos de Tesla. Los 12 días comprimen un proceso sin representar su duración real. Las fábricas humanas también pueden trabajar con varios turnos; aquí se usa uno para hacer visible el descanso. La recarga y el servicio de los robots se escalonan; cada robot individual también para.	Schedules, quantities, productivity and task replacement are teaching assumptions, not Tesla data. The 12 days compress a process without representing its real duration. Human factories can also run multiple shifts; one is used here to make breaks visible. Robot charging and service are staggered; each individual robot stops too.
+Las personas con relevo permanecen en el barrio. Esto representa tareas cubiertas, no una predicción laboral. Se supone que los robots dominan las tareas y reciben maquinaria y materiales especializados. No se modelan fallos aleatorios, rechazos, nuevos yacimientos, costes ni permisos. La mina, la maquinaria y el despliegue tienen límites: el crecimiento no es exponencial para siempre.	People whose tasks are covered remain in the neighborhood. This represents task coverage, not an employment forecast. Robots are assumed to master the tasks and receive specialized machinery and materials. Random failures, rejected units, new deposits, costs and permits are not modeled. Mining, machinery and deployment have limits: growth is not exponential forever.
+Reinversión	Reinvestment
+Turno humano	Human shift
+Turno de cada robot	Each robot's schedule
+Incorporación	Deployment
+Suministros externos	External supplies
+No se ha podido activar WebGL para este mundo 3D.	WebGL could not be enabled for this 3D world.
+Pausa para comer	Lunch break
+Descanso nocturno	Night rest
+Camino al trabajo	Heading to work
+Fin del turno humano	Human shift ended
+Barrio residencial	Residential neighborhood
+Recarga y servicio	Charging and service
+Robots nuevos	New robots
+Energía externa	External energy
+Comedor	Dining hall
+Abre una ampliación en 	An expansion opens at 
+. Más equipos, más capacidad.	. More equipment, more capacity.
+Los robots construyen una ampliación en 	Robots are building an expansion at 
+Los humanos duermen. 	People are sleeping. 
+ robots disponibles; otros recargan o reciben mantenimiento.	 robots available; others are charging or being serviced.
+El barrio duerme. La cadena espera el siguiente turno.	The neighborhood is asleep. The chain awaits the next shift.
+Hora de comer. Las personas hacen una pausa; los robots disponibles siguen en sus puestos.	Lunch break. People rest; available robots remain at their stations.
+Todas las tareas humanas del escenario ya tienen relevo. El límite pasa a equipos y suministros.	Robots now cover every human task in this scenario. Equipment and supplies become the limit.
+Llega el relevo a 	A robot arrives at 
+. Los humanos liberados regresan al barrio.	. People whose tasks are covered return to the neighborhood.
+Los nuevos robots refuerzan la cadena. Cada kit necesita las cuatro familias de componentes.	New robots reinforce the chain. Every kit needs all four component families.
+Las primeras piezas avanzan hacia montaje y pruebas.	The first parts move toward assembly and testing.
+Pausar simulación	Pause simulation
+Reproducir simulación	Play simulation
+Las 74 personas siguen en el mundo. Tras recibir relevo dejan su tarea industrial y vuelven al barrio. Por la noche descansan dentro de las casas.	All 74 people remain in the world. When a robot covers their task, they return to the neighborhood. At night they rest inside their homes.
+De 12:00 a 14:00 las personas paran para comer y desplazarse. En este escenario hay un único turno de trabajo humano de ocho horas.	From 12:00 to 14:00 people stop to eat and travel. This scenario uses a single eight-hour human shift.
+Cada robot reserva dos horas de recarga y una de mantenimiento por día. Los horarios se escalonan para que otros robots puedan mantener la actividad.	Each robot reserves two hours for charging and one for maintenance daily. Schedules are staggered so other robots can keep working.
+Después de las pruebas, hasta el 70 % de los robots vuelve a la red si hace falta. Tardan dos horas simuladas en llegar a su destino. El resto sale hacia otros usos.	After testing, up to 70% of robots return to the network when needed. Travel takes two simulated hours. The rest go to other uses.
+La red recibe electricidad e insumos especializados del exterior. Los paneles representan el suministro, no un cálculo de autosuficiencia energética.	The network receives electricity and specialized inputs from outside. The panels represent supply, not an energy self-sufficiency calculation.
+ / última hora	 / last hour
+ · obra al 	 · construction at 
+ personas y 	 people and 
+ robots disponibles ahora.	 robots available now.
+Extracción limitada por equipos	Extraction limited by equipment
+Los insumos especializados y la energía vienen del exterior.	Specialized inputs and energy come from outside.
+Lotes en la red · pilas del mapa orientativas	Batches in the network · map stacks are illustrative
+ lotes por hora	 batches per hour
+ personas con su tarea industrial cubierta por robots.	 people with their industrial task covered by robots.
+Es la hora de comer.	It is lunchtime.
+El comedor espera la siguiente pausa.	The dining hall awaits the next break.
+ recargando · 	 charging · 
+ en mantenimiento	 in maintenance
+ robots destinados a otros usos.	 robots sent to other uses.
+Suministro externo supuesto.	External supply assumed.
+Robots acumulados hasta el día 	Cumulative robots through day 
+ en esta estrategia y 	 with this strategy and 
+ reforzando solo montaje.	 reinforcing assembly only.
+Este escenario no alcanza este momento	This scenario does not reach this moment
+Red robotizada	Robot workforce
+Ampliaciones	Expansions
+Relevos	Handovers
+Inicio	Start
+Escenas	Scenes
+Fábrica de robots	Robot factory
+Distrito	District
+DENTRO DE LA FÁBRICA	INSIDE THE FACTORY
+El ritmo lo marca el más lento.	The slowest step sets the pace.
+Elige un puesto. Incorpora robots.<br>Mira qué ocurre con las piezas.	Choose a station. Add robots.<br>Watch what happens to the parts.
+Interior isométrico de la fábrica	Isometric factory interior
+Cinco puestos conectados por cintas, diez personas, una zona de descanso y robots que se incorporan a la línea	Five stations connected by conveyors, ten people, a rest area and robots joining the line
+Preparando la línea…	Preparing the line…
+LÍNEA 01	LINE 01
+EN PAUSA	PAUSED
+EN MARCHA	RUNNING
+Arrastra · pellizca para acercar	Drag · pinch to zoom
+Alejar fábrica	Zoom out
+Ver fábrica completa	Fit the factory
+Acercar fábrica	Zoom in
+Reproducción de la fábrica	Factory playback
+08:00 → 08:00 · un día completo	08:00 → 08:00 · one full day
+Reiniciar fábrica	Reset factory
+☕ Ver la comida	☕ See lunch break
+☾ Ver la noche	☾ See nighttime
+Completar el día →	Complete the day →
+Producción de robots	Phone production
+Terminados hoy	Finished today
+desde el inicio	since the start
+Solo humanos · mismo instante	Humans only · same moment
+La misma línea sin automatizar	The same line without automation
+El límite de la cadena	The limit of the chain
+El menor potencial de producción diaria	The lowest daily production potential
+Puesto seleccionado	Selected station
+PUESTO 	STATION 
+capacidad / h	capacity / h
+Trabajo en este puesto	Work at this station
+En espera	Waiting
+Piezas esperando	Parts waiting
++ Incorporar un robot	+ Add a robot
+Cubre la tarea de una persona. Llega en 15 minutos simulados.	Covers one person's task. Arrives in 15 simulated minutes.
+OBSERVA ESTO	WATCH THIS
+Si aceleras montaje, las piezas pueden acumularse delante de pruebas. Cuenta los robots que salen, no los que esperan.	Faster assembly can create a pile of parts before testing. Count the robots leaving, not those waiting.
+¿Cuántos en un día completo?	How many in a full day?
+Ensayo de 24 h desde las 08:00, con la configuración actual fija y la misma cantidad inicial de kits.	A 24-hour trial from 08:00, with the current setup fixed and the same initial supply of kits.
+Tu configuración	Your setup
+Este ensayo empieza con la línea vacía. El contador de hoy refleja tus cambios durante la partida.	This trial starts with an empty line. Today's counter reflects changes you made during the simulation.
+Seleccionar un puesto	Select a station
+SIGUE UNA PIEZA	FOLLOW A PART
+Del kit al robot terminado	From kit to finished robot
+Modelo didáctico · cifras ilustrativas, no datos de Tesla.	Educational model · illustrative figures, not Tesla data.
+Ver supuestos	View assumptions
+CÓMO LEER LA FÁBRICA	HOW TO READ THE FACTORY
+Más rápido en un puesto.<br>¿Más robots al final?	Faster at one station.<br>More robots at the end?
+El número importante es el de robots que salen de puesta en marcha. Cada robot consume un kit y pasa por los cinco puestos. Las pilas pequeñas muestran las piezas que esperan; el suministro y las cajas de salida usan una representación resumida. El movimiento por la cinta forma parte del ciclo de cada puesto.	The important number is robots leaving commissioning. Each robot consumes one kit and passes through all five stations. Small stacks show waiting parts; supply and output boxes are summarized visually. Conveyor movement forms part of each station's cycle.
+Empiezas con diez personas. Cada robot cubre una tarea humana y llega del exterior. Aquí no se fabrican nuevos robots: esta escena muestra el efecto de automatizar una línea.	You start with ten people. Each robot covers one human task and arrives from outside. No new robots are built here: this scene shows the effect of automating a line.
+Dos por puesto. Un turno: 08–12 y 14–18.	Two per station. One shift: 08–12 and 14–18.
+Hasta dos por puesto. Cada uno: 21 h disponible, 2 h de recarga y 1 h de mantenimiento, con horarios distintos.	Up to two per station. Each has 21 h available, 2 h charging and 1 h maintenance, with staggered schedules.
+Un robot aporta 1,4 veces el ritmo de una persona en este ejemplo. También limita la maquinaria.	A robot contributes 1.4 times a person's rate in this example. Machinery also limits output.
+160 kits iniciales y hasta 160 nuevos cada día a las 08:00. Incluyen estructura, actuadores, batería, controladores y sensores. Hasta 16 piezas entre puestos.	160 initial kits and up to 160 new kits daily at 08:00. They include the structure, actuators, battery, controllers and sensors. Up to 16 parts can wait between stations.
+El ensayo mantiene la configuración durante 24 horas completas. Incluye esperas y descansos; no multiplica sin más el ritmo de una hora por 24.	The trial holds the setup fixed for a full 24 hours. It includes waiting and breaks; it does not simply multiply one hour's rate by 24.
+Todos estos valores son supuestos para aprender, no productividades reales ni plazos previstos. Una fábrica humana puede organizar varios turnos. Se omiten averías, rechazos, costes y el tiempo real de adaptar los puestos.	All values are learning assumptions, not real productivity figures or predicted timelines. A human factory can organize multiple shifts. Breakdowns, rejected units, costs and real station adaptation time are omitted.
+No se pudo iniciar el mundo 3D. Los controles y la comparación siguen disponibles.	The 3D world could not start. Controls and comparisons remain available.
+Seleccionar 	Select 
+Pausar fábrica	Pause factory
+Reproducir fábrica	Play factory
+ · ayer 	 · yesterday 
+ completado: 	 completed: 
+ robots en tu fábrica · 	 robots in your factory · 
+ solo con humanos.	 with humans only.
+Suministro de kits	Kit supply
+Entran hasta 160 kits al día del exterior.	Up to 160 kits arrive daily from outside.
+Menor capacidad diaria teórica · las colas muestran las esperas actuales	Lowest theoretical daily capacity · queues show current waiting
+Kits disponibles	Available kits
+Puesto robotizado	Station automated
+Las dos tareas tienen relevo. La maquinaria, los materiales y las pausas aún pueden limitar el puesto.	Both tasks are covered by robots. Machinery, materials and breaks can still limit this station.
+La salida está llena. Este puesto tiene que parar hasta que el siguiente retire piezas. Añadir aquí otro robot no resuelve esa espera.	The output queue is full. This station must stop until the next one takes parts. Adding another robot here will not resolve the wait.
+En este momento no hay personal disponible. Los humanos descansan y cada robot también tiene su horario de recarga y mantenimiento.	No workers are available now. People are resting, and each robot also has a charging and maintenance schedule.
+Se han agotado los kits. El siguiente suministro llega a las 08:00. Más robots no pueden fabricar sin materiales.	Kits have run out. The next delivery arrives at 08:00. More robots cannot produce without materials.
+Este puesto espera a los anteriores. La capacidad que ves es lo que podría hacer con piezas; no es producción terminada.	This station is waiting for earlier stages. Its capacity is what it could produce with parts; it is not finished output.
+Este puesto tiene la menor capacidad diaria de la línea. Reforzarlo puede aumentar la salida, hasta que el límite pase a otro puesto o al suministro.	This station has the lowest daily capacity. Reinforcing it can increase output until another station or supply becomes the limit.
+La línea ya tiene más capacidad que el suministro diario de kits. Para seguir creciendo también harían falta más componentes del exterior.	The line already has more capacity than the daily kit supply. Further growth also requires more components from outside.
+Acelerar 	Speeding up 
+ puede llenar la cola de otro puesto. El límite diario está en 	 can fill another station's queue. The daily limit is at 
+. Mira los robots que salen de puesta en marcha.	. Watch the robots leaving commissioning.
+ en cola	 in queue
+Reunir la placa, la memoria RAM, los sensores y el resto del kit.	Gather the circuit board, RAM, sensors and the rest of the kit.
+Fijar la placa y conectar los componentes en la carcasa.	Secure the circuit board and connect components inside the housing.
+Instalar la pantalla, conectar la batería y cerrar el robot.	Install the screen, connect the battery and close the robot.
+Comprobar la pantalla, la carga, las cámaras y las conexiones.	Check the screen, charging, cameras and connections.
+Proteger y embalar el robot terminado para su salida.	Protect and package the finished robot for dispatch.
+Preparación	Preparation
+Preparar	Prepare
+Actuadores y batería	Actuators and battery
+Completar	Complete
+Activar	Pack
+Puesta en marcha	Commissioning
+Montar	Assemble
+Probar	Test
+Descanso humano	Human rest
+Salida llena	Output queue full
+Llega el relevo	Robot arriving
+Sin personal disponible	No workers available
+Esperando suministro	Waiting for supply
+Espera piezas	Waiting for parts
+En producción	In production
+Sin turno disponible	No available shift
+Esperando materiales	Waiting for materials
+Suministro insuficiente	Insufficient supply
+Ampliación en marcha	Expansion under way
+Maquinaria al máximo	Machinery at capacity
+Por probar	Awaiting testing
+KITS · PLACA + RAM + COMPONENTES	KITS · BOARD + RAM + COMPONENTS
+ROBOTS TERMINADOS	FINISHED ROBOTS
+RECARGA Y SERVICIO	CHARGING AND SERVICE
+DESCANSO	REST AREA
+Extracción y preparación de minerales. Es el comienzo de las cuatro cadenas de componentes.	Mineral extraction and preparation. The start of all four component chains.
+Refinado y transformación. Cada lote abastece las cuatro familias de componentes del modelo.	Refining and processing. Each batch supplies all four component families in the model.
+Carcasas, bastidores y piezas mecanizadas. Una de las cuatro entradas necesarias para montar un robot.	Housings, frames and machined parts. One of four inputs needed to assemble a robot.
+Motores, transmisiones y articulaciones. Los robots ayudan a fabricar los mecanismos que les permiten moverse.	Motors, transmissions and joints. Robots help build the mechanisms that let them move.
+Preparación y ensamblaje de baterías. Los insumos químicos especializados se suponen disponibles.	Battery preparation and assembly. Specialized chemical inputs are assumed available.
+Electrónica de control, cableado y sensores. La fabricación especializada y sus equipos se representan de forma agregada.	Control electronics, wiring and sensors. Specialized manufacturing and equipment are represented in aggregate.
+Reúne una estructura, motores, una batería y electrónica. Sin las cuatro familias no sale un kit.	Combines a structure, motors, a battery and electronics. No kit leaves without all four families.
+Los kits se convierten en robots. Al principio trabajan personas; después se incorporan los robots nuevos.	Kits become robots. People work here initially; newly built robots join later.
+Verificación, calibración y puesta a punto. Solo los robots terminados pueden incorporarse a trabajar.	Verification, calibration and commissioning. Only finished robots can join the workforce.
+Refinería y metales	Refinery and metals
+Motores y actuadores	Motors and actuators
+Electrónica y sensores	Electronics and sensors
+Centro logístico	Logistics hub
+Montaje de robots	Robot assembly
+Pruebas y calibración	Testing and calibration
+lotes de mineral	ore batches
+lotes refinados	refined batches
+conjuntos de motores	motor sets
+conjuntos electrónicos	electronic sets
+kits completos	complete kits
+robots ensamblados	assembled robots
+robots terminados	finished robots
+estructuras	structures
+baterías	batteries
+Estructuras	Structures
+Baterías	Batteries
+Electrónica	Electronics
+Actuadores	Actuators
+Metales	Metals
+Mineral	Ore
+Mina	Mine
+Montaje y pruebas	Assembly and testing
+Montaje	Assembly
+Pruebas	Testing
+Materiales	Materials
+Procesamiento	Processing
+Componentes	Components
+Logística	Logistics
+Comparación	Comparison
+Ritmo	Rate
+Explicación del lugar seleccionado	Explanation of the selected place
+EXPLICACIÓN DEL LUGAR	PLACE EXPLANATION
+Pausar explicación	Pause explanation
+Repetir explicación	Replay explanation
+Cerrar explicación	Close explanation
+Qué ocurre ahora →	What is happening now →
+Leer la explicación	Read the explanation
+La simulación está en pausa. Pulsa Reproducir para continuar.	The simulation is paused. Press Play to continue.
+Cargando voz…	Loading voice…
+Escuchando	Listening
+Narración en pausa	Narration paused
+Pulsa ▶ para escuchar	Press ▶ to listen
+No se pudo cargar la voz. Puedes leer la explicación o reintentar.	The voice could not load. Read the explanation or try again.
+Explicación terminada	Explanation finished
+Escuchar explicación	Listen to explanation
+Voz activada	Voice on
+Voz desactivada	Voice off
+Explicar cada lugar al seleccionarlo	Explain each place when selected
+Desactivar narración al seleccionar	Turn off narration on selection
+Activar narración al seleccionar	Turn on narration on selection
+Solo humanos	Humans only
+Humanos	Humans
+personas	people
+producidos	produced
+Velocidad	Speed
+En marcha	Running
+En pausa	Paused
+Reproducir	Play
+Pausar	Pause
+Repetir	Replay
+Cerrar	Close
+DÍA 	DAY 
+Día 	Day 
+Ver 	View 
+es-ES	en-US

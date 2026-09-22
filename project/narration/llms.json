@@ -1,0 +1,164 @@
+{
+  "es": [
+    {
+      "id": "question",
+      "title": "Tu pregunta",
+      "text": "Empezamos con tu pregunta. Estas tarjetas representan las instrucciones y los mensajes que la aplicación reúne antes de llamar al modelo. Si existe una conversación anterior, puede incluirse aquí. El modelo recibe esta entrada, no todo lo que sabes ni todo internet. Observa cómo la información entra por el mismo recorrido. Vamos a detenernos en cada paso."
+    },
+    {
+      "id": "retrieval",
+      "title": "Añadir una fuente",
+      "text": "Aquí la aplicación puede recuperar una fuente. En el experimento del museo, activar la consulta añade una ficha al contexto. Si no hay documento, seguimos sin esa evidencia. El texto recuperado no modifica los pesos del modelo. Una fuente antigua puede inducir una respuesta equivocada. La búsqueda es una herramienta adicional, no algo que todos los modelos hagan automáticamente."
+    },
+    {
+      "id": "tokens",
+      "title": "Separar en tokens",
+      "text": "Ahora el texto se divide en tokens. Cada bloque es una pieza: una palabra, un fragmento, un espacio o un signo. Debajo aparece su identificador. Dos piezas iguales comparten identificador. Puedes seleccionar un bloque para verlo de cerca. Estos cortes pertenecen a nuestro tokenizador didáctico; un modelo real utiliza un vocabulario propio. Todavía no hemos producido la respuesta."
+    },
+    {
+      "id": "vectors",
+      "title": "Una matriz de números",
+      "text": "El identificador de cada token selecciona una fila de la tabla de embeddings. A la izquierda vemos esas representaciones; en el centro, una codificación de posición; a la derecha, su suma, X. Cada fila es un token y cada columna una dimensión. La fila dorada sigue el token seleccionado. Azul y naranja distinguen signos; la intensidad indica magnitud. Todos los valores son sintéticos. Usamos una suma de posición ilustrativa; otros modelos, como Llama, usan posiciones rotatorias en consultas y claves. Puedes pulsar una celda para ver su valor."
+    },
+    {
+      "id": "layers",
+      "title": "Atención y capas",
+      "text": "Seguimos una fila de la entrada, marcada en dorado. Primero multiplicamos la matriz X por tres matrices de pesos diferentes. Así obtenemos Q, consultas; K, claves; y V, valores. Esas ramas pueden calcularse en paralelo. Los pesos permanecen fijos. Ahora comparamos la consulta activa con las claves. Cada producto escalar da una puntuación. Dividimos por la raíz de la dimensión, aquí tres. La fila dorada de la matriz muestra esas comparaciones. Aún no son probabilidades. Aplicamos la máscara causal. Las posiciones futuras reciben menos infinito, representado con una cruz. Después, softmax convierte la fila en coeficientes que suman uno. El futuro tiene exactamente cero. Esto no mide si una afirmación es verdadera. Esos coeficientes ponderan los vectores de valores. Sigue los pulsos desde la fila activa hacia V y hasta el resultado Z. Un pulso mayor indica mayor peso en la mezcla. El resultado es un vector de números, no una palabra sacada de una biblioteca. Finalmente proyectamos la mezcla y sumamos la entrada por la conexión residual. Normalizamos y aplicamos una red a cada posición, seguida de otra suma y normalización. Aquí usamos una cabeza, seis dimensiones y pesos sintéticos. Los modelos reales combinan cabezas y repiten bloques; la luz ilustra el flujo de activaciones, no un bit físico ni un pensamiento.",
+      "segments": [
+        "Seguimos una fila de la entrada, marcada en dorado. Primero multiplicamos la matriz X por tres matrices de pesos diferentes. Así obtenemos Q, consultas; K, claves; y V, valores. Esas ramas pueden calcularse en paralelo. Los pesos permanecen fijos.",
+        "Ahora comparamos la consulta activa con las claves. Cada producto escalar da una puntuación. Dividimos por la raíz de la dimensión, aquí tres. La fila dorada de la matriz muestra esas comparaciones. Aún no son probabilidades.",
+        "Aplicamos la máscara causal. Las posiciones futuras reciben menos infinito, representado con una cruz. Después, softmax convierte la fila en coeficientes que suman uno. El futuro tiene exactamente cero. Esto no mide si una afirmación es verdadera.",
+        "Esos coeficientes ponderan los vectores de valores. Sigue los pulsos desde la fila activa hacia V y hasta el resultado Z. Un pulso mayor indica mayor peso en la mezcla. El resultado es un vector de números, no una palabra sacada de una biblioteca.",
+        "Finalmente proyectamos la mezcla y sumamos la entrada por la conexión residual. Normalizamos y aplicamos una red a cada posición, seguida de otra suma y normalización. Aquí usamos una cabeza, seis dimensiones y pesos sintéticos. Los modelos reales combinan cabezas y repiten bloques; la luz ilustra el flujo de activaciones, no un bit físico ni un pensamiento."
+      ]
+    },
+    {
+      "id": "scores",
+      "title": "Del cálculo a las probabilidades",
+      "text": "Tras las capas, el modelo calcula puntuaciones para los posibles tokens siguientes. Softmax las convierte en probabilidades. Las columnas tridimensionales representan ese reparto y suman el cien por cien. Una columna alta significa texto más probable según esas puntuaciones, no una afirmación más verdadera. Puedes cambiar la temperatura y comparar. Nuestras puntuaciones están preparadas para explicar el mecanismo."
+    },
+    {
+      "id": "choose",
+      "title": "Elegir un solo token",
+      "text": "Ahora se elige una sola pieza. Podemos tomar la más probable o sortear según la distribución. Mira las opciones alrededor de la plataforma: todavía no sale una frase completa. Cuando terminemos este paso, aparecerá exactamente un token nuevo en la respuesta. En este laboratorio, la primera elección usa probabilidades; después seguimos una continuación guionizada para poder estudiar el recorrido."
+    },
+    {
+      "id": "feedback",
+      "title": "Volver al contexto",
+      "text": "Ya ha salido una pieza. El bloque luminoso vuelve al contexto junto a la pregunta y los tokens anteriores. El siguiente cálculo utiliza también lo que acaba de escribir. Repetiremos atención, probabilidades y elección para producir otra pieza, y así sucesivamente. Los sistemas reales suelen reutilizar cálculos mediante una caché. Observa el contador: responder no está actualizando los pesos del modelo."
+    },
+    {
+      "id": "loop-layers",
+      "title": "Otro token · atención",
+      "text": "Otra pieza: la entrada produce nuevas consultas, claves y valores. La consulta se compara con las claves mediante productos escalares. La máscara bloquea el futuro. Softmax normaliza la fila. Los coeficientes mezclan los valores para obtener otro vector. Las conexiones residuales y la red transforman el resultado. Esta pequeña ventana se recalcula para mostrar las operaciones; una implementación real puede reutilizar una caché.",
+      "segments": [
+        "Otra pieza: la entrada produce nuevas consultas, claves y valores.",
+        "La consulta se compara con las claves mediante productos escalares.",
+        "La máscara bloquea el futuro. Softmax normaliza la fila.",
+        "Los coeficientes mezclan los valores para obtener otro vector.",
+        "Las conexiones residuales y la red transforman el resultado. Esta pequeña ventana se recalcula para mostrar las operaciones; una implementación real puede reutilizar una caché."
+      ]
+    },
+    {
+      "id": "loop-scores",
+      "title": "Otro token · probabilidades",
+      "text": "Se vuelve a calcular una distribución para la siguiente pieza. Aquí la continuación está guionizada. La columna más alta muestra el siguiente token previsto en esta demostración."
+    },
+    {
+      "id": "loop-choose",
+      "title": "Otro token · elección",
+      "text": "Nos detenemos antes de emitir la siguiente pieza. Al terminar este paso, solo se añade un token: puede ser una palabra, un fragmento o incluso un espacio."
+    },
+    {
+      "id": "loop-feedback",
+      "title": "Otro token · contexto",
+      "text": "Esta nueva pieza ya forma parte de la respuesta y del contexto. Mira cómo regresa al inicio del siguiente cálculo. Dejamos unos segundos para observarlo."
+    },
+    {
+      "id": "done",
+      "title": "Respuesta terminada",
+      "text": "Hemos llegado al token de final de secuencia. La respuesta está terminada. Cada pieza se generó usando el contexto anterior. Los pesos no cambiaron. Puedes repetir el recorrido o comparar otro contexto y otra fuente."
+    }
+  ],
+  "en": [
+    {
+      "id": "question",
+      "title": "Your question",
+      "text": "We start with your question. These cards represent the instructions and messages the application gathers before calling the model. If there is an earlier conversation, it may be included here. The model receives this input, not everything you know or the whole internet. Watch the information enter the same processing path. We will stop at every step."
+    },
+    {
+      "id": "retrieval",
+      "title": "Adding a source",
+      "text": "Here the application can retrieve a source. In the museum experiment, enabling retrieval adds a record to the context. Without a document, we continue without that evidence. Retrieved text does not change the model weights. An outdated source can lead to a wrong answer. Search is an additional tool, not something every model performs automatically."
+    },
+    {
+      "id": "tokens",
+      "title": "Splitting into tokens",
+      "text": "The text is now split into tokens. Each block is a piece: a word, a fragment, a space or punctuation. Its identifier appears underneath. Identical pieces share an identifier. Select a block to inspect it. These splits belong to our teaching tokenizer; a real model uses its own vocabulary. We have not generated the answer yet."
+    },
+    {
+      "id": "vectors",
+      "title": "A matrix of numbers",
+      "text": "Each token identifier selects a row from the embedding table. On the left are those representations; in the center, a position encoding; on the right, their sum, X. Each row is a token and each column a dimension. The gold row follows the selected token. Blue and orange distinguish signs; intensity indicates magnitude. All values are synthetic. We use an illustrative position sum; other models, such as Llama, use rotary positions in queries and keys. Select a cell to inspect its value."
+    },
+    {
+      "id": "layers",
+      "title": "Attention and layers",
+      "text": "Follow one input row, outlined in gold. First, we multiply X by three different weight matrices. This produces Q, queries; K, keys; and V, values. These branches can be computed in parallel. The weights remain fixed. Now we compare the active query with the keys. Each dot product produces a score. We divide by the square root of the dimension, three in this example. The gold row shows those comparisons. They are not probabilities yet. We apply the causal mask. Future positions receive negative infinity, shown as crosses. Then softmax turns the row into coefficients that sum to one. Future positions have exactly zero weight. This does not measure whether a claim is true. Those coefficients weight the value vectors. Follow the pulses from the active row through V to the result Z. A larger pulse means a larger weight in the mixture. The result is a vector of numbers, not a word retrieved from a library. Finally, we project the mixture and add the input through a residual connection. We normalize and apply a network to each position, followed by another addition and normalization. Our example uses one head, six dimensions and synthetic weights. Real models combine heads and repeat blocks. The light illustrates activation flow, not a physical bit or a thought.",
+      "segments": [
+        "Follow one input row, outlined in gold. First, we multiply X by three different weight matrices. This produces Q, queries; K, keys; and V, values. These branches can be computed in parallel. The weights remain fixed.",
+        "Now we compare the active query with the keys. Each dot product produces a score. We divide by the square root of the dimension, three in this example. The gold row shows those comparisons. They are not probabilities yet.",
+        "We apply the causal mask. Future positions receive negative infinity, shown as crosses. Then softmax turns the row into coefficients that sum to one. Future positions have exactly zero weight. This does not measure whether a claim is true.",
+        "Those coefficients weight the value vectors. Follow the pulses from the active row through V to the result Z. A larger pulse means a larger weight in the mixture. The result is a vector of numbers, not a word retrieved from a library.",
+        "Finally, we project the mixture and add the input through a residual connection. We normalize and apply a network to each position, followed by another addition and normalization. Our example uses one head, six dimensions and synthetic weights. Real models combine heads and repeat blocks. The light illustrates activation flow, not a physical bit or a thought."
+      ]
+    },
+    {
+      "id": "scores",
+      "title": "From scores to probabilities",
+      "text": "After the layers, the model computes scores for possible next tokens. Softmax turns them into probabilities. The three dimensional columns represent that distribution and add up to one hundred percent. A tall column means more likely text under these scores, not a more truthful statement. Change the temperature to compare. Our scores are prepared to explain the mechanism."
+    },
+    {
+      "id": "choose",
+      "title": "Choosing one token",
+      "text": "Now one piece is selected. We can take the most likely option or sample from the distribution. Look at the options around the platform: a complete sentence does not come out at once. When this step finishes, exactly one new token appears in the answer. In this lab, the first choice uses probabilities; the rest follows a scripted continuation so we can study the path."
+    },
+    {
+      "id": "feedback",
+      "title": "Returning to context",
+      "text": "One piece has now come out. The glowing block returns to the context alongside the question and earlier tokens. The next computation also uses what was just written. We repeat attention, probabilities and selection to produce another piece, and continue that loop. Real systems commonly reuse computations through a cache. Watch the counter: answering is not updating the model weights."
+    },
+    {
+      "id": "loop-layers",
+      "title": "Next token · attention",
+      "text": "Another piece: the input produces queries, keys and values. The query is compared with the keys using dot products. The mask blocks the future. Softmax normalizes the row. The coefficients mix the values into another vector. Residual connections and the network transform the result. This small window is recomputed to show the operations; a real implementation can reuse a cache.",
+      "segments": [
+        "Another piece: the input produces queries, keys and values.",
+        "The query is compared with the keys using dot products.",
+        "The mask blocks the future. Softmax normalizes the row.",
+        "The coefficients mix the values into another vector.",
+        "Residual connections and the network transform the result. This small window is recomputed to show the operations; a real implementation can reuse a cache."
+      ]
+    },
+    {
+      "id": "loop-scores",
+      "title": "Next token · probabilities",
+      "text": "A new distribution describes the next piece. The continuation here is scripted. The tallest column shows the next token planned for this demonstration."
+    },
+    {
+      "id": "loop-choose",
+      "title": "Next token · selection",
+      "text": "We pause before emitting the next piece. When this step ends, just one token is added. It may be a word, a fragment, or even a space."
+    },
+    {
+      "id": "loop-feedback",
+      "title": "Next token · context",
+      "text": "The new piece is now part of both the answer and the context. Watch it return to the next computation. We leave a few seconds to observe it."
+    },
+    {
+      "id": "done",
+      "title": "Answer complete",
+      "text": "We have reached the end of sequence token. The answer is complete. Every piece was generated using the preceding context. The weights did not change. You can replay the journey or compare another context and source."
+    }
+  ]
+}

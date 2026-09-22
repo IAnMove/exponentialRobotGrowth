@@ -1,33 +1,85 @@
-# Robot Lab
+# Atlas — interactive explanations
 
-An interactive, isometric explanation of robots helping build more robots, and of the supply chains that make this possible.
+Bilingual notebooks: Robots, Terafab, Dyson, Home, Starlink, SpaceX, Kardashev, LLMs,
+Mind and Models, connected by an explorable 3D museum.
+English starts at `/`; Spanish at `/es/`. All links work beneath the GitHub Pages repository path.
 
-English is the default. Use **EN / ES** to switch the interface and narration. All four scenes work with touch controls. The journey is **robot factory → industrial district → city → region**.
+The museum's LLM painting now offers two formats: the existing web notebook and
+`immersive/index.html?experience=llms`, a walkable Three.js world with eight stations.
+Walk with WASD/arrows, drag to look, or use touch buttons. The guided route moves the camera,
+plays the existing bilingual MiniMax narration and waits three seconds after each clip.
+Walking interrupts the guide; instant travel supports reduced motion. Inspect tokens,
+vector cells, attention matrices and probabilities, then emit a token and return it to context.
+This is teaching geometry with synthetic weights and curated answers, not a physical CPU model.
+Only LLMs currently has an immersive world; the catalog marks other experiences as pending.
 
-- **Industrial district:** follow people and robots through mining, refining, four component families, logistics, assembly and testing. Compare reinvesting across the chain with reinforcing assembly alone.
-- **Robot factory (start here):** humans build the first robots. Completed robots return automatically to help build the next ones. Inspect five stations, follow queues and compare output with a human line. Automatic assignment can be disabled for manual experiments.
-- **Industrial region:** build new mines, refineries, component plants, robot factories, power generation and logistics. Reserve robots and refined material for construction, and compare fleet growth with a region that keeps its initial facilities. Click plots to build manually or inspect industry output over time.
-- **City:** deliveries enter a terminal and spread across six activity districts. People and robots represent tasks; coverage bars and human/robot curves show the transition. Compare three illustrative task-coverage scenarios.
-- **Connected region:** three cities share the six industrial sectors. New robots either reinforce industry or travel to cities. Construction investment and delivery share are separate choices. Track reservations, transit, city coverage, total robots and production per cycle against a region that keeps its initial facilities. A growing accumulated fleet does not by itself demonstrate accelerating production.
-- **Guided explanations:** each scale has a general introduction and a narrated tour that focuses on its sectors. There are 49 prerecorded explanations in each language; Spanish retains the exact voice selected by the project owner.
-- **Click a place:** hear an explanation of its role, followed by its current condition. Narration pauses the simulation so the explanation remains relevant. Transcripts and voice controls are included.
+Kardashev adds a playable 3D planet → star → galaxy journey, live power and multiplier counters,
+linear/logarithmic charts and a conditional compound-growth calculator. It distinguishes the
+original 1964 categories from the continuous Sagan convention. Rates and scenarios are teaching
+assumptions, not forecasts. Sources and limitations are linked inside each notebook.
 
-## What the model means
+The scenes use NASA's official MarCO CubeSat model and Blue Marble Earth texture, with an
+interactive component inspector. A MiniMax voice guide covers all four scales and the spacecraft
+in English and Spanish, with transcripts, pause/resume and a sequential guided tour.
+Asset credits are in `project/site-src/kardashev/ASSETS.md`.
+Scene motion has its own pause control and continues at fixed energy levels. The solar swarm
+contains up to 1,728 illustrative collectors; motion and distances are not physically to scale.
 
-Reinvested production can increase future productive capacity. For that feedback to keep accelerating, supporting supplies, equipment and infrastructure must expand too. The model makes those dependencies visible.
+The LLM notebook follows a question through context, optional retrieval, tokenization, vectors,
+causal attention, next-token probabilities and autoregressive output. Play, step and inspection
+controls accompany bilingual examples of ambiguity, current sources and stale sources. A separate
+training exercise distinguishes changing weights from supplying context. This is an explicitly
+labelled educational simulation: answers and logits are scripted, not output from a trained LLM.
+Interactive Three.js scenes replace the original SVG. Select token blocks, vector cells and
+causal-attention rows to inspect their values. Twenty-six MiniMax recordings cover each step and
+subsequent token cycles in English and Spanish, with transcripts and language selection. Playback
+waits for the audio to finish and then pauses for 3, 5 or 8 seconds. Manual advancement, pause/resume
+and silent reading are supported; unavailable audio never silently skips a step.
+The attention view now follows paper-style tensor operations: distinct Q/K/V projections,
+scaled dot products, a causal mask, row softmax, AV, residual connections and a feed-forward
+network. Values are computed using fixed synthetic weights in a small post-norm block.
+Five separately recorded narration segments supply measured scene cue times in both languages;
+a gold activation signal moves along the dependency arrows and pauses with the audio.
+The visible token window and scripted answer are explicitly separate. Paper references and
+differences from Llama's architecture are explained in the notebook.
 
-This is an independent educational illustration, not a Tesla product, a calibrated GDP model, an employment forecast or a prediction of dates. All rates, schedules and quantities are illustrative. It does not establish that exponential growth continues indefinitely.
+## One repository for development and publication
 
-The district compresses development into 12 illustrative days. People work one eight-hour shift; real factories can operate multiple shifts. Each robot has 21 available hours and staggered charging and service. Specialized inputs, machinery and electricity are supplied externally. Costs, permissions, random breakdowns and rejected units are omitted.
+- `project/site-src/`: editable bilingual source, models and Three.js scenes.
+- `project/check-*`: validation scripts.
+- `project/tools/build_site.py`: bilingual route builder.
+- Root HTML/JS/CSS, topic folders, `audio/` and `vendor/`: generated deployable website.
+- `project/dist/`: ignored build output.
 
-Each scale starts from its own assumptions; moving between scenes does not carry over simulation state. The city starts with 600 equivalent tasks, not 600 employment predictions, and preserves human tasks under every scenario.
+From `project/`:
 
-The separate regional scenario begins with 24 robots and six facilities and runs for 120 illustrative cycles, not days or years. Each new facility consumes 48 material batches and 24 robot work units. At most four robots work on each of three simultaneous projects. The investment percentage limits construction workers and reserves that share of newly refined material. Electricity limits construction and production, while transport limits industrial flow. Six plots per industry bound regional expansion. Specialized equipment is still supplied externally. At larger fleet sizes, one figure represents several robots; the map displays the scale.
+```sh
+npm ci
+python build-site.py
+python check-site.py
+node check-kardashev.mjs
+node check-kardashev-media.mjs
+node check-kardashev-motion.mjs
+node check-llms.mjs
+node check-llms-guide.mjs
+node check-llms-tensors.mjs
+node check-immersive.mjs
+node check-museo.mjs
+node check-explanations.mjs
+node check-full-automation.mjs
+node check-narrator.mjs
+python tools/package_pages.py --output ..
+```
 
-The three regional cities have 180, 240 and 180 equivalent tasks, with fixed delivery delays of one, three and five illustrative cycles. Dispatch reserves a feasible task. Exported robots leave industry and cannot be counted in two places. Both comparison scenarios use the same delivery share. Task limits use the intermediate city scenario. Roads show delivery batches rather than urban traffic congestion. Urban figures summarize tasks; industrial figures and vehicles are illustrative.
+Commit the edited source and regenerated root assets together. Work on a branch and open a PR
+against `main`; do not edit generated files directly. GitHub Pages currently publishes the root
+of `main`, so pushing a feature branch or opening a PR does not update the public website.
 
-## Run locally
+For a local preview run `python serve.py` from `project/`, or serve the repository root with
+`python -m http.server 8000`. Audio is already recorded; no credentials or external API are needed.
+Three.js is bundled locally; see `vendor/THREE-LICENSE.txt`.
 
-Serve this directory with a static HTTP server, for example `python -m http.server 8000`, then open `http://localhost:8000/`. No API credentials or backend are required. Audio is prerecorded with MiniMax; viewing or playing it makes no MiniMax API requests.
-
-This repository contains the deployable static files. GitHub Pages publishes the root of `main`. Three.js is bundled locally; its license is in [vendor/THREE-LICENSE.txt](vendor/THREE-LICENSE.txt).
+This snapshot consolidates the source project's previous Atlas changes and the `added more places`
+work with the new Kardashev and LLM notebooks. The robot learning improvements proposed in PR #1 are also
+included. The older source checkout and this publishing repository originally had separate histories;
+this branch is based on GitHub `main` so the PR is normally reviewable and mergeable.

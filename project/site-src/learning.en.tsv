@@ -1,0 +1,48 @@
+EL PRIMER CICLO DE REINVERSIÓN	THE FIRST REINVESTMENT LOOP
+Las personas construyen el primer robot.	People build the first robot.
+Observa la salida de la línea. Un robot terminado podrá volver y ayudar a fabricar los siguientes.	Watch the end of the line. A finished robot can return and help build the next ones.
+Seguir su primer recorrido	Follow its first journey
+Escuchar este momento	Explain this moment
+¿De dónde viene la ventaja?	Where does the advantage come from?
+Disponibilidad por robot	Availability per robot
+Ritmo por hora · supuesto	Hourly pace · assumption
+Suministro de toda la línea	Supply for the whole line
+160 kits / día	160 kits / day
+Más horas y mayor ritmo aumentan el potencial. Materiales, maquinaria y otros puestos determinan la salida. Una fábrica humana también puede organizar varios turnos.	More hours and a faster pace increase potential output. Materials, equipment and other stations determine finished output. Human factories can also run multiple shifts.
+El primer robot está terminado.	The first robot is complete.
+Ya puedes incorporarlo a un puesto o activar el relevo automático. Fabricado no significa todavía trabajando.	You can now assign it to a station or enable automatic deployment. Built does not yet mean working.
+El primer robot regresa a la línea.	The first robot returns to the line.
+Destino: 	Destination: 
+. Durante el traslado todavía no aumenta la capacidad del puesto.	. While in transit, it does not yet add capacity to the station.
+Ya está incorporado a la línea.	It has now joined the line.
+Su tarea está en 	Its task is at 
+. La salida total sigue dependiendo de los otros puestos y del suministro de componentes.	. Total output still depends on the other stations and on component supply.
+Mismo inicio. Mismo reloj. Dos decisiones.	Same start. Same clock. Two decisions.
+Una región amplía instalaciones; la otra conserva las seis iniciales.	One region expands its facilities; the other keeps its original six.
+Comparar mapas	Compare maps
+Con ampliaciones	With expansion
+Sin ampliaciones	Without expansion
+La misma región sin nuevas instalaciones y con el mismo reloj	The same region without new facilities, running on the same clock
+¿Cuánto tarda en duplicarse?	How long does doubling take?
+Se mide desde el hito anterior. En un crecimiento exponencial sostenido, las duplicaciones tardan aproximadamente lo mismo.	Measured since the previous milestone. With sustained exponential growth, successive doublings take roughly the same time.
+Flota	Fleet
+Mostrar referencia exponencial ideal	Show ideal exponential reference
+Ideal: 24 robots que se duplican cada 20 ciclos. Es una regla matemática elegida para comparar, sin recursos ni obras. No predice este escenario.	Ideal: 24 robots doubling every 20 cycles. This is a mathematical comparison with no resources or construction. It does not predict this scenario.
+Entender la comparación	Understand the comparison
+Violeta: referencia ideal, duplicación cada 20 ciclos	Purple: ideal reference, doubling every 20 cycles
+ ciclos	 cycles
+¿QUÉ NECESITA EL SIGUIENTE ROBOT?	WHAT DOES THE NEXT ROBOT NEED?
+Sigue sus materiales.	Follow its materials.
+Explora las dependencias de un robot. Las existencias pertenecen a toda la red: este recorrido explica la receta, no sigue un lote individual.	Explore a robot's dependencies. Stocks belong to the whole network: this tour explains the recipe rather than tracking an individual batch.
+Resaltar este recorrido	Highlight this route
+Siguiente etapa →	Next stage →
+Escuchar la cadena	Explain the supply chain
+Ver proveedor limitante	Show limiting supplier
+En esta etapa falta personal disponible en este momento. Revisa el turno y la recarga antes de atribuir la espera a los materiales.	This stage currently lacks available workers. Check shifts and charging before attributing the wait to materials.
+Esta etapa no alcanza su capacidad disponible. Revisa el suministro desde 	This stage is below its available capacity. Check the supply from 
+. Las existencias se comparten entre procesos; reforzar solo este puesto puede no resolver la espera.	. Processes share stocks; reinforcing only this station may not resolve the wait.
+El personal disponible alcanza el límite de la maquinaria. Aquí hace falta capacidad instalada, no solo más robots.	Available workers reach the equipment limit. This stage needs installed capacity, not just more robots.
+Esta etapa está produciendo con los recursos disponibles. La salida final todavía depende del resto de la cadena.	This stage is producing with the available resources. Finished output still depends on the rest of the chain.
+1,4×	1.4×
+Los controles y detalles corresponden a la región con ampliaciones. El segundo mapa es su referencia.	Controls and details describe the region with expansion. The second map is its reference.
+— indica un hito aún no alcanzado. 	— means a milestone has not yet been reached. 
