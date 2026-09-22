@@ -1,0 +1,1 @@
+Now the bill. We use the tariff DeepSeek published on the nineteenth of September, twenty twenty-six. On Flash, off peak, a million cache hits cost three thousandths of a dollar. A million fresh input tokens cost fifteen cents. A million output tokens cost sixty cents. A hit is fifty times cheaper than a miss. The output does not inherit that discount. It is computed every time.

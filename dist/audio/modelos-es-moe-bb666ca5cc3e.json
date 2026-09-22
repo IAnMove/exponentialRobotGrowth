@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Los expertos siguen siendo un decodificador. En algunas capas, cada token enciende dos de las ocho cajas. Grok uno y DeepSeek están en esta familia. Esos dos de ocho no son una cuarta parte de todos los pesos. La atención sigue usando los suyos en cada paso.",
+  "duration_ms": 15876,
+  "billed_characters": 258,
+  "sample_rate": 32000,
+  "size_bytes": 255732,
+  "generated_at": "2026-09-21T20:13:21.604826+00:00"
+}

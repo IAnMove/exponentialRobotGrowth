@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Walk up to a screen and face it. This one is Robots. The card in the corner names whatever you are looking at. If you walk past, the card follows the screen in front of you, not the one you left behind.",
+  "duration_ms": 12240,
+  "billed_characters": 202,
+  "sample_rate": 32000,
+  "size_bytes": 197556,
+  "generated_at": "2026-09-21T20:14:49.023808+00:00"
+}

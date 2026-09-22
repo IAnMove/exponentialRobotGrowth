@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Now the bill. We use the tariff DeepSeek published on the nineteenth of September, twenty twenty-six. On Flash, off peak, a million cache hits cost three thousandths of a dollar. A million fresh input tokens cost fifteen cents. A million output tokens cost sixty cents. A hit is fifty times cheaper than a miss. The output does not inherit that discount. It is computed every time.",
+  "duration_ms": 28152,
+  "billed_characters": 381,
+  "sample_rate": 32000,
+  "size_bytes": 452148,
+  "generated_at": "2026-09-21T20:14:21.515270+00:00"
+}

@@ -1,0 +1,1 @@
+Diffusion does not wait its turn. Every position is proposed at once, then corrected over several rounds. Piece forty does not wait for piece thirty-nine. The work looks like rounds times length, not one left-to-right pass.

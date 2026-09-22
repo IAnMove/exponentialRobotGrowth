@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Diffusion does not wait its turn. Every position is proposed at once, then corrected over several rounds. Piece forty does not wait for piece thirty-nine. The work looks like rounds times length, not one left-to-right pass.",
+  "duration_ms": 13752,
+  "billed_characters": 223,
+  "sample_rate": 32000,
+  "size_bytes": 221748,
+  "generated_at": "2026-09-21T20:14:11.907162+00:00"
+}

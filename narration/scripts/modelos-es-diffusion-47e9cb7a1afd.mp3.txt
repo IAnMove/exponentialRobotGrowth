@@ -1,0 +1,1 @@
+La difusión no espera turno. Todas las posiciones se proponen a la vez y se corrigen durante varias rondas. No hay una pieza número cuarenta esperando a la treinta y nueve. El trabajo se parece a rondas por longitud, no a una sola pasada de izquierda a derecha.

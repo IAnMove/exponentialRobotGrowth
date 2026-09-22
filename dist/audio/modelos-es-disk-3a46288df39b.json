@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Ese acierto cabe en disco, y por eso pueden cobrarlo así. DeepSeek V2 comprime la clave y el valor. Guarda quinientos setenta y seis números por cada token y por cada capa. Una atención completa, con las mismas ciento veintiocho cabezas, guardaría treinta y dos mil setecientos sesenta y ocho números. Unas cincuenta y siete veces más. El anuncio de dos mil veinticuatro ya ponía el acierto a una décima del fallo. Esa cifra es el anuncio viejo, no la tarifa de ahora.",
+  "duration_ms": 30168,
+  "billed_characters": 468,
+  "sample_rate": 32000,
+  "size_bytes": 484404,
+  "generated_at": "2026-09-21T20:13:45.235901+00:00"
+}

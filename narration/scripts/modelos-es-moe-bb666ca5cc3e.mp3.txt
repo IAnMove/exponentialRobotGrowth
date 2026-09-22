@@ -1,0 +1,1 @@
+Los expertos siguen siendo un decodificador. En algunas capas, cada token enciende dos de las ocho cajas. Grok uno y DeepSeek están en esta familia. Esos dos de ocho no son una cuarta parte de todos los pesos. La atención sigue usando los suyos en cada paso.

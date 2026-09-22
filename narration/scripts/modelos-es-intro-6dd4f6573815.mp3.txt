@@ -1,0 +1,1 @@
+Un token no tiene un solo precio. Hay tres precios distintos. La entrada nueva. El prefijo que ya se repitió. Y la salida. Solo el prefijo repetido puede abaratarse. Primero recorremos las familias de modelos. Después miramos la factura.

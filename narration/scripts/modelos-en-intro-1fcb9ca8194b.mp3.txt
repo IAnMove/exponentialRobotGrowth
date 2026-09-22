@@ -1,0 +1,1 @@
+A token does not have one price. It has three. Fresh input. A prefix you have already sent. And the output. Only the repeated prefix can get cheaper. We will walk the model families first. Then we will look at the bill.

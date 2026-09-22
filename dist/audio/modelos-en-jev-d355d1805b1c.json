@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Jev’s architecture has not been published. The contract has. One pass. One of the options you declared. A permitted option can still be the wrong decision. Two questions can tie without sharing a single distribution. Jev does not write.",
+  "duration_ms": 17856,
+  "billed_characters": 236,
+  "sample_rate": 32000,
+  "size_bytes": 287412,
+  "generated_at": "2026-09-21T20:14:17.121578+00:00"
+}

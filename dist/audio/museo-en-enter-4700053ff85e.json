@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Press E, or the Step in button. The experience opens full screen. Escape, or Back to the gallery, leaves you in the same place. Inside is the notebook: the factory, the sphere, Starlink, or the price. Walking happens here, in the building.",
+  "duration_ms": 19728,
+  "billed_characters": 239,
+  "sample_rate": 32000,
+  "size_bytes": 317364,
+  "generated_at": "2026-09-21T20:14:53.631080+00:00"
+}

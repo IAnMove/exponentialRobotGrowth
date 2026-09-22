@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "El codificador lee hacia atrás y hacia delante. Por eso todas las esferas quedan unidas a la primera. Un modelo como BERT hace esto. Devuelve una etiqueta o un vector. No continúa una frase.",
+  "duration_ms": 14976,
+  "billed_characters": 190,
+  "sample_rate": 32000,
+  "size_bytes": 241332,
+  "generated_at": "2026-09-21T20:13:14.976665+00:00"
+}

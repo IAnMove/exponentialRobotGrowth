@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This is the family from the language-model notebook, and Grok’s family too. It writes one piece after another. Look at the first sphere. It connects only to itself. The future weighs zero. That is the causal mask, and this page really does compute it. The sentences in that other notebook, by contrast, were written in advance.",
+  "duration_ms": 21600,
+  "billed_characters": 327,
+  "sample_rate": 32000,
+  "size_bytes": 347316,
+  "generated_at": "2026-09-21T20:13:57.300528+00:00"
+}

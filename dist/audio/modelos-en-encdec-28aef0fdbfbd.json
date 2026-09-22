@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Here the work is split. One half reads the whole source, without hiding the future. The other half writes one piece at a time, and at every step it may look at that whole source. This is Vaswani’s diagram, from twenty seventeen. It is also the shape of T5.",
+  "duration_ms": 17892,
+  "billed_characters": 256,
+  "sample_rate": 32000,
+  "size_bytes": 287988,
+  "generated_at": "2026-09-21T20:14:02.470071+00:00"
+}

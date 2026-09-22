@@ -1,0 +1,1 @@
+El codificador lee hacia atrás y hacia delante. Por eso todas las esferas quedan unidas a la primera. Un modelo como BERT hace esto. Devuelve una etiqueta o un vector. No continúa una frase.

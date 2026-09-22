@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Abrir en web es la otra manera de verlo. Sales del edificio y queda la página sola. Al fondo del pasillo está la sala de la mente. Ahí están los modelos de lenguaje, la comparación con un cerebro, y el precio del caché.",
+  "duration_ms": 14112,
+  "billed_characters": 219,
+  "sample_rate": 32000,
+  "size_bytes": 227508,
+  "generated_at": "2026-09-21T20:14:44.251090+00:00"
+}

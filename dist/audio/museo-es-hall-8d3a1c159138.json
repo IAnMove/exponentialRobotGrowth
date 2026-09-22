@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Estás en el pasillo del museo. Con W, A, S y D caminas. El ratón gira la vista. En el teléfono, el joystick queda a la izquierda y el dedo de la derecha mira alrededor. Cada notebook del atlas es una pantalla en la pared.",
+  "duration_ms": 15048,
+  "billed_characters": 221,
+  "sample_rate": 32000,
+  "size_bytes": 242484,
+  "generated_at": "2026-09-21T20:14:34.751923+00:00"
+}

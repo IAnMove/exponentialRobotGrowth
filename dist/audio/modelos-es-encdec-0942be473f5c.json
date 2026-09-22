@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Aquí el trabajo se reparte. Una mitad lee la fuente entera, sin tapar el futuro. La otra escribe en serie y, en cada paso, puede mirar toda esa fuente. Es el dibujo de Vaswani, de dos mil diecisiete. También es la forma de T5.",
+  "duration_ms": 16091,
+  "billed_characters": 226,
+  "sample_rate": 32000,
+  "size_bytes": 259188,
+  "generated_at": "2026-09-21T20:13:18.003110+00:00"
+}

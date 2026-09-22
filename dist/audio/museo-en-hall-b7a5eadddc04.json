@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "You are in the museum corridor. W, A, S and D walk. The mouse turns your view. On a phone, the stick sits on the left and a finger on the right looks around. Every notebook in the atlas is a screen on the wall.",
+  "duration_ms": 13068,
+  "billed_characters": 210,
+  "sample_rate": 32000,
+  "size_bytes": 210804,
+  "generated_at": "2026-09-21T20:14:46.422697+00:00"
+}

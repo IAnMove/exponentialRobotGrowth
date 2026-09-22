@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "De Jev no está publicada la arquitectura. Sí está publicado el contrato. Una sola pasada. Una opción de las que tú declaraste. Una opción permitida puede ser, aun así, la decisión falsa. Dos preguntas pueden salir empatadas sin compartir una sola distribución. Jev no escribe.",
+  "duration_ms": 18972,
+  "billed_characters": 276,
+  "sample_rate": 32000,
+  "size_bytes": 305268,
+  "generated_at": "2026-09-21T20:13:36.119159+00:00"
+}

@@ -1,0 +1,1 @@
+Aquí el trabajo se reparte. Una mitad lee la fuente entera, sin tapar el futuro. La otra escribe en serie y, en cada paso, puede mirar toda esa fuente. Es el dibujo de Vaswani, de dos mil diecisiete. También es la forma de T5.

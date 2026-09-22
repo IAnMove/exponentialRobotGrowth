@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Those hits fit on disk, which is why they can be priced this way. DeepSeek V2 compresses the key and the value. It stores five hundred seventy-six numbers for each token and each layer. Full attention, with the same one hundred twenty-eight heads, would store thirty-two thousand seven hundred sixty-eight numbers. About fifty-seven times more. The twenty twenty-four announcement already priced a hit at one tenth of a miss. That figure is the old announcement, not today’s tariff.",
+  "duration_ms": 32760,
+  "billed_characters": 482,
+  "sample_rate": 32000,
+  "size_bytes": 525876,
+  "generated_at": "2026-09-21T20:14:26.345853+00:00"
+}

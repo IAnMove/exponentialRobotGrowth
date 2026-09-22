@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "La difusión no espera turno. Todas las posiciones se proponen a la vez y se corrigen durante varias rondas. No hay una pieza número cuarenta esperando a la treinta y nueve. El trabajo se parece a rondas por longitud, no a una sola pasada de izquierda a derecha.",
+  "duration_ms": 15696,
+  "billed_characters": 261,
+  "sample_rate": 32000,
+  "size_bytes": 252852,
+  "generated_at": "2026-09-21T20:13:28.775278+00:00"
+}

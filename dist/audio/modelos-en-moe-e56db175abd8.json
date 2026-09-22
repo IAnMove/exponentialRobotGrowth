@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Experts are still a decoder. In some layers, each token lights two of the eight boxes. Grok one and DeepSeek belong to this family. Those two of eight are not a quarter of every weight. Attention still uses its own weights on every step.",
+  "duration_ms": 16596,
+  "billed_characters": 237,
+  "sample_rate": 32000,
+  "size_bytes": 267252,
+  "generated_at": "2026-09-21T20:14:04.813840+00:00"
+}

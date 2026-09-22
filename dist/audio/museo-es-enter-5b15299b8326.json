@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Pulsa E, o el botón Entrar. La experiencia se abre a pantalla completa. Escape, o Volver al pasillo, te deja en el mismo sitio. Dentro está el notebook: la fábrica, la esfera, Starlink o el precio. Caminar, en cambio, ocurre aquí, en el edificio.",
+  "duration_ms": 17388,
+  "billed_characters": 246,
+  "sample_rate": 32000,
+  "size_bytes": 279924,
+  "generated_at": "2026-09-21T20:14:41.638954+00:00"
+}

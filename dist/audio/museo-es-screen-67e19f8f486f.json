@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Acércate a una pantalla y mírala de frente. Esta es Robots. La ficha de la esquina dice el nombre de lo que estás mirando. Si pasas de largo, la ficha sigue a la pantalla de enfrente, no a la que dejaste atrás.",
+  "duration_ms": 13644,
+  "billed_characters": 210,
+  "sample_rate": 32000,
+  "size_bytes": 220020,
+  "generated_at": "2026-09-21T20:14:37.296718+00:00"
+}

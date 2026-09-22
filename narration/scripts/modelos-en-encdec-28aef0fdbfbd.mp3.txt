@@ -1,0 +1,1 @@
+Here the work is split. One half reads the whole source, without hiding the future. The other half writes one piece at a time, and at every step it may look at that whole source. This is Vaswani’s diagram, from twenty seventeen. It is also the shape of T5.

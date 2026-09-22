@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "An encoder reads backward and forward. That is why every sphere is tied to the first one. A model like BERT does this. It returns a label or a vector. It does not continue a sentence.",
+  "duration_ms": 12780,
+  "billed_characters": 183,
+  "sample_rate": 32000,
+  "size_bytes": 206196,
+  "generated_at": "2026-09-21T20:13:59.767649+00:00"
+}

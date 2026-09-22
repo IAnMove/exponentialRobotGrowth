@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Ahora la factura. Usamos la tarifa que DeepSeek publicó el diecinueve de septiembre de dos mil veintiséis. En Flash, fuera de la hora punta, un millón de tokens acertados cuesta tres milésimas de dólar. Un millón de entrada nueva cuesta quince centavos. Un millón de salida cuesta sesenta centavos. El acierto es cincuenta veces más barato que el fallo. La salida no hereda ese descuento. Se calcula siempre.",
+  "duration_ms": 25740,
+  "billed_characters": 408,
+  "sample_rate": 32000,
+  "size_bytes": 413556,
+  "generated_at": "2026-09-21T20:13:40.804626+00:00"
+}

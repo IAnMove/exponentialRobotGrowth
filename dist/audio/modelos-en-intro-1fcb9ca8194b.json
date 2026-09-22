@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "A token does not have one price. It has three. Fresh input. A prefix you have already sent. And the output. Only the repeated prefix can get cheaper. We will walk the model families first. Then we will look at the bill.",
+  "duration_ms": 15192,
+  "billed_characters": 219,
+  "sample_rate": 32000,
+  "size_bytes": 244788,
+  "generated_at": "2026-09-21T20:13:52.797566+00:00"
+}

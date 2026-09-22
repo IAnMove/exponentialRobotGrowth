@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "JEPA compares two vectors. One is the prediction. The other is the target. The error is the distance between them. It does not spread probability over a word list, so it does not write the sentence. This is Yann LeCun’s family.",
+  "duration_ms": 16379,
+  "billed_characters": 227,
+  "sample_rate": 32000,
+  "size_bytes": 263796,
+  "generated_at": "2026-09-21T20:14:14.387473+00:00"
+}

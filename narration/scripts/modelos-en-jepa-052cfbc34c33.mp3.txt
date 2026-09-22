@@ -1,0 +1,1 @@
+JEPA compares two vectors. One is the prediction. The other is the target. The error is the distance between them. It does not spread probability over a word list, so it does not write the sentence. This is Yann LeCun’s family.

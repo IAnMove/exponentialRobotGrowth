@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Un token no tiene un solo precio. Hay tres precios distintos. La entrada nueva. El prefijo que ya se repitió. Y la salida. Solo el prefijo repetido puede abaratarse. Primero recorremos las familias de modelos. Después miramos la factura.",
+  "duration_ms": 16020,
+  "billed_characters": 237,
+  "sample_rate": 32000,
+  "size_bytes": 258036,
+  "generated_at": "2026-09-21T20:13:07.373561+00:00"
+}

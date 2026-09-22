@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Watch the sphere. It does not grow when you lengthen the context. It is a state of fixed width. The bars do grow, because they store a key for every token. Jamba mixes the two ideas. It places one attention layer for every seven Mamba layers. The key cache lives in only one eighth of the layers.",
+  "duration_ms": 19008,
+  "billed_characters": 296,
+  "sample_rate": 32000,
+  "size_bytes": 305844,
+  "generated_at": "2026-09-21T20:14:09.324116+00:00"
+}

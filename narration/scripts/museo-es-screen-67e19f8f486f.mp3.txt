@@ -1,0 +1,1 @@
+Acércate a una pantalla y mírala de frente. Esta es Robots. La ficha de la esquina dice el nombre de lo que estás mirando. Si pasas de largo, la ficha sigue a la pantalla de enfrente, no a la que dejaste atrás.

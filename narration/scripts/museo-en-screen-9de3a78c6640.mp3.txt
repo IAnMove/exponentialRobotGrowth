@@ -1,0 +1,1 @@
+Walk up to a screen and face it. This one is Robots. The card in the corner names whatever you are looking at. If you walk past, the card follows the screen in front of you, not the one you left behind.

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "DeepSeek no cobra un recargo por guardar el prefijo. La primera visita paga la entrada nueva. La siguiente, si el prefijo coincide entero, paga el acierto. No hay garantía. Es un sistema de mejor esfuerzo. Anthropic usa otra regla. Guardar cinco minutos cuesta un veinticinco por ciento más que la entrada normal. Leer esa copia cuesta una décima. Con esa regla, la segunda visita ya compensa. La salida, en los dos casos, se paga entera.",
+  "duration_ms": 28620,
+  "billed_characters": 438,
+  "sample_rate": 32000,
+  "size_bytes": 459636,
+  "generated_at": "2026-09-21T20:13:49.899775+00:00"
+}

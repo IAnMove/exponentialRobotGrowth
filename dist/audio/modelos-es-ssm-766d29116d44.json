@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Mira la esfera. No crece aunque alargues el contexto. Es un estado de ancho fijo. Las barras sí crecen, porque guardan una clave por cada token. Jamba mezcla las dos ideas. Pone una capa de atención cada siete de Mamba. La caché de claves vive solo en un octavo de las capas.",
+  "duration_ms": 20304,
+  "billed_characters": 275,
+  "sample_rate": 32000,
+  "size_bytes": 326580,
+  "generated_at": "2026-09-21T20:13:26.089041+00:00"
+}

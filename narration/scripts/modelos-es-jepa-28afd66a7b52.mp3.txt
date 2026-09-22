@@ -1,0 +1,1 @@
+JEPA compara dos vectores. Uno es la predicción. El otro es el objetivo. El error es la distancia entre ellos. No reparte probabilidad sobre una lista de palabras, así que no escribe la frase. Es la familia de Yann LeCun.

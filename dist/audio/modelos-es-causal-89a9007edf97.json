@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Esta es la familia del notebook de modelos de lenguaje, y también la de Grok. Escribe una pieza detrás de otra. Mira la primera esfera. Solo se une a sí misma. El futuro pesa cero. Esa es la máscara causal, y aquí sí se calcula. Las frases de aquel otro notebook, en cambio, están escritas de antemano.",
+  "duration_ms": 18504,
+  "billed_characters": 302,
+  "sample_rate": 32000,
+  "size_bytes": 297780,
+  "generated_at": "2026-09-21T20:13:11.453934+00:00"
+}

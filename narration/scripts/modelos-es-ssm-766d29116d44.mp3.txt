@@ -1,0 +1,1 @@
+Mira la esfera. No crece aunque alargues el contexto. Es un estado de ancho fijo. Las barras sí crecen, porque guardan una clave por cada token. Jamba mezcla las dos ideas. Pone una capa de atención cada siete de Mamba. La caché de claves vive solo en un octavo de las capas.
