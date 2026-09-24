@@ -1,9 +1,6 @@
 import * as THREE from '../vendor/three.module.js';
-import {EffectComposer} from '../vendor/EffectComposer.js';
-import {RenderPass} from '../vendor/RenderPass.js';
-import {UnrealBloomPass} from '../vendor/UnrealBloomPass.js';
-import {OutputPass} from '../vendor/OutputPass.js';
-import {RoomEnvironment} from '../vendor/RoomEnvironment.js';
+import {pointMaterial} from '../fx/fx.js';
+export {createPost,adaptiveScale,pointScaleFor} from '../fx/fx.js';
 import {RoundedBoxGeometry} from '../vendor/RoundedBoxGeometry.js';
 import {tokenize,embedding,positionEncoding,vector,transformerTrace,contextWindow,softmax,nextCandidates,pendingToken,randomStep,sample} from './model.js';
 
@@ -18,11 +15,6 @@ const clamp01=x=>Math.max(0,Math.min(1,x));
 const ease=x=>1-Math.pow(1-clamp01(x),3);
 const back=x=>{x=clamp01(x);const c=1.4;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2);};
 const V=(x,y,z)=>new THREE.Vector3(x,y,z);
-
-const POINT_VERTEX=`attribute float aSize;attribute float aAlpha;varying float vAlpha;uniform float uScale;
-void main(){vAlpha=aAlpha;vec4 mv=modelViewMatrix*vec4(position,1.);gl_PointSize=aSize*uScale/max(.1,-mv.z);gl_Position=projectionMatrix*mv;}`;
-const POINT_FRAGMENT=`uniform vec3 uColor;uniform float uOpacity;varying float vAlpha;
-void main(){float d=length(gl_PointCoord-.5);float a=smoothstep(.5,0.,d);a*=a;float core=smoothstep(.16,0.,d);gl_FragColor=vec4(uColor*(a+core*.8)*vAlpha*uOpacity,a*vAlpha*uOpacity);}`;
 
 function roundRect(x,left,top,w,h,r){x.beginPath();x.moveTo(left+r,top);x.arcTo(left+w,top,left+w,top+h,r);x.arcTo(left+w,top+h,left,top+h,r);x.arcTo(left,top+h,left,top,r);x.arcTo(left,top,left+w,top,r);x.closePath();}
 function wrap(x,text,width){const lines=[];let line='';for(const word of String(text).split(/\s+/)){const next=line?line+' '+word:word;if(x.measureText(next).width>width&&line){lines.push(line);line=word;}else line=next;}if(line)lines.push(line);return lines;}
@@ -69,24 +61,6 @@ gl_FragColor=vec4(line+uGlow*pool*.6,(minor+major+ring)*fade+pool*.45);}`}));
       const pos=geometry.attributes.position,[sx,sy,sz]=spread;for(let i=0;i<dust;i++){const s=seed[i];pos.setXYZ(i,centre.x+(s*37%1-.5)*sx+Math.sin(time*.05+i)*.4,((s*71+time*.012*(.3+s))%1)*sy,centre.z+(s*53%1-.5)*sz-3);}pos.needsUpdate=true;},
     dispose(){for(const r of res)r.dispose();scene.remove(sky,floor,points);}};
 }
-// Bloom on HDR highlights only (> 1), then ACES tone mapping and sRGB output.
-export function createPost(renderer,scene,camera,{strength=.78,radius=.62,threshold=.9}={}){
-  renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
-  const pmrem=new THREE.PMREMGenerator(renderer),environment=pmrem.fromScene(new RoomEnvironment(),.04);pmrem.dispose();
-  scene.environment=environment.texture;scene.environmentIntensity=.3;
-  const target=new THREE.WebGLRenderTarget(1,1,{type:THREE.HalfFloatType,samples:4});
-  const composer=new EffectComposer(renderer,target);composer.addPass(new RenderPass(scene,camera));
-  const bloom=new UnrealBloomPass(new THREE.Vector2(1,1),strength,radius,threshold);composer.addPass(bloom);composer.addPass(new OutputPass());
-  return {composer,bloom,setSize(w,h,dpr){composer.setPixelRatio(dpr);composer.setSize(w,h);},render(dt){composer.render(dt);},dispose(){environment.dispose();target.dispose();composer.dispose?.();}};
-}
-const pointMaterial=(pointScale,color,intensity=3)=>new THREE.ShaderMaterial({uniforms:{uColor:{value:new THREE.Color(color).multiplyScalar(intensity)},uScale:pointScale,uOpacity:{value:1}},vertexShader:POINT_VERTEX,fragmentShader:POINT_FRAGMENT,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending});
-// Lowers the render scale when frames stay slow, so weak GPUs keep a fluid image.
-export function adaptiveScale(initial,{min=.6,apply}){
-  let scale=initial,avg=1/60,slow=0,cool=0;
-  return {get scale(){return scale;},frame(dt){if(!(dt>0)||dt>.5)return;avg+=(dt-avg)*.05;cool=Math.max(0,cool-dt);
-    slow=avg>1/35?slow+dt:0;if(slow>1.5&&cool<=0&&scale>min){scale=Math.max(min,+(scale*.8).toFixed(2));slow=0;cool=2;apply(scale);}}};
-}
-export const pointScaleFor=(height,dpr,fov)=>height*dpr/(2*Math.tan(THREE.MathUtils.degToRad(fov/2)));
 
 export function createStageKit({es=false,reduce=false,pointScale={value:400},light=null,labelFog=false}={}){
   const t=(a,b)=>es?a:b;
