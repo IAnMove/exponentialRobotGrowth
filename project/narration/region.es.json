@@ -1,0 +1,50 @@
+{
+  "region-overview": {
+    "title": "Cuarta escala: una red y varias ciudades",
+    "text": "Esta región reúne tres ciudades y seis tipos de industria. La ciudad del río, la central y la del valle reciben robots de la misma red. Abajo están la extracción, el refinado, los componentes, las fábricas de robots, la electricidad y el transporte. Los robots nuevos tienen dos destinos: quedarse para producir o construir, o viajar a las ciudades. No pueden estar en ambos lugares a la vez. Un control reserva recursos para obras; otro decide el porcentaje de robots nuevos que se envía. Las ciudades reservan tareas antes del traslado, y la distancia introduce una demora de uno, tres o cinco ciclos. Los vehículos representan entregas agrupadas. Compara la flota acumulada con la producción por ciclo: sumar robots no basta para demostrar aceleración. La producción crece cuando entran en servicio nuevas instalaciones y sus proveedores las abastecen. Los límites de material, energía, parcelas y tareas siguen existiendo. Todo son supuestos ilustrativos, sin fechas ni una previsión económica."
+  },
+  "region-0": {
+    "title": "Extracción regional",
+    "text": "Estas minas abastecen de mineral a las refinerías. Cada nueva mina amplía la capacidad de extracción, pero necesita material para construirse, trabajadores y energía para funcionar. Mira cómo aparecen nuevas instalaciones en las parcelas libres. La gráfica inferior suma la producción de todas las minas de esta región y la compara con la referencia sin obras. Si el almacén de mineral está lleno, la extracción deja de crecer aunque haya maquinaria libre. Más mineral solo es útil si las refinerías y las fábricas posteriores pueden aprovecharlo. Este modelo agrupa muchos materiales distintos y no representa la búsqueda de nuevos yacimientos ni sus plazos reales."
+  },
+  "region-1": {
+    "title": "Refinado y material de construcción",
+    "text": "Aquí el mineral se convierte en material refinado. Ese material tiene dos destinos que compiten entre sí: fabricar componentes o construir nuevas instalaciones. Cada obra consume cuarenta y ocho lotes, que se descuentan al iniciarla. El porcentaje de inversión también reserva parte del nuevo material refinado para futuras obras. Por eso una inversión mayor puede reducir la producción inmediata de robots. Cuando las ampliaciones del refinado entran en servicio, permiten abastecer una red mayor. Observa el almacén compartido y la curva de producción. Una región que quiera seguir ampliándose necesita producir tanto para su actividad actual como para construir su capacidad futura."
+  },
+  "region-2": {
+    "title": "La industria de componentes",
+    "text": "Esta zona agrupa las estructuras, los actuadores, las baterías y la electrónica que necesita un robot. En el modelo, dos lotes de material refinado se convierten en un kit completo. Es una simplificación: no significa que todos los componentes reales se fabriquen en el mismo edificio. Si construyes fábricas de robots sin ampliar estos proveedores, las nuevas líneas esperarán piezas. Mira la gráfica de kits producidos y el almacén. El objetivo de una ampliación útil no es llenar el mapa de edificios, sino aumentar el flujo que llega hasta los robots terminados. La fabricación especializada de maquinaria y algunos insumos se suponen disponibles desde el exterior."
+  },
+  "region-3": {
+    "title": "Fábricas que producen robots",
+    "text": "Aquí se ve el centro del ciclo: los kits se convierten en robots y cada robot terminado se incorpora a la flota regional. Una instalación nueva crea más puestos y maquinaria que los robots pueden utilizar. Pero la capacidad del edificio no equivale automáticamente a su producción. Necesita kits, electricidad, transporte y trabajadores disponibles. Compara la curva de tu región con la referencia. La referencia también incorpora todos sus robots nuevos, pero mantiene sus seis instalaciones. Llega un momento en que acumula robots que su maquinaria no puede aprovechar. Tu región puede invertir parte de esos recursos en construir más capacidad. La diferencia aparece después de terminar las obras, y depende de que toda la cadena pueda abastecerlas."
+  },
+  "region-4": {
+    "title": "La energía también debe crecer",
+    "text": "Los paneles representan nuevas instalaciones de generación conectadas a la red. Cada instalación añade capacidad eléctrica por ciclo. No es una batería ni un contador de energía almacenada. La demanda procede de los puestos en funcionamiento, los edificios y las obras. Si supera la capacidad disponible, el modelo reduce tanto la producción industrial como la velocidad de construcción. Una central nueva no fabrica robots directamente, pero puede permitir que muchas otras instalaciones aprovechen su capacidad. Esta dependencia ayuda a entender por qué la expansión de los robots exige ampliar también su infraestructura. Aquí no se simulan el clima, las redes reales ni los materiales especializados de los equipos eléctricos."
+  },
+  "region-5": {
+    "title": "Transporte industrial y conexión entre ciudades",
+    "text": "La logística tiene dos funciones en esta escena. Dentro de la industria, su capacidad limita cuánto material puede moverse entre proveedores y fábricas. Las nuevas instalaciones de transporte permiten aprovechar un flujo industrial mayor. Fuera de la industria, los vehículos muestran los robots ya enviados a las ciudades. Estos robots salen de la flota industrial y llegan después de una demora fija según el destino. Las carreteras no crean robots ni producen por sí solas un multiplicador. No simulamos atascos urbanos: los trayectos representan tiempo de traslado. El contador de tránsito y las reservas por ciudad permiten comprobar que un robot enviado no aparece simultáneamente trabajando en la fábrica y en la ciudad."
+  },
+  "region-operation": {
+    "title": "Cómo leer esta instalación",
+    "text": "Esta instalación ya está abierta. Su capacidad se suma a la de las otras instalaciones del mismo tipo. La gráfica muestra la producción conjunta de esa industria a lo largo de los ciclos. La línea clara corresponde a tu región y la línea discontinua a la referencia sin nuevas instalaciones. Fíjate también en los almacenes y los límites de energía y transporte: una fábrica construida puede tener capacidad disponible y aun así producir poco si falta algo necesario."
+  },
+  "region-project": {
+    "title": "Una inversión que todavía no produce",
+    "text": "Esta parcela tiene una obra en marcha. El material de construcción ya se ha descontado del almacén. El porcentaje indica cuánto trabajo se ha completado, pero la nueva instalación no aporta capacidad hasta llegar al cien por cien. Puede trabajar un máximo de cuatro robots en esta obra. El control de inversión limita cuántos robots se destinan a construir; si lo bajas a cero, las obras esperan. Así puedes observar el intercambio entre producir ahora y disponer de más capacidad después."
+  },
+  "region-city-0": {
+    "title": "Ciudad del río: las primeras llegadas",
+    "text": "Esta ciudad es la más cercana al punto de distribución: el traslado tarda un ciclo. Tiene ciento ochenta tareas equivalentes repartidas entre los mismos seis sectores que viste en la ciudad detallada. Su cercanía permite recibir antes un envío, pero no le da todos los robots. El reparto equilibra las tareas cubiertas y las reservas de cada ciudad según su alcance posible. La barra crece cuando los robots llegan, no cuando se fabrican ni cuando salen de viaje. Selecciona las otras ciudades para comparar la demora y la cobertura."
+  },
+  "region-city-1": {
+    "title": "Ciudad central: más tareas, más entregas",
+    "text": "La ciudad central reúne doscientas cuarenta tareas equivalentes. Es mayor que las otras dos en este escenario y necesita más robots para alcanzar la misma cobertura relativa. Sus entregas tardan tres ciclos. La asignación automática considera también los robots que ya van de camino, para no reservar la misma tarea varias veces. En la gráfica puedes comparar la cobertura de esta ciudad cuando se amplía la red industrial y cuando se conservan las seis instalaciones iniciales. No estamos comparando poblaciones ni riqueza: observamos la disponibilidad de robots bajo las mismas reglas de reparto."
+  },
+  "region-city-2": {
+    "title": "Ciudad del valle: la distancia también importa",
+    "text": "Esta ciudad tiene ciento ochenta tareas equivalentes y recibe cada entrega tras cinco ciclos. Puede tener robots reservados y una barra todavía baja, porque esos robots siguen en tránsito. Esta diferencia permite separar fabricar, enviar y utilizar. Al avanzar, la cobertura puede acercarse a la de las otras ciudades, pero cada sector conserva sus límites de automatización. Si toda la cobertura posible está reservada o atendida, los robots adicionales esperan en el depósito. Una red industrial mayor puede ofrecer más capacidad; eso no significa que cualquier ciudad pueda utilizarla sin límites."
+  }
+}

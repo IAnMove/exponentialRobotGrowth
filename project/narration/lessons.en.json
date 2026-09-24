@@ -1,0 +1,74 @@
+{
+  "guide-factory": {
+    "title": "First scale: robots making robots",
+    "text": "We begin at the smallest scale: one line with five stations and ten people. Components are prepared, the structure is assembled, actuators and a battery are installed, the system is calibrated, and the finished robot is verified. Initially there are no operational robots. The first ones must pass every station before returning to work in this same factory. Press Play and watch the automatic handover. Each new robot covers a task and can help finish the next robots. This is the first reinvestment loop. But workstations, machinery and supply are limited. When those limits appear, more robots are not enough. We need to move up a scale and expand the chain supplying them. Quantities and schedules are teaching assumptions, not Tesla data or a prediction of dates."
+  },
+  "guide-district": {
+    "title": "Second scale: the chain that makes a robot possible",
+    "text": "A robot does not make another out of nothing. This district shows its dependencies. The mine extracts ore and the refinery turns it into materials. Structures, motors, batteries and electronics are then produced. Logistics combines all four families into kits. Assembly builds robots, and testing allows them to join the workforce. New robots automatically reinforce the chain, although you can compare other strategies. Homes and the dining hall show human breaks. Charging and service remind us that robots stop too. Energy and some inputs come from outside. The compounding effect appears when more robots increase the capacity to build the next ones. If we speed up assembly alone, parts or testing can become the new limit. Sustaining expansion also requires new facilities."
+  },
+  "robot-factory-0": {
+    "title": "Prepare the next robot's kit",
+    "text": "This station gathers the structure, actuators, battery, controllers and sensors. Kits arrive from external suppliers. This scene does not manufacture all those parts: the industrial district explains that step. Every finished robot consumes one kit and must pass all five stations. Two people work here initially. A robot that has already left the final station can return and cover one of their tasks. Without kits, that robot waits too. Supply is one of the limits preventing this line from growing forever."
+  },
+  "robot-factory-1": {
+    "title": "Assemble the structure",
+    "text": "People or robots assemble the torso, limbs and supporting structure. Watch the bodies moving along the conveyor. They are not operational robots yet: movement systems, calibration and testing are still needed. Automating this station while another is slower can fill a queue without producing many additional robots. Automatic mode reinforces stations with lower daily capacity. You can turn it off to decide where to send a robot the line itself has already finished."
+  },
+  "robot-factory-2": {
+    "title": "Actuators, battery and motion",
+    "text": "This station installs movement mechanisms, the battery and connections. The body begins to resemble the robot that will later work in the factory. Fast assembly is not enough: structures must arrive from the previous station and space must remain at the next. Queues show those dependencies. Robots have more available hours in this example, but charging and maintenance are still necessary. Rate differences are illustrative assumptions. The important improvement is how many operational robots the entire line can finish."
+  },
+  "robot-factory-3": {
+    "title": "Calibrate and check",
+    "text": "Sensors, motion and control are calibrated here. This station initially has the lowest daily capacity, so parts can pile up before it. A finished robot returning here can help release that work. Another station or supply can then become the new limit. The scene represents verification time, but does not simulate failures or rejected units. An assembled structure is not counted as an available robot until every step is complete. That distinction avoids confusing unfinished parts with real capacity to manufacture more."
+  },
+  "robot-factory-4": {
+    "title": "A robot ready to return to work",
+    "text": "This is the final station. Completing it increases the number of robots built and makes a robot available to deploy. In automatic mode, the factory sends it to a station that still has a human task and low daily capacity. Deployment takes a short simulated time. Follow that robot as it returns to the line. Some of what the factory produced is now helping produce the next units. Once all ten tasks are covered, additional robots remain available outside the line. Machinery and supply do not multiply themselves. That is why we explore the district and the region next."
+  },
+  "guide-city": {
+    "title": "Third scale: robots arrive in a city",
+    "text": "We now enter the city. Six hundred tasks begin with human workers. Industry manufactures robots and sends them to six neighborhoods. Each delivery takes time and removes a robot from the factory workforce. Press Play and follow the counters above: remaining human tasks, assigned robots and cost per task. The full hypothesis allows every represented task to be handed over, reaching zero remaining human tasks. This is a future assumption, not a proven capability or an employment forecast. The other three scopes retain human tasks. One task does not equal an entire profession. The displayed cost depends on your chosen robot cost fraction; it is not an observed price. Watch the curve accelerate as industry grows and flatten when demand is covered. Further growth needs new destinations, materials, energy and capacity."
+  },
+  "city-0": {
+    "title": "Urban logistics",
+    "text": "This sector groups delivery, sorting and warehouse tasks. Robots arrive from industry and cover part of the work represented here. Orange figures indicate human tasks and light figures indicate robot-covered tasks. We do not show autonomous vehicles solving every street. Access, driving, exceptions and supervision remain necessary conditions. The bar and chart explain how much this sector has changed under the selected hypothesis. A different outcome requires different assumptions, not an imaginary date."
+  },
+  "city-1": {
+    "title": "Retail and food services",
+    "text": "This neighborhood groups retail and food tasks: restocking, preparation and cleaning. Robots arrive from industry; they are not all assigned at the start. Partial scopes retain human tasks. The full hypothesis assumes all represented tasks can be delegated, including exceptions simplified here. This does not mean a robot currently exists that can run any shop independently. Follow the bar and counters: each delivery increases coverage up to the chosen limit."
+  },
+  "city-2": {
+    "title": "Construction and repair",
+    "text": "This sector groups construction and repair tasks. Moving materials, performing repeatable operations and resolving surprises require different capabilities. The full hypothesis assumes represented tasks can be automated; other scenarios retain human work. New robots must be manufactured and delivered before assignment. Expansion of the supplying industry allows deliveries to accelerate. Drawing more robots does not apply a magic multiplier to all construction work."
+  },
+  "city-3": {
+    "title": "Cleaning and maintenance",
+    "text": "Repeatable cleaning tasks can be a destination for robots when spaces and equipment allow it. Partial scopes assign different sector limits; the full hypothesis allows every represented task to be covered. This does not prove that every breakdown, difficult access or unexpected situation is technically solved. Follow deliveries and compare human tasks with robot tasks. Industrial growth determines how many robots arrive; the selected scope determines what we allow them to do in the model."
+  },
+  "city-4": {
+    "title": "Support in care and health",
+    "text": "Here we group care and health tasks. Partial scopes automate a fraction and retain human work. The full hypothesis permits all represented tasks to be covered to explore that extreme. It does not claim current robots can replace health professionals or caregivers, nor establish that human connection, clinical judgment or responsibility can be delegated. These numbers are model units, not eliminated professions. Follow the task handover and remember that technical feasibility is an assumption independent of how many robots are available."
+  },
+  "city-5": {
+    "title": "Education, services and the next scale",
+    "text": "This neighborhood groups education and services. Partial scopes retain human tasks; the full hypothesis allows every unit in this example to pass to robots. This is a choice for exploring the mechanism, not a demonstration that teaching, accompanying or deciding can be completely automated. The falling curve counts remaining human tasks, not disappearing people. When it reaches zero, residents remain in the city. In the region you can observe the same allocation across three connected cities with different delivery distances."
+  },
+  "factory-first-loop": {
+    "title": "The first robot returns to the line",
+    "text": "Watch the end of the conveyor. At first, people build the first robot. Only after it completes every station can it return and take over a task. The golden ring lets you follow its first journey. In transit, it does not produce anything yet; later it also needs charging and maintenance. When it works, part of what the factory produced helps build the next robots. That reinvestment can increase capacity. But it does not automatically multiply output across the whole line: other stations, equipment or supplies can hold it back. Available hours and hourly pace are separate advantages. Human factories can also run multiple shifts."
+  },
+  "district-chain-lesson": {
+    "title": "Why speeding up one station may not be enough",
+    "text": "Select a stage to see what it needs. The mine supplies ore, the refinery produces materials, and four industries make structures, motors, batteries and electronics. Logistics combines those families into kits; assembly and testing finish the robot. If a stage produces less than its available capacity allows, we highlight the suppliers of its scarcest inputs. The four component industries share materials: reinforcing one can increase pressure on the others. This tour explains dependencies rather than tracking an individual batch. Check working hours and equipment too. Growth can be sustained when new robots reinforce the entire supply chain, not just final assembly."
+  },
+  "region-growth-lesson": {
+    "title": "Growing faster does not mean a constant doubling time",
+    "text": "These two maps start with the same resources and advance on the same clock. One region invests robots and materials in new facilities; the other keeps its original six. Construction costs output at first, but can increase capacity later. Watch how long each region takes to go from twenty-four to forty-eight robots, then to ninety-six. The table measures each doubling interval, not the total time since the start. In sustained exponential growth, these intervals would be similar. Here resources and plots are finite, so growing more does not guarantee that pace will continue. The purple curve is an optional mathematical reference, not the result or a prediction of this simulation."
+  },
+  "district-productivity-lesson": {
+    "title": "How much the supply chain produces compared with human work",
+    "text": "This comparison starts with the same seventy-four people, stocks and equipment. In the human reference, finished robots leave the district: they do not return to work and no new facilities are built. Your strategy can deploy robots and expand facilities. The counters and chart sum output over the previous twenty-four hours, or elapsed hours at the start. Select an industry to compare its output too. In this district, a person and a robot have the same pace per active working hour. The initial difference is availability: eight human hours versus twenty-one robot hours, allowing for charging and maintenance. Parts, equipment and expansion then matter as well. The percentage therefore describes the change in output across the supply chain, not how productive an individual robot is. If the reference has not produced anything yet, we do not show a percentage."
+  }
+}

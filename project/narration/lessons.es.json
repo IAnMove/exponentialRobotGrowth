@@ -1,0 +1,74 @@
+{
+  "guide-factory": {
+    "title": "Primera escala: robots que fabrican robots",
+    "text": "Comenzamos en el nivel más pequeño: una sola línea con cinco puestos y diez personas. Aquí se preparan los componentes, se monta la estructura, se incorporan actuadores y batería, se calibra el conjunto y se verifica el robot terminado. Al principio no hay robots operativos. Los primeros tienen que recorrer todos los puestos antes de volver a trabajar en esta misma fábrica. Pulsa Reproducir y observa el relevo automático. Cada robot nuevo cubre una tarea y puede ayudar a terminar los siguientes. Este es el primer ciclo de reinversión. Pero la línea tiene puestos, maquinaria y suministro limitados. Cuando esos límites aparecen, más robots no bastan: necesitamos subir de escala y ampliar la cadena que los abastece. Las cantidades y los horarios son supuestos para explicar el mecanismo, no datos de Tesla ni una predicción de fechas."
+  },
+  "guide-district": {
+    "title": "Segunda escala: la cadena que hace posible el robot",
+    "text": "Un robot no fabrica otro a partir de la nada. Este distrito muestra sus dependencias. La mina extrae mineral y la refinería lo convierte en materiales. Después se producen estructuras, motores, baterías y electrónica. Logística reúne las cuatro familias en kits; montaje arma los robots, y pruebas permite incorporarlos al trabajo. Los robots nuevos se asignan automáticamente a reforzar la cadena, aunque puedes comparar otras estrategias. Las viviendas y el comedor muestran los descansos humanos; la recarga y el servicio recuerdan que los robots también paran. La energía y algunos insumos llegan del exterior. El efecto acumulativo aparece cuando más robots aumentan la capacidad de fabricar los siguientes. Si solo aceleramos montaje, las piezas o las pruebas pueden convertirse en el nuevo límite. Para sostener esa expansión también necesitaremos nuevas instalaciones."
+  },
+  "robot-factory-0": {
+    "title": "Preparar el kit del siguiente robot",
+    "text": "Aquí se reúnen la estructura, los actuadores, la batería, los controladores y los sensores. Los kits llegan de proveedores externos. En esta escena no fabricamos todas esas piezas: eso se explica en el distrito industrial. Cada robot terminado consume un kit y tiene que pasar por los cinco puestos. Al principio trabajan dos personas aquí. Un robot que ya haya salido del último puesto puede regresar y cubrir una de sus tareas. Si faltan kits, ese robot también espera. El suministro es uno de los límites que impide que esta línea crezca sin fin."
+  },
+  "robot-factory-1": {
+    "title": "Montar la estructura",
+    "text": "Las personas o los robots ensamblan el torso, las extremidades y la estructura que sostiene los componentes. Mira los cuerpos que avanzan por la cinta. Todavía no son robots operativos: faltan sistemas de movimiento, calibración y pruebas. Si automatizas este puesto mientras otro es más lento, puedes llenar una cola sin conseguir muchos robots adicionales. El modo automático refuerza los puestos con menor capacidad diaria. Puedes desactivarlo para elegir dónde destinar un robot que la propia línea ya haya terminado."
+  },
+  "robot-factory-2": {
+    "title": "Actuadores, batería y movimiento",
+    "text": "En este puesto se instalan los mecanismos de movimiento, la batería y las conexiones. El cuerpo empieza a parecerse al robot que después podrá trabajar en la fábrica. No basta con montar rápido: hay que recibir estructuras desde el puesto anterior y dejar espacio en el siguiente. Las colas muestran esas dependencias. Los robots tienen más horas disponibles en este ejemplo, pero también necesitan recarga y mantenimiento. Las diferencias de ritmo son supuestos ilustrativos. La mejora importante es cuántos robots operativos consigue terminar toda la línea."
+  },
+  "robot-factory-3": {
+    "title": "Calibrar y comprobar",
+    "text": "Aquí se calibran sensores, movimiento y control. En la configuración inicial es el puesto con menor capacidad diaria, de modo que puede acumular piezas delante. Un robot terminado que regrese aquí puede ayudar a liberar ese trabajo. El nuevo límite podría pasar entonces a otro puesto o al suministro. La escena representa tiempo de verificación, pero no simula averías ni rechazos. Una estructura ensamblada no se cuenta como robot disponible hasta completar todos los pasos. Esa distinción evita confundir piezas a medio hacer con capacidad real para fabricar más."
+  },
+  "robot-factory-4": {
+    "title": "Un robot listo para volver a trabajar",
+    "text": "Este es el último puesto. Al completarlo aumenta el contador de robots fabricados y queda un robot disponible para incorporarse. En modo automático, la fábrica lo envía a un puesto que todavía tenga una tarea humana y baja capacidad diaria. El traslado requiere un breve tiempo simulado. Puedes seguir a ese robot cuando vuelve a la línea. Ahora una parte de lo que la fábrica produjo está ayudando a producir lo siguiente. Cuando las diez tareas ya tienen relevo, los robots adicionales quedan disponibles fuera de la línea: la maquinaria y el suministro no se multiplican solos. Esa es la razón para explorar después el distrito y la región."
+  },
+  "guide-city": {
+    "title": "Tercera escala: una ciudad recibe robots",
+    "text": "Ahora entramos en la ciudad. Seiscientas tareas empiezan en manos humanas. La industria fabrica robots y los envía a seis barrios; cada entrega necesita tiempo y deja de trabajar en la fábrica. Pulsa Reproducir y sigue los contadores de arriba: tareas humanas pendientes, robots asignados y coste por tarea. En la hipótesis total, todas las tareas representadas pueden recibir relevo, hasta llegar a cero tareas humanas pendientes. Es un supuesto futuro, no una capacidad demostrada ni una previsión de empleo. Los otros tres alcances conservan tareas humanas. Una tarea tampoco equivale a una profesión completa. El coste mostrado depende de la fracción que elijas para el robot; no es un precio observado. Observa cómo la curva se acelera mientras crece la industria y se aplana cuando se cubre la demanda. Para seguir creciendo hacen falta nuevos destinos, materiales, energía y capacidad."
+  },
+  "city-0": {
+    "title": "Logística urbana",
+    "text": "Aquí agrupamos reparto, clasificación y tareas de almacén. Los robots llegan desde la industria y cubren una parte de las tareas representadas. Las figuras naranjas indican tareas con humanos y las claras tareas cubiertas por robots. No mostramos vehículos autónomos resolviendo cualquier calle: acceso, conducción, excepciones y supervisión siguen siendo condiciones necesarias. La barra y la gráfica explican cuánto ha cambiado este sector en la hipótesis elegida. Un resultado diferente requiere cambiar los supuestos, no asignar una fecha imaginaria."
+  },
+  "city-1": {
+    "title": "Comercio y alimentación",
+    "text": "En este barrio agrupamos tareas de comercio y alimentación: reposición, preparación y limpieza. Los robots llegan desde la industria, no aparecen todos al principio. Los alcances parciales conservan tareas humanas. La hipótesis total supone que todas las tareas representadas pueden delegarse, incluidas las excepciones que aquí simplificamos. Eso no significa que exista hoy un robot capaz de operar cualquier comercio por sí solo. Mira la barra y los contadores: cada entrega aumenta la cobertura hasta el límite elegido."
+  },
+  "city-2": {
+    "title": "Construcción y reparación",
+    "text": "Este sector agrupa tareas de construcción y reparación. Transportar material, ejecutar operaciones repetibles y resolver imprevistos requieren capacidades distintas. La hipótesis total supone que las tareas representadas pueden automatizarse; los otros escenarios conservan trabajo humano. Los nuevos robots tienen que fabricarse y llegar antes de asignarse. La expansión de la industria que los suministra es lo que permite acelerar las entregas. No aplicamos un multiplicador mágico a todas las obras por dibujar más robots."
+  },
+  "city-3": {
+    "title": "Limpieza y mantenimiento",
+    "text": "Las tareas repetibles de limpieza pueden ser un destino para los robots, siempre que los espacios y los equipos permitan realizarlas. Los alcances parciales asignan límites distintos por sector; la hipótesis total permite cubrir todas las tareas representadas. Eso no demuestra que cualquier avería, acceso difícil o situación inesperada esté resuelta técnicamente. Observa las entregas y compara las tareas con humanos y con robots. El crecimiento industrial determina cuántos robots llegan; el alcance elegido determina qué les permitimos hacer en el modelo."
+  },
+  "city-4": {
+    "title": "Apoyo en cuidados y salud",
+    "text": "Aquí agrupamos tareas de cuidados y salud. En los alcances parciales, la automatización se limita a una fracción y se conserva trabajo humano. La hipótesis total permite cubrir todas las tareas representadas para explorar ese extremo. No afirma que los robots actuales puedan sustituir a sanitarios o cuidadores, ni demuestra que el vínculo humano, el juicio clínico o la responsabilidad puedan delegarse. Las cifras son unidades del modelo, no profesiones eliminadas. Observa el relevo de las tareas y recuerda que su viabilidad técnica es una hipótesis independiente del número de robots disponibles."
+  },
+  "city-5": {
+    "title": "Educación, servicios y siguiente escala",
+    "text": "Este barrio agrupa educación y servicios. Los alcances parciales conservan tareas humanas; la hipótesis total permite que todas las unidades del ejemplo pasen a robots. Es una elección para explorar el mecanismo y no una demostración de que enseñar, acompañar o decidir sean automatizables por completo. La curva descendente cuenta tareas humanas pendientes, no personas que desaparecen. Cuando llega al cero, los habitantes siguen en la ciudad. En la región puedes observar el mismo reparto en tres ciudades conectadas, con distintas distancias de entrega."
+  },
+  "factory-first-loop": {
+    "title": "El primer robot vuelve a la línea",
+    "text": "Mira la salida de la cinta. Al principio, las personas fabrican el primer robot. Solo cuando termina todos los puestos puede regresar y cubrir una tarea. El aro dorado permite seguir su primer recorrido. Durante el traslado aún no produce; después también necesitará recarga y servicio. Cuando trabaja, una parte de lo producido ayuda a fabricar los siguientes robots. Esa reinversión permite que aumente la capacidad. Pero no multiplica automáticamente la producción de toda la línea: otros puestos, la maquinaria o el suministro pueden frenarla. Las horas disponibles y el ritmo por hora son ventajas distintas. Una fábrica humana también puede organizar varios turnos."
+  },
+  "district-chain-lesson": {
+    "title": "Por qué acelerar un puesto puede no bastar",
+    "text": "Selecciona una etapa para ver qué necesita. La mina aporta mineral, la refinería produce materiales y cuatro industrias hacen estructuras, motores, baterías y electrónica. Logística reúne esas familias en kits; montaje y pruebas terminan el robot. Si una etapa produce menos de lo que permite su capacidad disponible, resaltamos el proveedor de sus insumos más escasos. Las cuatro industrias de componentes comparten materiales: reforzar una puede aumentar la presión sobre las otras. Este recorrido explica las dependencias, no sigue un lote individual. Comprueba también los turnos y la maquinaria. El crecimiento se sostiene cuando los nuevos robots refuerzan toda la cadena, no solo el montaje final."
+  },
+  "region-growth-lesson": {
+    "title": "Crecer más no significa duplicarse siempre igual",
+    "text": "Estos dos mapas empiezan con los mismos recursos y avanzan con el mismo reloj. Una región dedica robots y materiales a nuevas instalaciones; la otra mantiene las seis originales. Construir cuesta producción al principio, pero después puede ampliar la capacidad. Mira cuánto tarda cada región en pasar de veinticuatro a cuarenta y ocho robots, y luego a noventa y seis. La tabla mide el tiempo de cada duplicación, no el tiempo total desde el inicio. En un crecimiento exponencial sostenido, esos intervalos serían parecidos. Aquí los recursos y las parcelas son finitos, por lo que crecer más no garantiza mantener ese ritmo. La curva violeta es una referencia matemática opcional, no el resultado ni una predicción de esta simulación."
+  },
+  "district-productivity-lesson": {
+    "title": "Cuánto produce la cadena frente al trabajo humano",
+    "text": "Esta comparación mantiene las mismas setenta y cuatro personas, existencias y equipos iniciales. En la referencia humana, los robots fabricados salen del distrito: no vuelven a trabajar y no se construyen ampliaciones. Tu estrategia sí puede incorporar robots y ampliar instalaciones. Los contadores y la gráfica suman la producción de las últimas veinticuatro horas, o las horas transcurridas al principio. Al seleccionar una industria puedes comparar también su salida. En este distrito una persona y un robot tienen el mismo ritmo por hora activa. La diferencia empieza en la disponibilidad: ocho horas humanas frente a veintiuna robóticas, descontando recarga y servicio. Después importan las piezas, las máquinas y las ampliaciones. Por eso el porcentaje expresa el cambio en la producción de toda la cadena, no cuánto rinde un robot individual. Si la referencia todavía no ha producido, no mostramos un porcentaje."
+  }
+}

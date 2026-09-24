@@ -1,0 +1,50 @@
+{
+  "region-overview": {
+    "title": "Fourth scale: one network and several cities",
+    "text": "This region brings together three cities and six types of industry. River city, Central city and Valley city receive robots from the same network. Below them are extraction, refining, components, robot factories, electricity and transport. New robots have two destinations: stay to produce or build, or travel to the cities. They cannot be in both places at once. One control reserves resources for construction; another sets the share of new robots sent out. Cities reserve tasks before dispatch, and distance introduces a delay of one, three or five cycles. Vehicles represent delivery batches. Compare the accumulated fleet with production per cycle: simply adding robots does not demonstrate acceleration. Production grows when new facilities open and suppliers can feed them. Material, energy, land and task limits remain. Everything uses illustrative assumptions, without dates or an economic forecast."
+  },
+  "region-0": {
+    "title": "Regional extraction",
+    "text": "These mines supply ore to the refineries. Every new mine expands extraction capacity, but needs construction material, workers and energy. Watch new facilities appear on the available plots. The lower chart adds together production from every mine in this region and compares it with the reference without construction. If the ore store is full, extraction stops growing even with spare equipment. More ore is only useful when refineries and later factories can use it. This model groups many different materials together. It does not represent the search for new deposits or real development timelines."
+  },
+  "region-1": {
+    "title": "Refining and construction material",
+    "text": "Here ore becomes refined material. That material has two competing destinations: components and construction. Each new facility consumes forty-eight batches, deducted when construction begins. The investment percentage also reserves part of newly refined material for future construction. A higher investment can therefore reduce immediate robot output. Once refinery expansions open, they can supply a larger network. Watch the shared inventory and the production curve. A region that wants to keep expanding must produce for its current activity and for building its future capacity."
+  },
+  "region-2": {
+    "title": "The component industry",
+    "text": "This area groups the structures, actuators, batteries and electronics a robot needs. In the model, two batches of refined material become one complete kit. This is a simplification: it does not mean all real components are made in one building. If you build robot factories without expanding these suppliers, the new lines will wait for parts. Watch the kit production chart and inventory. A useful expansion is not about filling the map with buildings. It increases the flow that reaches finished robots. Specialized equipment manufacturing and some inputs are assumed available from outside the region."
+  },
+  "region-3": {
+    "title": "Factories producing robots",
+    "text": "This is the center of the loop. Kits become robots, and every finished robot joins the regional fleet. A new facility creates more workstations and machinery for robots to use. But building capacity does not automatically mean producing at that capacity. Kits, electricity, transport and available workers are required. Compare your region's curve with the reference. The reference also reinvests all its new robots, but keeps its six facilities. Eventually it accumulates robots its machinery cannot use. Your region can invest some resources in building more capacity. The difference appears after construction is completed, and depends on the entire chain being able to supply the new facilities."
+  },
+  "region-4": {
+    "title": "Energy must grow too",
+    "text": "The panels represent new generation facilities connected to the grid. Each adds electrical capacity per cycle. This is not a battery or a count of stored energy. Demand comes from operating workstations, buildings and construction. If demand exceeds available capacity, the model reduces both industrial output and construction speed. A new power facility does not directly produce robots, but it can allow many other facilities to use their capacity. This dependency shows why expanding the robot fleet also requires expanding its infrastructure. Weather, real power grids and specialized electrical equipment inputs are not simulated here."
+  },
+  "region-5": {
+    "title": "Industrial transport and links between cities",
+    "text": "Logistics plays two roles in this scene. Within industry, its capacity limits how much material can move between suppliers and factories. New transport facilities allow a larger industrial flow. Outside industry, vehicles show robots already dispatched to cities. These robots leave the industrial fleet and arrive after a fixed delay determined by their destination. Roads do not create robots or apply a growth multiplier by themselves. We do not simulate urban traffic jams: routes represent travel time. The transit counter and each city's reservations let you check that a dispatched robot is not simultaneously working in a factory and in a city."
+  },
+  "region-operation": {
+    "title": "Reading this facility",
+    "text": "This facility is open. Its capacity adds to that of other facilities of the same type. The chart shows their combined industry output across the cycles. The light line is your region, and the dashed line is the reference without new facilities. Also check inventory, energy and transport limits. A completed factory may have spare capacity and still produce little if a necessary input is missing."
+  },
+  "region-project": {
+    "title": "An investment that is not producing yet",
+    "text": "This plot has a construction project in progress. Its construction material has already been deducted from inventory. The percentage shows how much work is complete, but the facility adds no capacity until it reaches one hundred percent. Up to four robots can work on this project. The investment control limits the robots assigned to construction. If you lower it to zero, projects wait. This lets you observe the tradeoff between producing now and having more capacity later."
+  },
+  "region-city-0": {
+    "title": "River city: the first arrivals",
+    "text": "This city is closest to the distribution point: delivery takes one cycle. It has one hundred and eighty equivalent tasks across the same six sectors you saw in the detailed city. Proximity allows a shipment to arrive sooner, but does not give this city all the robots. Allocation balances covered tasks and reservations against each city's feasible scope. The bar grows when robots arrive, not when they are built or dispatched. Select the other cities to compare travel delays and coverage."
+  },
+  "region-city-1": {
+    "title": "Central city: more tasks, more deliveries",
+    "text": "Central city has two hundred and forty equivalent tasks. It is larger than the other two in this scenario and needs more robots to reach the same relative coverage. Deliveries take three cycles. Automatic allocation also counts robots already on the way, so the same task is not reserved more than once. The chart compares this city's coverage when the industrial network expands and when it keeps its six original facilities. We are not comparing populations or wealth: we are observing robot availability under the same allocation rules."
+  },
+  "region-city-2": {
+    "title": "Valley city: distance matters too",
+    "text": "This city has one hundred and eighty equivalent tasks and receives each delivery after five cycles. It can have robots reserved while its coverage bar is still low, because those robots are in transit. This separates manufacturing, dispatching and using robots. As the scenario advances, coverage can approach that of the other cities, but each sector retains its automation limits. If all feasible coverage is already reserved or filled, additional robots wait at the depot. A larger industrial network can offer more capacity; that does not mean every city can use it without limits."
+  }
+}
