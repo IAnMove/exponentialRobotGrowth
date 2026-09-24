@@ -145,7 +145,7 @@ $('train-play').onclick=()=>{trainingPlaying=!trainingPlaying;renderTraining();}
 document.addEventListener('visibilitychange',()=>{last=performance.now();if(document.hidden){guide.pause();trainingPlaying=false;renderTraining();}});
 window.addEventListener('pagehide',e=>{guide.stop();if(!e.persisted)world?.dispose();});
 render();renderTraining();let uiClock=0;
-function frame(now){const dt=Math.min(.1,(now-last)/1000);last=now;if(!document.hidden){guide.tick(dt);uiClock+=dt;const flow=currentFlow();world?.render(dt,flow);renderFlow(flow);
+function frame(now){const dt=Math.min(.1,(now-last)/1000);last=now;if(!document.hidden){guide.tick(dt);uiClock+=dt;const flow=currentFlow();world?.render(dt,flow,{live:!!manualFlow||guide.running||guide.state==='paused'});renderFlow(flow);
   if(uiClock>.15){renderVoice();uiClock=0;}
   if(trainingPlaying){trainingClock+=dt;if(trainingClock>.45){trainingClock=0;trainingWeight=trainStep(trainingWeight);trainingSteps++;if(trainingSteps>=80)trainingPlaying=false;renderTraining();}}}
   requestAnimationFrame(frame);
