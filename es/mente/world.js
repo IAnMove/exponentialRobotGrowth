@@ -1,5 +1,6 @@
 import * as THREE from '../../vendor/three.module.js';
 import {GROK1, VISUAL, TOKEN_INTERVAL, snapshot} from './model.js';
+import {createPost, adaptiveScale, pointScaleFor, pointMaterial} from '../fx/fx.js';
 
 function mulberry32(a) {
   return function () {
@@ -15,13 +16,15 @@ function inBall(rng) {
 }
 
 export function createMindWorld(host) {
-  const renderer = new THREE.WebGLRenderer({antialias: true, alpha: false});
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.75));
-  renderer.setClearColor(0x07060c);
+  const renderer = new THREE.WebGLRenderer({antialias: false, powerPreference: 'high-performance'});
+  let dpr = Math.min(devicePixelRatio || 1, 1.75);
+  renderer.setPixelRatio(dpr);
   host.append(renderer.domElement);
   const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x07060c, 0.028);
-  scene.add(new THREE.HemisphereLight(0xc9d4ff, 0x1a1020, 0.85));
+  scene.background = new THREE.Color(0x05040a);
+  scene.fog = new THREE.FogExp2(0x05040a, 0.022);
+  const pointScale = {value: 400};
+  scene.add(new THREE.HemisphereLight(0xc9d4ff, 0x1a1020, 0.55));
   const key = new THREE.DirectionalLight(0xfff1e4, 1.15);
   key.position.set(4, 8, 6);
   scene.add(key);
@@ -55,6 +58,20 @@ export function createMindWorld(host) {
   }
   const cerebellum = cloud(VISUAL.cerebellar, [-6.15, 0.05, 0], [2.7, 1.45, 2.15], 11);
   const cortex = cloud(VISUAL.cortical, [-5.7, 2.85, 0.15], [1.15, 1.7, 1.15], 29);
+  // Spikes: every neuron has a glow sprite whose brightness decays after it fires.
+  function spikes(group, color, size) {
+    const n = group.points.length, geo = new THREE.BufferGeometry(), pos = new Float32Array(n * 3);
+    group.points.forEach((p, i) => pos.set([p.x, p.y, p.z], i * 3));
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute('aSize', new THREE.BufferAttribute(new Float32Array(n).fill(size), 1));
+    geo.setAttribute('aAlpha', new THREE.BufferAttribute(new Float32Array(n), 1));
+    const pts = new THREE.Points(geo, pointMaterial(pointScale, color, 2.8));
+    pts.frustumCulled = false; scene.add(pts);
+    return {pts, level: new Float32Array(n), alpha: geo.attributes.aAlpha};
+  }
+  const cerebellumSpikes = spikes(cerebellum, 0xffa070, .42), cortexSpikes = spikes(cortex, 0xbcd8ff, .5);
+  // Cortical neighbours, used to propagate activity as travelling waves.
+  const neighbours = cortex.points.map((p, i) => cortex.points.map((q, j) => j).filter(j => j !== i && p.distanceTo(cortex.points[j]) < 0.75).slice(0, 5));
 
   const linkPos = [];
   cortex.points.forEach((p, i) => {
@@ -64,17 +81,22 @@ export function createMindWorld(host) {
   });
   scene.add(new THREE.LineSegments(
     new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(linkPos, 3)),
-    new THREE.LineBasicMaterial({color: 0x8eb6de, transparent: true, opacity: 0.28})
+    new THREE.LineBasicMaterial({color: new THREE.Color(0x8eb6de).multiplyScalar(1.3), transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending, depthWrite: false})
   ));
 
   const dim = {cerebellum: new THREE.Color(0x6a4038), cortex: new THREE.Color(0x314864)};
   const hot = {cerebellum: new THREE.Color(0xffb089), cortex: new THREE.Color(0xd5e8ff)};
-  function tintCloud(group, name, clock, motion) {
-    const fraction = 12;
-    for (let i = 0; i < group.points.length; i++) {
+  // About one neuron in twelve is active at a time, as before; activity now arrives in spikes that fade.
+  function tintCloud(group, name, clock, motion, sp, dt = 0, links = null) {
+    const fraction = 12, n = group.points.length;
+    for (let i = 0; i < n; i++) {
       const on = motion ? Math.floor(clock * 2.4 + i * 0.37) % fraction === 0 : i % fraction === 0;
-      group.mesh.setColorAt(i, on ? hot[name] : dim[name]);
+      if (on && sp.level[i] < .5) { sp.level[i] = 1; if (links && motion) for (const j of links[i]) sp.level[j] = Math.max(sp.level[j], .55); }
+      sp.level[i] = motion ? Math.max(0, sp.level[i] - dt * 2.2) : (on ? 1 : 0);
+      sp.alpha.setX(i, sp.level[i]);
+      group.mesh.setColorAt(i, color.copy(dim[name]).lerp(hot[name], sp.level[i]));
     }
+    sp.alpha.needsUpdate = true;
     group.mesh.instanceColor.needsUpdate = true;
   }
 
@@ -82,7 +104,7 @@ export function createMindWorld(host) {
   for (let i = 0; i < VISUAL.layers; i++) {
     const mesh = new THREE.Mesh(
       new THREE.BoxGeometry(3.15, 0.16, 1.35),
-      new THREE.MeshStandardMaterial({color: 0x8ea4c8, emissive: 0x243044, roughness: 0.42, metalness: 0.18})
+      new THREE.MeshStandardMaterial({color: 0x7f93b8, emissive: 0x243044, roughness: 0.18, metalness: 0.5, transparent: true, opacity: 0.85})
     );
     mesh.position.set(5.55, -1.15 + i * 0.48, 0);
     scene.add(mesh);
@@ -96,7 +118,7 @@ export function createMindWorld(host) {
       new THREE.MeshStandardMaterial({
         color: lit ? 0xf0b4c4 : 0x3a4254,
         emissive: lit ? 0x7a3148 : 0x000000,
-        emissiveIntensity: lit ? 0.7 : 0,
+        emissiveIntensity: lit ? 1.6 : 0,
         roughness: 0.4
       })
     );
@@ -120,7 +142,10 @@ export function createMindWorld(host) {
   const attnGeo = new THREE.BufferGeometry();
   attnGeo.setAttribute('position', new THREE.BufferAttribute(attnPos, 3));
   attnGeo.setDrawRange(0, 0);
-  const attn = new THREE.LineSegments(attnGeo, new THREE.LineBasicMaterial({color: 0xf0b4c4, transparent: true, opacity: 0.75}));
+  const attn = new THREE.LineSegments(attnGeo, new THREE.LineBasicMaterial({color: new THREE.Color(0xf0b4c4).multiplyScalar(1.8), transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending, depthWrite: false}));
+  // A glowing activation climbs the layer stack while a token is computed.
+  const climber = new THREE.Points(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute([0, 0, 0], 3)).setAttribute('aSize', new THREE.Float32BufferAttribute([.9], 1)).setAttribute('aAlpha', new THREE.Float32BufferAttribute([1], 1)), pointMaterial(pointScale, 0xffc0d2, 3));
+  climber.frustumCulled = false; scene.add(climber);
   scene.add(attn);
 
   const track = new THREE.Mesh(new THREE.BoxGeometry(3.4, 0.05, 0.12), new THREE.MeshBasicMaterial({color: 0x3a3344}));
@@ -139,6 +164,9 @@ export function createMindWorld(host) {
   scene.add(grad);
 
   const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 200);
+  const post = createPost(renderer, scene, camera, {strength: .85, radius: .6, threshold: .95});
+  scene.environmentIntensity = .25;
+  const quality = adaptiveScale(dpr, {min: .7, apply(s) { dpr = s; renderer.setPixelRatio(dpr); resize(); }});
   let theta = 0.52, phi = 0.34, dist = 22, dragging = false, lastX = 0, lastY = 0, userZoom = false, pinch = 0, clock = 0;
   const look = new THREE.Vector3(0, 0.45, 0), want = new THREE.Vector3(0, 0.45, 0);
   let wantDist = 22, currentFocus = 'memory';
@@ -158,8 +186,10 @@ export function createMindWorld(host) {
   function resize() {
     const w = host.clientWidth, h = Math.max(1, host.clientHeight);
     renderer.setSize(w, h);
+    post.setSize(w, h, dpr);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
+    pointScale.value = pointScaleFor(h, dpr, camera.fov);
     place();
   }
   new ResizeObserver(resize).observe(host);
@@ -197,19 +227,24 @@ export function createMindWorld(host) {
       look.lerp(want, motion ? 0.08 : 1);
       if (!userZoom) dist += (wantDist - dist) * (motion ? 0.08 : 1);
     }
-    tintCloud(cerebellum, 'cerebellum', clock, motion);
-    tintCloud(cortex, 'cortex', clock, motion);
+    const step = motion ? dt : 0;
+    tintCloud(cerebellum, 'cerebellum', clock, motion, cerebellumSpikes, step);
+    tintCloud(cortex, 'cortex', clock, motion, cortexSpikes, step, neighbours);
     const sweep = state.playing ? Math.min(VISUAL.layers - 1, Math.floor(state.time / TOKEN_INTERVAL * VISUAL.layers)) : -1;
     layers.forEach((mesh, i) => {
       const on = sweep === i;
       mesh.material.emissive.set(on ? 0xf0b4c4 : 0x243044);
-      mesh.material.emissiveIntensity = on ? 0.85 : 0.25;
+      mesh.material.emissiveIntensity = on ? 0.9 : 0.25;
     });
+    const rise = state.playing ? (state.time / TOKEN_INTERVAL) % 1 : 0;
+    climber.visible = state.playing;
+    climber.position.set(5.55, -1.15 + rise * (VISUAL.layers - 1) * 0.48, 0.75);
     tokens.forEach((mesh, i) => {
       const on = i < view.generated;
       const active = view.generated > 0 && i === view.generated - 1;
       mesh.material.color.set(on ? 0xf0b4c4 : 0x2c3344);
       mesh.material.emissive.set(active ? 0xffe1ea : on ? 0x5a3040 : 0x000000);
+      mesh.material.emissiveIntensity = active ? 2.2 : 1;
     });
     let vertex = 0;
     if (view.generated > 1) {
@@ -233,7 +268,8 @@ export function createMindWorld(host) {
     quiet.visible = view.mode !== 'learn';
     grad.visible = view.mode === 'learn';
     place();
-    renderer.render(scene, camera);
+    post.render(step);
+    quality.frame(dt || 0);
   }
   return {
     render,
