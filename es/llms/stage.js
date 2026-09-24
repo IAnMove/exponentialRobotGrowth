@@ -149,13 +149,13 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
     const count=trail+stream,dots=add(glowPoints(count,color,2.6+weight*1.4)),pos=dots.geometry.attributes.position,size=dots.geometry.attributes.aSize,alpha=dots.geometry.attributes.aAlpha,p=V(0,0,0);
     const step=.11/Math.max(.5,length),seed=(delay*7.31)%1;
     S.userData.ticks.push(({sig,live})=>{
-      const head=live?clamp01((sig-span[0])/Math.max(.001,span[1]-span[0])):((time*.42+seed)%1.35)/1.1;
+      const head=live?clamp01((sig-span[0])/Math.max(.001,span[1]-span[0])):reduce?1:((time*.42+seed)%1.35)/1.1;
       for(let i=0;i<trail;i++){
         const u=head-i*step,visible=head>.001&&u>=0&&u<=1&&head<=1.02;
         if(visible){path.getPointAt(Math.min(1,u),p);pos.setXYZ(i,p.x,p.y,p.z);}
         size.setX(i,visible?(.5-i*.028)*(.55+.45*weight)*(i===0?1+.15*Math.sin(time*9):1):0);alpha.setX(i,visible?(1-i/trail)*(.3+.7*weight):0);
       }
-      for(let k=0;k<stream;k++){const u=((time*1.1)/length+k/stream+seed)%1;path.getPointAt(u,p);pos.setXYZ(trail+k,p.x,p.y,p.z);size.setX(trail+k,.12+.05*weight);alpha.setX(trail+k,.18+.3*weight*Math.sin(u*Math.PI));}
+      for(let k=0;k<stream;k++){const u=((time*1.1)/length+k/stream+seed)%1;path.getPointAt(u,p);pos.setXYZ(trail+k,p.x,p.y,p.z);size.setX(trail+k,.12+.05*weight);alpha.setX(trail+k,reduce?0:.18+.3*weight*Math.sin(u*Math.PI));}
       pos.needsUpdate=size.needsUpdate=alpha.needsUpdate=true;
     });
     return {path,tube};
