@@ -19,8 +19,9 @@ a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
 
 .rail{position:fixed;right:20px;top:50%;transform:translateY(-50%);z-index:5;display:grid;gap:13px}
 .rail button{position:relative;width:10px;height:10px;padding:0;border-radius:50%;border:1px solid #3a4c74;background:#0a1122;transition:transform .25s,background .25s}
-.rail button span{position:absolute;right:20px;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:10px;letter-spacing:.08em;color:var(--muted);opacity:0;transition:opacity .2s;pointer-events:none}
-.rail button:hover span,.rail button[aria-current=true] span{opacity:1}
+.rail button span{position:absolute;right:20px;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:10px;letter-spacing:.08em;color:var(--muted);opacity:0;transition:opacity .2s;pointer-events:none;padding:4px 9px;border-radius:999px;background:#070c18e6;border:1px solid #22314f;backdrop-filter:blur(6px)}
+.rail button:hover span,.rail button:focus-visible span{opacity:1}
+.rail button[aria-current=true] span{opacity:0}.rail:hover button[aria-current=true] span{opacity:1}
 .rail button.seen{background:#27406e}.rail button[aria-current=true]{background:var(--gold);border-color:var(--gold);transform:scale(1.35);box-shadow:0 0 14px #ffcf7a99}
 .rail button[aria-current=true] span{color:var(--gold)}
 
