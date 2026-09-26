@@ -16,7 +16,8 @@ export function createExperience(host,{es,onInspect}){
   function label(parent,text,x,y,z,w=5,color='#d6edff',fixed=false){
     const list=fixed?fixedResources:dynamicResources,c=document.createElement('canvas'),ctx=c.getContext('2d');ctx.font='600 50px system-ui';c.width=Math.ceil(ctx.measureText(text).width+32);c.height=86;ctx.font='600 50px system-ui';ctx.fillStyle=color;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,c.width/2,43);
     const texture=own(new THREE.CanvasTexture(c),list);texture.colorSpace=THREE.SRGBColorSpace;
-    const mesh=new THREE.Mesh(own(new THREE.PlaneGeometry(w,w*86/c.width),list),own(new THREE.MeshBasicMaterial({map:texture,transparent:true,side:THREE.DoubleSide,depthWrite:false}),list));mesh.position.set(x,y,z);parent.add(mesh);return mesh;
+    const height=Math.min(fixed?.7:.52,w*86/c.width),width=height*c.width/86;
+    const mesh=new THREE.Mesh(own(new THREE.PlaneGeometry(width,height),list),own(new THREE.MeshBasicMaterial({map:texture,transparent:true,side:THREE.DoubleSide,depthWrite:false}),list));mesh.position.set(x,y,z);parent.add(mesh);return mesh;
   }
   function line(parent,points,color=GOLD,fixed=false){const list=fixed?fixedResources:dynamicResources,g=own(new THREE.BufferGeometry().setFromPoints(points.map(p=>new THREE.Vector3(...p))),list);const mat=own(new THREE.LineBasicMaterial({color,transparent:true,opacity:.7}),list);parent.add(new THREE.Line(g,mat));}
   function path(parent,points,phase,color=GOLD){line(parent,points,color);const curve=new THREE.CurvePath();for(let i=1;i<points.length;i++)curve.add(new THREE.LineCurve3(new THREE.Vector3(...points[i-1]),new THREE.Vector3(...points[i])));const ball=new THREE.Mesh(own(new THREE.SphereGeometry(.11,12,8),dynamicResources),own(new THREE.MeshBasicMaterial({color:GOLD}),dynamicResources));parent.add(ball);signalPaths.push({ball,curve,phase});}
@@ -36,6 +37,12 @@ export function createExperience(host,{es,onInspect}){
     const sign=new THREE.Group();sign.position.set(-5.8,0,s.z);sign.rotation.y=Math.PI/2;staticGroup.add(sign);label(sign,`${String(s.index+1).padStart(2,'0')} / ${s.titles[es?0:1]}`,0,5,0,8,'#d0efed',true);
     const lamp=new THREE.PointLight(s.index===4?PURPLE:MINT,15,16,2);lamp.position.set(-3,4,s.z);staticGroup.add(lamp);
     line(staticGroup,[[1,.03,s.z+5],[1,.03,s.z-5]],GOLD,true);
+    // A physical threshold for each chapter, with a clear line to the next stop.
+    box(staticGroup,4.5,1.8,s.z+6,.12,3.6,.18,s.index<3?0x385f68:s.index<6?0x51456f:0x5b6246);
+    box(staticGroup,-2.5,1.8,s.z+6,.12,3.6,.18,0x385f68);
+    box(staticGroup,1,3.65,s.z+6,7,.09,.15,0x78acb3);
+    label(staticGroup,`${String(s.index+1).padStart(2,'0')}  /  ${s.titles[es?0:1]}`,1,3.15,s.z+6,5,'#bde8dd',true);
+    line(staticGroup,[[1,.035,s.z+5],[1,.035,s.z-8]],GOLD,true);
   }
   function rebuild(run){
     exhibits.clear();dynamicResources.forEach(r=>r.dispose());dynamicResources=[];clickables=[];signalPaths=[];groups=[];layerNodes=[];
