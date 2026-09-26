@@ -1,3 +1,4 @@
+import {LESSONS} from './site-src/journeys/catalog.js';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
@@ -11,6 +12,7 @@ const source=readFileSync('site-src/museo/app.js','utf8')
   .replace(/import \{createMuseum\} from '\.\/world.js';/,'')
   .replace(/import \{immersiveHref\} from '[^']+';/,'')
   .replace(/import \{StepGuide\} from '[^']+';/,'')
+  .replace(/import \{LESSONS\} from '[^']+';/,'')
   .replace(/import \{VOICES\} from '[^']+';/,'');
 for(const lang of ['es','en']){
   const elements=new Map(),events={},queued=[];let clock=0,lastPose,url;
@@ -20,7 +22,7 @@ for(const lang of ['es','en']){
   const document={documentElement:{lang},body:element('body'),hidden:false,getElementById:element,createElement:element,exitPointerLock(){},addEventListener(){},querySelectorAll(selector){return selector==='[data-room]'?roomButtons:paintings;}};
   const window={addEventListener(name,fn){events[name]=fn;}};
   class Guide extends StepGuide{constructor(options){super({...options,AudioClass:class{pause(){} removeAttribute(){} load(){} play(){return Promise.resolve();}}});}}
-  const ctx={document,window,console,URLSearchParams,model,immersiveHref,StepGuide:Guide,VOICES,matchMedia:()=>({matches:false}),performance:{now:()=>clock},location:{search:'',hash:'',assign:value=>{url=value;}},requestAnimationFrame:fn=>queued.push(fn),createMuseum:()=>({render:p=>{lastPose={...p};},pick:()=>null})};
+  const ctx={LESSONS,document,window,console,URLSearchParams,model,immersiveHref,StepGuide:Guide,VOICES,matchMedia:()=>({matches:false}),performance:{now:()=>clock},location:{search:'',hash:'',assign:value=>{url=value;}},requestAnimationFrame:fn=>queued.push(fn),createMuseum:()=>({render:p=>{lastPose={...p};},pick:()=>null})};
   vm.runInNewContext(source,ctx);
   function frames(n){for(let i=0;i<n;i++){clock+=1000/60;queued.shift()(clock);}}
   element('start').onclick();paintings.find(p=>p.dataset.painting==='llms').onclick();frames(600);
@@ -37,5 +39,13 @@ for(const lang of ['es','en']){
   assert.equal(element('enter-3d').hidden,true,'unbuilt worlds are never presented as immersive');
   assert.equal(element('web').href,'../robots/index.html');
   element('map-toggle').onclick();assert.equal(element('map').hidden,false);element('map-close').onclick();assert.equal(element('map').hidden,true);
+  for(const id of Object.keys(LESSONS)){
+    paintings.find(p=>p.dataset.painting===id).onclick();frames(10);
+    assert.equal(element('enter-3d').hidden,false,id+' has a real walkable world');
+    assert.equal(element('web').href,`../journeys/index.html?topic=${id}`);
+    element('enter-3d').onclick();frames(110);
+    assert.equal(url,`../journeys/index.html?topic=${id}&mode=immersive&entrance=painting`);
+    events.pagehide();frames(2);
+  }
 }
 console.log('Museum controls: both languages, walking arrival, real portal URL, return pose, route interruption, map and truthful availability: OK');

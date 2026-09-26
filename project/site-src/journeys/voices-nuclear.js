@@ -1,0 +1,65 @@
+// Recorded with MiniMax speech-2.8-hd. No credentials are shipped.
+export const VOICES = {
+  "es": [
+    {
+      "id": "step-0",
+      "title": "1 · Liberar energía en el núcleo",
+      "text": "En la fisión, un núcleo pesado se divide y libera energía y neutrones. Parte de esos neutrones puede provocar nuevas fisiones. Las barras de control absorben neutrones y ayudan a controlar la reacción. Esta escena muestra el principio; las partículas, dimensiones y tiempos son ilustrativos.",
+      "file": "journey-nuclear-es-step-0-a924b62fa3a0.mp3",
+      "duration": 19.62
+    },
+    {
+      "id": "step-1",
+      "title": "2 · Separar dos circuitos",
+      "text": "Seguimos un reactor de agua a presión. El agua del circuito primario transporta calor sin hervir en funcionamiento normal. Dentro del generador de vapor transfiere calor a otro circuito. Los colores distinguen ambos: se intercambia energía a través de los tubos, no se mezcla el agua.",
+      "file": "journey-nuclear-es-step-1-1267aea3d550.mp3",
+      "duration": 16.848
+    },
+    {
+      "id": "step-2",
+      "title": "3 · Mover una turbina",
+      "text": "El vapor del circuito secundario mueve una turbina conectada a un generador. Solo parte de la potencia térmica se convierte en electricidad; el resto debe evacuarse. Cambia el rendimiento idealizado y observa el reparto. El condensador enfría el vapor para recuperar agua y repetir el ciclo.",
+      "file": "journey-nuclear-es-step-2-734642763bf0.mp3",
+      "duration": 17.82
+    },
+    {
+      "id": "step-3",
+      "title": "4 · Una parada todavía necesita refrigeración",
+      "text": "Al insertar las barras se puede detener la reacción en cadena, pero los productos radiactivos siguen liberando calor al decaer. Activa la parada y avanza al paso cinco: la fisión cesa y queda calor residual. La curva es didáctica; no sirve para calcular una refrigeración real ni operar una central.",
+      "file": "journey-nuclear-es-step-3-ee623d7b9fab.mp3",
+      "duration": 18.756
+    }
+  ],
+  "en": [
+    {
+      "id": "step-0",
+      "title": "1 · Releasing energy in the core",
+      "text": "In fission, a heavy nucleus splits, releasing energy and neutrons. Some neutrons can cause further fissions. Control rods absorb neutrons and help control the reaction. This scene shows the principle; particles, dimensions and times are illustrative.",
+      "file": "journey-nuclear-en-step-0-f9aae0dc252f.mp3",
+      "duration": 18.252
+    },
+    {
+      "id": "step-1",
+      "title": "2 · Separating two circuits",
+      "text": "We follow a pressurised water reactor. Primary-loop water carries heat without boiling during normal operation. Inside the steam generator it transfers heat to another circuit. Colours distinguish the two: energy crosses the tubes, but the water does not mix.",
+      "file": "journey-nuclear-en-step-1-dcde1df96e0f.mp3",
+      "duration": 15.228
+    },
+    {
+      "id": "step-2",
+      "title": "3 · Turning a turbine",
+      "text": "Secondary-loop steam turns a turbine connected to a generator. Only part of the thermal power becomes electricity; the rest must be removed. Change the idealised efficiency and observe the split. The condenser cools the steam to recover water and repeat the cycle.",
+      "file": "journey-nuclear-en-step-2-b42876013141.mp3",
+      "duration": 16.308
+    },
+    {
+      "id": "step-3",
+      "title": "4 · A shutdown still needs cooling",
+      "text": "Inserting control rods can stop the chain reaction, but radioactive products continue releasing heat as they decay. Enable shutdown and advance to step five: fission stops and residual heat remains. This curve is educational; it cannot size real cooling systems or operate a power station.",
+      "file": "journey-nuclear-en-step-3-db0d7d6b0e2f.mp3",
+      "duration": 17.604
+    }
+  ]
+};
+const base = new URL(document.documentElement.lang === 'es' ? '../../audio/' : '../audio/', import.meta.url);
+for (const entries of Object.values(VOICES)) for (const entry of entries) entry.src = new URL(entry.file, base).href;

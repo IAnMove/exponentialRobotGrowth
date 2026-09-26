@@ -86,7 +86,7 @@ assert.equal(EYE > 1.4, true);
 
 const diagonal=stepVisitor({x:0,z:0},{x:0,z:-1},{x:1,z:0},{forward:1,strafe:1},.1,[]);
 assert(Math.abs(Math.hypot(diagonal.x,diagonal.z)-SPEED*.1)<1e-10,'no diagonal speed boost');
-assert.equal(rooms.length,4);
+assert.equal(rooms.length,5);
 for(const from of [spawn,...exhibits.map(standAt)])for(const to of exhibits.map(standAt)){
   let prev=from;
   for(const waypoint of routeTo(from,to)){

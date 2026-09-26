@@ -9,11 +9,13 @@ export const rooms=[
   {id:'hall',es:'Atrio',en:'Atrium',subtitle:['Un museo de ideas','A museum of ideas'],color:'#d9bd8d',x:0,z:1,minX:-6,maxX:6,minZ:-6,maxZ:8,gate:{x:0,z:0}},
   {id:'mind',es:'Inteligencia',en:'Intelligence',subtitle:['Lenguaje, mente y modelos','Language, mind and models'],color:'#a7b6ff',x:0,z:-14,minX:-6,maxX:6,minZ:-22,maxZ:-6,gate:{x:0,z:-6}},
   {id:'industry',es:'Industria y vida',en:'Industry & life',subtitle:['Robots, fábricas y hogares','Robots, factories and homes'],color:'#91d9bf',x:-14,z:1,minX:-23,maxX:-6,minZ:-6,maxZ:8,gate:{x:-6,z:0}},
-  {id:'cosmos',es:'Cosmos',en:'Cosmos',subtitle:['De la órbita a la civilización','From orbit to civilization'],color:'#e8bb80',x:14,z:1,minX:6,maxX:23,minZ:-6,maxZ:8,gate:{x:6,z:0}}
+  {id:'cosmos',es:'Cosmos',en:'Cosmos',subtitle:['De la órbita a la civilización','From orbit to civilization'],color:'#e8bb80',x:14,z:1,minX:6,maxX:23,minZ:-6,maxZ:8,gate:{x:6,z:0}},
+  {id:'life',es:'Vida y naturaleza',en:'Life & nature',subtitle:['Células, carbono y evolución','Cells, carbon and evolution'],color:'#e4abc1',x:0,z:17,minX:-6,maxX:6,minZ:8,maxZ:26,gate:{x:0,z:8}}
 ];
 const wall=(x1,z1,x2,z2)=>({minX:Math.min(x1,x2)-.16,maxX:Math.max(x1,x2)+.16,minZ:Math.min(z1,z2)-.16,maxZ:Math.max(z1,z2)+.16});
 export const walls=[
-  wall(-23,-6,-6,-6),wall(-23,-6,-23,8),wall(-23,8,23,8),wall(23,8,23,-6),wall(6,-6,23,-6),
+  wall(-23,-6,-6,-6),wall(-23,-6,-23,8),wall(-23,8,-2,8),wall(2,8,23,8),wall(23,8,23,-6),wall(6,-6,23,-6),
+  wall(-6,8,-6,26),wall(6,8,6,26),wall(-6,26,6,26),
   wall(-6,-6,-6,-2),wall(-6,2,-6,8),wall(6,-6,6,-2),wall(6,2,6,8),
   wall(-6,-6,-2,-6),wall(2,-6,6,-6),wall(-6,-6,-6,-22),wall(6,-6,6,-22),wall(-6,-22,6,-22)
 ];
@@ -29,9 +31,17 @@ export const exhibits = [
   {id:'starlink',room:'cosmos',x:22.65,z:0,nx:-1,nz:0,color:'#6ee7c5',num:'07',es:'Starlink',en:'Starlink'},
   {id:'spacex',room:'cosmos',x:22.65,z:5.3,nx:-1,nz:0,color:'#e8a06a',num:'08',es:'SpaceX',en:'SpaceX'},
   {id:'llms',room:'mind',x:0,z:-21.65,nx:0,nz:1,color:'#99b9ff',num:'09',es:'Dentro de una respuesta',en:'Inside an answer',width:4.8,stand:4},
-  {id:'mente',room:'mind',x:-5.65,z:-14,nx:1,nz:0,color:'#f0b4c4',num:'10',es:'Mente',en:'Mind'},
-  {id:'modelos',room:'mind',x:5.65,z:-14,nx:-1,nz:0,color:'#f3d39a',num:'11',es:'Modelos',en:'Models'}
-].map(e=>({...e,href:`../${e.id}/index.html`}));
+  {id:'mente',room:'mind',x:-5.65,z:-16,nx:1,nz:0,color:'#f0b4c4',num:'10',es:'Mente',en:'Mind'},
+  {id:'modelos',room:'mind',x:5.65,z:-16,nx:-1,nz:0,color:'#f3d39a',num:'11',es:'Modelos',en:'Models'},
+  {id:'internet',room:'mind',x:-5.65,z:-9.5,nx:1,nz:0,color:'#72d7ef',num:'12',es:'Internet',en:'Internet',journey:true},
+  {id:'electricity',room:'industry',x:-9.5,z:-5.65,nx:0,nz:1,color:'#ffd278',num:'13',es:'Electricidad',en:'Electricity',journey:true},
+  {id:'microchip',room:'mind',x:5.65,z:-9.5,nx:-1,nz:0,color:'#c0a2ff',num:'14',es:'Microchip',en:'Microchip',journey:true},
+  {id:'cell',room:'life',x:-5.65,z:17,nx:1,nz:0,color:'#f2a6bc',num:'15',es:'La célula',en:'The cell',journey:true},
+  {id:'ideas',room:'mind',x:-4.35,z:-21.65,nx:0,nz:1,color:'#e5a5f2',num:'16',es:'Una idea',en:'An idea',width:2.5,journey:true},
+  {id:'nuclear',room:'industry',x:-9.5,z:7.65,nx:0,nz:-1,color:'#ffb582',num:'17',es:'Reactor nuclear',en:'Nuclear reactor',journey:true},
+  {id:'carbon',room:'life',x:5.65,z:17,nx:-1,nz:0,color:'#83d5d8',num:'18',es:'Carbono y clima',en:'Carbon & climate',journey:true},
+  {id:'evolution',room:'life',x:0,z:25.65,nx:0,nz:-1,color:'#b9df92',num:'19',es:'Evolución',en:'Evolution',journey:true}
+].map(e=>({...e,href:e.journey?`../journeys/index.html?topic=${e.id}`:`../${e.id}/index.html`}));
 
 export const spawn = { x: 0, z: 5, yaw: 0, pitch: .06 };
 

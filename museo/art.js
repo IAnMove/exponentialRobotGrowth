@@ -22,6 +22,21 @@ export function paintingCanvas(e,es){
       if(e.id==='starlink'){for(let i=0;i<6;i++){const x=180+i*122,y=180-Math.sin(i)*70;g.fillStyle='#abc9da';g.fillRect(x,y,24,15);g.fillStyle='#4a82a8';g.fillRect(x-36,y-6,30,26);g.fillRect(x+30,y-6,30,26);line(x+12,y+15,440,450,'#83dad23c');}}
       else{g.save();g.translate(580,220);g.rotate(.3);g.fillStyle='#f1ede3';g.beginPath();g.moveTo(0,-140);g.quadraticCurveTo(-29,-112,-31,-70);g.lineTo(-31,100);g.lineTo(31,100);g.lineTo(31,-70);g.quadraticCurveTo(29,-112,0,-140);g.fill();g.fillStyle='#102337';g.fillRect(-30,-30,60,55);g.fillStyle='#d9e5e3';g.beginPath();g.moveTo(-30,35);g.lineTo(-67,112);g.lineTo(-30,90);g.fill();g.beginPath();g.moveTo(30,35);g.lineTo(67,112);g.lineTo(30,90);g.fill();glow(0,145,88,'#ffc885cc');g.restore();}
     }
+  }else if(e.id==='internet'||e.id==='ideas'){
+    const pts=Array.from({length:e.id==='internet'?8:40},(_,i)=>[150+(i*173)%660,90+(i*97)%350]);
+    pts.forEach(([x,y],i)=>{const q=pts[(i+1)%pts.length];line(x,y,q[0],q[1],e.color+'70',3);if(i%3===0)line(x,y,480,250,e.color+'35');disc(x,y,e.id==='internet'?18:9,i<6?'#ffce89':e.color);});
+    glow(480,250,100,e.color+'66');
+  }else if(e.id==='microchip'){
+    for(let i=0;i<12;i++){const y=120+i*24;line(185,y,330,y,e.color,5);line(630,y,775,y,e.color,5);line(355+i*22,70,355+i*22,130,e.color,4);line(355+i*22,380,355+i*22,455,e.color,4);}g.fillStyle='#615180';g.fillRect(320,115,320,280);for(let x=0;x<6;x++)for(let y=0;y<5;y++)cube(360+x*44,155+y*43,13,e.color);
+  }else if(e.id==='electricity'||e.id==='nuclear'){
+    if(e.id==='electricity'){for(const x of [250,700]){line(x-65,420,x,100,e.color,8);line(x+65,420,x,100,e.color,8);line(x-85,150,x+85,150,e.color,7);line(x-60,230,x+60,230,e.color,6);}for(let i=0;i<3;i++){g.beginPath();g.moveTo(180+i*40,155);g.quadraticCurveTo(470,310,630+i*40,155);g.strokeStyle='#e4c392';g.lineWidth=3;g.stroke();}disc(480,250,14,'#fff2b7');}
+    else{g.fillStyle='#5d8198';g.fillRect(270,140,150,270);g.beginPath();g.ellipse(345,140,75,35,0,0,7);g.fill();for(let i=0;i<7;i++)line(295+i*17,190,295+i*17,375,i%2?e.color:'#c5d4e0',8);g.strokeStyle='#ffbc87';g.lineWidth=9;g.strokeRect(420,185,200,190);g.strokeStyle='#85d0e5';g.strokeRect(630,145,135,265);disc(700,290,48,'#adc7d5');for(let i=0;i<10;i++){const a=i/10*7;line(700,290,700+Math.cos(a)*42,290+Math.sin(a)*42,'#34556e',5);}}
+  }else if(e.id==='cell'){
+    g.strokeStyle=e.color;g.lineWidth=5;g.beginPath();g.ellipse(480,260,295,180,-.12,0,7);g.stroke();disc(395,230,88,'#745582');for(let i=0;i<24;i++){const y=162+i*6,x=Math.sin(i*.5)*42;line(395+x,y,395-x,y,'#edb9d2',2);disc(395+x,y,4,'#c0e6ea');disc(395-x,y,4,'#efcf91');}for(let i=0;i<7;i++){g.fillStyle='#c29677';g.beginPath();g.ellipse(540+i%3*55,165+Math.floor(i/3)*90,30,15,i,0,7);g.fill();}
+  }else if(e.id==='carbon'){
+    disc(480,250,60,'#768c9c');disc(330,250,47,'#ea9d91');disc(630,250,47,'#ea9d91');line(375,250,420,250,e.color,10);line(540,250,585,250,e.color,10);for(let i=0;i<9;i++){line(200+i*70,440,200+i*70,385,'#8cac87',7);disc(200+i*70,365,27,'#759e85');}g.font='38px system-ui';g.fillStyle='#e7e4d5';g.fillText('CO₂',445,135);
+  }else if(e.id==='evolution'){
+    for(let row=0;row<4;row++){for(let i=0;i<12;i++){const x=200+i*51,y=120+row*92;g.fillStyle=i<3+row*2?'#b9df92':'#d4a4ce';g.beginPath();g.ellipse(x,y,18,11,-.3,0,7);g.fill();}if(row<3)line(480,145+row*92,480,185+row*92,'#bdd2b5',3);}
   }else if(e.id==='llms'||e.id==='modelos'){
     const layers=e.id==='llms'?5:4;
     for(let k=0;k<layers;k++){const x=180+k*145;for(let j=0;j<4;j++){for(let n=0;n<4;n++)if(k<layers-1)line(x,125+j*74,x+145,125+n*74,j===2&&n===2?'#f8d291':'#a5b3ef28');cube(x,125+j*74,15,k===2?'#f8d291':e.color);}}

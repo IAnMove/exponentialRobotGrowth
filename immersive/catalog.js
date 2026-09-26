@@ -1,3 +1,7 @@
-// Only implemented worlds are advertised as available. Web notebooks remain canonical.
-export const IMMERSIVE={llms:{route:'llms',stops:8}};
-export function immersiveHref(id,base='../'){return Object.hasOwn(IMMERSIVE,id)?`${base}immersive/index.html?experience=${encodeURIComponent(id)}`:null;}
+// Availability names actual built routes; a 3D scene alone is not a walkable world.
+export const JOURNEY_IDS=['internet','electricity','microchip','cell','ideas','nuclear','carbon','evolution'];
+export const IMMERSIVE={llms:{route:'llms',stops:8},...Object.fromEntries(JOURNEY_IDS.map(id=>[id,{route:'journeys',stops:4}]))};
+export function immersiveHref(id,base='../'){
+ if(!Object.hasOwn(IMMERSIVE,id))return null;
+ return JOURNEY_IDS.includes(id)?`${base}journeys/index.html?topic=${encodeURIComponent(id)}&mode=immersive`:`${base}immersive/index.html?experience=${encodeURIComponent(id)}`;
+}

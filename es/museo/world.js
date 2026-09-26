@@ -27,15 +27,15 @@ export function createMuseum(host,es){
     for(let z=r.minZ+2;z<r.maxZ;z+=3)box(scene,cx,WALL_H-.18,z,width,.25,.12,0x536371);
     const lamp=new THREE.PointLight(r.color,40,24,2);lamp.position.set(cx,4,cz);scene.add(lamp);
   });
-  // Three open, coloured portals join the galleries through the atrium.
+  // Four open, coloured portals join the galleries through the atrium.
   for(const r of rooms.slice(1)){
-    const g=new THREE.Group();g.position.set(r.gate.x,0,r.gate.z);g.rotation.y=r.id==='industry'?Math.PI/2:r.id==='cosmos'?-Math.PI/2:0;scene.add(g);
+    const g=new THREE.Group();g.position.set(r.gate.x,0,r.gate.z);g.rotation.y=r.id==='industry'?Math.PI/2:r.id==='cosmos'?-Math.PI/2:r.id==='life'?Math.PI:0;scene.add(g);
     [-2,2].forEach(x=>{box(g,x,2.1,0,.18,4.2,.6,0x2a3541);box(g,x,2.1,.32,.055,4.2,.03,r.color,{emissive:r.color,emissiveIntensity:.7});});box(g,0,4.2,0,4.2,.22,.6,0x2a3541);text(g,es?r.es:r.en,0,4.65,.36,3.7,r.color);
     const p=new THREE.Group();p.position.set(r.x,0,r.z);scene.add(p);const ring=new THREE.Mesh(own(new THREE.TorusGeometry(1.25,.035,8,60)),mat(r.color,{emissive:r.color,emissiveIntensity:.4}));ring.position.y=3.5;p.add(ring);sculptures.push(ring);
     if(r.id==='mind'){const core=new THREE.Mesh(own(new THREE.IcosahedronGeometry(.72,1)),mat(r.color,{wireframe:true,emissive:r.color,emissiveIntensity:.2}));core.position.y=3.5;p.add(core);sculptures.push(core);}
     if(r.id==='cosmos'){const globe=new THREE.Mesh(own(new THREE.SphereGeometry(.66,24,16)),mat(0x91abc8,{metalness:.45}));globe.position.y=3.5;p.add(globe);}
   }
-  text(scene,'ATLAS',0,3.2,7.79,4.5).rotation.y=Math.PI;
+  text(scene,'ATLAS',4.1,3.2,7.79,2.8).rotation.y=Math.PI;
   const floorTitle=text(scene,es?'ELIGE UNA SALA · ENTRA EN UN CUADRO':'CHOOSE A GALLERY · ENTER A PAINTING',0,.024,2.7,6.8,'#e7dec5');floorTitle.rotation.x=-Math.PI/2;
   // Real frames: moulding, inner bevel, canvas and a separate museum label.
   for(const e of exhibits){
