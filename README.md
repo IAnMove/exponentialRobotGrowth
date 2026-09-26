@@ -6,9 +6,9 @@ English starts at `/`; Spanish at `/es/`. All links work beneath the GitHub Page
 
 The museum's LLM painting now offers two formats: the existing web notebook and
 `immersive/index.html?experience=llms`, a walkable Three.js world with eight stations.
-Walk with WASD/arrows, drag to look, or use touch buttons. The guided route moves the camera,
+Walk with WASD/arrows and first-person mouse look, or use touch controls. Each stand has a narration button; activating it never teleports the camera. Escape releases the mouse. The guided route moves the camera,
 plays the existing bilingual MiniMax narration and waits three seconds after each clip.
-Walking interrupts the guide; instant travel supports reduced motion. Inspect tokens,
+Walking cancels guided travel while narration can continue within the station; instant travel supports reduced motion. The cinematic-inspired LLM gallery shows one attention operation at a time with computed weights, visible token labels and a persistent bilingual transcript synchronized to measured audio segments. Inspect tokens,
 vector cells, attention matrices and probabilities, then emit a token and return it to context.
 This is teaching geometry with synthetic weights and curated answers, not a physical CPU model.
 Eight additional notebooks and walkable worlds now cover Internet, electricity, microchips,
@@ -75,6 +75,8 @@ node check-llms.mjs
 node check-llms-guide.mjs
 node check-llms-tensors.mjs
 node check-immersive.mjs
+node check-immersive-scenes.mjs
+node check-immersive-controls.mjs
 node check-museo.mjs
 node check-museo-controls.mjs
 node check-journeys.mjs
