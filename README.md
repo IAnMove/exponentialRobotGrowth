@@ -11,7 +11,15 @@ plays the existing bilingual MiniMax narration and waits three seconds after eac
 Walking cancels guided travel while narration can continue within the station; instant travel supports reduced motion. The cinematic-inspired LLM gallery shows one attention operation at a time with computed weights, visible token labels and a persistent bilingual transcript synchronized to measured audio segments. Inspect tokens,
 vector cells, attention matrices and probabilities, then emit a token and return it to context.
 This is teaching geometry with synthetic weights and curated answers, not a physical CPU model.
-Eight additional notebooks and walkable worlds now cover Internet, electricity, microchips,
+Internet's painting now opens a dedicated nine-scene cinematic voyage: a laptop in Madrid,
+the access network, Spain, Sopelana, the MAREA cable beneath the Atlantic, Virginia Beach,
+an illustrative Ashburn server, the return trip and browser rendering. The NASA-textured Earth
+anchors real landing locations; routes, buildings and visual speeds are explicitly illustrative.
+Eighteen MiniMax clips supply bilingual narration and transcripts. Audio completion plus a
+three-second pause gates the guided tour. Free first-person exploration is optional.
+The 6,600 km cable and assumed fiber speed produce a 33 ms propagation-only one-way example,
+not a measured ping or page-load claim. The original Internet web experiment remains available.
+Eight additional notebooks and walkable worlds cover Internet, electricity, microchips,
 cells, idea diffusion, nuclear reactors, carbon and evolution. Each has four stations, bilingual
 MiniMax narration, a manual or audio-ended guided route, interactive controls, live metrics,
 history charts, sources and explicit model limits. There are 64 new topic voice clips.

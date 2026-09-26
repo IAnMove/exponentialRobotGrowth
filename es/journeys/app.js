@@ -4,7 +4,8 @@ import {createWorld} from './world.js';
 import {StepGuide} from '../llms/guide.js';
 import {VOICES} from './voices.js';
 const es=document.documentElement.lang==='es',lang=es?'es':'en',text=v=>Array.isArray(v)?v[es?0:1]:v,t=(a,b)=>es?a:b,$=id=>document.getElementById(id),query=new URLSearchParams(location.search),id=query.get('topic')||'internet',lesson=Object.hasOwn(LESSONS,id)?LESSONS[id]:null;
-if(!lesson){$('app').innerHTML=`<p>${t('Experiencia no encontrada','Experience not found')}</p><a href="../index.html">Atlas</a>`;}
+if(id==='internet'&&query.get('mode')==='immersive'){location.replace('./internet-voyage.html');}
+else if(!lesson){$('app').innerHTML=`<p>${t('Experiencia no encontrada','Experience not found')}</p><a href="../index.html">Atlas</a>`;}
 else{
  let mode=query.get('mode')==='immersive'?'immersive':'web',phase=0,tick=0,params=defaults(lesson),model=lesson.evaluate(params,0),world,player=poseAt(0),travel=null,playing=false,clock=0,last=performance.now(),drag=null,voiceLang=lang,orbit={yaw:.35,pitch:.38,distance:12};const keys=new Set(),touch=new Set();
  document.title=text(lesson.title)+' · Atlas';document.body.classList.toggle('immersive',mode==='immersive');
