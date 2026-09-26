@@ -1,0 +1,46 @@
+{
+  "es": [
+    {
+      "id": "step-0",
+      "title": "1 · Escribes una dirección",
+      "text": "Tu navegador necesita localizar un servicio y comunicarse con él. El equipo entrega datos a su red local. El router permite continuar hacia otras redes; una antena Wi-Fi no contiene Internet. Aquí el mensaje de ejemplo se divide en piezas numeradas."
+    },
+    {
+      "id": "step-1",
+      "title": "2 · Un nombre encuentra una dirección",
+      "text": "DNS relaciona nombres con registros, entre ellos direcciones IP. Un resolvedor puede utilizar su caché o consultar otros servidores. Esta consulta es distinta de descargar la página. El armario DNS representa ese servicio distribuido, no una única máquina central."
+    },
+    {
+      "id": "step-2",
+      "title": "3 · La red elige por dónde continuar",
+      "text": "Cada router reenvía según su información de encaminamiento. Corta el enlace directo y observa el desvío por la ruta alternativa. El dibujo comprime distancias y equipos: los datos viajan mediante señales físicas y el cambio de ruta real puede tardar."
+    },
+    {
+      "id": "step-3",
+      "title": "4 · Ordenar, confirmar y responder",
+      "text": "TCP ofrece un flujo ordenado de bytes. Si faltan datos, puede retransmitirlos; recibir un duplicado no duplica el mensaje. El servidor procesa la petición y devuelve datos. La barra cuenta piezas únicas recibidas, mientras que los intentos incluyen la repetición del paquete perdido."
+    }
+  ],
+  "en": [
+    {
+      "id": "step-0",
+      "title": "1 · You type an address",
+      "text": "Your browser needs to locate a service and communicate with it. The computer sends data to its local network. A router provides a path to other networks; a Wi-Fi antenna does not contain the Internet. Here the example message is divided into numbered pieces."
+    },
+    {
+      "id": "step-1",
+      "title": "2 · A name finds an address",
+      "text": "DNS maps names to records, including IP addresses. A resolver can use cached information or query other servers. This lookup is separate from downloading the page. The DNS cabinet represents this distributed service, not a single central machine."
+    },
+    {
+      "id": "step-2",
+      "title": "3 · The network forwards the data",
+      "text": "Each router forwards according to its routing information. Cut the direct link and watch the alternate route. The diagram compresses distances and equipment: data travels as physical signals, and real routing changes can take time."
+    },
+    {
+      "id": "step-3",
+      "title": "4 · Order, acknowledge and respond",
+      "text": "TCP provides an ordered byte stream. Missing data can be retransmitted; a duplicate does not duplicate the message. The server processes the request and returns data. The bar counts unique pieces received, while attempts include retransmitting the lost packet."
+    }
+  ]
+}

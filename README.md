@@ -11,7 +11,18 @@ plays the existing bilingual MiniMax narration and waits three seconds after eac
 Walking interrupts the guide; instant travel supports reduced motion. Inspect tokens,
 vector cells, attention matrices and probabilities, then emit a token and return it to context.
 This is teaching geometry with synthetic weights and curated answers, not a physical CPU model.
-Only LLMs currently has an immersive world; the catalog marks other experiences as pending.
+Eight additional notebooks and walkable worlds now cover Internet, electricity, microchips,
+cells, idea diffusion, nuclear reactors, carbon and evolution. Each has four stations, bilingual
+MiniMax narration, a manual or audio-ended guided route, interactive controls, live metrics,
+history charts, sources and explicit model limits. There are 64 new topic voice clips.
+The catalog only marks genuinely built walkable worlds as available.
+The museum has an atrium and four themed galleries: Intelligence, Industry & Life, Cosmos,
+and Life & Nature. Nineteen paintings include nine portals into walkable worlds.
+Nineteen original illustrated canvases sit in physical frames. Choose a painting or a gallery on
+the live floor plan to walk there through the doorways, or explore with smooth WASD movement,
+drag-to-look and a touch joystick. Each available canvas ripples as the camera crosses it and enters
+the learning world directly. Ten bilingual MiniMax clips narrate the atrium and galleries.
+Reduced motion uses instant routes; voice playback pauses when leaving or hiding the page.
 
 Kardashev adds a playable 3D planet → star → galaxy journey, live power and multiplier counters,
 linear/logarithmic charts and a conditional compound-growth calculator. It distinguishes the
@@ -65,6 +76,10 @@ node check-llms-guide.mjs
 node check-llms-tensors.mjs
 node check-immersive.mjs
 node check-museo.mjs
+node check-museo-controls.mjs
+node check-journeys.mjs
+node check-journey-scenes.mjs
+node check-journey-controls.mjs
 node check-explanations.mjs
 node check-full-automation.mjs
 node check-narrator.mjs

@@ -1,37 +1,49 @@
 // One floor plan. Meshes and collision both read these boxes. No second yaw for the walls.
 export const EYE = 1.62;
 export const RADIUS = 0.32;
-export const SPEED = 3.1;
-export const STAND = 1.85;
-export const WALL_H = 3.55;
+export const SPEED = 3.6;
+export const STAND = 3.2;
+export const WALL_H = 5.6;
 
-export const walls = [
-  { minX: -4.3, maxX: -3.85, minZ: -4, maxZ: 22 },
-  { minX: 3.85, maxX: 4.3, minZ: -4, maxZ: 22 },
-  { minX: -4.3, maxX: 4.3, minZ: 21.6, maxZ: 22.2 },
-  { minX: -8.3, maxX: -7.85, minZ: -18, maxZ: -4 },
-  { minX: 7.85, maxX: 8.3, minZ: -18, maxZ: -4 },
-  { minX: -8.3, maxX: 8.3, minZ: -18.3, maxZ: -17.7 },
-  { minX: -8.3, maxX: -4.3, minZ: -4.4, maxZ: -3.85 },
-  { minX: 4.3, maxX: 8.3, minZ: -4.4, maxZ: -3.85 }
+export const rooms=[
+  {id:'hall',es:'Atrio',en:'Atrium',subtitle:['Un museo de ideas','A museum of ideas'],color:'#d9bd8d',x:0,z:1,minX:-6,maxX:6,minZ:-6,maxZ:8,gate:{x:0,z:0}},
+  {id:'mind',es:'Inteligencia',en:'Intelligence',subtitle:['Lenguaje, mente y modelos','Language, mind and models'],color:'#a7b6ff',x:0,z:-14,minX:-6,maxX:6,minZ:-22,maxZ:-6,gate:{x:0,z:-6}},
+  {id:'industry',es:'Industria y vida',en:'Industry & life',subtitle:['Robots, fábricas y hogares','Robots, factories and homes'],color:'#91d9bf',x:-14,z:1,minX:-23,maxX:-6,minZ:-6,maxZ:8,gate:{x:-6,z:0}},
+  {id:'cosmos',es:'Cosmos',en:'Cosmos',subtitle:['De la órbita a la civilización','From orbit to civilization'],color:'#e8bb80',x:14,z:1,minX:6,maxX:23,minZ:-6,maxZ:8,gate:{x:6,z:0}},
+  {id:'life',es:'Vida y naturaleza',en:'Life & nature',subtitle:['Células, carbono y evolución','Cells, carbon and evolution'],color:'#e4abc1',x:0,z:17,minX:-6,maxX:6,minZ:8,maxZ:26,gate:{x:0,z:8}}
+];
+const wall=(x1,z1,x2,z2)=>({minX:Math.min(x1,x2)-.16,maxX:Math.max(x1,x2)+.16,minZ:Math.min(z1,z2)-.16,maxZ:Math.max(z1,z2)+.16});
+export const walls=[
+  wall(-23,-6,-6,-6),wall(-23,-6,-23,8),wall(-23,8,-2,8),wall(2,8,23,8),wall(23,8,23,-6),wall(6,-6,23,-6),
+  wall(-6,8,-6,26),wall(6,8,6,26),wall(-6,26,6,26),
+  wall(-6,-6,-6,-2),wall(-6,2,-6,8),wall(6,-6,6,-2),wall(6,2,6,8),
+  wall(-6,-6,-2,-6),wall(2,-6,6,-6),wall(-6,-6,-6,-22),wall(6,-6,6,-22),wall(-6,-22,6,-22)
 ];
 
 // nx,nz is the screen's front: the direction from the glass toward the visitor.
 export const exhibits = [
-  { id: 'robots', href: '../robots/index.html', x: -3.55, z: 15, nx: 1, nz: 0, color: '#a7e0cf', num: '01', es: 'Robots', en: 'Robots' },
-  { id: 'terafab', href: '../terafab/index.html', x: -3.55, z: 10.5, nx: 1, nz: 0, color: '#b9b1ff', num: '02', es: 'Terafab', en: 'Terafab' },
-  { id: 'dyson', href: '../dyson/index.html', x: 3.55, z: 15, nx: -1, nz: 0, color: '#f0c075', num: '03', es: 'Esfera de Dyson', en: 'Dyson sphere' },
-  { id: 'home', href: '../home/index.html', x: -3.55, z: 6, nx: 1, nz: 0, color: '#efbd8c', num: '04', es: 'Hogar', en: 'Home' },
-  { id: 'starlink', href: '../starlink/index.html', x: 3.55, z: 10.5, nx: -1, nz: 0, color: '#6ee7c5', num: '05', es: 'Starlink', en: 'Starlink' },
-  { id: 'spacex', href: '../spacex/index.html', x: 3.55, z: 6, nx: -1, nz: 0, color: '#e8a06a', num: '06', es: 'SpaceX', en: 'SpaceX' },
-  { id: 'kardashev', href: '../kardashev/index.html', x: 3.55, z: 1.5, nx: -1, nz: 0, color: '#bba7ef', num: '07', es: 'Kardashev', en: 'Kardashev' },
-  { id: 'growth', href: '../growth/index.html', x: -3.55, z: 1.5, nx: 1, nz: 0, color: '#d7e38a', num: '2D', es: 'Crecimiento', en: 'Growth' },
-  { id: 'llms', href: '../llms/index.html', x: -4.2, z: -17.15, nx: 0, nz: 1, color: '#99b9ff', num: '08', es: 'LLMs', en: 'LLMs' },
-  { id: 'mente', href: '../mente/index.html', x: 0, z: -17.15, nx: 0, nz: 1, color: '#f0b4c4', num: '09', es: 'Mente', en: 'Mind' },
-  { id: 'modelos', href: '../modelos/index.html', x: 4.2, z: -17.15, nx: 0, nz: 1, color: '#f3d39a', num: '10', es: 'Modelos', en: 'Models' }
-];
+  {id:'robots',room:'industry',x:-16,z:-5.65,nx:0,nz:1,color:'#a7e0cf',num:'01',es:'Robots',en:'Robots'},
+  {id:'terafab',room:'industry',x:-22.65,z:-2,nx:1,nz:0,color:'#b9b1ff',num:'02',es:'Terafab',en:'Terafab'},
+  {id:'home',room:'industry',x:-22.65,z:4,nx:1,nz:0,color:'#efbd8c',num:'03',es:'Hogar',en:'Home'},
+  {id:'growth',room:'industry',x:-15,z:7.65,nx:0,nz:-1,color:'#d7e38a',num:'04',es:'Crecimiento',en:'Growth'},
+  {id:'dyson',room:'cosmos',x:11,z:-5.65,nx:0,nz:1,color:'#f0c075',num:'05',es:'Esfera de Dyson',en:'Dyson sphere'},
+  {id:'kardashev',room:'cosmos',x:19,z:-5.65,nx:0,nz:1,color:'#bba7ef',num:'06',es:'Kardashev',en:'Kardashev'},
+  {id:'starlink',room:'cosmos',x:22.65,z:0,nx:-1,nz:0,color:'#6ee7c5',num:'07',es:'Starlink',en:'Starlink'},
+  {id:'spacex',room:'cosmos',x:22.65,z:5.3,nx:-1,nz:0,color:'#e8a06a',num:'08',es:'SpaceX',en:'SpaceX'},
+  {id:'llms',room:'mind',x:0,z:-21.65,nx:0,nz:1,color:'#99b9ff',num:'09',es:'Dentro de una respuesta',en:'Inside an answer',width:4.8,stand:4},
+  {id:'mente',room:'mind',x:-5.65,z:-16,nx:1,nz:0,color:'#f0b4c4',num:'10',es:'Mente',en:'Mind'},
+  {id:'modelos',room:'mind',x:5.65,z:-16,nx:-1,nz:0,color:'#f3d39a',num:'11',es:'Modelos',en:'Models'},
+  {id:'internet',room:'mind',x:-5.65,z:-9.5,nx:1,nz:0,color:'#72d7ef',num:'12',es:'Internet',en:'Internet',journey:true},
+  {id:'electricity',room:'industry',x:-9.5,z:-5.65,nx:0,nz:1,color:'#ffd278',num:'13',es:'Electricidad',en:'Electricity',journey:true},
+  {id:'microchip',room:'mind',x:5.65,z:-9.5,nx:-1,nz:0,color:'#c0a2ff',num:'14',es:'Microchip',en:'Microchip',journey:true},
+  {id:'cell',room:'life',x:-5.65,z:17,nx:1,nz:0,color:'#f2a6bc',num:'15',es:'La célula',en:'The cell',journey:true},
+  {id:'ideas',room:'mind',x:-4.35,z:-21.65,nx:0,nz:1,color:'#e5a5f2',num:'16',es:'Una idea',en:'An idea',width:2.5,journey:true},
+  {id:'nuclear',room:'industry',x:-9.5,z:7.65,nx:0,nz:-1,color:'#ffb582',num:'17',es:'Reactor nuclear',en:'Nuclear reactor',journey:true},
+  {id:'carbon',room:'life',x:5.65,z:17,nx:-1,nz:0,color:'#83d5d8',num:'18',es:'Carbono y clima',en:'Carbon & climate',journey:true},
+  {id:'evolution',room:'life',x:0,z:25.65,nx:0,nz:-1,color:'#b9df92',num:'19',es:'Evolución',en:'Evolution',journey:true}
+].map(e=>({...e,href:e.journey?`../journeys/index.html?topic=${e.id}`:`../${e.id}/index.html`}));
 
-export const spawn = { x: 0, z: 18, yaw: 0, pitch: 0 };
+export const spawn = { x: 0, z: 5, yaw: 0, pitch: .06 };
 
 // Camera yaw whose −z looks along (dx, dz). Tested against THREE, not against a copy of itself.
 export function yawLookingAt(dx, dz) {
@@ -42,10 +54,10 @@ export function yawLookingAt(dx, dz) {
 
 export function standAt(exhibit) {
   return {
-    x: exhibit.x + exhibit.nx * STAND,
-    z: exhibit.z + exhibit.nz * STAND,
+    x: exhibit.x + exhibit.nx * (exhibit.stand||STAND),
+    z: exhibit.z + exhibit.nz * (exhibit.stand||STAND),
     yaw: yawLookingAt(-exhibit.nx, -exhibit.nz),
-    pitch: 0
+    pitch: .12
   };
 }
 
@@ -79,10 +91,11 @@ export function stepVisitor(pos, fwd, right, input, dt, boxes = walls) {
   let remaining = Math.min(dt, 0.2);
   let x = pos.x;
   let z = pos.z;
+  const norm=Math.max(1,Math.hypot(input.forward,input.strafe));
   while (remaining > 1e-4) {
     const h = Math.min(0.05, remaining);
-    x += (fwd.x * input.forward + right.x * input.strafe) * SPEED * h;
-    z += (fwd.z * input.forward + right.z * input.strafe) * SPEED * h;
+    x += (fwd.x * input.forward + right.x * input.strafe) / norm * SPEED * h;
+    z += (fwd.z * input.forward + right.z * input.strafe) / norm * SPEED * h;
     for (let i = 0; i < 2; i++) ({ x, z } = collide(x, z, RADIUS, boxes));
     remaining -= h;
   }
@@ -114,8 +127,18 @@ export function nearestExhibit(x, z, lookX = 0, lookZ = -1, max = 4.4) {
   return best;
 }
 
-export function roomName(z) {
-  return z < -4 ? 'mind' : 'hall';
+export function roomName(z,x=0){return roomAt(x,z)?.id||'hall';}
+export function roomAt(x,z){return rooms.find(r=>x>=r.minX&&x<=r.maxX&&z>=r.minZ&&z<=r.maxZ);}
+// Every leg stays inside a convex gallery, or follows the centre of a doorway.
+export function routeTo(from,to){
+  const a=roomAt(from.x,from.z),b=roomAt(to.x,to.z);if(!a||!b)return [];
+  const path=[];if(a.id!==b.id){if(a.id!=='hall')path.push(a.gate);path.push({x:0,z:0});if(b.id!=='hall')path.push(b.gate);}
+  const safe={...to,x:Math.max(b.minX+.55,Math.min(b.maxX-.55,to.x)),z:Math.max(b.minZ+.55,Math.min(b.maxZ-.55,to.z))};
+  return [...path,safe].filter((p,i,list)=>Math.hypot(p.x-(i?list[i-1]:from).x,p.z-(i?list[i-1]:from).z)>.05);
+}
+export function portalPose(from,exhibit,progress){
+  const p=Math.max(0,Math.min(1,progress)),s=p*p*(3-2*p),yaw=standAt(exhibit).yaw;
+  return {x:from.x+(exhibit.x-exhibit.nx*.45-from.x)*s,z:from.z+(exhibit.z-exhibit.nz*.45-from.z)*s,yaw:from.yaw+Math.atan2(Math.sin(yaw-from.yaw),Math.cos(yaw-from.yaw))*Math.min(1,p*3),pitch:from.pitch*(1-s)};
 }
 
 export function insideWall(x, z, boxes = walls) {

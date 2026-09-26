@@ -1,0 +1,46 @@
+{
+  "es": [
+    {
+      "id": "step-0",
+      "title": "1 · Convertir energía",
+      "text": "El viento hace girar un generador. Los paneles convierten luz en electricidad. Sigue la potencia disponible durante un día: al anochecer desaparece la aportación solar. Un megavatio mide potencia; mantenerlo una hora produce un megavatio hora de energía."
+    },
+    {
+      "id": "step-1",
+      "title": "2 · Elevar la tensión",
+      "text": "Un transformador cambia la tensión de una corriente alterna. Para transportar la misma potencia, una tensión mayor permite una corriente menor. En nuestro circuito simplificado, la potencia es tensión por corriente y el calentamiento del cable es corriente al cuadrado por resistencia. Prueba el control de tensión."
+    },
+    {
+      "id": "step-2",
+      "title": "3 · Atravesar la red",
+      "text": "Las torres sostienen conductores; parte de la energía se transforma en calor. Las subestaciones vuelven a reducir la tensión antes de distribuirla. Las luces que recorren los cables representan transferencia de energía, no electrones viajando desde la central hasta tu casa."
+    },
+    {
+      "id": "step-3",
+      "title": "4 · Equilibrar cada hora",
+      "text": "La ciudad pide potencia y la batería guarda energía. Este ejemplo empieza con diez megavatios hora y permite cargar o descargar hasta seis megavatios. Avanza las horas: una batería vacía no cubre un déficit, y una llena obliga a recortar un excedente. El gráfico muestra demanda y suministro efectivo."
+    }
+  ],
+  "en": [
+    {
+      "id": "step-0",
+      "title": "1 · Converting energy",
+      "text": "Wind turns a generator. Panels convert light into electricity. Follow available power over a day: solar production disappears at night. A megawatt measures power; sustaining it for one hour produces one megawatt hour of energy."
+    },
+    {
+      "id": "step-1",
+      "title": "2 · Raising voltage",
+      "text": "A transformer changes alternating voltage. For the same power, higher voltage allows lower current. In our simplified circuit, power equals voltage times current, and cable heating equals current squared times resistance. Try the voltage control."
+    },
+    {
+      "id": "step-2",
+      "title": "3 · Crossing the grid",
+      "text": "Towers support conductors; some energy becomes heat. Substations reduce voltage again before distribution. Lights moving along these wires represent energy transfer, not electrons travelling from the power station to your home."
+    },
+    {
+      "id": "step-3",
+      "title": "4 · Balancing every hour",
+      "text": "The city demands power and the battery stores energy. This example starts with ten megawatt hours and allows charging or discharging at up to six megawatts. Advance the hours: an empty battery cannot cover a shortage, and a full one forces surplus curtailment. The chart shows demand and actual supply."
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+// Recorded with MiniMax speech-2.8-hd. No credentials are shipped.
+export const VOICES = {
+  "es": [
+    {
+      "id": "step-0",
+      "title": "1 · Carbono y energía son cosas distintas",
+      "text": "Una molécula de dióxido de carbono tiene un átomo de carbono y dos de oxígeno. El CO₂ absorbe y emite radiación infrarroja. Eso influye en el balance energético terrestre. Las bolas representan materia; el pulso luminoso representa energía. El efecto invernadero no se debe a una pared sólida en el cielo.",
+      "file": "journey-carbon-es-step-0-d3754efa4b5e.mp3",
+      "duration": 19.656
+    },
+    {
+      "id": "step-1",
+      "title": "2 · El bosque intercambia carbono",
+      "text": "La fotosíntesis incorpora carbono a la vegetación. La respiración y la descomposición devuelven parte al aire. Aquí el suelo y los organismos comparten un depósito simplificado. Aumentar la captación cambia el balance, pero no convierte ese depósito en un almacén ilimitado ni elimina las emisiones fósiles.",
+      "file": "journey-carbon-es-step-1-20aef629fb6d.mp3",
+      "duration": 19.332
+    },
+    {
+      "id": "step-2",
+      "title": "3 · El océano absorbe y devuelve",
+      "text": "El océano intercambia carbono con la atmósfera. La química del agua y la circulación influyen en cuánto absorbe y durante cuánto tiempo. Nuestro depósito resume procesos muy diferentes en dos flujos. Sigue el gráfico: carbono que deja el aire puede estar en el mar; no ha desaparecido.",
+      "file": "journey-carbon-es-step-2-a92029592461.mp3",
+      "duration": 19.872
+    },
+    {
+      "id": "step-3",
+      "title": "4 · Mover una reserva antigua",
+      "text": "Quemar combustibles fósiles traslada carbono de una reserva geológica al ciclo activo. Activa la parada después del intervalo diez. Las emisiones cesan, pero los depósitos siguen intercambiando carbono y la atmósfera tarda en ajustarse. El modelo conserva cien unidades de carbono: ninguna se crea ni se destruye.",
+      "file": "journey-carbon-es-step-3-5fe50b41d901.mp3",
+      "duration": 19.296
+    }
+  ],
+  "en": [
+    {
+      "id": "step-0",
+      "title": "1 · Carbon and energy are different things",
+      "text": "A carbon dioxide molecule contains one carbon atom and two oxygen atoms. CO₂ absorbs and emits infrared radiation, affecting Earth’s energy balance. Balls represent matter; the light pulse represents energy. The greenhouse effect is not caused by a solid wall in the sky.",
+      "file": "journey-carbon-en-step-0-a1834c2fbe78.mp3",
+      "duration": 19.62
+    },
+    {
+      "id": "step-1",
+      "title": "2 · A forest exchanges carbon",
+      "text": "Photosynthesis incorporates carbon into vegetation. Respiration and decomposition return some to the air. Here soil and organisms share one simplified reservoir. Raising uptake changes the balance, but it does not make that reservoir an unlimited store or eliminate fossil emissions.",
+      "file": "journey-carbon-en-step-1-a53fa2710c73.mp3",
+      "duration": 19.008
+    },
+    {
+      "id": "step-2",
+      "title": "3 · The ocean absorbs and releases",
+      "text": "The ocean exchanges carbon with the atmosphere. Water chemistry and circulation affect how much it absorbs and for how long. Our reservoir compresses very different processes into two flows. Follow the chart: carbon leaving the air may be in the sea; it has not disappeared.",
+      "file": "journey-carbon-en-step-2-233d8b7da048.mp3",
+      "duration": 16.956
+    },
+    {
+      "id": "step-3",
+      "title": "4 · Moving an ancient reserve",
+      "text": "Burning fossil fuels transfers carbon from a geological reserve into the active cycle. Enable the stop after interval ten. Emissions cease, but reservoirs keep exchanging carbon and the atmosphere takes time to adjust. The model conserves one hundred carbon units: none are created or destroyed.",
+      "file": "journey-carbon-en-step-3-abf8847013bd.mp3",
+      "duration": 19.332
+    }
+  ]
+};
+const base = new URL(document.documentElement.lang === 'es' ? '../../audio/' : '../audio/', import.meta.url);
+for (const entries of Object.values(VOICES)) for (const entry of entries) entry.src = new URL(entry.file, base).href;

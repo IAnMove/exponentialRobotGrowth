@@ -1,0 +1,46 @@
+{
+  "es": [
+    {
+      "id": "step-0",
+      "title": "1 · Alguien comparte",
+      "text": "Una persona conoce una idea y la transmite a sus contactos. Cada persona recién alcanzada tiene una sola ronda para intentar transmitirla. La probabilidad es un control del experimento, no una medida del comportamiento humano. Amarillo significa activo; verde, alcanzado anteriormente; gris, todavía no alcanzado."
+    },
+    {
+      "id": "step-1",
+      "title": "2 · Una red puede multiplicar",
+      "text": "Si varias personas alcanzan a otras nuevas, las primeras rondas pueden crecer deprisa. Pero los contactos se repiten y muchos ya conocen la idea. Compara la curva verde con una referencia lineal que añade dos personas por ronda. No toda difusión crece exponencialmente, ni puede hacerlo para siempre."
+    },
+    {
+      "id": "step-2",
+      "title": "3 · Cruzar una comunidad",
+      "text": "Estos cuatro grupos tienen conexiones internas y unos pocos puentes. Desactívalos: la idea queda encerrada en el primer grupo, aunque aumentes la probabilidad. La estructura de la red importa tanto como la facilidad de compartir. Un puente ofrece una oportunidad, no garantiza que el mensaje cruce."
+    },
+    {
+      "id": "step-3",
+      "title": "4 · Saturación o extinción",
+      "text": "El contador nunca supera las sesenta y cuatro personas de esta red. La difusión termina cuando no quedan emisores activos, incluso si algunas personas no recibieron nada. Este modelo describe contactos y transmisión; no mide verdad, persuasión, calidad ni la recomendación de una plataforma."
+    }
+  ],
+  "en": [
+    {
+      "id": "step-0",
+      "title": "1 · Someone shares",
+      "text": "One person knows an idea and shares it with contacts. Each newly reached person has one round to attempt transmission. Probability is an experimental control, not a measurement of human behaviour. Yellow means active; green means reached earlier; grey means not yet reached."
+    },
+    {
+      "id": "step-1",
+      "title": "2 · A network can multiply",
+      "text": "When several people reach new people, early rounds can grow quickly. But contacts overlap and many already know the idea. Compare the green curve with a linear reference adding two people per round. Not every diffusion process grows exponentially, and none can do so forever in a finite population."
+    },
+    {
+      "id": "step-2",
+      "title": "3 · Crossing a community",
+      "text": "These four groups have internal connections and a few bridges. Disable them: the idea stays in the first group even if you raise the probability. Network structure matters as much as ease of sharing. A bridge offers an opportunity; it does not guarantee that the message crosses."
+    },
+    {
+      "id": "step-3",
+      "title": "4 · Saturation or extinction",
+      "text": "The counter never exceeds this network’s sixty-four people. Diffusion ends when no active senders remain, even if some people received nothing. This model describes contacts and transmission; it does not measure truth, persuasion, quality or a platform’s recommendation system."
+    }
+  ]
+}
