@@ -22,6 +22,7 @@ export const walls=[
 
 // nx,nz is the screen's front: the direction from the glass toward the visitor.
 export const exhibits = [
+  {id:'lunar',room:'cosmos',x:14,z:7.65,nx:0,nz:-1,color:'#ffc478',num:'20',es:'Tierra → Luna',en:'Earth → Moon',width:4.3},
   {id:'robots',room:'industry',x:-16,z:-5.65,nx:0,nz:1,color:'#a7e0cf',num:'01',es:'Robots',en:'Robots'},
   {id:'terafab',room:'industry',x:-22.65,z:-2,nx:1,nz:0,color:'#b9b1ff',num:'02',es:'Terafab',en:'Terafab'},
   {id:'home',room:'industry',x:-22.65,z:4,nx:1,nz:0,color:'#efbd8c',num:'03',es:'Hogar',en:'Home'},

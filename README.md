@@ -19,14 +19,15 @@ Eighteen MiniMax clips supply bilingual narration and transcripts. Audio complet
 three-second pause gates the guided tour. Free first-person exploration is optional.
 The 6,600 km cable and assumed fiber speed produce a 33 ms propagation-only one-way example,
 not a measured ping or page-load claim. The original Internet web experiment remains available.
+The Earth-to-Moon notebook adds a mass-balanced industrial seed simulation, growing cargo cadence, local manufacturing, reinvestment, component and power limits, a Three.js worksite, 14 bilingual MiniMax clips, and a separate Kardashev date calculator. The quoted dates are audited as conditional arithmetic, not predictions.
 Eight additional notebooks and walkable worlds cover Internet, electricity, microchips,
 cells, idea diffusion, nuclear reactors, carbon and evolution. Each has four stations, bilingual
 MiniMax narration, a manual or audio-ended guided route, interactive controls, live metrics,
 history charts, sources and explicit model limits. There are 64 new topic voice clips.
 The catalog only marks genuinely built walkable worlds as available.
 The museum has an atrium and four themed galleries: Intelligence, Industry & Life, Cosmos,
-and Life & Nature. Nineteen paintings include nine portals into walkable worlds.
-Nineteen original illustrated canvases sit in physical frames. Choose a painting or a gallery on
+and Life & Nature. Twenty paintings include nine portals into walkable worlds.
+Twenty original illustrated canvases sit in physical frames. Choose a painting or a gallery on
 the live floor plan to walk there through the doorways, or explore with smooth WASD movement,
 drag-to-look and a touch joystick. Each available canvas ripples as the camera crosses it and enters
 the learning world directly. Ten bilingual MiniMax clips narrate the atrium and galleries.
@@ -77,6 +78,7 @@ npm ci
 python build-site.py
 python check-site.py
 node check-kardashev.mjs
+node check-lunar.mjs
 node check-kardashev-media.mjs
 node check-kardashev-motion.mjs
 node check-llms.mjs
