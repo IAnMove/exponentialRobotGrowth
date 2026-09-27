@@ -120,4 +120,6 @@ for language in ['en', 'es']:
                 content = content.replace('</head>', f'<meta property="og:type" content="website"><meta property="og:title" content="{html.escape(title, quote=True)}"><meta property="og:description" content="{description}"><meta name="twitter:card" content="summary"></head>')
             (target / source.name).write_text(content, encoding='utf-8')
 (ROOT / 'dist/.nojekyll').write_text('', encoding='utf-8')
+# Node reads the built pages as ES modules too (checks import them); say so instead of letting it guess.
+(ROOT / 'dist/package.json').write_text('{"type": "module"}' + chr(10), encoding='utf-8')
 print('Built Atlas, Robots and Terafab in English / and Spanish /es/; legacy robot URLs preserved.')
