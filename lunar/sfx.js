@@ -18,7 +18,7 @@ export function soundFrame(stage,progress=0,time=0){
 }
 
 export class LunarSfx {
- constructor({Context=globalThis.AudioContext||globalThis.webkitAudioContext,volume=.28,enabled=true}={}){this.Context=Context;this.volume=clamp(volume);this.enabled=enabled;this.nodes=[];this.sources=[];this.active=false;}
+ constructor({Context=globalThis.AudioContext||globalThis.webkitAudioContext,volume=.28,enabled=true}={}){this.Context=Context;this.volume=clamp(volume);this.enabled=enabled;this.nodes=[];this.sources=[];this.active=false;this.targets=new Map();}
  async unlock(){if(this.disposed||!this.Context||!this.enabled)return false;try{if(!this.ctx)this.build();if(this.ctx.state==='suspended')await this.ctx.resume();return this.ctx.state==='running';}catch{return false;}}
  build(){const c=this.ctx=new this.Context();const keep=n=>(this.nodes.push(n),n);this.master=keep(c.createGain());this.master.gain.value=0;const limiter=keep(c.createDynamicsCompressor());limiter.threshold.value=-16;limiter.knee.value=12;limiter.ratio.value=8;this.master.connect(limiter);limiter.connect(c.destination);
   const data=c.createBuffer(1,c.sampleRate*2,c.sampleRate),samples=data.getChannelData(0);let seed=7321;for(let i=0;i<samples.length;i++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;samples[i]=seed/2147483648-1;}
@@ -30,11 +30,11 @@ export class LunarSfx {
  }
  setVolume(v){this.volume=clamp(v);if(!this.volume)this.silence();}
  setEnabled(v){this.enabled=!!v;if(!this.enabled)this.silence();}
- smooth(param,value,seconds=.04){const t=this.ctx.currentTime;param.cancelScheduledValues(t);param.setTargetAtTime(value,t,seconds);}
+ smooth(param,value,seconds=.04){const last=this.targets.get(param);if(last!==undefined&&Math.abs(last-value)<1e-3)return;this.targets.set(param,value);const t=this.ctx.currentTime;param.cancelScheduledValues(t);param.setTargetAtTime(value,t,seconds);}
  update({stage,progress,time=0,active=false,hidden=false}){if(!this.ctx||this.disposed)return;this.active=active&&!hidden&&this.enabled&&this.volume>0;if(!this.active){this.silence();return;}if(this.ctx.state==='suspended'&&!this.resuming){this.resuming=this.ctx.resume().catch(()=>{}).finally(()=>this.resuming=null);}
   const s=soundFrame(stage,progress,time);this.smooth(this.master.gain,this.volume*.36);for(const [name,ch] of Object.entries(this.channels)){this.smooth(ch.gain.gain,s[name]);this.smooth(ch.pan.pan,s.pan);if(name==='servo'||name==='ping')this.smooth(ch.source.frequency,s.frequency*(name==='ping'?2:1));}this.smooth(this.channels.rumble.filter.frequency,s.cutoff);
  }
- silence(){this.active=false;if(!this.ctx||this.disposed)return;this.master.gain.cancelScheduledValues(this.ctx.currentTime);this.master.gain.setValueAtTime(0,this.ctx.currentTime);for(const ch of Object.values(this.channels)){ch.gain.gain.cancelScheduledValues(this.ctx.currentTime);ch.gain.gain.setValueAtTime(0,this.ctx.currentTime);}}
+ silence(){this.active=false;this.targets.clear();if(!this.ctx||this.disposed)return;this.master.gain.cancelScheduledValues(this.ctx.currentTime);this.master.gain.setValueAtTime(0,this.ctx.currentTime);for(const ch of Object.values(this.channels)){ch.gain.gain.cancelScheduledValues(this.ctx.currentTime);ch.gain.gain.setValueAtTime(0,this.ctx.currentTime);}}
  suspend(){this.silence();if(this.ctx?.state==='running')this.ctx.suspend().catch(()=>{});}
  dispose(){if(this.disposed)return;this.silence();this.sources.forEach(s=>s.stop());this.nodes.forEach(n=>n.disconnect());this.ctx?.close().catch(()=>{});this.disposed=true;}
 }
