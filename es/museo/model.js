@@ -1,3 +1,4 @@
+import {CATALOG} from '../catalog.js';
 // One floor plan. Meshes and collision both read these boxes. No second yaw for the walls.
 export const EYE = 1.62;
 export const RADIUS = 0.32;
@@ -22,27 +23,29 @@ export const walls=[
 
 // nx,nz is the screen's front: the direction from the glass toward the visitor.
 export const exhibits = [
-  {id:'lunar',room:'cosmos',x:14,z:7.65,nx:0,nz:-1,color:'#ffc478',num:'20',es:'Tierra → Luna',en:'Earth → Moon',width:4.3},
-  {id:'robots',room:'industry',x:-16,z:-5.65,nx:0,nz:1,color:'#a7e0cf',num:'01',es:'Robots',en:'Robots'},
-  {id:'terafab',room:'industry',x:-22.65,z:-2,nx:1,nz:0,color:'#b9b1ff',num:'02',es:'Terafab',en:'Terafab'},
-  {id:'home',room:'industry',x:-22.65,z:4,nx:1,nz:0,color:'#efbd8c',num:'03',es:'Hogar',en:'Home'},
-  {id:'growth',room:'industry',x:-15,z:7.65,nx:0,nz:-1,color:'#d7e38a',num:'04',es:'Crecimiento',en:'Growth'},
-  {id:'dyson',room:'cosmos',x:11,z:-5.65,nx:0,nz:1,color:'#f0c075',num:'05',es:'Esfera de Dyson',en:'Dyson sphere'},
-  {id:'kardashev',room:'cosmos',x:19,z:-5.65,nx:0,nz:1,color:'#bba7ef',num:'06',es:'Kardashev',en:'Kardashev'},
-  {id:'starlink',room:'cosmos',x:22.65,z:0,nx:-1,nz:0,color:'#6ee7c5',num:'07',es:'Starlink',en:'Starlink'},
-  {id:'spacex',room:'cosmos',x:22.65,z:5.3,nx:-1,nz:0,color:'#e8a06a',num:'08',es:'SpaceX',en:'SpaceX'},
-  {id:'llms',room:'mind',x:0,z:-21.65,nx:0,nz:1,color:'#99b9ff',num:'09',es:'Dentro de una respuesta',en:'Inside an answer',width:4.8,stand:4},
-  {id:'mente',room:'mind',x:-5.65,z:-16,nx:1,nz:0,color:'#f0b4c4',num:'10',es:'Mente',en:'Mind'},
-  {id:'modelos',room:'mind',x:5.65,z:-16,nx:-1,nz:0,color:'#f3d39a',num:'11',es:'Modelos',en:'Models'},
-  {id:'internet',room:'mind',x:-5.65,z:-9.5,nx:1,nz:0,color:'#72d7ef',num:'12',es:'Internet',en:'Internet',journey:true},
-  {id:'electricity',room:'industry',x:-9.5,z:-5.65,nx:0,nz:1,color:'#ffd278',num:'13',es:'Electricidad',en:'Electricity',journey:true},
-  {id:'microchip',room:'mind',x:5.65,z:-9.5,nx:-1,nz:0,color:'#c0a2ff',num:'14',es:'Microchip',en:'Microchip',journey:true},
-  {id:'cell',room:'life',x:-5.65,z:17,nx:1,nz:0,color:'#f2a6bc',num:'15',es:'La célula',en:'The cell',journey:true},
-  {id:'ideas',room:'mind',x:-4.35,z:-21.65,nx:0,nz:1,color:'#e5a5f2',num:'16',es:'Una idea',en:'An idea',width:2.5,journey:true},
-  {id:'nuclear',room:'industry',x:-9.5,z:7.65,nx:0,nz:-1,color:'#ffb582',num:'17',es:'Reactor nuclear',en:'Nuclear reactor',journey:true},
-  {id:'carbon',room:'life',x:5.65,z:17,nx:-1,nz:0,color:'#83d5d8',num:'18',es:'Carbono y clima',en:'Carbon & climate',journey:true},
-  {id:'evolution',room:'life',x:0,z:25.65,nx:0,nz:-1,color:'#b9df92',num:'19',es:'Evolución',en:'Evolution',journey:true}
+  {id:'lunar',room:'cosmos',x:14,z:7.65,nx:0,nz:-1,color:'#ffc478',es:'Tierra → Luna',en:'Earth → Moon',width:4.3},
+  {id:'robots',room:'industry',x:-16,z:-5.65,nx:0,nz:1,color:'#a7e0cf',es:'Robots',en:'Robots'},
+  {id:'terafab',room:'industry',x:-22.65,z:-2,nx:1,nz:0,color:'#b9b1ff',es:'Terafab',en:'Terafab'},
+  {id:'home',room:'industry',x:-22.65,z:4,nx:1,nz:0,color:'#efbd8c',es:'Hogar',en:'Home'},
+  {id:'growth',room:'industry',x:-15,z:7.65,nx:0,nz:-1,color:'#d7e38a',es:'Crecimiento',en:'Growth'},
+  {id:'dyson',room:'cosmos',x:11,z:-5.65,nx:0,nz:1,color:'#f0c075',es:'Esfera de Dyson',en:'Dyson sphere'},
+  {id:'kardashev',room:'cosmos',x:19,z:-5.65,nx:0,nz:1,color:'#bba7ef',es:'Kardashev',en:'Kardashev'},
+  {id:'starlink',room:'cosmos',x:22.65,z:0,nx:-1,nz:0,color:'#6ee7c5',es:'Starlink',en:'Starlink'},
+  {id:'spacex',room:'cosmos',x:22.65,z:5.3,nx:-1,nz:0,color:'#e8a06a',es:'SpaceX',en:'SpaceX'},
+  {id:'llms',room:'mind',x:0,z:-21.65,nx:0,nz:1,color:'#99b9ff',es:'Dentro de una respuesta',en:'Inside an answer',width:4.8,stand:4},
+  {id:'mente',room:'mind',x:-5.65,z:-16,nx:1,nz:0,color:'#f0b4c4',es:'Mente',en:'Mind'},
+  {id:'modelos',room:'mind',x:5.65,z:-16,nx:-1,nz:0,color:'#f3d39a',es:'Modelos',en:'Models'},
+  {id:'internet',room:'mind',x:-5.65,z:-9.5,nx:1,nz:0,color:'#72d7ef',es:'Internet',en:'Internet',journey:true},
+  {id:'electricity',room:'industry',x:-9.5,z:-5.65,nx:0,nz:1,color:'#ffd278',es:'Electricidad',en:'Electricity',journey:true},
+  {id:'microchip',room:'mind',x:5.65,z:-9.5,nx:-1,nz:0,color:'#c0a2ff',es:'Microchip',en:'Microchip',journey:true},
+  {id:'cell',room:'life',x:-5.65,z:17,nx:1,nz:0,color:'#f2a6bc',es:'La célula',en:'The cell',journey:true},
+  {id:'ideas',room:'mind',x:-4.35,z:-21.65,nx:0,nz:1,color:'#e5a5f2',es:'Una idea',en:'An idea',width:2.5,journey:true},
+  {id:'nuclear',room:'industry',x:-9.5,z:7.65,nx:0,nz:-1,color:'#ffb582',es:'Reactor nuclear',en:'Nuclear reactor',journey:true},
+  {id:'carbon',room:'life',x:5.65,z:17,nx:-1,nz:0,color:'#83d5d8',es:'Carbono y clima',en:'Carbon & climate',journey:true},
+  {id:'evolution',room:'life',x:0,z:25.65,nx:0,nz:-1,color:'#b9df92',es:'Evolución',en:'Evolution',journey:true}
 ].map(e=>({...e,href:e.journey?`../journeys/index.html?topic=${e.id}`:`../${e.id}/index.html`}));
+// Numbers come from the shared catalogue, so paintings and home-page cards always agree.
+for(const e of exhibits)e.num=CATALOG[e.id].number;
 
 export const spawn = { x: 0, z: 5, yaw: 0, pitch: .06 };
 
