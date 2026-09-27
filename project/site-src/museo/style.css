@@ -4,3 +4,6 @@
 @media(max-height:590px){.welcome article{padding:18px;max-height:95vh;overflow:auto}.welcome h1{font-size:30px;margin:12px 0}.card{bottom:12px;max-height:65vh;overflow:auto}.map{top:65px}.bottom p{display:none}}
 .museum-audio{position:fixed;left:24px;top:100px;z-index:2;max-width:260px;font-size:10px}.museum-audio>div{display:flex;gap:5px}.museum-audio button,.museum-audio select{font-size:10px;background:#172637cc;color:#e6edf4;border:1px solid #72869b55;border-radius:7px;padding:8px 10px}.museum-audio #voice-state{display:block;margin:5px 0;color:#d0dbe5}.museum-audio details{color:#d0dbe5;text-shadow:0 1px 4px #000}.museum-audio details p{font-size:12px;line-height:1.6;background:#152132ef;padding:14px;border-radius:9px;max-height:220px;overflow:auto}.crossing .museum-audio{opacity:0;pointer-events:none}
 @media(max-width:900px){.museum-audio{left:15px;top:103px;max-width:210px}}@media(max-height:590px){.museum-audio{top:78px}}
+
+/* Captured mouse: a clearer aim point, since clicks act on what sits under it. */
+.looking .cross{width:9px;height:9px;margin:-4.5px 0 0 -4.5px;background:none;border:1.5px solid #fff;box-shadow:0 0 0 1px #0007,0 0 10px #0009}
