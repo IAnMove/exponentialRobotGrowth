@@ -7,7 +7,13 @@ export function paintingCanvas(e,es){
   const glow=(x,y,r,color)=>{const a=g.createRadialGradient(x,y,0,x,y,r);a.addColorStop(0,color);a.addColorStop(1,'transparent');g.fillStyle=a;g.fillRect(x-r,y-r,r*2,r*2);};
   const cube=(x,y,s,color=e.color)=>{g.fillStyle=color;g.beginPath();g.moveTo(x,y-s*.55);g.lineTo(x+s,y);g.lineTo(x,y+s*.55);g.lineTo(x-s,y);g.closePath();g.fill();g.fillStyle='#426182';g.beginPath();g.moveTo(x-s,y);g.lineTo(x,y+s*.55);g.lineTo(x,y+s*1.6);g.lineTo(x-s,y+s);g.fill();g.fillStyle='#263952';g.beginPath();g.moveTo(x+s,y);g.lineTo(x,y+s*.55);g.lineTo(x,y+s*1.6);g.lineTo(x+s,y+s);g.fill();};
   glow(510,245,350,e.color+'24');
-  if(['dyson','starlink','spacex','kardashev'].includes(e.id)){
+  if(e.id==='lunar'){
+    for(let i=0;i<90;i++)disc((i*173)%950,(i*97)%470,i%9===0?2:1,'#bdd0e7');
+    glow(200,170,100,'#5ca1d955');disc(200,170,63,'#3f7099');disc(740,200,96,'#9ca9b9');
+    g.strokeStyle='#ffc478';g.lineWidth=3;g.setLineDash([6,9]);g.beginPath();g.moveTo(245,125);g.bezierCurveTo(430,-25,600,0,712,123);g.stroke();g.setLineDash([]);
+    for(let row=0;row<4;row++)for(let i=0;i<2**row;i++)cube(290+i*49,230+row*57,14,row?'#87e3c3':'#ffc478');
+    g.font='22px system-ui';g.fillStyle='#ffdaaa';g.fillText('1 → 2 → 4 → 8',190,475);
+  }else if(['dyson','starlink','spacex','kardashev'].includes(e.id)){
     for(let i=0;i<100;i++)disc((i*173.13)%950,(i*97.27)%480,i%7===0?2:1,'#bfd3e6');
     if(e.id==='kardashev'){
       for(let i=0;i<550;i++){const a=i*.19,r=8+i*.34;disc(480+Math.cos(a)*r*1.65,235+Math.sin(a)*r*.58,1+i%3,e.color);}

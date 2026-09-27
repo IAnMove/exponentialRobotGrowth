@@ -1,0 +1,43 @@
+import * as T from '../../vendor/three.module.js';
+
+// Deterministic procedural detail: no per-frame allocation, external models or random spawns.
+export function visualKit(own,{textures=true}={}) {
+ const materials=new Map(),cube=own(new T.BoxGeometry(1,1,1));
+ function mat(color,kind='metal',emissive=0){const key=[color,kind,emissive].join(':');if(!materials.has(key))materials.set(key,own(new T.MeshStandardMaterial({color,roughness:kind==='soil'?1:kind==='foil'?.48:.38,metalness:kind==='soil'?0:kind==='foil'?.72:.52,emissive:color,emissiveIntensity:emissive})));return materials.get(key);}
+ function mesh(g,geometry,material,p=[0,0,0]){const m=new T.Mesh(geometry,material);m.position.set(...p);m.castShadow=true;m.receiveShadow=true;g.add(m);return m;}
+ function box(g,p,s,c,kind='metal',e=0){const m=mesh(g,cube,mat(c,kind,e),p);m.scale.set(...s);return m;}
+ function cyl(g,p,r,h,c,top=r){return mesh(g,own(new T.CylinderGeometry(top,r,h,32)),mat(c),p);}
+ function rod(g,a,b,r=.035,c=0x99abb7){const from=new T.Vector3(...a),to=new T.Vector3(...b),d=to.clone().sub(from);const m=cyl(g,from.add(to).multiplyScalar(.5).toArray(),r,d.length(),c);m.quaternion.setFromUnitVectors(new T.Vector3(0,1,0),d.normalize());return m;}
+ function ring(g,p,r,t,c){const m=mesh(g,own(new T.TorusGeometry(r,t,6,48)),mat(c),p);m.rotation.x=Math.PI/2;return m;}
+ const cellGeo=own(new T.PlaneGeometry(1,1));
+ function solar(g,p,w=2,h=1.4){const a=new T.Group();a.position.set(...p);g.add(a);box(a,[0,0,0],[w,.065,h],0x98b0c2);const cells=new T.InstancedMesh(cellGeo,mat(0x123d69),24),o=new T.Object3D();for(let i=0;i<24;i++){o.position.set(((i%6+.5)/6-.5)*w,.036,(Math.floor(i/6)+.5)/4*h-h/2);o.rotation.x=-Math.PI/2;o.scale.set(w/6-.025,h/4-.025,1);o.updateMatrix();cells.setMatrixAt(i,o.matrix);}a.add(cells);return a;}
+ function crate(g,p,s=1){const a=new T.Group();a.position.set(...p);a.scale.setScalar(s);g.add(a);box(a,[0,.5,0],[1.65,1,1.35],0xd6a967,'foil');for(const x of [-.57,.57]){box(a,[x,.51,0],[.07,1.04,1.4],0xced7d8);for(const z of [-.7,.7])box(a,[x,.6,z],[.16,.16,.06],0x273b4e);}box(a,[0,.66,.685],[.48,.27,.02],0x102d3c);box(a,[0,.66,.699],[.3,.035,.01],0x9cdedc,'metal',.4);return a;}
+ function text(g,value,p,w=1.1){if(!textures)return;const c=document.createElement('canvas');c.width=512;c.height=128;const x=c.getContext('2d');x.fillStyle='#d6dedf';x.fillRect(0,0,512,128);x.font='600 56px sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillStyle='#21343f';x.fillText(value,256,64,480);const tx=own(new T.CanvasTexture(c));tx.colorSpace=T.SRGBColorSpace;const m=mesh(g,own(new T.PlaneGeometry(w,w/4)),own(new T.MeshBasicMaterial({map:tx})),p);return m;}
+ // A reusable HLS-inspired teaching model, not a final vehicle specification.
+ function ship(g,{booster=false,depot=false,scale=1,stowed=false}={}){const a=new T.Group();a.scale.setScalar(scale);g.add(a);const h=booster?13:10,r=1.1;
+  cyl(a,[0,h/2,0],r,h,booster||depot?0x9eafb9:0xe1e5e1);
+  for(let y=.6;y<h;y+=.68)ring(a,[0,y,0],r+.004,.009,booster?0x73818a:0xb5bdc0);
+  ring(a,[0,.25,0],1.11,.08,0x425462);ring(a,[0,h-.3,0],1.11,.035,0x8e9ca6);
+  if(!booster){const pts=[];for(let i=0;i<=20;i++){const v=i/20;pts.push(new T.Vector2(Math.max(.005,1.1*Math.cos(v*Math.PI/2)),v*2.4));}mesh(a,own(new T.LatheGeometry(pts,40)),mat(0xe1e5e1),[0,h,0]);}
+  const n=booster?13:6;for(let i=0;i<n;i++){const ang=i/n*Math.PI*2,rad=booster?.72:.65;cyl(a,[Math.cos(ang)*rad,-.25,Math.sin(ang)*rad],booster?.2:.27,.55,0x26323e,.12);}
+  for(const x of [-1,1])rod(a,[x*1.105,.7,0],[x*1.105,h-.6,0],.033,0x82949e);
+  if(booster){for(let i=0;i<4;i++){const f=new T.Group();f.position.set(Math.cos(i*Math.PI/2)*1.1,h-1,Math.sin(i*Math.PI/2)*1.1);f.rotation.y=-i*Math.PI/2;a.add(f);for(let j=0;j<6;j++){box(f,[.65,.03,(j/5-.5)*.9],[1.3,.06,.04],0x344754);box(f,[j/5*1.3,.03,0],[.04,.06,.94],0x344754);}}}
+  else {if(!depot){for(let i=0;i<(stowed?0:6);i++){const ang=i*Math.PI/3,x=Math.cos(ang),z=Math.sin(ang);rod(a,[x,2,z],[x*1.9,-.12,z*1.9],.075);rod(a,[x,.45,z],[x*1.9,-.12,z*1.9],.045);cyl(a,[x*1.9,-.15,z*1.9],.33,.12,0x879da8);}box(a,[0,8.1,1.08],[1.05,1.6,.12],0x263b48);box(a,[0,8.05,1.15],[.82,1.3,.04],0x596e7a);for(const x of [-.53,.53])rod(a,[x,7.3,1.17],[x,8.9,1.17],.024);for(let i=0;i<4;i++)box(a,[-.3+i*.2,9.3,1],[.12,.1,.09],0x174859);text(a,'LUNAR',[0,6.8,1.12],.9);}
+   for(const sign of [-1,1]){if(!stowed)rod(a,[sign,5,0],[sign*2.5,5,0]);const array=solar(a,[sign*(stowed?1.16:depot?3:2.2),5,0],depot?3.5:2,1.5);if(stowed)array.rotation.z=Math.PI/2;}
+  }
+  const burn=plume(a,booster?1.6:.85,booster?9:5);burn.position.y=-.5;const light=new T.PointLight(0xffbe77,0,18,2);light.position.y=-1;light.visible=false;a.add(light);
+  return {group:a,burn,light};
+ }
+ function plume(g,width,length){const a=new T.Group();g.add(a);const m=own(new T.ShaderMaterial({transparent:true,depthWrite:false,side:T.DoubleSide,blending:T.AdditiveBlending,uniforms:{phase:{value:0}},vertexShader:'varying vec2 v;void main(){v=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'varying vec2 v;uniform float phase;void main(){float x=abs(v.x-.5)*2.;float y=1.-v.y;float edge=1.-smoothstep(.12+.65*y,.35+.65*y,x);float tail=pow(1.-y,1.5);float shock=.76+.24*sin(y*65.-phase*40.);vec3 col=mix(vec3(.3,.55,1.),vec3(1.,.48,.15),y);col=mix(col,vec3(.86,.94,1.),pow(1.-x,8.)*(1.-y));gl_FragColor=vec4(col,edge*tail*shock*.85);}' }));
+  const geo=own(new T.PlaneGeometry(width*2,length));for(let i=0;i<3;i++){const p=new T.Mesh(geo,m);p.position.y=-length/2;p.rotation.y=i*Math.PI/3;p.frustumCulled=false;a.add(p);}a.userData.material=m;return a;
+ }
+ // Grain is generated once; the relief geometry supplies actual crater silhouettes.
+ function soilMaterial(color=0x82838a){const m=own(new T.MeshStandardMaterial({color,roughness:1,metalness:0}));const size=128,data=new Uint8Array(size*size*4);for(let y=0;y<size;y++)for(let x=0;x<size;x++){const i=(y*size+x)*4,n=Math.sin(x*127.1+y*311.7)*43758.5453,v=100+Math.floor((n-Math.floor(n))*95);data.set([v,v,v,255],i);}const tx=own(new T.DataTexture(data,size,size));tx.wrapS=tx.wrapT=T.RepeatWrapping;tx.repeat.set(18,18);tx.magFilter=T.LinearFilter;tx.minFilter=T.LinearMipmapLinearFilter;tx.generateMipmaps=true;tx.anisotropy=4;tx.needsUpdate=true;m.map=tx;m.bumpMap=tx;m.bumpScale=.055;return m;}
+ function terrain(g,width=130,depth=130,flat=8){const geo=own(new T.PlaneGeometry(width,depth,128,128));geo.rotateX(-Math.PI/2);const pos=geo.attributes.position,craters=Array.from({length:12},(_,i)=>{const a=i*2.4,r=16+(i%4)*11;return [Math.cos(a)*r,Math.sin(a)*r,2+i%4];});
+  const height=(x,z)=>{const fade=T.MathUtils.smoothstep(Math.hypot(x,z),flat,flat+12);let h=.15*Math.sin(x*.73)*Math.cos(z*.47)+.5*Math.sin(x*.13)*Math.cos(z*.19);for(const [cx,cz,r] of craters){const d=Math.hypot(x-cx,z-cz)/r;h+=-.8*r*Math.exp(-d*d*3)+.28*r*Math.exp(-(((d-1)/.19)**2));}return -.25+h*fade;};
+  for(let i=0;i<pos.count;i++)pos.setY(i,height(pos.getX(i),pos.getZ(i)));geo.computeVertexNormals();const floor=mesh(g,geo,soilMaterial());floor.castShadow=false;
+  const rockGeo=own(new T.IcosahedronGeometry(1,1)),rockMat=mat(0x777a80,'soil');for(let i=0;i<85;i++){const angle=i*2.399,r=flat+3+(i%23)/22*(Math.min(width,depth)*.44-flat-3),x=Math.cos(angle)*r,z=Math.sin(angle)*r;const a=mesh(g,rockGeo,rockMat,[x,height(x,z)+.1,z]);a.scale.set(.2+i%4*.17,.18+i%3*.13,.26+i%5*.12);a.rotation.set(i*.4,i*.7,i*.2);}return floor;
+ }
+ function atmosphere(g,planet,r){const m=own(new T.ShaderMaterial({transparent:true,side:T.BackSide,depthWrite:false,blending:T.AdditiveBlending,vertexShader:'varying vec3 n;varying vec3 v;void main(){vec4 p=modelViewMatrix*vec4(position,1.);n=normalize(normalMatrix*normal);v=normalize(-p.xyz);gl_Position=projectionMatrix*p;}',fragmentShader:'varying vec3 n;varying vec3 v;void main(){float rim=pow(1.-abs(dot(normalize(n),normalize(v))),3.);gl_FragColor=vec4(.18,.48,1.,rim*.45);}'}));const a=mesh(g,own(new T.SphereGeometry(r*1.018,48,32)),m,planet.position.toArray());a.castShadow=a.receiveShadow=false;return a;}
+ return {mat,mesh,box,cyl,rod,ring,solar,crate,text,ship,plume,terrain,soilMaterial,atmosphere};
+}

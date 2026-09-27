@@ -23,8 +23,8 @@ export function createWorld(host,lesson,es,onInspect){
  const {scene,resources,targets,outlines,update}=createLessonScene(lesson,es);
  const camera=new THREE.PerspectiveCamera(60,1,.08,150);camera.rotation.order='YXZ';const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();let state,elapsed=0,phase=0,mode='web';
  function resize(){renderer.setSize(host.clientWidth,host.clientHeight,false);camera.aspect=host.clientWidth/Math.max(1,host.clientHeight);camera.fov=Math.min(108,2*Math.atan(Math.tan(31*Math.PI/180)/Math.min(1,camera.aspect/1.2))*180/Math.PI);camera.updateProjectionMatrix();}const observer=new ResizeObserver(resize);observer.observe(host);resize();
- return {canvas:renderer.domElement,update(s,i){state=s;phase=i;outlines.forEach((r,j)=>{r.material.emissiveIntensity=j===i?1:.12;});},render(player,dt,animation=true,orbit={yaw:.5,pitch:.4,distance:11},view='web'){
-  mode=view;if(animation)elapsed+=dt;if(state)update(state,elapsed,phase);
+ return {canvas:renderer.domElement,update(s,i){state=s;phase=i;outlines.forEach((r,j)=>{r.material.emissiveIntensity=j===i?1:.12;});},render(player,dt,animation=true,orbit={yaw:.5,pitch:.4,distance:11},view='web',timeOverride=null){
+  mode=view;if(Number.isFinite(timeOverride))elapsed=timeOverride;else if(animation)elapsed+=dt;if(state)update(state,elapsed,phase);
   if(mode==='immersive'){camera.position.set(player.x,1.65,player.z);camera.rotation.set(player.pitch,player.yaw,0,'YXZ');}
   else{const center=new THREE.Vector3(0,1.9,-phase*16),d=orbit.distance;camera.position.set(Math.cos(orbit.yaw)*Math.cos(orbit.pitch)*d,1.9+Math.sin(orbit.pitch)*d,center.z+Math.sin(orbit.yaw)*Math.cos(orbit.pitch)*d);camera.lookAt(center);}renderer.render(scene,camera);
  },inspect(x,y){const r=renderer.domElement.getBoundingClientRect();pointer.set((x-r.left)/r.width*2-1,1-(y-r.top)/r.height*2);ray.setFromCamera(pointer,camera);const hit=ray.intersectObjects(targets)[0];if(hit&&hit.distance<30)onInspect(hit.object.userData.info);},dispose(){observer.disconnect();resources.forEach(r=>r.dispose());renderer.dispose();},poseAt};

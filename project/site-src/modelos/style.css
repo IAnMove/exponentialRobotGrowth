@@ -51,3 +51,7 @@ footer{margin-top:22px;font-size:11px;color:#9a8468}
 @media(max-width:1050px){.layout{grid-template-columns:1fr}.principles{grid-template-columns:1fr}.scene-caption{display:block}.scene-caption span{display:block;text-align:left;margin-top:6px}}
 @media(max-width:760px){#app{padding:16px 12px}header{display:block}header p{margin-top:12px;max-width:none}.dashboard{grid-template-columns:1fr}.dashboard article{border-right:0;border-bottom:1px solid #5c4c36}.controls label{min-width:100%}#space,.stage{height:auto;min-height:420px}#space{height:420px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.has-atlas-player .voice-controls,.has-atlas-player #voice-state,.has-atlas-player #voice-time,.has-atlas-player #narrate{display:none}
+
+.has-atlas-player .voice-bar{display:none}

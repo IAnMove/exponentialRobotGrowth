@@ -73,6 +73,7 @@ for language in ['en', 'es']:
         content = (destination / source.name).read_text(encoding='utf-8')
         if source.suffix == '.js':
             content = content.replace("'./live/", "'../live/")
+            content = content.replace("'./playback/", "'../playback/")
             content = content.replace("'./vendor/", "'../vendor/") if language == 'en' else content.replace("'../vendor/", "'../../vendor/")
             if source.name == 'narrator.js':
                 content = content.replace("'./narration-catalog-en.js'", "'../narration-catalog-en.js'") if language == 'en' else content.replace("'../narration-catalog.js'", "'../../narration-catalog.js'")
@@ -90,7 +91,7 @@ for language in ['en', 'es']:
         (robots / source.name).write_text(content, encoding='utf-8')
     (robots / 'index.html').write_text((robots / 'factory.html').read_text(encoding='utf-8'), encoding='utf-8')
     # Standalone explanations use their own modules and bilingual content.
-    for folder in ['hub', 'terafab', 'growth', 'home', 'dyson', 'starlink', 'spacex', 'kardashev', 'llms', 'mente', 'modelos', 'museo', 'journeys', 'immersive', 'live']:
+    for folder in ['hub', 'playback', 'lunar', 'terafab', 'growth', 'home', 'dyson', 'starlink', 'spacex', 'kardashev', 'llms', 'mente', 'modelos', 'museo', 'journeys', 'immersive', 'live']:
         target = destination if folder == 'hub' else destination / folder
         target.mkdir(exist_ok=True)
         for source in (ROOT / 'site-src' / folder).iterdir():
@@ -100,7 +101,7 @@ for language in ['en', 'es']:
             if source.suffix not in ['.html', '.js', '.css']:
                 continue
             content = source.read_text(encoding='utf-8')
-            if folder in ['terafab', 'home', 'dyson', 'starlink', 'spacex', 'kardashev', 'llms', 'mente', 'modelos', 'museo', 'journeys', 'immersive'] and language == 'es' and source.suffix == '.js':
+            if folder in ['lunar', 'terafab', 'home', 'dyson', 'starlink', 'spacex', 'kardashev', 'llms', 'mente', 'modelos', 'museo', 'journeys', 'immersive'] and language == 'es' and source.suffix == '.js':
                 content = content.replace("'../vendor/", "'../../vendor/")
             if source.suffix == '.html':
                 content = content.replace('{{EN}}', './index.html' if language == 'en' else '../index.html').replace('{{ES}}', './es/index.html' if language == 'en' else './index.html')

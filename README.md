@@ -6,19 +6,39 @@ English starts at `/`; Spanish at `/es/`. All links work beneath the GitHub Page
 
 The museum's LLM painting now offers two formats: the existing web notebook and
 `immersive/index.html?experience=llms`, a walkable Three.js world with eight stations.
-Walk with WASD/arrows, drag to look, or use touch buttons. The guided route moves the camera,
+Walk with WASD/arrows and first-person mouse look, or use touch controls. Each stand has a narration button; activating it never teleports the camera. Escape releases the mouse. The guided route moves the camera,
 plays the existing bilingual MiniMax narration and waits three seconds after each clip.
-Walking interrupts the guide; instant travel supports reduced motion. Inspect tokens,
+Walking cancels guided travel while narration can continue within the station; instant travel supports reduced motion. The cinematic-inspired LLM gallery shows one attention operation at a time with computed weights, visible token labels and a persistent bilingual transcript synchronized to measured audio segments. Inspect tokens,
 vector cells, attention matrices and probabilities, then emit a token and return it to context.
 This is teaching geometry with synthetic weights and curated answers, not a physical CPU model.
-Eight additional notebooks and walkable worlds now cover Internet, electricity, microchips,
+Internet's painting now opens a dedicated nine-scene cinematic voyage: a laptop in Madrid,
+the access network, Spain, Sopelana, the MAREA cable beneath the Atlantic, Virginia Beach,
+an illustrative Ashburn server, the return trip and browser rendering. The NASA-textured Earth
+anchors real landing locations; routes, buildings and visual speeds are explicitly illustrative.
+Eighteen MiniMax clips supply bilingual narration and transcripts. Audio completion plus a
+three-second pause gates the guided tour. Free first-person exploration is optional.
+The 6,600 km cable and assumed fiber speed produce a 33 ms propagation-only one-way example,
+not a measured ping or page-load claim. The original Internet web experiment remains available.
+The Earth-to-Moon notebook adds a mass-balanced industrial seed simulation, growing cargo cadence, local manufacturing, reinvestment, component and power limits, a Three.js worksite, 14 bilingual MiniMax clips, and a separate Kardashev date calculator. The quoted dates are audited as conditional arithmetic, not predictions.
+Narrated notebooks now share a fixed chapter timeline with continuous audio seeking,
+visible transcripts, language switching and local progress recovery. Autoplay is attempted;
+blocked audio remains at its current position until Play is pressed. The audio clock restores
+scene state when scrubbing; the LLM timeline also restores generated-token history.
+The lunar notebook opens with seven HLS-inspired mission scenes: launch, booster recovery,
+orbital refueling, transfer, descent, elevator unloading and return to lunar orbit. It distinguishes
+booster recovery from the lunar variant, which is not shown reentering Earth. Twenty-eight
+bilingual clips cover the complete lunar narrative. Map traffic follows modeled delivery events.
+Detailed procedural vehicles, lunar relief, shadows, exhaust and dust share the narrative clock.
+A separate SFX mixer provides quiet illustrative sonification, with saved mute/volume settings
+and silence on pause, hidden tabs and seeks; vacuum scenes do not imply sound propagation.
+Eight additional notebooks and walkable worlds cover Internet, electricity, microchips,
 cells, idea diffusion, nuclear reactors, carbon and evolution. Each has four stations, bilingual
 MiniMax narration, a manual or audio-ended guided route, interactive controls, live metrics,
 history charts, sources and explicit model limits. There are 64 new topic voice clips.
 The catalog only marks genuinely built walkable worlds as available.
 The museum has an atrium and four themed galleries: Intelligence, Industry & Life, Cosmos,
-and Life & Nature. Nineteen paintings include nine portals into walkable worlds.
-Nineteen original illustrated canvases sit in physical frames. Choose a painting or a gallery on
+and Life & Nature. Twenty paintings include nine portals into walkable worlds.
+Twenty original illustrated canvases sit in physical frames. Choose a painting or a gallery on
 the live floor plan to walk there through the doorways, or explore with smooth WASD movement,
 drag-to-look and a touch joystick. Each available canvas ripples as the camera crosses it and enters
 the learning world directly. Ten bilingual MiniMax clips narrate the atrium and galleries.
@@ -69,12 +89,17 @@ npm ci
 python build-site.py
 python check-site.py
 node check-kardashev.mjs
+node check-playback.mjs
+node check-lunar.mjs
+node check-lunar-sfx.mjs
 node check-kardashev-media.mjs
 node check-kardashev-motion.mjs
 node check-llms.mjs
 node check-llms-guide.mjs
 node check-llms-tensors.mjs
 node check-immersive.mjs
+node check-immersive-scenes.mjs
+node check-immersive-controls.mjs
 node check-museo.mjs
 node check-museo-controls.mjs
 node check-journeys.mjs

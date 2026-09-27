@@ -1,0 +1,132 @@
+{
+  "es": [
+    {
+      "id": "liftoff",
+      "title": "Despegar desde la Tierra",
+      "text": "Super Heavy impulsa la nave lunar. La carga industrial empieza aquí, pero aún no ha llegado a la Luna. Seguimos los mismos equipos durante el ascenso. Comprimimos tiempo y distancias para ver cada paso. Es una arquitectura prevista, no una misión de carga lunar ya completada."
+    },
+    {
+      "id": "booster",
+      "title": "Separar y recuperar el propulsor",
+      "text": "El propulsor regresa a la Tierra. La nave superior continúa hacia órbita: son vehículos con destinos distintos. La cámara sigue ahora a Super Heavy hacia la torre. La recuperación que ves es esquemática. Reutilizar el propulsor permite preparar nuevos lanzamientos, pero no elimina el coste ni la necesidad de inspecciones."
+    },
+    {
+      "id": "refuel",
+      "title": "Repostar en órbita terrestre",
+      "text": "Depósito, vuelos cisterna y nave lunar: una entrega requiere una campaña de apoyo. No fijamos un número de vuelos cisterna. Los puntos verdes muestran el combustible y el oxidante que se transfieren. La nave lunar no viaja con solo la energía que le dio el despegue. Una entrega puede necesitar varios lanzamientos de apoyo."
+    },
+    {
+      "id": "transfer",
+      "title": "Cruzar hasta la Luna",
+      "text": "La nave abandona la órbita terrestre, viaja durante días y realiza maniobras para llegar a la Luna. Curva y tiempos comprimidos. Ni los tamaños ni la velocidad de la nave están a escala. Lo que importa es seguir la misma carga desde la órbita terrestre hasta preparar su llegada a la Luna."
+    },
+    {
+      "id": "descent",
+      "title": "Frenar y alunizar",
+      "text": "Hay que reducir la velocidad y descender de forma controlada. La Luna no tiene una atmósfera útil para frenar con paracaídas. La forma de la nave se inspira en Starship HLS. Las patas, los sistemas de energía y la bodega alta ayudan a reconocerla. Los motores y la trayectoria están simplificados."
+    },
+    {
+      "id": "unload",
+      "title": "Bajar la carga a la superficie",
+      "text": "Un elevador deposita equipos; un vehículo los acerca a la base. La descarga representa una entrega, no una fábrica completa. El elevador es una solución prevista en HLS. Descargar, instalar y probar los equipos son pasos distintos. En nuestro modelo una entrega aporta veinticinco toneladas: un supuesto didáctico, no una prestación prometida por SpaceX."
+    },
+    {
+      "id": "return",
+      "title": "Qué vuelve, y adónde",
+      "text": "HLS regresa a órbita lunar en la arquitectura tripulada. No lleva el escudo ni las aletas de la versión que reentra en la Tierra. El ciclo de carga futuro puede ser diferente. Por eso no mostramos a esta misma nave aterrizando después en la Tierra. Ahora abrimos el plano. Cada nave del mapa representa una entrega lunar como la que acabamos de seguir; los vuelos de apoyo no se suman al contador de entregas."
+    },
+    {
+      "id": "seed",
+      "text": "La primera fase empieza en la Tierra. No se trata de transportar una civilización entera, sino de enviar una semilla industrial: equipos de energía, excavación, procesamiento, fabricación y reparación. En este laboratorio empezamos con cien toneladas de equipos ya instalados en dos mil treinta. Son valores ilustrativos, no un plan de misión. La pregunta es qué ocurre después: seguir enviándolo todo, o aprovechar recursos lunares para construir parte de la siguiente generación de equipos."
+    },
+    {
+      "id": "launch",
+      "text": "Cada entrega tiene que llegar hasta la superficie lunar. Lanzar a órbita no es lo mismo que alunizar: hacen falta una trayectoria de transferencia, maniobras, descenso y posiblemente otros vuelos de apoyo. Aquí contamos toneladas de carga útil entregadas, sin simular combustible ni repostajes. Con veinticinco toneladas por entrega, la semilla de cien toneladas requiere cuatro entregas iniciales. Después, el control de frecuencia determina cuántas cargas adicionales llegan cada año. Los vehículos y las distancias están representados de forma esquemática."
+    },
+    {
+      "id": "power",
+      "text": "Antes de multiplicar fábricas hay que mantenerlas funcionando. La base necesita generación eléctrica, almacenamiento o fuentes complementarias, distribución y control de temperatura. Muchas regiones lunares tienen noches de aproximadamente dos semanas; el lugar concreto importa. En la simulación, la actividad efectiva reduce el ritmo de fabricación. Además, cada tonelada de capacidad industrial exige una potencia supuesta. Cuando alcanzamos el techo de potencia disponible, no podemos activar más equipos, aunque queden componentes en el almacén."
+    },
+    {
+      "id": "mine",
+      "text": "La materia prima ya está en la Luna, pero todavía no es una máquina. Hay que excavar, separar y procesar el regolito. Se investiga cómo obtener oxígeno y materiales útiles, y fabricar estructuras. Los experimentos terrestres con simulantes no equivalen a una industria lunar autónoma. El porcentaje local del laboratorio indica cuánta masa de cada ampliación suponemos que ya podemos fabricar allí. Es una hipótesis muy exigente: noventa por ciento de masa local no significa noventa por ciento de autosuficiencia tecnológica."
+    },
+    {
+      "id": "factory",
+      "text": "La fábrica transforma materiales y ensambla equipos capaces de producir más. Esta es la diferencia entre levantar edificios y ampliar capacidad industrial. Incluso con estructuras locales, chips, sensores, herramientas y otros componentes pueden seguir dependiendo de la Tierra. Cada nueva ampliación consume una parte local y una parte importada; el modelo lleva la cuenta de ambas. Si el almacén de componentes se vacía, disponer de más regolito no basta para completar las máquinas."
+    },
+    {
+      "id": "replicate",
+      "text": "Ahora aparece el bucle de crecimiento: una parte de la producción se reinvierte en nuevos equipos, que ayudan a fabricar los siguientes. En el caso ideal, duplicar cada doce meses produce uno, dos, cuatro, ocho y dieciséis veces la capacidad inicial. La curva dorada enseña esa matemática sin límites. La verde aplica nuestras restricciones. La azul muestra qué pasaría importándolo todo con las mismas entregas. La diferencia crece porque aprovechamos masa local, no porque los cohetes se multipliquen por arte de magia."
+    },
+    {
+      "id": "limits",
+      "text": "El crecimiento exponencial no puede continuar indefinidamente. En este laboratorio aparecen dos límites explícitos: componentes importados y potencia disponible. También faltarían restricciones reales como averías, desgaste, calor, financiación y procesos que todavía no sabemos industrializar allí. La escala Kardashev mide potencia, no toneladas de fábricas. Por eso la calculadora de fechas está separada: para llegar a sus umbrales habría que justificar que también crece la potencia aprovechada. Las fechas de la cita son escenarios condicionados, no resultados demostrados."
+    }
+  ],
+  "en": [
+    {
+      "id": "liftoff",
+      "title": "Liftoff from Earth",
+      "text": "Super Heavy launches the lunar vehicle. Industrial cargo starts here, but has not yet reached the Moon. We follow the same equipment during ascent. Time and distance are compressed to reveal each step. This is a proposed architecture, not an already completed lunar cargo mission."
+    },
+    {
+      "id": "booster",
+      "title": "Separate and recover the booster",
+      "text": "The booster returns to Earth. The upper vehicle continues toward orbit: these vehicles have different destinations. The camera now follows Super Heavy back toward the tower. This recovery is schematic. Reusing the booster enables new launches, but does not remove costs or the need for inspections."
+    },
+    {
+      "id": "refuel",
+      "title": "Refuel in Earth orbit",
+      "text": "Depot, tanker flights and lunar vehicle: a delivery requires a support campaign. We do not assume a fixed number of tanker flights. Green points show fuel and oxidizer being transferred. The lunar vehicle does not travel using only the energy supplied at launch. One delivery can require several support launches."
+    },
+    {
+      "id": "transfer",
+      "title": "Transfer to the Moon",
+      "text": "The vehicle leaves Earth orbit, travels for days and maneuvers to reach the Moon. The curve and time are compressed. Neither sizes nor vehicle speed are to scale. What matters is following the same cargo from Earth orbit to its arrival at the Moon."
+    },
+    {
+      "id": "descent",
+      "title": "Brake and land",
+      "text": "Velocity must be reduced for a controlled descent. The Moon has no useful atmosphere for parachute braking. The vehicle shape is inspired by Starship HLS. Landing legs, power systems and the high cargo bay help identify it. Engines and trajectory are simplified."
+    },
+    {
+      "id": "unload",
+      "title": "Lower cargo to the surface",
+      "text": "An elevator lowers equipment; a rover takes it toward the base. Unloading represents a delivery, not a complete factory. The elevator is a feature planned for HLS. Unloading, installation and testing are separate steps. In our model a delivery supplies twenty-five tonnes: a teaching assumption, not a capability promised by SpaceX."
+    },
+    {
+      "id": "return",
+      "title": "What returns, and where",
+      "text": "HLS returns to lunar orbit in the crewed architecture. It lacks the heat shield and flaps of the Earth-reentry variant. Future cargo cycles may differ. That is why we do not show this same vehicle landing back on Earth. Now we zoom out. Each vehicle on the map represents a lunar delivery like the one we just followed; support flights are not included in the delivery counter."
+    },
+    {
+      "id": "seed",
+      "text": "The first phase begins on Earth. The idea is not to transport an entire civilization, but to send an industrial seed: equipment for power, excavation, processing, manufacturing and repair. In this lab, we start with one hundred tonnes of equipment already installed in twenty thirty. These are illustrative values, not a mission plan. The question is what happens next: keep importing everything, or use lunar resources to build part of the next generation of equipment."
+    },
+    {
+      "id": "launch",
+      "text": "Every delivery has to reach the lunar surface. Launching into orbit is not the same as landing on the Moon: it takes a transfer trajectory, maneuvers, descent and possibly other support flights. Here we count useful cargo delivered, without modeling fuel or refueling. At twenty-five tonnes per delivery, the one-hundred-tonne seed requires four initial deliveries. The frequency control then sets how many additional loads arrive each year. Vehicles and distances are schematic."
+    },
+    {
+      "id": "power",
+      "text": "Before multiplying factories, we must keep them running. The base needs electrical generation, storage or complementary sources, distribution and thermal control. Many lunar regions have nights lasting roughly two weeks; the specific location matters. In the simulation, effective uptime reduces manufacturing speed. Each tonne of industrial capacity also requires an assumed amount of power. Once we reach the available power ceiling, we cannot activate more equipment even if components remain in storage."
+    },
+    {
+      "id": "mine",
+      "text": "The raw material is already on the Moon, but it is not yet a machine. Regolith must be excavated, separated and processed. Researchers are investigating how to obtain oxygen and useful materials and manufacture structures. Earth-based experiments with simulants do not amount to an autonomous lunar industry. The lab's local percentage represents how much of each expansion's mass we assume can already be manufactured there. This is a demanding assumption: ninety percent local mass does not mean ninety percent technological self-sufficiency."
+    },
+    {
+      "id": "factory",
+      "text": "The factory transforms materials and assembles equipment that can produce more. This is the difference between erecting buildings and adding industrial capacity. Even with local structures, chips, sensors, tools and other components may still depend on Earth. Each expansion consumes a local share and an imported share; the model accounts for both. If the component store runs empty, having more regolith cannot complete the machines."
+    },
+    {
+      "id": "replicate",
+      "text": "Now the growth loop appears: part of the output is reinvested in new equipment, which helps manufacture the next generation. In the ideal case, doubling every twelve months gives one, two, four, eight and sixteen times the initial capacity. The gold curve shows that unconstrained mathematics. Green applies our constraints. Blue shows importing everything with the same deliveries. The gap grows because we use local mass, not because rockets magically multiply."
+    },
+    {
+      "id": "limits",
+      "text": "Exponential growth cannot continue forever. This lab shows two explicit limits: imported components and available power. Real constraints would also include breakdowns, wear, heat, funding and processes we cannot yet industrialize there. The Kardashev scale measures power, not tonnes of factories. That is why the date calculator is separate: reaching those thresholds would require a justified growth path for power use as well. The quoted dates are conditional scenarios, not demonstrated outcomes."
+    }
+  ]
+}
