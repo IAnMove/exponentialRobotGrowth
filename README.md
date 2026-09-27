@@ -28,6 +28,9 @@ The lunar notebook opens with seven HLS-inspired mission scenes: launch, booster
 orbital refueling, transfer, descent, elevator unloading and return to lunar orbit. It distinguishes
 booster recovery from the lunar variant, which is not shown reentering Earth. Twenty-eight
 bilingual clips cover the complete lunar narrative. Map traffic follows modeled delivery events.
+Detailed procedural vehicles, lunar relief, shadows, exhaust and dust share the narrative clock.
+A separate SFX mixer provides quiet illustrative sonification, with saved mute/volume settings
+and silence on pause, hidden tabs and seeks; vacuum scenes do not imply sound propagation.
 Eight additional notebooks and walkable worlds cover Internet, electricity, microchips,
 cells, idea diffusion, nuclear reactors, carbon and evolution. Each has four stations, bilingual
 MiniMax narration, a manual or audio-ended guided route, interactive controls, live metrics,
@@ -88,6 +91,7 @@ python check-site.py
 node check-kardashev.mjs
 node check-playback.mjs
 node check-lunar.mjs
+node check-lunar-sfx.mjs
 node check-kardashev-media.mjs
 node check-kardashev-motion.mjs
 node check-llms.mjs

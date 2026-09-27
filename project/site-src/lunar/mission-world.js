@@ -1,43 +1,55 @@
 import * as T from '../vendor/three.module.js';
 import {missionPose} from './mission.js';
+import {visualKit} from './visuals.js';
 const V=a=>new T.Vector3(...a),GOLD=0xffbd73;
 export function buildMission(es,{textures=true}={}){
- const group=new T.Group(),resources=[],own=x=>(resources.push(x),x),materials=new Map();
- const mat=(color,emissive=0)=>{const key=color+':'+emissive;if(!materials.has(key))materials.set(key,own(new T.MeshStandardMaterial({color,metalness:.55,roughness:.38,emissive:color,emissiveIntensity:emissive})));return materials.get(key);};
- const boxGeo=own(new T.BoxGeometry(1,1,1));
- function box(g,p,s,c,e=0){const m=new T.Mesh(boxGeo,mat(c,e));m.position.set(...p);m.scale.set(...s);g.add(m);return m;}
- function cylinder(g,p,r,h,c,top=r){const m=new T.Mesh(own(new T.CylinderGeometry(top,r,h,32)),mat(c));m.position.set(...p);g.add(m);return m;}
- function label(g,text,p,w){if(!textures)return;const c=document.createElement('canvas'),x=c.getContext('2d');c.width=1024;c.height=100;x.fillStyle='#07131bd9';x.fillRect(0,0,1024,100);x.font='500 40px system-ui';x.textAlign='center';x.textBaseline='middle';x.fillStyle='#d9ecf4';x.fillText(text,512,50,990);const tx=own(new T.CanvasTexture(c));tx.colorSpace=T.SRGBColorSpace;const s=new T.Sprite(own(new T.SpriteMaterial({map:tx,depthWrite:false})));s.position.set(...p);s.scale.set(w,w*100/1024,1);g.add(s);}
- function flame(g,r=1){const f=new T.Group();g.add(f);const outer=new T.Mesh(own(new T.ConeGeometry(r,7,22)),own(new T.MeshBasicMaterial({color:0xff9d50,transparent:true,opacity:.65,depthWrite:false})));outer.rotation.z=Math.PI;outer.position.y=-3.5;f.add(outer);const inner=new T.Mesh(own(new T.ConeGeometry(r*.45,5,18)),own(new T.MeshBasicMaterial({color:0xd9edff})));inner.rotation.z=Math.PI;inner.position.y=-2.5;f.add(inner);return f;}
- function ship(g,{booster=false,depot=false}={}){const a=new T.Group();g.add(a);const h=booster?13:10,r=1.1;cylinder(a,[0,h/2,0],r,h,depot?0x8a9aaa:booster?0xb7c0c7:0xe2e7e7);for(let y=1;y<h;y+=.65){const seam=new T.Mesh(own(new T.TorusGeometry(r+.006,.012,4,40)),mat(0x6a7c87));seam.rotation.x=Math.PI/2;seam.position.y=y;a.add(seam);}
-  if(!booster)cylinder(a,[0,h+1.2,0],r,2.4,0xe2e7e7,.04);
-  for(let i=0;i<(booster?7:3);i++){const angle=i/(booster?7:3)*Math.PI*2;cylinder(a,[Math.cos(angle)*.55,-.28,Math.sin(angle)*.55],.28,.65,0x283b4a,.14);}
-  if(booster){for(let i=0;i<4;i++){const fin=box(a,[Math.cos(i*Math.PI/2)*1.4,h-1,Math.sin(i*Math.PI/2)*1.4],[1.2,.13,.9],0x405464);fin.rotation.y=-i*Math.PI/2;}}
-  else if(!depot){for(let i=0;i<6;i++){const ang=i*Math.PI/3;const leg=box(a,[Math.cos(ang)*1.4,.7,Math.sin(ang)*1.4],[.13,2.1,.13],0xacb7bd);leg.rotation.z=-Math.cos(ang)*.4;leg.rotation.x=Math.sin(ang)*.4;box(a,[Math.cos(ang)*1.8,-.2,Math.sin(ang)*1.8],[.7,.12,.6],0xabb8c0);}box(a,[0,8,1.12],[1.1,1.8,.04],0x263b47);for(const x of [-1,1]){box(a,[x*2,5,0],[1.8,.055,1.3],0x164773);}}
-  if(depot)for(const x of [-1,1])box(a,[x*3,5,0],[4,.055,2],0x164773);
-  const burn=flame(a,booster?1.6:.8);burn.position.y=-.55;return {group:a,burn};
- }
+ const group=new T.Group(),resources=[],own=x=>(resources.push(x),x);
+ const kit=visualKit(own,{textures}),{box,ship,solar,rod,ring,crate}=kit;
+ const mat=(c,e=0)=>kit.mat(c,'metal',e),cylinder=kit.cyl;
  const earthmat=own(new T.MeshStandardMaterial({color:0x427e9b,roughness:1,metalness:0}));if(textures)new T.TextureLoader().load('../kardashev/earth-blue-marble.jpg',tx=>{own(tx);tx.colorSpace=T.SRGBColorSpace;earthmat.map=tx;earthmat.color.set(0xffffff);earthmat.needsUpdate=true;});
  const sphere=own(new T.SphereGeometry(1,48,32));function planet(g,p,r,m){const a=new T.Mesh(sphere,m);a.position.set(...p);a.scale.setScalar(r);g.add(a);return a;}
  const launch=new T.Group(),orbit=new T.Group(),crossing=new T.Group(),surface=new T.Group();group.add(launch,orbit,crossing,surface);
- box(launch,[0,-.6,0],[150,1,130],0x314c48);box(launch,[38,-.04,-20],[70,.15,160],0x15506a);box(launch,[0,.04,0],[13,.3,13],0x67787e);cylinder(launch,[0,1.3,0],2.8,2.4,0x727d7c);
+ const shoreGeo=own(new T.PlaneGeometry(170,300,36,80));shoreGeo.rotateX(-Math.PI/2);const shorePos=shoreGeo.attributes.position;for(let i=0;i<shorePos.count;i++){const z=shorePos.getZ(i),edge=19+7*Math.sin(z*.038)+2*Math.sin(z*.13),u=(shorePos.getX(i)+85)/170;shorePos.setX(i,-130+u*(130+edge));shorePos.setY(i,-.1);}shoreGeo.computeVertexNormals();const shore=new T.Mesh(shoreGeo,kit.mat(0x596b56,'soil'));shore.receiveShadow=true;launch.add(shore);box(launch,[90,-.25,0],[300,.1,320],0x24586c,'soil');
+ const beachGeo=own(new T.PlaneGeometry(2,300,1,160));beachGeo.rotateX(-Math.PI/2);const beachPos=beachGeo.attributes.position;for(let i=0;i<beachPos.count;i++){const z=beachPos.getZ(i),edge=19+7*Math.sin(z*.038)+2*Math.sin(z*.13);beachPos.setX(i,edge-1+beachPos.getX(i));beachPos.setY(i,-.07);}beachGeo.computeVertexNormals();const beach=new T.Mesh(beachGeo,kit.mat(0xb0a88b,'soil'));beach.receiveShadow=true;launch.add(beach);
+box(launch,[0,.04,0],[13,.3,13],0x67787e,'soil');cylinder(launch,[0,1.3,0],2.8,2.4,0x727d7c);
  for(const x of [-7,-5])for(const z of [-2,0])box(launch,[x,12,z],[.35,24,.35],0x87969b);for(let y=2;y<24;y+=2){box(launch,[-6,y,-1],[2.2,.2,2.2],0x758a92);const brace=box(launch,[-6,y,-1],[.13,2.8,.13],0xa7b3b8);brace.rotation.z=.7;}box(launch,[-3.5,15,-1],[6,.45,.45],0xb3b5ac);
  for(let i=0;i<5;i++){cylinder(launch,[-20+i*3,2.5,-10],1.1,5,0xc3cecf);box(launch,[-20+i*3,.2,-4],[.18,.25,12],0x6c8c93);}
- const booster=ship(launch,{booster:true}),upper=ship(launch);
- const smokeGeo=own(new T.SphereGeometry(1,10,8)),smokeMat=own(new T.MeshStandardMaterial({color:0xbac2c6,transparent:true,opacity:.25,depthWrite:false}));const smoke=Array.from({length:24},()=>{const a=new T.Mesh(smokeGeo,smokeMat);launch.add(a);return a;});
- planet(orbit,[0,-70,-20],58,earthmat);const lunarOrbiter=ship(orbit),depot=ship(orbit,{depot:true}),tanker=ship(orbit,{depot:true});lunarOrbiter.group.rotation.z=Math.PI/2;lunarOrbiter.group.position.set(-2,5,0);depot.group.rotation.z=-Math.PI/2;depot.group.position.set(2,5,0);tanker.group.scale.setScalar(.5);tanker.group.rotation.z=Math.PI/2;tanker.group.position.set(14,0,-8);[lunarOrbiter,depot,tanker].forEach(s=>s.burn.visible=false);
+ // Service gantries, pipework and pad markings give the launch site a readable scale.
+ for(let i=0;i<14;i++){box(launch,[-8,.13,5+i*2],[.12,.04,1],0xf1ddb1);box(launch,[8,.13,5+i*2],[.12,.04,1],0xf1ddb1);}
+ box(launch,[0,.02,32],[18,.12,48],0x424d50,'soil');
+ for(const x of [-26,-16]){box(launch,[x,1,-17],[8,2,5],0x8eaaa9);for(let j=0;j<5;j++)box(launch,[x-3+j*1.5,2.1,-17],[.08,.1,5],0xc9d1ce);}
+ for(let y=2;y<24;y+=2){rod(launch,[-7,y,-2],[-5,y+2,-2],.05);rod(launch,[-5,y,-2],[-7,y+2,-2],.05);}
+ for(const z of [-3,3]){rod(launch,[-6,15,z],[1,15,z],.16);rod(launch,[-6,13,z],[0,15,z],.08);}
+ for(let i=0;i<5;i++){ring(launch,[-20+i*3,4.7,-10],1.11,.04,0x6c8c93);rod(launch,[-20+i*3,4,-10],[-20+i*3,.3,-10],.06);}
+ const booster=ship(launch,{booster:true}),upper=ship(launch,{stowed:true});
+ // Soft billboard particles: atmospheric launch exhaust; lunar ejecta is a thin radial sheet.
+ function cloud(g,count,color){const geo=own(new T.PlaneGeometry(1,1));const m=own(new T.ShaderMaterial({transparent:true,depthWrite:false,side:T.DoubleSide,uniforms:{tint:{value:new T.Color(color)},opacity:{value:.35}},vertexShader:'varying vec2 v;void main(){v=uv;vec4 p=modelViewMatrix*vec4(0.,0.,0.,1.);p.xy+=position.xy*vec2(length(modelMatrix[0].xyz),length(modelMatrix[1].xyz));gl_Position=projectionMatrix*p;}',fragmentShader:'varying vec2 v;uniform vec3 tint;uniform float opacity;void main(){float r=length(v-.5)*2.;float a=pow(max(0.,1.-r*r),2.);gl_FragColor=vec4(tint,a*opacity);}'}));return Array.from({length:count},()=>{const p=new T.Mesh(geo,m);p.frustumCulled=false;g.add(p);return p;});}
+ const smoke=cloud(launch,40,0xbfc7cd);
+ const orbitalEarth=planet(orbit,[0,-70,-20],58,earthmat);kit.atmosphere(orbit,orbitalEarth,58);const lunarOrbiter=ship(orbit),depot=ship(orbit,{depot:true}),tanker=ship(orbit,{depot:true});lunarOrbiter.group.rotation.z=Math.PI/2;lunarOrbiter.group.position.set(-2,5,0);depot.group.rotation.z=-Math.PI/2;depot.group.position.set(2,5,0);tanker.group.scale.setScalar(.5);tanker.group.rotation.z=Math.PI/2;tanker.group.position.set(14,0,-8);[lunarOrbiter,depot,tanker].forEach(s=>s.burn.visible=false);
 
  const fuel=Array.from({length:20},()=>planet(orbit,[0,0,0],.10,mat(0x87e3c3,2)));
- planet(crossing,[-17,0,-4],6,earthmat);planet(crossing,[18,0,0],3.4,mat(0x999ca6));const curve=new T.CatmullRomCurve3([V([-16,5,-2]),V([-10,12,1]),V([7,11,4]),V([17,3,3])]);const line=new T.Mesh(own(new T.TubeGeometry(curve,100,.035,6,false)),mat(0x4c829f,.2));crossing.add(line);const transit=ship(crossing);transit.group.scale.setScalar(.3);transit.burn.visible=false;
+ const transitEarth=planet(crossing,[-17,0,-4],6,earthmat);kit.atmosphere(crossing,transitEarth,6);planet(crossing,[18,0,0],3.4,kit.soilMaterial(0xb4b2ad));const curve=new T.CatmullRomCurve3([V([-16,5,-2]),V([-10,12,1]),V([7,11,4]),V([17,3,3])]);const line=new T.Mesh(own(new T.TubeGeometry(curve,100,.035,6,false)),mat(0x4c829f,.2));crossing.add(line);const transit=ship(crossing);transit.group.scale.setScalar(.3);transit.burn.visible=false;
 
- const ground=new T.Mesh(own(new T.PlaneGeometry(130,130,60,60)),mat(0x666c76));ground.rotation.x=-Math.PI/2;surface.add(ground);for(let i=0;i<65;i++){const angle=i*2.4,r=10+i%18*2;const rock=planet(surface,[Math.cos(angle)*r,.2,Math.sin(angle)*r],.3+i%4*.2,mat(0x535965));rock.scale.y*=.45;}
- planet(surface,[-32,25,-55],7,earthmat);const landed=ship(surface);const elevator=new T.Group();landed.group.add(elevator);box(elevator,[2.4,0,0],[2.4,.13,2.4],0x859aa4);const pallet=box(elevator,[2.4,.5,0],[1.6,.9,1.3],GOLD);const cable=box(landed.group,[2.1,5,0],[.04,8,.04],0xd2dedf);box(landed.group,[1.6,9,0],[2,.15,.15],0xa7b8c4);
- const rover=new T.Group();surface.add(rover);box(rover,[0,.55,0],[2.2,.45,1.8],0x97a6b2);for(const x of [-.75,.75])for(const z of [-1,1]){const w=cylinder(rover,[x,.35,z],.32,.3,0x223342);w.rotation.x=Math.PI/2;}const hauled=box(rover,[0,1.2,0],[1.6,.9,1.3],GOLD);
+ kit.terrain(surface);
+ const earthrise=planet(surface,[-32,25,-55],7,earthmat);kit.atmosphere(surface,earthrise,7);
+ const landed=ship(surface),elevator=new T.Group();landed.group.add(elevator);
+ box(elevator,[2.4,0,0],[2.4,.13,2.4],0x859aa4);const pallet=crate(elevator,[2.4,.08,0]);
+ for(const z of [-1.1,1.1]){rod(elevator,[1.3,.1,z],[3.5,.1,z],.035,0xffc77b);for(const x of [1.3,3.5])rod(elevator,[x,0,z],[x,.4,z],.025);}
+ const cable=box(landed.group,[2.1,5,0],[.04,8,.04],0xd2dedf);rod(landed.group,[.9,9.1,0],[3.4,9.1,0],.09);rod(landed.group,[.9,9.8,0],[3.3,9.1,0],.045);cylinder(landed.group,[2.5,9.1,0],.18,.3,0x526678);
+ const rover=new T.Group();surface.add(rover);box(rover,[0,.65,0],[2.4,.38,1.8],0xb1bfbe);box(rover,[0,.87,0],[2.3,.1,1.9],0x344654);
+ const wheels=[];for(const x of [-.9,0,.9])for(const z of [-1,1]){const axle=cylinder(rover,[x,.38,z],.38,.26,0x3b4650);axle.rotation.x=Math.PI/2;const hub=cylinder(rover,[x,.38,z*1.15],.18,.04,0xbac4c5);hub.rotation.x=Math.PI/2;wheels.push(axle);for(let j=0;j<12;j++){const lug=box(axle,[Math.cos(j*Math.PI/6)*.37,0,Math.sin(j*Math.PI/6)*.37],[.08,.29,.04],0x899497);lug.rotation.y=-j*Math.PI/6;}rod(rover,[x,.65,0],[x,.38,z],.065);}
+ rod(rover,[-.95,1,0],[-.95,1.9,0],.04);box(rover,[-.95,1.9,0],[.27,.17,.3],0x22384a);for(const z of [-.65,.65])box(rover,[1.21,.68,z],[.03,.13,.2],0xb7eeea,'metal',1);
+ const hauled=crate(rover,[.15,.92,0],.85);
+ const dust=cloud(surface,50,0xb4aaa0);
+ for(let i=0;i<28;i++)for(const z of [-1,1])box(surface,[4+i*.37,-.21,z],[.21,.015,.24],0x65666b,'soil');
+ // Small deployed instruments and marked cargo pallets, separate from the landing zone.
+ for(const x of [15,20]){crate(surface,[x,0,-5],.65);solar(surface,[x,1,-7],3,2);rod(surface,[x,0,-7],[x,1,-7],.06);}
  function update(id,progress){const p=missionPose(id,progress),launching=['liftoff','booster'].includes(id);launch.visible=launching;orbit.visible=id==='refuel';crossing.visible=id==='transfer';surface.visible=['descent','unload','return'].includes(id);booster.group.position.set(0,2.6+(p.height||0),0);upper.group.position.set(id==='booster'?p.separation:0,id==='booster'?p.upper:15.7+(p.height||0),0);booster.burn.visible=!!p.flame;upper.burn.visible=id==='booster';
-  smoke.forEach((m,i)=>{m.visible=id==='liftoff'&&p.u<.55;const q=p.u*18+i*.3;m.position.set(Math.sin(i*2.4)*q,.5+i%3*.4,Math.cos(i*2.4)*q);m.scale.setScalar(.2+Math.min(2.8,q*.4));});
+  smoke.forEach((m,i)=>{m.visible=id==='liftoff'&&p.u<.65;const q=p.u*26+i*.23;m.position.set(Math.sin(i*2.4)*q,.3+i%5*.36,Math.cos(i*2.4)*q);m.scale.set(3+q*.37,2+q*.2,1);m.material.uniforms.opacity.value=.38*(1-T.MathUtils.smoothstep(p.u,.35,.65));});
   fuel.forEach((m,i)=>{m.position.set(2-((p.u*3+i/20)%1)*4,5,0);});tanker.group.position.x=16-4*Math.sin(p.u*Math.PI);const q=curve.getPointAt(p.u);transit.group.position.copy(q);transit.group.quaternion.setFromUnitVectors(V([0,1,0]),curve.getTangentAt(p.u));
-  landed.group.position.y=.3+(p.height||0);landed.burn.visible=!!p.flame;elevator.position.y=id==='unload'?.6+7.4*p.lift:8;cable.visible=id==='unload';elevator.visible=id!=='return';pallet.visible=id!=='unload'||p.u<.6;rover.visible=id==='unload';rover.position.set(2.4+10*(p.cargo||0),0,0);hauled.visible=id==='unload'&&p.u>=.6;
-  [booster,upper,landed].forEach(s=>s.burn.scale.set(1,.9+.1*Math.sin(p.u*120),1));return p;
+  landed.group.position.y=.3+(p.height||0);landed.burn.visible=!!p.flame;elevator.position.y=id==='unload'?.6+7.4*p.lift:8;cable.visible=id==='unload';cable.scale.y=9.1-elevator.position.y;cable.position.y=(9.1+elevator.position.y)/2;elevator.visible=id!=='return';pallet.visible=id!=='unload'||p.u<.6;rover.visible=id==='unload';rover.position.set(2.4+10*(p.cargo||0),0,0);hauled.visible=id==='unload'&&p.u>=.6;wheels.forEach(w=>w.rotation.y=(p.cargo||0)*26);
+  dust.forEach((m,i)=>{const force=id==='descent'?T.MathUtils.smoothstep(p.u,.55,.87)*(1-T.MathUtils.smoothstep(p.u,.96,1)):id==='return'?(1-T.MathUtils.smoothstep(p.u,.25,.7))*T.MathUtils.smoothstep(p.u,.04,.1):0;m.visible=force>0;const q=(p.u*5+i/50)%1,r=1+q*22;m.position.set(Math.cos(i*2.4)*r,.12+q*.22,Math.sin(i*2.4)*r);m.scale.set(1+q*5,.12+q*.22,1);m.material.uniforms.opacity.value=force*.25;});
+  [booster,upper,landed].forEach(s=>{s.burn.scale.set(1,.94+.06*Math.sin(p.u*220),1);s.burn.userData.material.uniforms.phase.value=p.u*25;s.light.visible=s.burn.visible;s.light.intensity=s.burn.visible?24:0;});return p;
  }
  return {group,update,dispose(){resources.forEach(r=>r.dispose());}};
 }
