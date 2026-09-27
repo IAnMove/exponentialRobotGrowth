@@ -2,6 +2,55 @@
 export const VOICES = {
   "es": [
     {
+      "id": "liftoff",
+      "title": "Despegar desde la Tierra",
+      "text": "Super Heavy impulsa la nave lunar. La carga industrial empieza aquí, pero aún no ha llegado a la Luna. Seguimos los mismos equipos durante el ascenso. Comprimimos tiempo y distancias para ver cada paso. Es una arquitectura prevista, no una misión de carga lunar ya completada.",
+      "file": "lunar-es-liftoff-2dbe1917af54.mp3",
+      "duration": 18.648
+    },
+    {
+      "id": "booster",
+      "title": "Separar y recuperar el propulsor",
+      "text": "El propulsor regresa a la Tierra. La nave superior continúa hacia órbita: son vehículos con destinos distintos. La cámara sigue ahora a Super Heavy hacia la torre. La recuperación que ves es esquemática. Reutilizar el propulsor permite preparar nuevos lanzamientos, pero no elimina el coste ni la necesidad de inspecciones.",
+      "file": "lunar-es-booster-224c68027443.mp3",
+      "duration": 23.292
+    },
+    {
+      "id": "refuel",
+      "title": "Repostar en órbita terrestre",
+      "text": "Depósito, vuelos cisterna y nave lunar: una entrega requiere una campaña de apoyo. No fijamos un número de vuelos cisterna. Los puntos verdes muestran el combustible y el oxidante que se transfieren. La nave lunar no viaja con solo la energía que le dio el despegue. Una entrega puede necesitar varios lanzamientos de apoyo.",
+      "file": "lunar-es-refuel-ec323061834a.mp3",
+      "duration": 19.476
+    },
+    {
+      "id": "transfer",
+      "title": "Cruzar hasta la Luna",
+      "text": "La nave abandona la órbita terrestre, viaja durante días y realiza maniobras para llegar a la Luna. Curva y tiempos comprimidos. Ni los tamaños ni la velocidad de la nave están a escala. Lo que importa es seguir la misma carga desde la órbita terrestre hasta preparar su llegada a la Luna.",
+      "file": "lunar-es-transfer-a3204d470af3.mp3",
+      "duration": 18.108
+    },
+    {
+      "id": "descent",
+      "title": "Frenar y alunizar",
+      "text": "Hay que reducir la velocidad y descender de forma controlada. La Luna no tiene una atmósfera útil para frenar con paracaídas. La forma de la nave se inspira en Starship HLS. Las patas, los sistemas de energía y la bodega alta ayudan a reconocerla. Los motores y la trayectoria están simplificados.",
+      "file": "lunar-es-descent-d8559bab918b.mp3",
+      "duration": 19.296
+    },
+    {
+      "id": "unload",
+      "title": "Bajar la carga a la superficie",
+      "text": "Un elevador deposita equipos; un vehículo los acerca a la base. La descarga representa una entrega, no una fábrica completa. El elevador es una solución prevista en HLS. Descargar, instalar y probar los equipos son pasos distintos. En nuestro modelo una entrega aporta veinticinco toneladas: un supuesto didáctico, no una prestación prometida por SpaceX.",
+      "file": "lunar-es-unload-bdedf4a6ef50.mp3",
+      "duration": 24.444
+    },
+    {
+      "id": "return",
+      "title": "Qué vuelve, y adónde",
+      "text": "HLS regresa a órbita lunar en la arquitectura tripulada. No lleva el escudo ni las aletas de la versión que reentra en la Tierra. El ciclo de carga futuro puede ser diferente. Por eso no mostramos a esta misma nave aterrizando después en la Tierra. Ahora abrimos el plano. Cada nave del mapa representa una entrega lunar como la que acabamos de seguir; los vuelos de apoyo no se suman al contador de entregas.",
+      "file": "lunar-es-return-1ad825a9c160.mp3",
+      "duration": 24.192
+    },
+    {
       "id": "seed",
       "text": "La primera fase empieza en la Tierra. No se trata de transportar una civilización entera, sino de enviar una semilla industrial: equipos de energía, excavación, procesamiento, fabricación y reparación. En este laboratorio empezamos con cien toneladas de equipos ya instalados en dos mil treinta. Son valores ilustrativos, no un plan de misión. La pregunta es qué ocurre después: seguir enviándolo todo, o aprovechar recursos lunares para construir parte de la siguiente generación de equipos.",
       "file": "lunar-es-seed-8c8156d5dfb8.mp3",
@@ -45,6 +94,55 @@ export const VOICES = {
     }
   ],
   "en": [
+    {
+      "id": "liftoff",
+      "title": "Liftoff from Earth",
+      "text": "Super Heavy launches the lunar vehicle. Industrial cargo starts here, but has not yet reached the Moon. We follow the same equipment during ascent. Time and distance are compressed to reveal each step. This is a proposed architecture, not an already completed lunar cargo mission.",
+      "file": "lunar-en-liftoff-e324a19ce98a.mp3",
+      "duration": 17.82
+    },
+    {
+      "id": "booster",
+      "title": "Separate and recover the booster",
+      "text": "The booster returns to Earth. The upper vehicle continues toward orbit: these vehicles have different destinations. The camera now follows Super Heavy back toward the tower. This recovery is schematic. Reusing the booster enables new launches, but does not remove costs or the need for inspections.",
+      "file": "lunar-en-booster-e6dd2b699c25.mp3",
+      "duration": 19.332
+    },
+    {
+      "id": "refuel",
+      "title": "Refuel in Earth orbit",
+      "text": "Depot, tanker flights and lunar vehicle: a delivery requires a support campaign. We do not assume a fixed number of tanker flights. Green points show fuel and oxidizer being transferred. The lunar vehicle does not travel using only the energy supplied at launch. One delivery can require several support launches.",
+      "file": "lunar-en-refuel-9aeb1bfe841b.mp3",
+      "duration": 21.24
+    },
+    {
+      "id": "transfer",
+      "title": "Transfer to the Moon",
+      "text": "The vehicle leaves Earth orbit, travels for days and maneuvers to reach the Moon. The curve and time are compressed. Neither sizes nor vehicle speed are to scale. What matters is following the same cargo from Earth orbit to its arrival at the Moon.",
+      "file": "lunar-en-transfer-00d5cea89312.mp3",
+      "duration": 15.228
+    },
+    {
+      "id": "descent",
+      "title": "Brake and land",
+      "text": "Velocity must be reduced for a controlled descent. The Moon has no useful atmosphere for parachute braking. The vehicle shape is inspired by Starship HLS. Landing legs, power systems and the high cargo bay help identify it. Engines and trajectory are simplified.",
+      "file": "lunar-en-descent-cbabb4ed8376.mp3",
+      "duration": 18.504
+    },
+    {
+      "id": "unload",
+      "title": "Lower cargo to the surface",
+      "text": "An elevator lowers equipment; a rover takes it toward the base. Unloading represents a delivery, not a complete factory. The elevator is a feature planned for HLS. Unloading, installation and testing are separate steps. In our model a delivery supplies twenty-five tonnes: a teaching assumption, not a capability promised by SpaceX.",
+      "file": "lunar-en-unload-175cfd949f4e.mp3",
+      "duration": 22.212
+    },
+    {
+      "id": "return",
+      "title": "What returns, and where",
+      "text": "HLS returns to lunar orbit in the crewed architecture. It lacks the heat shield and flaps of the Earth-reentry variant. Future cargo cycles may differ. That is why we do not show this same vehicle landing back on Earth. Now we zoom out. Each vehicle on the map represents a lunar delivery like the one we just followed; support flights are not included in the delivery counter.",
+      "file": "lunar-en-return-47fae568dd8d.mp3",
+      "duration": 24.12
+    },
     {
       "id": "seed",
       "text": "The first phase begins on Earth. The idea is not to transport an entire civilization, but to send an industrial seed: equipment for power, excavation, processing, manufacturing and repair. In this lab, we start with one hundred tonnes of equipment already installed in twenty thirty. These are illustrative values, not a mission plan. The question is what happens next: keep importing everything, or use lunar resources to build part of the next generation of equipment.",

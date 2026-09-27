@@ -25,3 +25,5 @@
 .hero-side{display:grid;gap:16px;justify-items:start}
 .cinema-cta{display:grid;gap:5px;max-width:390px;padding:14px 16px;border-radius:12px;border:1px solid #6b5a33;background:linear-gradient(120deg,#2a2210,#141c33);box-shadow:0 10px 40px #ffcf7a1a;color:#e8dcc0;transition:border-color .2s,transform .2s}
 .cinema-cta:hover{text-decoration:none;border-color:#ffcf7a;transform:translateY(-2px)}.cinema-cta b{color:#ffcf7a;font-size:13px}.cinema-cta span{font-size:12px;line-height:1.55;color:#c7bea9}
+
+.has-atlas-player .voice-controls,.has-atlas-player #voice-state,.has-atlas-player #voice-time,.has-atlas-player .voice-progress,.has-atlas-player #play,.has-atlas-player #step,.has-atlas-player #replay-voice{display:none}

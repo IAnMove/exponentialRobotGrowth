@@ -14,4 +14,4 @@ if __name__=='__main__':
     code='// MiniMax speech-2.8-hd; measured audio durations.\nexport const VOICES = '+json.dumps(result,ensure_ascii=False,indent=2)+';\n'
     code+="const base = new URL(document.documentElement.lang === 'es' ? '../../audio/' : '../audio/', import.meta.url);\nfor (const entries of Object.values(VOICES)) for (const entry of entries) entry.src = new URL(entry.file, base).href;\n"
     (ROOT/'site-src/lunar/voices.js').write_text(code,encoding='utf-8')
-    print('Lunar: 14 bilingual clips decoded and ready.')
+    print(f'Lunar: {sum(map(len,result.values()))} bilingual clips decoded and ready.')

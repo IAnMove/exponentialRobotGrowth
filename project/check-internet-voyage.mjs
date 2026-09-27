@@ -1,3 +1,4 @@
+import {playerFixture} from './check-player-fixture.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync,statSync} from 'node:fs';
 import {STAGES,PLACES,geoPoint,greatCircle,CABLE_KM,propagationMs,stageFact} from './site-src/journeys/internet-route.js';
@@ -52,20 +53,19 @@ console.log('Internet voyage: real geographic endpoints, propagation arithmetic,
 // Exercise the application wiring, not just the shared narration state machine.
 const appSource=readFileSync('site-src/journeys/internet-voyage.js','utf8').replace(/^import .*;$/gm,'');
 for(const lang of ['es','en']){
- const elements=new Map(),events={},frames=[],audios=[],visits=[];let now=0;
+ const elements=new Map(),events={},frames=[],audios=[],visits=[];let now=0,notebook;
  const element=id=>{if(!elements.has(id))elements.set(id,{id,hidden:false,style:{},dataset:{},classList:{toggle(){}},setAttribute(k,v){this[k]=v;},scrollIntoView(){},blur(){},showModal(){this.open=true;},close(){this.open=false;}});return elements.get(id);};
  const stages=STAGES.map((_,i)=>Object.assign(element('stage-'+i),{dataset:{stage:String(i)}}));
  const document={documentElement:{lang},body:element('body'),hidden:false,getElementById:element,querySelectorAll:s=>s==='[data-stage]'?stages:[],querySelector:s=>s==='.touch'?element('touch'):stages[+s.match(/\d+/)[0]],addEventListener(n,f){events[n]=f;}};
  class TestAudio extends AudioStub{constructor(src){super(src);audios.push(this);}}
  class Guide extends StepGuide{constructor(o){super({...o,AudioClass:TestAudio});}}
- vm.runInNewContext(appSource,{STAGES,SOURCES:[],stageFact,VOICES:clips,StepGuide:Guide,document,window:{addEventListener(n,f){events[n]=f;}},matchMedia:()=>({matches:false}),performance:{now:()=>now},requestAnimationFrame:f=>frames.push(f),console,createVoyageWorld:()=>({canvas:{},go(i){visits.push(i);},explore(){},look(){},move(){},render(){},dispose(){}}),bindFirstPerson:()=>({release(){},request(){},dispose(){}})});
+ vm.runInNewContext(appSource,{NotebookPlayer:playerFixture(lang,p=>notebook=p),STAGES,SOURCES:[],stageFact,VOICES:clips,StepGuide:Guide,document,window:{addEventListener(n,f){events[n]=f;}},matchMedia:()=>({matches:false}),performance:{now:()=>now},requestAnimationFrame:f=>frames.push(f),console,createVoyageWorld:()=>({canvas:{},go(i){visits.push(i);},explore(){},look(){},move(){},render(){},dispose(){}}),bindFirstPerson:()=>({release(){},request(){},dispose(){}})});
  const tick=n=>{for(let i=0;i<n;i++){now+=1000/60;frames.shift()(now);}};
- element('play').onclick();tick(300);assert.match(element('counter').textContent,/01/);
- element('play').onclick();const count=audios.length;tick(200);assert.equal(audios.length,count,'pause must not load another clip');element('play').onclick();
- for(let i=0;i<9;i++){assert.equal(element('counter').textContent,`${String(i+1).padStart(2,'0')} / 09`);audios.at(-1).onended();tick(181);}
- assert.match(element('status').textContent,/completado|complete/);assert.deepEqual(visits,[1,2,3,4,5,6,7,8]);
+ element('play').onclick();assert.equal(notebook.running,true);element('play').onclick();assert.equal(notebook.running,false);
+ for(let i=0;i<9;i++){notebook.stage(i,false);assert.equal(element('counter').textContent,`${String(i+1).padStart(2,'0')} / 09`);notebook.seek(notebook.clock.timeline[i].start+3,false);tick(1);}
+ assert.deepEqual([...new Set(visits)],[0,1,2,3,4,5,6,7,8]);
  stages[4].onclick();assert.match(element('counter').textContent,/05/);assert.equal(element('number').textContent,'≈ 33 ms');
- element('language').onchange({target:{value:lang==='es'?'en':'es'}});assert.equal(element('words').textContent,clips[lang==='es'?'en':'es'][4].text);
+ notebook.changeLanguage(lang==='es'?'en':'es');assert.equal(element('words').textContent,clips[lang==='es'?'en':'es'][4].text);
  element('explore').onclick();assert.equal(element('look-help').hidden,false);element('sources').onclick();assert.equal(element('source-dialog').open,true);
  events.pagehide({persisted:false});
 }

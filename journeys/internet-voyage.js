@@ -1,9 +1,11 @@
+import {NotebookPlayer} from '../playback/player.js';
 import {STAGES,SOURCES,stageFact} from './internet-route.js';
 import {createVoyageWorld} from './internet-world.js';
 import {VOICES} from './voices-internet-voyage.js';
 import {StepGuide} from '../llms/guide.js';
 import {bindFirstPerson} from '../immersive/first-person.js';
 const es=document.documentElement.lang==='es',t=(a,b)=>es?a:b,$=id=>document.getElementById(id),txt=a=>a[es?0:1];
+let notebook,narrativeProgress=0;
 let phase=0,time=0,last=performance.now(),voiceLang=es?'es':'en',touring=false,exploring=false,moving=true,world,controls;
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches,keys=new Set(),touch=new Set();
 document.title=t('Internet · Un clic al otro lado del océano','Internet · A click across the ocean')+' · Atlas';
@@ -43,11 +45,14 @@ $('listen').onclick=()=>{if(guide.running){guide.pause();moving=false;}else{tour
 $('language').onchange=e=>{voiceLang=e.target.value;const active=guide.running;guide.stop();if(active)guide.enter();refresh();};
 $('sound').onchange=e=>{guide.setEnabled(e.target.checked);refresh();};
 $('motion').onclick=()=>{moving=!moving;if(!moving)guide.pause();refresh();};
-$('sources').onclick=()=>{guide.pause();moving=false;controls?.release();$('source-dialog').showModal();refresh();};$('close-sources').onclick=()=>$('source-dialog').close();
-$('explore').onclick=()=>{if(exploring){leaveExplore();return;}exploring=true;$('explore').blur();touring=false;guide.automatic=false;world?.explore(true);$('explore').textContent=t('Volver a la cámara guiada','Return to guided camera');$('look-help').hidden=false;document.querySelector('.touch').hidden=!matchMedia('(pointer:coarse)').matches;controls?.request();refresh();};
+$('sources').onclick=()=>{notebook?.pause();guide.pause();moving=false;controls?.release();$('source-dialog').showModal();refresh();};$('close-sources').onclick=()=>$('source-dialog').close();
+$('explore').onclick=()=>{if(exploring){leaveExplore();return;}notebook?.pause();exploring=true;$('explore').blur();touring=false;guide.automatic=false;world?.explore(true);$('explore').textContent=t('Volver a la cámara guiada','Return to guided camera');$('look-help').hidden=false;document.querySelector('.touch').hidden=!matchMedia('(pointer:coarse)').matches;controls?.request();refresh();};
 try{world=createVoyageWorld($('world'),es);controls=bindFirstPerson({canvas:world.canvas,enabled:()=>exploring,onLook:(dx,dy)=>world.look(dx,dy),onActivate(){},onState(){}});}catch(e){$('world').innerHTML=`<p class="fallback">${t('WebGL no está disponible. Puedes seguir las nueve explicaciones, el texto y el audio.','WebGL is unavailable. You can still follow all nine explanations, text and audio.')}</p>`;$('explore').disabled=true;console.error(e);}
 document.querySelectorAll('[data-move]').forEach(b=>{b.onpointerdown=e=>{e.preventDefault();touch.add(b.dataset.move);b.setPointerCapture(e.pointerId);};b.onpointerup=b.onpointercancel=()=>touch.delete(b.dataset.move);});
 window.addEventListener('keydown',e=>{if(!exploring||e.target.closest('input,select,button,a,dialog'))return;if(['KeyW','KeyA','KeyS','KeyD','KeyQ','KeyE','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code)){e.preventDefault();keys.add(e.code);}if(e.code==='Escape'){controls?.release();keys.clear();}});window.addEventListener('keyup',e=>keys.delete(e.code));
-function pause(){guide.pause();keys.clear();touch.clear();moving=false;refresh();}window.addEventListener('blur',pause);document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();last=performance.now();});window.addEventListener('pagehide',e=>{pause();guide.stop();if(!e.persisted){controls?.dispose();world?.dispose();}});
-function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(!document.hidden){guide.tick(dt);if(moving)time+=dt;const audioProgress=guide.audio&&Number.isFinite(guide.audio.currentTime)?guide.audio.currentTime/clip().duration:null;const progress=Math.min(1,audioProgress??time/16);$('progress').style.width=`${(phase+progress)/STAGES.length*100}%`;if(exploring){const press=(codes,d)=>codes.some(k=>keys.has(k))||touch.has(d)?1:0;world?.move(press(['KeyW','ArrowUp'],'forward')-press(['KeyS','ArrowDown'],'back'),press(['KeyD','ArrowRight'],'right')-press(['KeyA','ArrowLeft'],'left'),press(['KeyE'],'up')-press(['KeyQ'],'down'),dt);}world?.render(dt,reduced?0:time,progress,reduced);if(guide.state==='waiting')$('status').textContent=t('Observa · ','Observe · ')+Math.ceil(guide.remaining)+' s';}requestAnimationFrame(frame);}
-refresh();requestAnimationFrame(frame);
+function pause(){notebook?.pause();guide.pause();keys.clear();touch.clear();moving=false;refresh();}document.addEventListener('visibilitychange',()=>{keys.clear();touch.clear();last=performance.now();});window.addEventListener('pagehide',e=>{notebook?.save();guide.stop();if(!e.persisted){controls?.dispose();world?.dispose();}});
+function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(!document.hidden){guide.tick(dt);const progress=narrativeProgress;$('progress').style.width=`${(phase+progress)/STAGES.length*100}%`;if(exploring){const press=(codes,d)=>codes.some(k=>keys.has(k))||touch.has(d)?1:0;world?.move(press(['KeyW','ArrowUp'],'forward')-press(['KeyS','ArrowDown'],'back'),press(['KeyD','ArrowRight'],'right')-press(['KeyA','ArrowLeft'],'left'),press(['KeyE'],'up')-press(['KeyQ'],'down'),dt);}world?.render(dt,reduced?0:time,progress,reduced);if(guide.state==='waiting')$('status').textContent=t('Observa · ','Observe · ')+Math.ceil(guide.remaining)+' s';}requestAnimationFrame(frame);}
+refresh();
+notebook=new NotebookPlayer({id:'internet-voyage',getClips:language=>STAGES.map(st=>({...VOICES[language].find(c=>c.id===st.id),title:st.title[language==='es'?0:1]})),onLanguage(language){voiceLang=language;},onSync(s){if(!s)return;if(s.reason==='seek'||phase!==s.index){leaveExplore();phase=s.index;world?.go(phase,true);refresh();}time=s.local;narrativeProgress=s.progress;moving=s.running;}});
+$('play').onclick=$('listen').onclick=$('motion').onclick=()=>notebook.toggle();$('previous').onclick=()=>notebook.stage(phase-1);$('next').onclick=()=>notebook.stage(phase+1);document.querySelectorAll('[data-stage]').forEach(b=>b.onclick=()=>notebook.stage(+b.dataset.stage));
+requestAnimationFrame(frame);

@@ -20,6 +20,14 @@ three-second pause gates the guided tour. Free first-person exploration is optio
 The 6,600 km cable and assumed fiber speed produce a 33 ms propagation-only one-way example,
 not a measured ping or page-load claim. The original Internet web experiment remains available.
 The Earth-to-Moon notebook adds a mass-balanced industrial seed simulation, growing cargo cadence, local manufacturing, reinvestment, component and power limits, a Three.js worksite, 14 bilingual MiniMax clips, and a separate Kardashev date calculator. The quoted dates are audited as conditional arithmetic, not predictions.
+Narrated notebooks now share a fixed chapter timeline with continuous audio seeking,
+visible transcripts, language switching and local progress recovery. Autoplay is attempted;
+blocked audio remains at its current position until Play is pressed. The audio clock restores
+scene state when scrubbing; the LLM timeline also restores generated-token history.
+The lunar notebook opens with seven HLS-inspired mission scenes: launch, booster recovery,
+orbital refueling, transfer, descent, elevator unloading and return to lunar orbit. It distinguishes
+booster recovery from the lunar variant, which is not shown reentering Earth. Twenty-eight
+bilingual clips cover the complete lunar narrative. Map traffic follows modeled delivery events.
 Eight additional notebooks and walkable worlds cover Internet, electricity, microchips,
 cells, idea diffusion, nuclear reactors, carbon and evolution. Each has four stations, bilingual
 MiniMax narration, a manual or audio-ended guided route, interactive controls, live metrics,
@@ -78,6 +86,7 @@ npm ci
 python build-site.py
 python check-site.py
 node check-kardashev.mjs
+node check-playback.mjs
 node check-lunar.mjs
 node check-kardashev-media.mjs
 node check-kardashev-motion.mjs

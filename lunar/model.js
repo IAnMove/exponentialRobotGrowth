@@ -27,7 +27,8 @@ export function simulate(input={}){
 }
 export function sample(run,month){return run.rows[Math.max(0,Math.min(YEARS*12,Math.floor(month)))];}
 export function crossingYear(seedWatts,targetWatts,doublingMonths){if(!(seedWatts>0&&targetWatts>0&&doublingMonths>0))throw new RangeError('Positive values required');return START+Math.max(0,Math.log2(targetWatts/seedWatts))*doublingMonths/12;}
-export const STAGES=[
+import {MISSION_STAGES} from './mission.js';
+export const STAGES=[...MISSION_STAGES,
  {id:'seed',month:0,view:'route',title:['La Tierra envía la semilla','Earth sends the seed'],text:['Primero se envía un sistema capaz de trabajar: energía, excavación, procesamiento, fabricación y repuestos. 100 t y 25 t por entrega son supuestos de este laboratorio.','First send a system that can work: power, excavation, processing, manufacturing and spares. 100 t and 25 t per delivery are assumptions in this lab.']},
  {id:'launch',month:12,view:'route',title:['Entregar en la superficie','Deliver to the surface'],text:['Despegar no basta. Hay que transferir la carga, frenar y alunizar. Contamos entregas útiles en la Luna; no equivalen al total de lanzamientos, repostajes ni combustible.','Liftoff is not enough. Cargo must transfer, brake and land. We count useful deliveries to the Moon; these are not total launches, refueling flights or fuel.']},
  {id:'power',month:24,view:'base',title:['Primero, que funcione','First, make it work'],text:['Los paneles, el almacenamiento, los cables y la gestión térmica sostienen la base. La actividad efectiva reduce la producción; no se presupone trabajo continuo sin energía.','Panels, storage, cables and thermal management support the base. Effective uptime reduces output; continuous work without power is not assumed.']},

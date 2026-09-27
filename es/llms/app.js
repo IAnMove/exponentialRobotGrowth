@@ -1,3 +1,5 @@
+import {NotebookPlayer} from '../playback/player.js';
+import {responsePlaylist} from './playlist.js';
 import {DEFAULTS,PHASES,contextWindow,createRun,advance,tokenize,vector,attention,softmax,nextCandidates,trainStep,trainingStats} from './model.js';
 import {createWorld} from './world.js';
 import {StepGuide,narrationId} from './guide.js';
@@ -17,6 +19,7 @@ const phases=[
   [t('Elegir','Choose'),t('Sale una pieza, no la frase entera','One piece comes out, not the whole sentence'),t('Se puede elegir el token más probable o muestrear una distribución. La temperatura cambia el reparto, no consulta hechos. En este laboratorio modifica la primera elección; el resto de la frase es una continuación guiada.','Decoding can choose the most likely token or sample a distribution. Temperature changes the distribution, not the facts. In this lab it affects the first choice; the rest is a guided continuation.')],
   [t('Repetir','Repeat'),t('Lo escrito vuelve al contexto','The output returns to context'),t('El siguiente paso usa la entrada y lo que ya se ha generado. Se repite hasta terminar. Las implementaciones suelen reutilizar cálculos mediante caché; no necesitan releer todo desde cero.','The next step uses the input and the generated text. This repeats until completion. Implementations commonly cache computations; they need not recompute everything from scratch.')]
 ];
+let notebook,bookIndex=-1;
 let options={...DEFAULTS},run=createRun(lang,options),last=performance.now(),selectedToken=0,queryIndex=7,trainingWeight=-1.2,trainingSteps=0,trainingPlaying=false,trainingClock=0,world=null,guide=null,voiceLanguage=lang,manualFlow=null,lastFlowLabel='';
 document.title=t('LLMs — Dentro de una respuesta','LLMs — Inside an answer');
 $('app').innerHTML=`<nav class="nav"><a href="../index.html">← Atlas</a><a href="../mente/index.html">${t('Mente','Mind')}</a><a href="../modelos/index.html">${t('Modelos','Models')}</a><a href="../museo/index.html">${t('Museo','Museum')}</a><span>NOTEBOOK 08 · LLMs</span><a class="cinema-link" href="./cinema.html">✦ ${t('Vista cinemática','Cinematic view')}</a><a href="../immersive/index.html?experience=llms">${t('Entrar en 3D ↗','Enter 3D ↗')}</a><div><a href="${es?'../../llms/index.html':'./index.html'}" lang="en">EN</a><a href="${es?'./index.html':'../es/llms/index.html'}" lang="es">ES</a></div></nav>
@@ -39,6 +42,7 @@ $('app').innerHTML=`<nav class="nav"><a href="../index.html">← Atlas</a><a hre
 <section class="takeaways"><article><h3>${t('¿Busca una respuesta guardada?','Does it retrieve a saved answer?')}</h3><p>${t('Generalmente genera texto a partir de patrones en los pesos y del contexto. Puede memorizar fragmentos; eso no convierte los pesos en una biblioteca con fuentes accesibles.','It generally generates text from patterns in weights and context. It can memorize fragments; that does not make its weights a library of accessible sources.')}</p></article><article><h3>${t('¿Solo adivina palabras?','Is it just guessing words?')}</h3><p>${t('Predecir tokens es el objetivo básico. Para hacerlo bien puede aprender representaciones y cálculos complejos. Ese mecanismo, por sí solo, no demuestra ni ausencia de capacidad ni comprensión humana.','Token prediction is the basic objective. Doing it well can involve learned representations and complex computations. The mechanism alone proves neither an absence of capability nor human understanding.')}</p></article><article><h3>${t('¿Por qué puede equivocarse?','Why can it be wrong?')}</h3><p>${t('Una continuación plausible puede carecer de evidencia. También puede faltar contexto, sobrar ruido o fallar una herramienta. Fuentes, verificación y pruebas específicas ayudan a evaluar la respuesta.','A plausible continuation may lack evidence. Context can be missing, noisy or supplied by a failing tool. Sources, verification and task-specific tests help evaluate an answer.')}</p></article></section>
 <details class="sources"><summary>${t('Qué simplifica esta simulación · fuentes','What this simulation simplifies · sources')}</summary><p>${t('Representamos un Transformer autoregresivo de texto. Las etapas, el número de capas, seis dimensiones y un vocabulario minúsculo son visualizaciones didácticas. Respuestas y logits son prefijados; el muestreo inicial, la tokenización reversible, softmax, la máscara causal y el mini entrenamiento sí se calculan aquí. La atención de juguete no produce las respuestas guionizadas. No es una lectura del razonamiento interno de ningún modelo.','We illustrate an autoregressive text Transformer. Stages, layer counts, six dimensions and a tiny vocabulary are teaching simplifications. Answers and logits are curated; initial sampling, reversible tokenization, softmax, causal masking and the small training example are computed here. Toy attention does not produce the scripted answers. This is not a reading of any model’s internal reasoning.')}</p><p>${t('Un producto real puede añadir sistemas de seguridad, contexto multimodal, búsqueda, herramientas y pasos internos adicionales. El entrenamiento suele incluir preentrenamiento y ajustes posteriores. No todas las arquitecturas o productos son iguales.','A real product may add safety systems, multimodal context, search, tools and additional internal steps. Training commonly includes pretraining and post-training. Architectures and products vary.')}</p><ul><li><a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">Vaswani et al. · Attention Is All You Need</a></li><li><a href="https://arxiv.org/abs/2005.14165" target="_blank" rel="noopener">Brown et al. · Language Models are Few-Shot Learners</a></li><li><a href="https://huggingface.co/docs/transformers/main/tokenizer_summary" target="_blank" rel="noopener">Hugging Face · Tokenization</a></li><li><a href="https://huggingface.co/docs/transformers/main/llm_tutorial" target="_blank" rel="noopener">Hugging Face · Text generation</a></li><li><a href="https://arxiv.org/abs/2005.11401" target="_blank" rel="noopener">Lewis et al. · Retrieval-Augmented Generation</a></li><li><a href="https://www.anthropic.com/research/tracing-thoughts-language-model" target="_blank" rel="noopener">Anthropic · Tracing the thoughts of a large language model</a></li></ul></details><footer>Atlas · ${t('Experimenta. Compara. Comprueba.','Experiment. Compare. Verify.')}</footer>`;
 
+function pauseGuide(){notebook?.pause();guide?.pause();}
 function probabilities(){return softmax(run.data.logits,options.temperature);}
 function bars(pieces,logits){const ps=softmax(logits,options.temperature);return pieces.map((piece,i)=>`<div class="prob-row"><code>${esc(visibleToken(piece))}</code><div><i style="width:${ps[i]*100}%"></i></div><b>${number(ps[i]*100,1)} %</b></div>`).join('');}
 function contextText(){return `<div class="context-card"><b>${t('Instrucción','Instruction')}</b><p>${t('Responde brevemente.','Answer briefly.')}</p></div>${run.data.history?`<div class="context-card history"><b>${t('Conversación anterior','Previous conversation')}</b><p>${esc(run.data.history)}</p></div>`:''}${run.data.source&&run.phase>=2?`<div class="context-card source"><b>${esc(run.data.source.title)}</b><p>${esc(run.data.source.text)}</p></div>`:''}<div class="context-card"><b>${t('Pregunta','Question')}</b><p>${esc(run.data.question)}</p></div>`;}
@@ -79,12 +83,13 @@ function render(force=false){
   const key=[phase,options.scenario,options.context,options.retrieval,options.source,selectedToken,queryIndex,run.generated.length,options.temperature,run.done].join(':');
   if(force||key!==renderedDetail){$('stage-detail').innerHTML=detail(phase);renderedDetail=key;
     for(const b of document.querySelectorAll('[data-token]'))b.onclick=()=>{selectedToken=+b.dataset.token;seek(3,false);};
-    for(const b of document.querySelectorAll('[data-query]'))b.onclick=()=>{queryIndex=+b.dataset.query;guide.pause();run.playing=false;render();};
+    for(const b of document.querySelectorAll('[data-query]'))b.onclick=()=>{queryIndex=+b.dataset.query;pauseGuide();run.playing=false;render();};
   }
   $('distribution').innerHTML=bars(run.data.completions.map(c=>tokenize(c)[0]),run.data.logits);
   $('temperature-value').textContent=number(options.temperature,1);$('resample').disabled=options.decoding!=='sample';
 }
 function currentFlow(){
+  if(notebook){const clip=notebook.current;return run.phase===4?cueAt(clip.cues,clip.local):{index:0,progress:clip.progress};}
   if(manualFlow)return manualFlow;
   if(guide.seekPending&&run.phase===4)return cueAt((guide.clip??getClip()).cues,guide.seekTarget);
   const clip=guide.clip??getClip(),progress=guideProgress(guide,clip);
@@ -101,7 +106,7 @@ function renderFlow(flow){
   document.querySelectorAll('[data-operation]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.operation===flow.index)));
 }
 for(const b of document.querySelectorAll('[data-operation]'))b.onclick=()=>{
-  guide.pause();const index=+b.dataset.operation,clip=guide.clip??getClip(),cue=clip.cues?.[index];
+  pauseGuide();const index=+b.dataset.operation,clip=guide.clip??getClip(),cue=clip.cues?.[index];
   if(cue&&guide.audio)guide.seek(cue.start+.01);
   else if(cue&&!guide.enabled){const reading=Math.max(6,Math.min(14,clip.text.length/32));guide.remaining=guide.gap+reading*(1-cue.start/clip.duration);}
   manualFlow={index,progress:.3};renderFlow(manualFlow);
@@ -123,28 +128,33 @@ function renderVoice(){
   $('status').textContent=run.done?t('Respuesta terminada','Answer complete'):t('Token de salida ','Output token ')+(run.phase===7?run.generated.length:run.generated.length+1)+' · '+(run.phase+1)+'/8';
 }
 guide=new StepGuide({getClip,onAdvance(){if(run.done)return false;advance(run);render(true);return true;},onChange(){run.playing=guide.running;if(guide.running)manualFlow=null;render();}});
-function restart(){guide.stop();run=createRun(lang,options);selectedToken=0;queryIndex=7;render(true);}
-function seek(phase,resetRun=true){guide.stop();if(resetRun){run=createRun(lang,options);selectedToken=0;queryIndex=7;}run.phase=Math.min(6,phase);if(phase===7)advance(run);render(true);guide.enter();}
+function restart(){notebook?.pause();guide.stop();run=createRun(lang,options);selectedToken=0;queryIndex=7;render(true);bookIndex=-1;notebook?.rebuild();}
+function seek(phase,resetRun=true){if(notebook){const i=notebook.clock.timeline.findIndex(c=>c.snapshot.phase===phase);notebook.stage(Math.max(0,i));return;}guide.stop();if(resetRun){run=createRun(lang,options);selectedToken=0;queryIndex=7;}run.phase=Math.min(6,phase);if(phase===7)advance(run);render(true);guide.enter();}
 for(const key of ['scenario','source','decoding'])$(key).onchange=e=>{options[key]=e.target.value;restart();};
 for(const key of ['context','retrieval'])$(key).onchange=e=>{options[key]=e.target.checked;restart();};
 $('temperature').oninput=e=>{options.temperature=+e.target.value;restart();};
 $('resample').onclick=()=>{options.seed=(options.seed+977)>>>0;restart();};
 $('try-museum').onclick=()=>{options.scenario='museum';options.retrieval=false;$('scenario').value='museum';restart();$('question').scrollIntoView({behavior:'auto',block:'center'});};
-$('play').onclick=()=>{if(guide.state==='finished')restart();if(guide.running)guide.pause();else guide.resume();};
+$('play').onclick=()=>{if(guide.state==='finished')restart();if(guide.running)pauseGuide();else guide.resume();};
 $('step').onclick=()=>guide.next();$('reset').onclick=restart;$('replay-voice').onclick=()=>guide.replay();
 $('voice-language').onchange=e=>{voiceLanguage=e.target.value;const active=guide.running;guide.stop();if(active)guide.enter();else renderVoice();};
 $('voice-enabled').onchange=e=>guide.setEnabled(e.target.checked);
 $('auto-next').onchange=e=>{guide.automatic=e.target.checked;};
 $('gap').onchange=e=>{guide.gap=+e.target.value;if(guide.state==='waiting')guide.remaining=guide.gap;renderVoice();};
 for(const b of document.querySelectorAll('#rail [data-phase]'))b.onclick=()=>seek(+b.dataset.phase);
-try{world=createWorld($('machine'),{language:lang,onSelect(info){guide.pause();run.playing=false;$('world-selection').textContent=info.text;if(info.kind==='token')selectedToken=info.index;if(info.kind==='attention')queryIndex=info.index;render(true);}});}
+try{world=createWorld($('machine'),{language:lang,onSelect(info){pauseGuide();run.playing=false;$('world-selection').textContent=info.text;if(info.kind==='token')selectedToken=info.index;if(info.kind==='attention')queryIndex=info.index;render(true);}});}
 catch{const fallback=document.createElement('p');fallback.className='world-fallback';fallback.textContent=t('No se ha podido iniciar WebGL. Las explicaciones, los valores y la voz siguen disponibles.','WebGL could not start. Explanations, values and narration remain available.');$('machine').prepend(fallback);}
 $('view-reset').onclick=()=>world?.reset();$('view-in').onclick=()=>world?.zoom(.85);$('view-out').onclick=()=>world?.zoom(1.15);
 function renderTraining(){const s=trainingStats(trainingWeight);$('weight').textContent=number(trainingWeight,2);$('train-prob').textContent=number(s.probability*100,1)+' %';$('train-loss').textContent=number(s.loss,3);$('train-meter').style.width=s.probability*100+'%';$('train-steps').textContent=number(trainingSteps)+' '+t('actualizaciones del peso','weight updates');$('train-play').textContent=trainingPlaying?'Ⅱ '+t('Pausar','Pause'):'▶ '+t('Ver cómo aprende','Watch it learn');}
 $('train-play').onclick=()=>{trainingPlaying=!trainingPlaying;renderTraining();};$('train-reset').onclick=()=>{trainingPlaying=false;trainingWeight=-1.2;trainingSteps=0;renderTraining();};
-document.addEventListener('visibilitychange',()=>{last=performance.now();if(document.hidden){guide.pause();trainingPlaying=false;renderTraining();}});
+document.addEventListener('visibilitychange',()=>{last=performance.now();if(document.hidden){trainingPlaying=false;renderTraining();}});
 window.addEventListener('pagehide',e=>{guide.stop();if(!e.persisted)world?.dispose();});
-render();renderTraining();let uiClock=0;
+render();renderTraining();
+notebook=new NotebookPlayer({id:'llms',getClips:language=>responsePlaylist(lang,options,VOICES[language],phases.map(p=>p[1])),capture:()=>({options}),restore(saved){if(saved?.options){for(const k of Object.keys(DEFAULTS))if(typeof saved.options[k]===typeof DEFAULTS[k])options[k]=saved.options[k];for(const k of ['scenario','source','decoding'])$(k).value=options[k];$('temperature').value=options.temperature;run=createRun(lang,options);}},onLanguage(language){voiceLanguage=language;$('voice-language').value=language;bookIndex=-1;},onSync(s){if(!s)return;if(bookIndex!==s.index||s.reason==='seek'){bookIndex=s.index;run=JSON.parse(JSON.stringify(s.snapshot));manualFlow=null;render(true);}run.playing=s.running;}});
+$('play').onclick=()=>notebook.toggle();$('step').onclick=()=>notebook.stage(notebook.current.index+1);$('replay-voice').onclick=()=>notebook.stage(notebook.current.index,true);$('voice-language').onchange=e=>notebook.changeLanguage(e.target.value);
+for(const b of document.querySelectorAll('[data-operation]'))b.onclick=()=>{const c=notebook.current,cue=c.cues?.[+b.dataset.operation];if(cue)notebook.seek(c.start+cue.start+.01,false);};
+
+let uiClock=0;
 function frame(now){const dt=Math.min(.1,(now-last)/1000);last=now;if(!document.hidden){guide.tick(dt);uiClock+=dt;const flow=currentFlow();world?.render(dt,flow);renderFlow(flow);
   if(uiClock>.15){renderVoice();uiClock=0;}
   if(trainingPlaying){trainingClock+=dt;if(trainingClock>.45){trainingClock=0;trainingWeight=trainStep(trainingWeight);trainingSteps++;if(trainingSteps>=80)trainingPlaying=false;renderTraining();}}}

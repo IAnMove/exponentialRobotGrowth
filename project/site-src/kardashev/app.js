@@ -1,3 +1,4 @@
+import {NotebookPlayer} from '../playback/player.js';
 import {MIN_K,MAX_K,HUMAN_POWER,createState,tick,snapshot,powerAt,multiplier,yearsAtGrowth} from './model.js';
 import {createWorld,COLLECTOR_COUNT} from './world.js';
 import {advanceScene} from './motion.js';
@@ -11,6 +12,7 @@ const stages=[
  {k:2,name:t('Tipo II · estelar','Type II · stellar'),scope:t('Una estrella como referencia','A star as a reference'),text:t('El umbral continuo es 10²⁶ W. Un enjambre de colectores ilustra una posible vía. Nuestro Sol emite unas 3,828 veces esa potencia: el umbral es una normalización, no una estrella exacta.','The continuous threshold is 10²⁶ W. A collector swarm illustrates one possible route. Our Sun emits about 3.828 times that power: the threshold is a normalization, not an exact star.'),note:t('Los colectores del dibujo no son un proyecto de ingeniería.','The depicted collectors are not an engineering plan.')},
  {k:3,name:t('Tipo III · galáctica','Type III · galactic'),scope:t('Muchísimos sistemas estelares','Vast numbers of stellar systems'),text:t('El umbral continuo es 10³⁶ W: unos 2.600 millones de luminosidades solares. La galaxia representa sistemas distribuidos; no una sola máquina ni un control instantáneo de toda la galaxia.','The continuous threshold is 10³⁶ W: about 2.6 billion solar luminosities. The galaxy represents distributed systems, not one machine or instantaneous control of an entire galaxy.'),note:t('Es una clasificación hipotética, no una civilización observada en esta escena.','This is a hypothetical classification, not a civilization observed in this scene.')}
 ];
+let notebook;
 let state=createState(),world,player,speed=1,chartMode='log',last=performance.now(),uiClock=0,inspect=false,voiceLanguage=es?'es':'en',tour=false;
 // This notebook explicitly presents moving scenes; the separate control pauses all motion.
 let sceneMotion=0,sceneMoving=true;
@@ -69,7 +71,7 @@ player=new NarrationPlayer({
     $('transcript').textContent=item.text;$('transcript').lang=voiceLanguage;paint();
   },onState(status){voiceUI(status);}
 });
-function stopVoice(){player.stop();}
+function stopVoice(){notebook?.pause();player.stop();}
 function setK(k){stopVoice();inspect=false;world?.highlight('all');state.k=Math.max(MIN_K,Math.min(MAX_K,k));state.playing=false;paint();}
 $('listen').onclick=()=>{
   if(['playing','loading','paused','blocked','error'].includes(player.state)){player.toggle();return;}
@@ -100,4 +102,8 @@ $('fit').onclick=()=>world?.fit();$('plus').onclick=()=>world?.zoomBy(1.15);$('m
 window.addEventListener('pagehide',()=>player.stop());
 document.addEventListener('visibilitychange',()=>{last=performance.now();if(document.hidden){state.playing=false;if(player.state==='playing'||player.state==='loading')player.audio?.pause();paint();}});
 paint();
-function frame(now){const dt=Math.min(.1,(now-last)/1000);last=now;if(!document.hidden){const wasPlaying=state.playing;tick(state,dt*speed);sceneMotion=advanceScene(sceneMotion,dt,sceneMoving);world?.render({...state,motion:sceneMotion},snapshot(state),inspect);uiClock+=dt;if(wasPlaying&&uiClock>.08){paint();uiClock=0;}}requestAnimationFrame(frame);}requestAnimationFrame(frame);
+
+notebook=new NotebookPlayer({id:'kardashev',getClips:language=>VOICES[language],capture:()=>({growth:$('growth').value}),restore(saved){if(saved?.growth&&Number.isFinite(+saved.growth))$('growth').value=saved.growth;},onLanguage(language){voiceLanguage=language;$('voice-language').value=language;},onSync(s){if(!s)return;state.playing=false;inspect=s.index===4;if(s.index<4)state.k=stages[s.index].k;sceneMotion=s.elapsed;paint();$('transcript').textContent=s.text;}});
+$('listen').onclick=$('voice-tour').onclick=()=>notebook.toggle();$('voice-next').onclick=()=>notebook.stage(notebook.current.index+1);$('voice-stop').onclick=()=>notebook.pause();$('voice-language').onchange=e=>notebook.changeLanguage(e.target.value);$('motion').onclick=()=>notebook.toggle();document.querySelectorAll('[data-stage]').forEach((b,i)=>b.onclick=()=>notebook.stage(i));$('inspect').onclick=()=>notebook.stage(4,false);
+
+function frame(now){const dt=Math.min(.1,(now-last)/1000);last=now;if(!document.hidden){const wasPlaying=state.playing;tick(state,dt*speed);if(!notebook||state.playing)sceneMotion=advanceScene(sceneMotion,dt,sceneMoving);world?.render({...state,motion:sceneMotion},snapshot(state),inspect);uiClock+=dt;if(wasPlaying&&uiClock>.08){paint();uiClock=0;}}requestAnimationFrame(frame);}requestAnimationFrame(frame);

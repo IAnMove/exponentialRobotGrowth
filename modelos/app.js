@@ -1,3 +1,4 @@
+import {NotebookPlayer} from '../playback/player.js';
 import {DEEPSEEK, FAMILIES, V2, createState, snapshot, contextMemory, repeatedPrefix, tariffById, requestsToBreakEven, ANTHROPIC_RULE} from './model.js';
 import {createModelsWorld} from './world.js';
 import {StepGuide} from '../llms/guide.js';
@@ -28,6 +29,7 @@ const TOUR = [
   { id: 'diffusion', family: 'diffusion' }, { id: 'jepa', family: 'jepa' }, { id: 'jev', family: 'jev' },
   { id: 'cache', family: 'cache' }, { id: 'disk', family: 'cache' }, { id: 'rule', family: 'cache' }
 ];
+let notebook;
 let state = createState(), world, last = performance.now(), step = 0, voiceLanguage = es ? 'es' : 'en';
 document.title = t('Modelos — Familias, caché y precio', 'Models — Families, cache and price');
 $('app').innerHTML = `<nav class="nav"><a href="../index.html">← Atlas</a><a href="../museo/index.html#modelos">${t('Museo', 'Museum')}</a><a href="../llms/index.html">LLMs</a><a href="../mente/index.html">${t('Mente', 'Mind')}</a><span><a href="${es ? '../../modelos/index.html' : './index.html'}" lang="en">EN</a> / <a href="${es ? './index.html' : '../es/modelos/index.html'}" lang="es">ES</a></span></nav>
@@ -206,9 +208,13 @@ $('fit').onclick = () => world?.fit();
 $('zoom-in').onclick = () => world?.zoomBy(1.12);
 $('zoom-out').onclick = () => world?.zoomBy(1 / 1.12);
 paint();
+
+notebook=new NotebookPlayer({id:'modelos',getClips:language=>TOUR.map(st=>VOICES[language].find(c=>c.id===st.id)),capture:()=>({state}),restore(saved){if(saved?.state){for(const key of ['prefix','suffix','output','repeats','tokens'])if(Number.isFinite(saved.state[key])){const el=$(key);state[key]=Math.max(+el.min,Math.min(+el.max,saved.state[key]));el.value=state[key];}}},onLanguage(language){voiceLanguage=language;$('voice-language').value=language;},onSync(s){if(!s)return;step=s.index;state.family=TOUR[step].family;paint();$('voice-transcript').textContent=s.text;}});
+$('narrate').onclick=()=>notebook.toggle();$('voice-language').onchange=e=>notebook.changeLanguage(e.target.value);document.querySelectorAll('[data-family]').forEach(btn=>{btn.onclick=()=>{const i=TOUR.findIndex(beat=>beat.id===btn.dataset.family);if(i>=0)notebook.stage(i,false);};});
+
 function frame(now) {
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
-  if (!document.hidden) { guide.tick(dt); world?.render(state, dt); renderVoice(); }
+  if (!document.hidden) { guide.tick(dt); world?.render(state, notebook?0:dt); renderVoice(); }
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);

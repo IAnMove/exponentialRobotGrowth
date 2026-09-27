@@ -1,3 +1,4 @@
+import {playerFixture} from './check-player-fixture.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
@@ -6,14 +7,14 @@ import {defaults,poseAt,walk} from './site-src/journeys/common.js';
 import {StepGuide} from './site-src/llms/guide.js';
 const source=readFileSync('site-src/journeys/app.js','utf8').replace(/^import .*;$/gm,'');
 for(const lang of ['es','en'])for(const mode of ['web','immersive'])for(const [id,lesson] of Object.entries(LESSONS)){
- const elements=new Map(),events={},frames=[],audios=[];let now=0,current,phase,pose,redirect;
+ const elements=new Map(),events={},frames=[],audios=[];let now=0,current,phase,pose,redirect,notebook;
  const element=id=>{if(!elements.has(id))elements.set(id,{id,checked:false,dataset:{},style:{},value:'',classList:{toggle(){}},setAttribute(k,v){this[k]=v;},addEventListener(){},setPointerCapture(){},append(){}});return elements.get(id);};
  const stops=lesson.steps.map((s,i)=>({...element('stop-'+i),dataset:{stop:String(i)}})),controls=lesson.controls.map(c=>({...element('control-'+c.id),dataset:{control:c.id},value:c.value,checked:c.value})),moves=['forward','left','right','back'].map(move=>({...element(move),dataset:{move}}));
  const document={documentElement:{lang},body:element('body'),hidden:false,getElementById:element,querySelectorAll:s=>s==='[data-stop]'?stops:s==='[data-control]'?controls:moves,addEventListener(name,fn){events['document:'+name]=fn;}};
  class AudioStub{constructor(){audios.push(this);}play(){this.onplaying?.();return Promise.resolve();}pause(){}removeAttribute(){}load(){}}
  class Guide extends StepGuide{constructor(o){super({...o,AudioClass:AudioStub});}}
  const VOICES={[id]:Object.fromEntries(['es','en'].map((l,i)=>[l,lesson.steps.map((s,j)=>({id:'step-'+j,text:s.text[i],src:'fixture.mp3',duration:10}))]))};
- const ctx={LESSONS,defaults,poseAt,walk,StepGuide:Guide,VOICES,document,window:{addEventListener(n,f){events[n]=f;}},console,URLSearchParams,Intl,performance:{now:()=>now},matchMedia:()=>({matches:false}),location:{search:`?topic=${id}&mode=${mode}`,replace(url){redirect=url;}},requestAnimationFrame:f=>frames.push(f),createWorld:()=>({canvas:element('canvas'),update(s,i){current=s;phase=i;},render(p){pose={...p};},dispose(){}})};
+ const ctx={NotebookPlayer:playerFixture(lang,p=>notebook=p),LESSONS,defaults,poseAt,walk,StepGuide:Guide,VOICES,document,window:{addEventListener(n,f){events[n]=f;}},console,URLSearchParams,Intl,performance:{now:()=>now},matchMedia:()=>({matches:false}),location:{search:`?topic=${id}&mode=${mode}`,replace(url){redirect=url;}},requestAnimationFrame:f=>frames.push(f),createWorld:()=>({canvas:element('canvas'),update(s,i){current=s;phase=i;},render(p){pose={...p};},dispose(){}})};
  vm.runInNewContext(source,ctx);
  if(id==='internet'&&mode==='immersive'){assert.equal(redirect,'./internet-voyage.html');assert.equal(frames.length,0,'legacy gallery must not start behind redirect');continue;}
  const advance=n=>{for(let i=0;i<n;i++){now+=1000/60;frames.shift()(now);}};
@@ -22,7 +23,8 @@ for(const lang of ['es','en'])for(const mode of ['web','immersive'])for(const [i
  assert.equal(JSON.stringify(current.metrics),JSON.stringify(lesson.evaluate(defaults(lesson),lesson.horizon).metrics));
  element('reset').onclick();assert.equal(+element('timeline').value,0);
  element('step').onclick();assert.equal(+element('timeline').value,1);
- element('play').onclick();advance(50);assert(+element('timeline').value>1);events.blur();const paused=+element('timeline').value;advance(80);assert.equal(+element('timeline').value,paused);
+ element('play').onclick();advance(50);assert(+element('timeline').value>1);if(mode==='immersive')events.blur();else{document.hidden=true;events['document:visibilitychange']();document.hidden=false;}const paused=+element('timeline').value;advance(80);assert.equal(+element('timeline').value,paused);
+ if(mode==='web'){for(let i=0;i<4;i++){notebook.stage(i,false);assert.equal(phase,i);notebook.seek(notebook.clock.timeline[i].start+5,false);assert.equal(+element('timeline').value,Math.floor((i+.5)/4*lesson.horizon));}stops[1].onclick();assert.equal(phase,1);notebook.changeLanguage(lang==='es'?'en':'es');assert.equal(element('language').value,lang==='es'?'en':'es');events.pagehide({persisted:false});continue;}
  element('instant').checked=true;element('guide').onclick();assert.equal(audios.length,1);advance(210);assert.equal(phase,0,'a long audio never advances on a guessed duration');
  for(let i=0;i<4;i++){assert.equal(phase,i);audios.at(-1).onended();advance(120);assert.equal(phase,i,'observe for three seconds after audio');advance(65);}
  assert.equal(phase,3);assert.match(element('voice-state').textContent,/completo|complete/);
@@ -30,4 +32,4 @@ for(const lang of ['es','en'])for(const mode of ['web','immersive'])for(const [i
  if(mode==='immersive'){const initial=poseAt(1);events.keydown({code:'KeyW',target:{closest:()=>false},preventDefault(){}});advance(25);events.keyup({code:'KeyW'});assert(pose.x<initial.x,'walk uses camera forward');assert.match(element('voice-state').textContent,/pausa|Paused/);}
  events.pagehide({persisted:false});
 }
-console.log('30 lesson/language/mode combinations and two Internet redirects: controls, metrics, audio-ended tours, walking interruption and cleanup: OK');
+console.log('30 lesson/language/mode combinations and two Internet redirects: controls, metrics, global timeline scrubbing, audio-ended immersive tours, walking interruption and cleanup: OK');
