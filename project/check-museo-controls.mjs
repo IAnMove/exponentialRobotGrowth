@@ -16,7 +16,7 @@ const source=readFileSync('site-src/museo/app.js','utf8')
   .replace(/import \{VOICES\} from '[^']+';/,'');
 for(const lang of ['es','en']){
   const elements=new Map(),events={},queued=[];let clock=0,lastPose,url;
-  const element=id=>{if(!elements.has(id))elements.set(id,{id,hidden:id==='map',checked:false,dataset:{},style:{},textContent:'',classList:{add(){},remove(){}},setAttribute(k,v){this[k]=v;},addEventListener(){},setPointerCapture(){},append(){}});return elements.get(id);};
+  const element=id=>{if(!elements.has(id))elements.set(id,{id,hidden:id==='map',checked:false,dataset:{},style:{},textContent:'',classList:{add(){},remove(){},toggle(){}},setAttribute(k,v){this[k]=v;},addEventListener(name,fn){(this.handlers??={})[name]=fn;},setPointerCapture(){},append(){}});return elements.get(id);};
   const roomButtons=model.rooms.slice(1).map(r=>({...element('room-'+r.id),dataset:{room:r.id}}));
   const paintings=model.exhibits.map(e=>({...element('painting-'+e.id),dataset:{painting:e.id}}));
   const document={documentElement:{lang},body:element('body'),hidden:false,getElementById:element,createElement:element,exitPointerLock(){},addEventListener(){},querySelectorAll(selector){return selector==='[data-room]'?roomButtons:paintings;}};
@@ -35,6 +35,11 @@ for(const lang of ['es','en']){
   paintings.find(p=>p.dataset.painting==='robots').onclick();frames(40);
   events.keydown({code:'KeyW',target:{closest:()=>false},preventDefault(){}});frames(10);events.keyup({code:'KeyW'});frames(60);
   assert.equal(element('stop').hidden,true,'walking interrupts the automatic route');
+  paintings.find(p=>p.dataset.painting==='kardashev').onclick();frames(20);const view=element('view').handlers;
+  view.pointerdown({button:0,pointerId:1,clientX:100,clientY:100,pointerType:'touch'});view.pointermove({clientX:160,clientY:110});view.pointermove({clientX:260,clientY:120});frames(2);
+  assert.equal(element('stop').hidden,false,'looking around keeps the guided route walking');view.pointerup({clientX:260,clientY:120});frames(900);
+  const kardashev=model.standAt(model.exhibits.find(e=>e.id==='kardashev'));assert(Math.hypot(lastPose.x-kardashev.x,lastPose.z-kardashev.z)<.01,'a route keeps going while the visitor looks around');
+  assert(Math.abs(Math.atan2(Math.sin(lastPose.yaw-kardashev.yaw),Math.cos(lastPose.yaw-kardashev.yaw)))<.02,'the head eases back to face the painting');
   element('instant').checked=true;paintings.find(p=>p.dataset.painting==='robots').onclick();frames(10);
   assert.equal(element('enter-3d').hidden,true,'unbuilt worlds are never presented as immersive');
   assert.equal(element('web').href,'../robots/index.html');
@@ -48,4 +53,4 @@ for(const lang of ['es','en']){
     events.pagehide();frames(2);
   }
 }
-console.log('Museum controls: both languages, walking arrival, real portal URL, return pose, route interruption, map and truthful availability: OK');
+console.log('Museum controls: both languages, walking arrival, real portal URL, return pose, route interruption, free look during routes, map and truthful availability: OK');

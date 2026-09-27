@@ -14,6 +14,25 @@ export function createMuseum(host,es){
     const c=document.createElement('canvas'),g=c.getContext('2d');g.font='500 48px system-ui';c.width=Math.ceil(g.measureText(words).width+40);c.height=90;g.font='500 48px system-ui';g.fillStyle=color;g.textAlign='center';g.textBaseline='middle';g.fillText(words,c.width/2,45);const tx=own(new THREE.CanvasTexture(c));tx.colorSpace=THREE.SRGBColorSpace;
     const m=new THREE.Mesh(own(new THREE.PlaneGeometry(w,w*90/c.width)),own(new THREE.MeshBasicMaterial({map:tx,transparent:true,depthWrite:false})));m.position.set(x,y,z);parent.add(m);return m;
   }
+
+  // Museum plaques: enamel board, double brass frame and diamond corners. Lettering lives on the front face only,
+  // so from behind a visitor sees the plain back of the board, never mirrored text.
+  const brass=mat(0xb49765,{metalness:.75,roughness:.3}),plaqueBack=mat(0x1b1814,{metalness:.55,roughness:.5});
+  function plaque(parent,lines,{x=0,y=0,z=0,w=3,h=.8,accent='#d9bd8d',depth=.06}={}){
+    const c=document.createElement('canvas'),W=1024,H=Math.round(W*h/w),g=c.getContext('2d');c.width=W;c.height=H;
+    const bg=g.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#231d16');bg.addColorStop(1,'#0e0c09');g.fillStyle=bg;g.fillRect(0,0,W,H);
+    const gold=g.createLinearGradient(0,0,W,H);gold.addColorStop(0,'#e7cf98');gold.addColorStop(.5,'#9c7c46');gold.addColorStop(1,'#e2c58a');
+    const rim=Math.max(8,H*.07),inset=rim*2.3;g.strokeStyle=gold;g.lineWidth=rim;g.strokeRect(rim/2,rim/2,W-rim,H-rim);
+    g.lineWidth=Math.max(2,rim*.22);g.strokeStyle=accent;g.globalAlpha=.75;g.strokeRect(inset,inset,W-inset*2,H-inset*2);g.globalAlpha=1;
+    const d=inset*.55;g.fillStyle=gold;for(const [cx,cy] of [[inset,inset],[W-inset,inset],[inset,H-inset],[W-inset,H-inset]]){g.save();g.translate(cx,cy);g.rotate(Math.PI/4);g.fillRect(-d/2,-d/2,d,d);g.restore();g.fillStyle=accent;g.beginPath();g.arc(cx,cy,d*.18,0,Math.PI*2);g.fill();g.fillStyle=gold;}
+    const total=lines.reduce((a,l)=>a+l.size*H*1.18,0);let yy=H/2-total/2;g.textAlign='center';g.textBaseline='middle';
+    lines.forEach((l,i)=>{const px=l.size*H;yy+=px*.59;g.font=`${l.weight||600} ${px}px ${l.serif===false?'Inter,system-ui,sans-serif':'Georgia,"Times New Roman",serif'}`;g.letterSpacing=`${(l.spacing??.08)*px}px`;g.fillStyle=l.color||'#f3e6cc';g.fillText(l.text,W/2,yy,W-inset*3.2);
+      if(l.rule){const rw=Math.min(W*.46,g.measureText(l.text).width*.9),ry=yy+px*.62;g.fillStyle=gold;g.fillRect(W/2-rw/2,ry-1.5,rw,3);g.fillStyle=accent;for(const sx of [-1,1]){g.save();g.translate(W/2+sx*(rw/2+px*.14),ry);g.rotate(Math.PI/4);g.fillRect(-px*.07,-px*.07,px*.14,px*.14);g.restore();}}
+      yy+=px*.59;});
+    const tx=own(new THREE.CanvasTexture(c));tx.colorSpace=THREE.SRGBColorSpace;tx.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
+    const face=own(new THREE.MeshStandardMaterial({map:tx,emissiveMap:tx,emissive:0xffffff,emissiveIntensity:.32,roughness:.45,metalness:.25}));
+    const board=new THREE.Mesh(own(new THREE.BoxGeometry(w,h,depth)),[brass,brass,brass,brass,face,plaqueBack]);board.position.set(x,y,z);parent.add(board);return board;
+  }
   const wallMaterial=mat(0x58606a,{roughness:.93});
   for(const b of walls){const mesh=new THREE.Mesh(own(new THREE.BoxGeometry(b.maxX-b.minX,WALL_H,b.maxZ-b.minZ)),wallMaterial);mesh.position.set((b.minX+b.maxX)/2,WALL_H/2,(b.minZ+b.maxZ)/2);scene.add(mesh);solids.push(mesh);box(scene,mesh.position.x,.12,mesh.position.z,b.maxX-b.minX+.045,.24,b.maxZ-b.minZ+.045,0x263444);}
   rooms.forEach((r,i)=>{
@@ -30,12 +49,12 @@ export function createMuseum(host,es){
   // Four open, coloured portals join the galleries through the atrium.
   for(const r of rooms.slice(1)){
     const g=new THREE.Group();g.position.set(r.gate.x,0,r.gate.z);g.rotation.y=r.id==='industry'?Math.PI/2:r.id==='cosmos'?-Math.PI/2:r.id==='life'?Math.PI:0;scene.add(g);
-    [-2,2].forEach(x=>{box(g,x,2.1,0,.18,4.2,.6,0x2a3541);box(g,x,2.1,.32,.055,4.2,.03,r.color,{emissive:r.color,emissiveIntensity:.7});});box(g,0,4.2,0,4.2,.22,.6,0x2a3541);text(g,es?r.es:r.en,0,4.65,.36,3.7,r.color);
+    [-2,2].forEach(x=>{box(g,x,2.1,0,.18,4.2,.6,0x2a3541);box(g,x,2.1,.32,.055,4.2,.03,r.color,{emissive:r.color,emissiveIntensity:.7});});box(g,0,4.2,0,4.2,.22,.6,0x2a3541);plaque(g,[{text:(es?r.es:r.en).toUpperCase(),size:.34,rule:true,color:r.color},{text:r.subtitle[es?0:1],size:.15,weight:400,serif:false,spacing:.12,color:'#d8ccb4'}],{y:4.83,z:.22,w:3.5,h:.98,accent:r.color});for(const x of [-1.25,1.25]){const b=new THREE.Mesh(own(new THREE.BoxGeometry(.07,.16,.34)),brass);b.position.set(x,4.36,.12);g.add(b);}
     const p=new THREE.Group();p.position.set(r.x,0,r.z);scene.add(p);const ring=new THREE.Mesh(own(new THREE.TorusGeometry(1.25,.035,8,60)),mat(r.color,{emissive:r.color,emissiveIntensity:.4}));ring.position.y=3.5;p.add(ring);sculptures.push(ring);
     if(r.id==='mind'){const core=new THREE.Mesh(own(new THREE.IcosahedronGeometry(.72,1)),mat(r.color,{wireframe:true,emissive:r.color,emissiveIntensity:.2}));core.position.y=3.5;p.add(core);sculptures.push(core);}
     if(r.id==='cosmos'){const globe=new THREE.Mesh(own(new THREE.SphereGeometry(.66,24,16)),mat(0x91abc8,{metalness:.45}));globe.position.y=3.5;p.add(globe);}
   }
-  text(scene,'ATLAS',4.1,3.2,7.79,2.8).rotation.y=Math.PI;
+  plaque(scene,[{text:'ATLAS',size:.4,rule:true,spacing:.3},{text:es?rooms[0].subtitle[0]:rooms[0].subtitle[1],size:.14,weight:400,serif:false,spacing:.14,color:'#d8ccb4'}],{x:4.1,y:3.2,z:7.8,w:2.6,h:.9,accent:rooms[0].color,depth:.05}).rotation.y=Math.PI;
   const floorTitle=text(scene,es?'ELIGE UNA SALA · ENTRA EN UN CUADRO':'CHOOSE A GALLERY · ENTER A PAINTING',0,.024,2.7,6.8,'#e7dec5');floorTitle.rotation.x=-Math.PI/2;
   // Real frames: moulding, inner bevel, canvas and a separate museum label.
   for(const e of exhibits){
@@ -46,8 +65,7 @@ export function createMuseum(host,es){
     const texture=own(new THREE.CanvasTexture(paintingCanvas(e,es)));texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
     const mesh=new THREE.Mesh(own(new THREE.PlaneGeometry(w,h,36,24)),own(new THREE.ShaderMaterial({uniforms:{map:{value:texture},time:{value:0},hover:{value:0},enter:{value:0}},vertexShader:'uniform float time; uniform float hover; uniform float enter; varying vec2 vUv; void main(){vUv=uv; vec3 p=position; float d=length(uv-.5); p.z+=sin(d*22.-time*3.)*.035*hover+sin(d*28.-time*8.)*.25*enter; gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.);}',fragmentShader:'uniform sampler2D map; uniform float hover; uniform float enter; varying vec2 vUv; void main(){vec2 uv=(vUv-.5)*(1.-enter*.12)+.5; vec4 col=texture2D(map,uv); float edge=pow(max(abs(vUv.x-.5),abs(vUv.y-.5))*2.,14.); col.rgb+=vec3(.16,.23,.3)*edge*hover; gl_FragColor=col;\n #include <tonemapping_fragment>\n #include <colorspace_fragment>\n }'})));
     mesh.position.z=.065;mesh.userData.exhibit=e;group.add(mesh);
-    text(group,`${e.num} / ${es?e.es:e.en}`,0,-h/2-.46,.08,Math.min(w,3),'#f0e6d5');
-    text(group,immersiveHref(e.id)?(es?'ENTRAR EN EL MUNDO 3D':'ENTER THE 3D WORLD'):(es?'NOTEBOOK WEB · 3D EN PREPARACIÓN':'WEB NOTEBOOK · 3D COMING LATER'),0,-h/2-.73,.08,Math.min(w,3),immersiveHref(e.id)?'#b6f5cf':'#c2c6cc');
+    const live=!!immersiveHref(e.id);plaque(group,[{text:`${e.num} · ${es?e.es:e.en}`,size:.3},{text:live?(es?'ENTRAR EN EL MUNDO 3D':'ENTER THE 3D WORLD'):(es?'NOTEBOOK WEB · 3D EN PREPARACIÓN':'WEB NOTEBOOK · 3D COMING LATER'),size:.17,weight:500,serif:false,spacing:.14,color:live?'#b6f5cf':'#c2c6cc'}],{y:-h/2-.62,z:-.02,w:Math.min(w,2.7),h:.62,accent:e.color,depth:.05});
     const spot=new THREE.PointLight(0xffe6bc,12,6,2);spot.position.set(e.x+e.nx*1.4,4.6,e.z+e.nz*1.4);scene.add(spot);screens.push({e,mesh,frameMaterial});
   }
   const camera=new THREE.PerspectiveCamera(68,1,.06,90);camera.rotation.order='YXZ';
