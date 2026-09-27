@@ -22,7 +22,7 @@ export function buildLunarScene(es,{textures=true}={}){
  const stars=[];for(let i=0;i<700;i++){const a=i*2.399963,y=1-2*(i+.5)/700,r=Math.sqrt(1-y*y);stars.push(100*Math.cos(a)*r,100*y,100*Math.sin(a)*r);}const sg=own(new THREE.BufferGeometry());sg.setAttribute('position',new THREE.Float32BufferAttribute(stars,3));const starfield=new THREE.Points(sg,own(new THREE.PointsMaterial({size:.11,color:0x94aac9,fog:false})));scene.add(starfield);const launchFog=new THREE.Fog(0x9fc0d4,70,190),lunarFog=new THREE.Fog(0x070d18,60,130);
  const route=new THREE.Group(),base=new THREE.Group();scene.add(route,base);
  const mission=buildMission(es,{textures});scene.add(mission.group);
- const em=own(new THREE.MeshStandardMaterial({color:0x6896b9,roughness:.9,fog:false,envMapIntensity:0}));
+ const em=own(new THREE.MeshStandardMaterial({color:0x0d2238,roughness:.9,fog:false,envMapIntensity:0}));
  if(textures)new THREE.TextureLoader().load('../kardashev/earth-blue-marble.jpg',tx=>{own(tx);tx.colorSpace=THREE.SRGBColorSpace;em.map=tx;em.emissiveMap=tx;em.emissive.set(0xffffff);em.emissiveIntensity=.1;em.color.set(0xffffff);em.needsUpdate=true;});
  const earth=new THREE.Mesh(sphere,em);earth.position.set(-13,2,-2);earth.scale.setScalar(4.6);earth.rotation.y=-.9;route.add(earth);kit.atmosphere(route,earth,4.6);
  const moon=new THREE.Mesh(kit.craterSphere(),kit.moonMaterial());moon.position.set(13,0,0);moon.scale.setScalar(5.3);moon.rotation.set(.3,-.8,0);moon.castShadow=moon.receiveShadow=true;route.add(moon);
