@@ -1,24 +1,23 @@
 import * as T from '../../vendor/three.module.js';
 import {missionPose} from './mission.js';
-import {visualKit} from './visuals.js';
+import {visualKit} from '../fx/space-kit.js';
 const V=a=>new T.Vector3(...a),GOLD=0xffbd73;
 export function buildMission(es,{textures=true}={}){
  const group=new T.Group(),resources=[],own=x=>(resources.push(x),x);
  const kit=visualKit(own,{textures}),{box,ship,solar,rod,ring,crate}=kit;
  const mat=(c,e=0)=>kit.mat(c,'metal',e),cylinder=kit.cyl;
- const earthmat=own(new T.MeshStandardMaterial({color:0x0d2238,roughness:.9,metalness:0,fog:false,envMapIntensity:0,emissive:0x0c1f33,emissiveIntensity:1}));if(textures)new T.TextureLoader().load('../kardashev/earth-blue-marble.jpg',tx=>{own(tx);tx.colorSpace=T.SRGBColorSpace;earthmat.map=tx;earthmat.emissiveMap=tx;earthmat.emissive.set(0xffffff);earthmat.emissiveIntensity=.1;earthmat.color.set(0xffffff);earthmat.needsUpdate=true;});
+ const earthmat=kit.earthMaterial();
  const sphere=own(new T.SphereGeometry(1,48,32));function planet(g,p,r,m){const a=new T.Mesh(sphere,m);a.position.set(...p);a.scale.setScalar(r);g.add(a);return a;}
  const launch=new T.Group(),orbit=new T.Group(),crossing=new T.Group(),surface=new T.Group();group.add(launch,orbit,crossing,surface);
  const shoreGeo=own(new T.PlaneGeometry(170,300,36,80));shoreGeo.rotateX(-Math.PI/2);const shorePos=shoreGeo.attributes.position;for(let i=0;i<shorePos.count;i++){const z=shorePos.getZ(i),edge=19+7*Math.sin(z*.038)+2*Math.sin(z*.13),u=(shorePos.getX(i)+85)/170;shorePos.setX(i,-130+u*(130+edge));shorePos.setY(i,-.1);}shoreGeo.computeVertexNormals();const land=[new T.Color(0x4f6a45),new T.Color(0x7d8457),new T.Color(0x36513a)],tint=new T.Color(),landColors=new Float32Array(shorePos.count*3);for(let i=0;i<shorePos.count;i++){const x=shorePos.getX(i),z=shorePos.getZ(i),n=.5+.3*Math.sin(x*.061+z*.017)*Math.cos(z*.043)+.2*Math.sin(x*.19-z*.11);tint.copy(land[0]).lerp(n>.5?land[1]:land[2],Math.abs(n-.5)*1.6);tint.toArray(landColors,i*3);}shoreGeo.setAttribute('color',new T.BufferAttribute(landColors,3));const shore=new T.Mesh(shoreGeo,own(new T.MeshStandardMaterial({vertexColors:true,roughness:1,metalness:0})));kit.sky(launch);shore.receiveShadow=true;launch.add(shore);box(launch,[90,-.25,0],[300,.1,320],0x24586c,'soil');
  const beachGeo=own(new T.PlaneGeometry(2,300,1,160));beachGeo.rotateX(-Math.PI/2);const beachPos=beachGeo.attributes.position;for(let i=0;i<beachPos.count;i++){const z=beachPos.getZ(i),edge=19+7*Math.sin(z*.038)+2*Math.sin(z*.13);beachPos.setX(i,edge-1+beachPos.getX(i));beachPos.setY(i,-.07);}beachGeo.computeVertexNormals();const beach=new T.Mesh(beachGeo,kit.mat(0xb0a88b,'soil'));beach.receiveShadow=true;launch.add(beach);
 box(launch,[0,.04,0],[13,.3,13],0x67787e,'soil');cylinder(launch,[0,1.3,0],2.8,2.4,0x727d7c);
- for(const x of [-7,-5])for(const z of [-2,0])box(launch,[x,12,z],[.35,24,.35],0x87969b);for(let y=2;y<24;y+=2){box(launch,[-6,y,-1],[2.2,.2,2.2],0x758a92);const brace=box(launch,[-6,y,-1],[.13,2.8,.13],0xa7b3b8);brace.rotation.z=.7;}box(launch,[-3.5,15,-1],[6,.45,.45],0xb3b5ac);
+ kit.lattice(launch,{x:-6,z:-1,height:24,width:2,step:2});box(launch,[-3.5,15,-1],[6,.45,.45],0xb3b5ac);
  for(let i=0;i<5;i++){cylinder(launch,[-20+i*3,2.5,-10],1.1,5,0xc3cecf);box(launch,[-20+i*3,.2,-4],[.18,.25,12],0x6c8c93);}
  // Service gantries, pipework and pad markings give the launch site a readable scale.
  for(let i=0;i<14;i++){box(launch,[-8,.13,5+i*2],[.12,.04,1],0xf1ddb1);box(launch,[8,.13,5+i*2],[.12,.04,1],0xf1ddb1);}
  box(launch,[0,.02,32],[18,.12,48],0x424d50,'soil');
  for(const x of [-26,-16]){box(launch,[x,1,-17],[8,2,5],0x8eaaa9);for(let j=0;j<5;j++)box(launch,[x-3+j*1.5,2.1,-17],[.08,.1,5],0xc9d1ce);}
- for(let y=2;y<24;y+=2){rod(launch,[-7,y,-2],[-5,y+2,-2],.05);rod(launch,[-5,y,-2],[-7,y+2,-2],.05);}
  for(const z of [-3,3]){rod(launch,[-6,15,z],[1,15,z],.16);rod(launch,[-6,13,z],[0,15,z],.08);}
  for(let i=0;i<5;i++){ring(launch,[-20+i*3,4.7,-10],1.11,.04,0x6c8c93);rod(launch,[-20+i*3,4,-10],[-20+i*3,.3,-10],.06);}
  const booster=ship(launch,{booster:true}),upper=ship(launch,{stowed:true});

@@ -1,5 +1,9 @@
 import * as THREE from '../../vendor/three.module.js';
 import {createPost,adaptiveScale,pointScaleFor} from '../fx/fx.js';
+import {visualKit} from '../fx/space-kit.js';
+
+// Shared launch-site pieces (lattice tower) with the lunar notebook.
+const kit=visualKit(x=>x,{textures:false});
 
 const M=.095;
 function mat(c,extra={}){return new THREE.MeshStandardMaterial({color:c,roughness:.5,metalness:.2,...extra});}
@@ -57,9 +61,7 @@ function buildStarship(){
 
 function tower(){
  const g=new THREE.Group(),truss=mat(0x3d434b,{metalness:.7,roughness:.45});
- const mast=new THREE.Mesh(new THREE.BoxGeometry(1.8,16,1.8),mat(0x2e343b,{metalness:.6,roughness:.5,transparent:true,opacity:.9}));mast.position.set(-4.2,8,0);g.add(mast);
- for(let y=.8;y<16;y+=.8){const b=new THREE.Mesh(new THREE.BoxGeometry(1.95,.07,1.95),truss);b.position.set(-4.2,y,0);g.add(b);}
- for(const [x,z] of [[-5.1,-.9],[-3.3,-.9],[-5.1,.9],[-3.3,.9]]){const leg=new THREE.Mesh(new THREE.BoxGeometry(.16,16.4,.16),truss);leg.position.set(x,8.2,z);g.add(leg);}
+ kit.lattice(g,{x:-4.2,z:0,height:16,width:1.8,step:.8,color:0x4a5058,brace:0x6a727c,deck:0x3a4048,leg:.09});
  const armL=new THREE.Mesh(new THREE.BoxGeometry(5,.4,.4),mat(0xd4a24a,{metalness:.5}));armL.position.set(-1.6,12.2,-1.15);
  const armR=new THREE.Mesh(new THREE.BoxGeometry(5,.4,.4),mat(0xd4a24a,{metalness:.5}));armR.position.set(-1.6,12.2,1.15);
  const table=new THREE.Mesh(new THREE.TorusGeometry(.75,.14,10,32),truss);table.rotation.x=Math.PI/2;table.position.y=6.25;g.add(table);
@@ -102,7 +104,7 @@ if(p.y>coast){vec2 w=p*.35+vec2(uTime*.25,uTime*.12);float wave=fbm(w)*.6+fbm(w*
  float fres=pow(1.-max(dot(nrm,v),0.),4.);vec3 sea=mix(vec3(.004,.025,.045),vec3(.12,.2,.3),fres);
  float spec=pow(max(dot(reflect(-normalize(uSun),nrm),v),0.),120.)*3.;float foam=smoothstep(.6,1.,1.-(p.y-coast)*.35)*n(p*3.+uTime);
  gl_FragColor=vec4(sea+spec+vec3(.6)*foam*.4,1.);}
-else{float g=fbm(p*.12);vec3 scrub=mix(vec3(.035,.045,.025),vec3(.08,.075,.045),g);vec3 sand=vec3(.2,.18,.14);
+else{float g=fbm(p*.12);vec3 scrub=mix(mix(vec3(.05,.085,.035),vec3(.13,.125,.065),g),vec3(.03,.06,.032),smoothstep(.55,.8,fbm(p*.03+7.)));vec3 sand=vec3(.42,.36,.26);
  vec3 c=mix(scrub,sand,smoothstep(coast-3.,coast,p.y));float road=smoothstep(.5,.35,abs(p.x-(p.y*.15)))*step(p.y,coast-2.)*step(10.,d);c=mix(c,vec3(.06,.06,.065),road);
  float light=.55+.45*max(dot(vec3(0,1,0),normalize(uSun)),0.);gl_FragColor=vec4(c*light,1.);}}`;
 
@@ -137,12 +139,16 @@ export function createSpaceWorld(host){
  const waterTower=new THREE.Group();waterTower.add(Object.assign(new THREE.Mesh(new THREE.SphereGeometry(1.4,24,16),mat(0xa9a8a2,{roughness:.4})),{}));waterTower.children[0].position.y=5;waterTower.children[0].scale.setScalar(.8);
  for(let i=0;i<4;i++){const l=new THREE.Mesh(new THREE.CylinderGeometry(.06,.06,5,6),mat(0x6d737a,{metalness:.6}));const a=i*Math.PI/2+.78;l.position.set(Math.cos(a)*.7,2.5,Math.sin(a)*.9);waterTower.add(l);}
  waterTower.position.set(15,0,-12);scene.add(waterTower);
- for(const [x,z,r] of [[-14,-8,2],[-18,-3,1.6],[12,6,1.4]]){const tank=new THREE.Mesh(new THREE.CylinderGeometry(r,r,1.6*r,24),mat(0x9d9c96,{roughness:.4,metalness:.3}));tank.position.set(x,.8*r,z);scene.add(tank);}
+ // Tank farm: banded steel tanks with domed roofs.
+ for(const [x,z,r] of [[-14,-8,2],[-18,-3,1.6],[12,6,1.4]]){const tank=new THREE.Mesh(new THREE.CylinderGeometry(r,r,1.6*r,32),mat(0xb9b8b1,{roughness:.35,metalness:.45}));tank.position.set(x,.8*r,z);scene.add(tank);
+  const dome=new THREE.Mesh(new THREE.SphereGeometry(r,32,12,0,Math.PI*2,0,Math.PI/2),mat(0xc9c8c1,{roughness:.35,metalness:.45}));dome.scale.y=.35;dome.position.set(x,1.6*r,z);scene.add(dome);
+  for(const k of [.25,.55,.85]){const band=new THREE.Mesh(new THREE.TorusGeometry(r*1.005,.03,6,48),mat(0x6d737a,{metalness:.6}));band.rotation.x=Math.PI/2;band.position.set(x,1.6*r*k,z);scene.add(band);}}
  const barge=new THREE.Mesh(new THREE.BoxGeometry(7,.7,14),mat(0x4b5057,{roughness:.7,metalness:.4}));barge.position.set(0,.45,44);scene.add(barge);
  const deck=new THREE.Group(),deckRing=new THREE.Mesh(new THREE.RingGeometry(1.9,2.2,48),new THREE.MeshBasicMaterial({color:0xf2f2ea}));deckRing.rotation.x=-Math.PI/2;deck.add(deckRing);
  for(const r of [0,Math.PI/2]){const bar=new THREE.Mesh(new THREE.PlaneGeometry(.35,3),new THREE.MeshBasicMaterial({color:0xf2f2ea}));bar.rotation.set(-Math.PI/2,0,r+Math.PI/4);bar.position.y=.005;deck.add(bar);}
  deck.position.set(0,.81,44);scene.add(deck);
- const strong=new THREE.Mesh(new THREE.BoxGeometry(1.1,8,.8),mat(0x5a626c,{metalness:.6,roughness:.45}));strong.position.set(-2.4,4,0);scene.add(strong);
+ // Falcon strongback: the same lattice as the Starship tower, at its own scale.
+ const strong=kit.lattice(scene,{x:-2.5,z:0,height:8,width:.8,step:.8,color:0x5a626c,brace:0x7a838d,deck:0x444b53,leg:.06});
 
  const twr=tower();scene.add(twr);
  const f9=buildFalcon(),ss=buildStarship();
