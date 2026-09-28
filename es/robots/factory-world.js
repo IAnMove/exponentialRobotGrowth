@@ -1,10 +1,11 @@
 import * as THREE from '../../vendor/three.module.js';
+import {tuneRenderer} from '../fx/perf.js';
 import {STATIONS,capacity,status,robotDuty,humanWorking} from './factory-model.js';
 
 export const POSITIONS=[[-11,-4],[-2,-4],[7,-4],[7,5],[-2,5]];
 export function createFactoryWorld(container){
   const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});
-  renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;
+  renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));tuneRenderer(renderer);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;
   renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.25;container.append(renderer.domElement);
   const scene=new THREE.Scene(),camera=new THREE.OrthographicCamera(-25,25,20,-20,.1,200);
   const hemi=new THREE.HemisphereLight(0xd2ecff,0x647c75,2.7);scene.add(hemi);

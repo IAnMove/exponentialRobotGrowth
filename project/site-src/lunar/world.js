@@ -1,4 +1,5 @@
 import * as THREE from '../vendor/three.module.js';
+import {tuneRenderer} from '../fx/perf.js';
 import {buildMission} from './mission-world.js';
 import {deliveriesAt,missionPose} from './mission.js';
 import {visualKit} from './visuals.js';
@@ -82,7 +83,7 @@ export function buildLunarScene(es,{textures=true}={}){
  setView('route');return {scene,resources,lunarFog,missionPose,groups:{route,base,mission:mission.group},instances,update,setView,get representation(){return representation;},dispose(){mission.dispose();resources.forEach(r=>r.dispose());}};
 }
 export function createWorld(host,es){
- const w=buildLunarScene(es),renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.1;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;host.append(renderer.domElement);
+ const w=buildLunarScene(es),renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));tuneRenderer(renderer);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.1;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;host.append(renderer.domElement);
  const pmrem=new THREE.PMREMGenerator(renderer),room=new RoomEnvironment(),envMap=pmrem.fromScene(room,.04).texture;room.traverse(o=>o.geometry?.dispose());pmrem.dispose();w.scene.environment=envMap;w.scene.environmentIntensity=.22;
  const camera=new THREE.PerspectiveCamera(46,1,.1,220);let view='route',yaw=.6,pitch=.65,distance=45,drag=null;
  function resize(){renderer.setSize(host.clientWidth,host.clientHeight,false);camera.aspect=host.clientWidth/host.clientHeight;camera.updateProjectionMatrix();}const observer=new ResizeObserver(resize);observer.observe(host);resize();

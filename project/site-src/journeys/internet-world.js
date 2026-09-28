@@ -1,4 +1,5 @@
 import * as THREE from '../vendor/three.module.js';
+import {tuneRenderer} from '../fx/perf.js';
 import {STAGES,PLACES,geoPoint,greatCircle} from './internet-route.js';
 const GOLD=0xffc66c,MINT=0x76f6c4,CYAN=0x6ccfff;
 const V=p=>new THREE.Vector3(...p);
@@ -144,7 +145,7 @@ export function createVoyageScene(es=true,{textures=true}={}){
 
 export function createVoyageWorld(host,es){
  const world=createVoyageScene(es),renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
- renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;host.append(renderer.domElement);
+ renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));tuneRenderer(renderer);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;host.append(renderer.domElement);
  const camera=new THREE.PerspectiveCamera(47,1,.05,240);let index=0,elapsed=0,fromPos=V(STAGES[0].camera),fromTarget=V(STAGES[0].target),target=fromTarget.clone(),free=false,yaw=0,pitch=0;
  camera.position.copy(fromPos);camera.lookAt(target);
  const resize=()=>{const w=host.clientWidth,h=host.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w/h<.8?62:47;camera.updateProjectionMatrix();};const observer=new ResizeObserver(resize);observer.observe(host);resize();

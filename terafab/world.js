@@ -1,4 +1,5 @@
 import * as THREE from '../vendor/three.module.js';
+import {tuneRenderer} from '../fx/perf.js';
 
 export const HALLS=[[-21,26],[21,26],[-21,-26],[21,-26]];
 export function carrierPosition(time){
@@ -93,7 +94,7 @@ export function buildCampus(){
 
 export function createWorld(container,onPick){
  const world=buildCampus(),{scene}=world,renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});
- renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));renderer.setClearColor(0x172b3d,0);renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;container.append(renderer.domElement);
+ renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));tuneRenderer(renderer);renderer.setClearColor(0x172b3d,0);renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;container.append(renderer.domElement);
  scene.add(new THREE.HemisphereLight(0xd1eeff,0x577c64,2.6));const sun=new THREE.DirectionalLight(0xffe3b5,3.1);sun.position.set(-55,100,60);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-105,right:105,top:105,bottom:-105,near:1,far:250});sun.shadow.normalBias=.08;scene.add(sun);const fill=new THREE.DirectionalLight(0x8cbee3,.8);fill.position.set(60,35,-50);scene.add(fill);
  const camera=new THREE.OrthographicCamera(-100,100,70,-70,.1,500),look=new THREE.Vector3(0,2,0),target=look.clone();let w=1,h=1,span=85,targetSpan=85,angle=.62,targetAngle=.62,elevation=.65,targetElevation=.65,view='campus',following=false;
  let entries=[];

@@ -1,4 +1,5 @@
 import * as THREE from '../../vendor/three.module.js';
+import {tuneRenderer} from '../fx/perf.js';
 import {poseAt} from './common.js';
 export function createLessonScene(lesson,es){
  const scene=new THREE.Scene();scene.fog=new THREE.Fog(0x10202d,26,110);scene.add(new THREE.HemisphereLight(0xd2e9ff,0x314339,2.4));const sun=new THREE.DirectionalLight(0xffe7c3,3);sun.position.set(7,15,5);scene.add(sun);
@@ -19,7 +20,7 @@ export function createLessonScene(lesson,es){
 }
 
 export function createWorld(host,lesson,es,onInspect){
- const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setClearColor(0x10202d);renderer.toneMapping=THREE.ACESFilmicToneMapping;host.append(renderer.domElement);renderer.domElement.tabIndex=0;
+ const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));tuneRenderer(renderer);renderer.setClearColor(0x10202d);renderer.toneMapping=THREE.ACESFilmicToneMapping;host.append(renderer.domElement);renderer.domElement.tabIndex=0;
  const {scene,resources,targets,outlines,update}=createLessonScene(lesson,es);
  const camera=new THREE.PerspectiveCamera(60,1,.08,150);camera.rotation.order='YXZ';const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();let state,elapsed=0,phase=0,mode='web';
  function resize(){renderer.setSize(host.clientWidth,host.clientHeight,false);camera.aspect=host.clientWidth/Math.max(1,host.clientHeight);camera.fov=Math.min(108,2*Math.atan(Math.tan(31*Math.PI/180)/Math.min(1,camera.aspect/1.2))*180/Math.PI);camera.updateProjectionMatrix();}const observer=new ResizeObserver(resize);observer.observe(host);resize();

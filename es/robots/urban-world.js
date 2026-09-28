@@ -1,4 +1,5 @@
 import * as THREE from '../../vendor/three.module.js';
+import {tuneRenderer} from '../fx/perf.js';
 import {TYPES,WORK} from './region-model.js';
 const DISTRICTS=[[-28,-20],[0,-20],[28,-20],[-28,15],[0,15],[28,15]];
 const INDUSTRIES=[[-40,20],[0,20],[40,20],[-40,47],[0,47],[40,47]];
@@ -8,7 +9,7 @@ const COLORS=[0x67bcec,0xeeb478,0xd7ca8d,0x82cdb4,0xea9baf,0xb3a7e2];
 // Shared city/territory renderer. Geometry represents the simulated places and flows.
 export function createUrbanWorld(container,{regional=false}={}){
  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});
- renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setClearColor(0x101e32,1);renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;container.append(renderer.domElement);
+ renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));tuneRenderer(renderer);renderer.setClearColor(0x101e32,1);renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;container.append(renderer.domElement);
  const scene=new THREE.Scene(),camera=new THREE.OrthographicCamera(-70,70,55,-55,.1,500);
  scene.add(new THREE.HemisphereLight(0xccedff,0x283e53,3));const sun=new THREE.DirectionalLight(0xffe8c2,3);sun.position.set(-40,100,60);sun.castShadow=true;sun.shadow.mapSize.set(1536,1536);Object.assign(sun.shadow.camera,{left:-95,right:95,top:95,bottom:-95,near:1,far:250});sun.shadow.normalBias=.15;scene.add(sun);
  const cube=new THREE.BoxGeometry(1,1,1),cone=new THREE.ConeGeometry(1,1,6),cyl=new THREE.CylinderGeometry(1,1,1,12),mats=new Map(),fixed=new THREE.Group();

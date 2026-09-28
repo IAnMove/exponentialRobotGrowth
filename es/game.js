@@ -3,6 +3,7 @@ import {districtRows} from './live/metrics.js';
 import {productionSeries,productionComparison} from './district-productivity.js';
 import {explainConstraint} from './learning-model.js';
 import * as THREE from '../vendor/three.module.js';
+import {tuneRenderer} from './fx/perf.js';
 import {WORLD,createWorld,roadRoute,routePoint} from './world.js';
 import {createCharacters} from './characters.js';
 import {createActivity,processStatus,INPUTS,RESOURCES} from './activity.js';
@@ -11,7 +12,7 @@ import {createNarrator} from './narrator.js';
 const $=id=>document.getElementById(id),container=$('world');
 let renderer;
 try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});}catch(error){$('loading').textContent='No se ha podido activar WebGL para este mundo 3D.';$('play').disabled=true;throw error;}
-renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.22;container.append(renderer.domElement);
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));tuneRenderer(renderer);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.22;container.append(renderer.domElement);
 const scene=new THREE.Scene(),camera=new THREE.OrthographicCamera(-70,70,44,-44,.1,400);
 const ambient=new THREE.HemisphereLight(0xd6ecff,0x738078,2.5);scene.add(ambient);
 const sun=new THREE.DirectionalLight(0xffe8ce,3);sun.position.set(-35,70,35);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-78,right:78,top:72,bottom:-72,near:1,far:200});sun.shadow.normalBias=.05;sun.shadow.bias=-.0001;scene.add(sun);
