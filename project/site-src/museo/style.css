@@ -7,3 +7,10 @@
 
 /* Captured mouse: a clearer aim point, since clicks act on what sits under it. */
 .looking .cross{width:9px;height:9px;margin:-4.5px 0 0 -4.5px;background:none;border:1.5px solid #fff;box-shadow:0 0 0 1px #0007,0 0 10px #0009}
+
+/* Audio guide on the shared player bar: bottom controls sit above it; 'Scene' is redundant in a full-screen museum. */
+.has-atlas-player .bottom{bottom:calc(var(--atlas-player-height,100px) + 14px)}
+.has-atlas-player .card{bottom:calc(var(--atlas-player-height,100px) + 18px)}
+.has-atlas-player .stick{bottom:calc(var(--atlas-player-height,100px) + 84px)}
+.has-atlas-player .atlas-player [data-ap=scene]{display:none}
+.looking .atlas-player{opacity:.55}
