@@ -1,6 +1,7 @@
 import * as THREE from '../../vendor/three.module.js';
 import {STOPS,standPosition} from './model.js';
 import {contextWindow,transformerTrace,nextCandidates,softmax,pendingToken} from '../llms/model.js';
+import {createAtmosphere,createPost,adaptiveScale,pointScaleFor} from '../llms/stage.js';
 export const PALETTE={blue:0x8fb3ff,mint:0x7fe6d3,gold:0xffcf7a,coral:0xff8a7a,violet:0xb79bff};
 export const visible=x=>x==='<EOS>'?'EOS':/^\s+$/.test(x)?'␠':x;
 const {blue,mint,gold,coral,violet}=PALETTE;
@@ -18,7 +19,7 @@ export function createGallery(es){
  function text(g,str,x,y,z,width=5,color='#dbe5ff',height=.3){
   const c=document.createElement('canvas'),ctx=c.getContext('2d');ctx.font='500 52px system-ui';c.width=Math.max(64,Math.ceil(ctx.measureText(str).width+36));c.height=84;ctx.font='500 52px system-ui';ctx.fillStyle=color;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(str,c.width/2,42);
   const tx=own(new THREE.CanvasTexture(c));tx.colorSpace=THREE.SRGBColorSpace;const h=Math.min(height*1.4,width*c.height/c.width);
-  const mesh=new THREE.Mesh(own(new THREE.PlaneGeometry(h*c.width/c.height,h)),own(new THREE.MeshBasicMaterial({map:tx,transparent:true,depthWrite:false,toneMapped:false,side:THREE.DoubleSide})));mesh.position.set(x,y,z);g.add(mesh);return mesh;
+  const mesh=new THREE.Mesh(own(new THREE.PlaneGeometry(h*c.width/c.height,h)),own(new THREE.MeshBasicMaterial({map:tx,transparent:true,depthWrite:false,toneMapped:false})));mesh.position.set(x,y,z);g.add(mesh);return mesh;
  }
  function glow(g,x,y,z,color,size=.8){const c=document.createElement('canvas');c.width=c.height=64;const ctx=c.getContext('2d'),grad=ctx.createRadialGradient(32,32,0,32,32,32);grad.addColorStop(0,'#ffffff');grad.addColorStop(.15,'#ffffffaa');grad.addColorStop(1,'#ffffff00');ctx.fillStyle=grad;ctx.fillRect(0,0,64,64);const tx=own(new THREE.CanvasTexture(c));const sprite=new THREE.Sprite(own(new THREE.SpriteMaterial({map:tx,color,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending})));sprite.position.set(x,y,z);sprite.scale.setScalar(size);g.add(sprite);return sprite;}
  function chip(g,str,x,y,z,w=1.05,color=blue,info){
@@ -121,15 +122,18 @@ export function createGallery(es){
  };
 }
 export function createExperience(host,{es,onInspect,onAction}){
- const gallery=createGallery(es),renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.toneMapping=THREE.ACESFilmicToneMapping;
- const camera=new THREE.PerspectiveCamera(64,1,.08,155);camera.rotation.order='YXZ';const canvas=renderer.domElement;canvas.tabIndex=0;canvas.setAttribute('aria-label',es?'Galería 3D. Ratón: mirar. WASD: caminar. E: escuchar el stand.':'3D gallery. Mouse: look. WASD: walk. E: listen at a stand.');host.append(canvas);
+ const gallery=createGallery(es),renderer=new THREE.WebGLRenderer({antialias:false,powerPreference:'high-performance'});let dpr=Math.min(devicePixelRatio||1,1.5);renderer.setPixelRatio(dpr);
+ const camera=new THREE.PerspectiveCamera(64,1,.08,200);camera.rotation.order='YXZ';
+ // Same HDR pipeline and atmosphere as notebook 08: bloom on the lit tensors, drifting dust, a grid that pulses under the visitor.
+ const pointScale={value:400},atmosphere=createAtmosphere(gallery.scene,{pointScale,dust:420,spread:[24,9,30]}),post=createPost(renderer,gallery.scene,camera,{strength:.62,radius:.55,threshold:.92});gallery.scene.environmentIntensity=.25;
+ const quality=adaptiveScale(dpr,{min:.6,apply(v){dpr=v;renderer.setPixelRatio(dpr);resize();}});let clock=0;const canvas=renderer.domElement;canvas.tabIndex=0;canvas.setAttribute('aria-label',es?'Galería 3D. Ratón: mirar. WASD: caminar. E: escuchar el stand.':'3D gallery. Mouse: look. WASD: walk. E: listen at a stand.');host.append(canvas);
  const ray=new THREE.Raycaster(),pointer=new THREE.Vector2(),projected=new THREE.Vector3();
  function visibleAncestors(o){for(let p=o;p;p=p.parent)if(!p.visible)return false;return true;}
  function inspect(x,y){const rect=canvas.getBoundingClientRect();pointer.set(x===null?0:(x-rect.left)/rect.width*2-1,y===null?0:1-(y-rect.top)/rect.height*2);ray.setFromCamera(pointer,camera);const hit=ray.intersectObjects(gallery.targets.filter(visibleAncestors))[0];if(hit&&hit.distance<14){if(hit.object.userData.action)onAction(hit.object.userData);else onInspect(hit.object.userData);}}
- function resize(){renderer.setSize(host.clientWidth,host.clientHeight,false);camera.aspect=host.clientWidth/Math.max(1,host.clientHeight);camera.fov=Math.min(88,2*Math.atan(Math.tan(32*Math.PI/180)/Math.min(1,camera.aspect/1.35))*180/Math.PI);camera.updateProjectionMatrix();}
+ function resize(){renderer.setSize(host.clientWidth,host.clientHeight,false);post.setSize(host.clientWidth,Math.max(1,host.clientHeight),dpr);camera.aspect=host.clientWidth/Math.max(1,host.clientHeight);camera.fov=Math.min(88,2*Math.atan(Math.tan(32*Math.PI/180)/Math.min(1,camera.aspect/1.35))*180/Math.PI);camera.updateProjectionMatrix();pointScale.value=pointScaleFor(Math.max(1,host.clientHeight),dpr,camera.fov);}
  const observer=new ResizeObserver(resize);observer.observe(host);resize();
- return {canvas,update:gallery.update,inspect,render(player,dt,progress,running,cue,reduced){camera.position.set(player.x,1.65,player.z);camera.rotation.set(player.pitch,player.yaw,0,'YXZ');gallery.animate(dt,progress,running,cue,reduced);renderer.render(gallery.scene,camera);},
+ return {canvas,update:gallery.update,inspect,render(player,dt,progress,running,cue,reduced){camera.position.set(player.x,1.65,player.z);camera.rotation.set(player.pitch,player.yaw,0,'YXZ');gallery.animate(dt,progress,running,cue,reduced);clock+=reduced?0:dt;atmosphere.update(clock,camera.position);post.render(dt);quality.frame(dt);},
   projectStand(index,player){const s=standPosition(index);projected.set(s.x,s.y+.5,s.z).project(camera);return {x:(projected.x+1)*host.clientWidth/2,y:(1-projected.y)*host.clientHeight/2,visible:projected.z<1&&projected.z>-1&&Math.abs(projected.x)<.9&&Math.abs(projected.y)<.83&&Math.hypot(player.x-s.x,player.z-s.z)<11};},
-  dispose(){observer.disconnect();gallery.dispose();renderer.dispose();canvas.remove();}
+  dispose(){observer.disconnect();atmosphere.dispose();post.dispose();gallery.dispose();renderer.dispose();canvas.remove();}
  };
 }
