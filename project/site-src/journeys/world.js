@@ -1,6 +1,8 @@
+import {createIdeasScene,createIdeasWorld} from './ideas-world.js';
 import * as THREE from '../vendor/three.module.js';
 import {poseAt} from './common.js';
 export function createLessonScene(lesson,es){
+ if(lesson.id==='ideas')return createIdeasScene(lesson,es);
  const scene=new THREE.Scene();scene.fog=new THREE.Fog(0x10202d,26,110);scene.add(new THREE.HemisphereLight(0xd2e9ff,0x314339,2.4));const sun=new THREE.DirectionalLight(0xffe7c3,3);sun.position.set(7,15,5);scene.add(sun);
  const resources=[],targets=[],groups=[],own=x=>(resources.push(x),x),color=Number.parseInt(lesson.color.slice(1),16);
  const material=(c,extra={})=>own(new THREE.MeshStandardMaterial({color:c,roughness:.45,metalness:.22,...extra}));
@@ -19,6 +21,7 @@ export function createLessonScene(lesson,es){
 }
 
 export function createWorld(host,lesson,es,onInspect){
+ if(lesson.id==='ideas')return createIdeasWorld(host,lesson,es,onInspect);
  const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setClearColor(0x10202d);renderer.toneMapping=THREE.ACESFilmicToneMapping;host.append(renderer.domElement);renderer.domElement.tabIndex=0;
  const {scene,resources,targets,outlines,update}=createLessonScene(lesson,es);
  const camera=new THREE.PerspectiveCamera(60,1,.08,150);camera.rotation.order='YXZ';const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();let state,elapsed=0,phase=0,mode='web';

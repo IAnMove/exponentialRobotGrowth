@@ -9,7 +9,7 @@ Para dar una experiencia por terminada con objetivo 9: escena legible y represen
 | Orden | Experiencia | Gráficos iniciales | Explicación inicial | Estado |
 |---|---|---:|---:|---|
 | 1 | Starlink | 2 (canvas negro) | 8 | Terminada: 9 / 9 como simulación didáctica |
-| 2 | Ideas | 5 | 7,5 | Investigación terminada; implementación pendiente |
+| 2 | Ideas | 5 | 7,5 | Terminada: 9 / 9 como simulación didáctica |
 | 3 | Carbono | 5 | 7,5 | Pendiente |
 | 4 | Evolución | 5 | 8 | Pendiente |
 | 5 | Electricidad | 5,5 | 8 | Pendiente |
@@ -40,8 +40,18 @@ Validación: 38 checks generales pasaron antes del último ajuste; el check de r
 
 Límites: 448 objetos de muestra, órbitas circulares, cuerpos ampliados, hardware funcional sin réplica CAD, tres pasarelas ilustrativas. La ruta geométrica no reproduce el protocolo privado ni las asignaciones ópticas. Propagación espacial de ida ≠ ping; no se modelan red terrestre, colas, meteorología, capacidad ni disponibilidad comercial. Fuentes oficiales enlazadas en la página.
 
-## Ideas — siguiente tarea
+## Ideas — revisión completada
 
-Mantener una única red de 64 personas durante todo el recorrido. El modelo y la animación deben compartir un historial de mensajes por enlace: emisor, destinatario, éxito, fallo y ronda. Mostrar ramas, cruce de comunidades y agotamiento de nuevos destinatarios; evitar los destinatarios fijos que hoy contradicen el grafo. Sincronizar esos hitos tanto en el notebook como en la guía inmersiva, que hoy puede narrar con el experimento en ronda cero.
+Una única red de 64 personas en cuatro comunidades conserva la identidad de cada nodo durante los cuatro capítulos. Personas con teléfonos, emisores amarillos, receptores verdes, puentes y mensajes animados por los enlaces del modelo. Se distinguen intentos, contactos ya alcanzados y éxitos/fallos de la ronda anterior; las cifras cambian cuando llegan los mensajes. Curvas de alcanzados, nuevos por ronda y referencia lineal. Notebook y paseo libre comparten voces MiniMax ES/EN, texto, timeline, pausas y recuperación de parámetros/posición del experimento.
 
-Comparaciones verificables: probabilidad 0 → solo la semilla; 100% sin puentes → 16 personas; 100% con puentes → 64. Conservar identidad de nodos, usar azar estable por enlace y mostrar alcanzados, nuevos por ronda e intentos con cifras grandes. Reutilizar las cuatro etapas y ocho voces existentes si los textos siguen correspondiendo a la escena.
+Se sustituyó el azar consumido por orden de recorrido por oportunidades estables por enlace dirigido. Aumentar probabilidad o añadir enlaces conserva las oportunidades anteriores. Los receptores simultáneos cuentan una vez; cada emisor intenta cada vecino no alcanzado una vez, y la activación avanza un salto por ronda. El horizonte de 64 permite terminar incluso el caso lento con un vecino por lado (último receptor en 35; ningún emisor en 36). La guía usa hitos del historial real en lugar de cuatro cortes arbitrarios del tiempo.
+
+El paseo ofrece cuatro stands con botón físico y tecla E por proximidad. Esc libera el ratón y pausa. Escuchar un stand conserva la cámara. Se filtran las acciones invisibles en la vista notebook. En navegadores que rechazan pointer lock, activar el ratón permite mirar moviéndolo sobre el canvas sin mantener pulsado; fuera del canvas queda libre para los controles.
+
+Validación: suite completa 40/40; checks del modelo, escenas y controlador, más comprobación final de recursos/imports/sintaxis. 800 comparaciones de probabilidades, umbrales dirigidos, aristas reordenadas/duplicadas, cadena, diamante, límites y ciclos. Pruebas de control cubren pausa a mitad de ronda, cambio de idioma conservando el experimento, avance manual sin interferencia de la voz y escuchar un stand sin teletransporte. Navegador real: ES/EN, voces/textos, controles 0% → 1 persona, 100% sin puentes → 16, con puentes → 64; reapertura con parámetros y ronda conservados. Móvil 390×844: red, indicadores y footer visibles; sin desbordamiento horizontal. Consolas ES/EN sin errores. El navegador integrado rechazó pointer lock y se verificó la alternativa y la tecla E.
+
+Límites: modelo de cascada independiente basado en Kempe/Kleinberg/Tardos; población y topología sintéticas, no una predicción humana. Una semilla es una realización, no un promedio. Los contadores de emisores activos describen la frontera que puede compartir, y no a todos los nodos ya activados en la terminología del paper. No mide verdad, persuasión ni recomendación de plataformas. Nota 9 editorial para una visualización explicativa estilizada, sin pretensión de fotorealismo.
+
+## Carbono — siguiente tarea
+
+Auditar la representación de depósitos y flujos antes de rehacerla: conservación de masa, combustibles fósiles, intercambio con océanos/tierra y persistencia tras detener emisiones. Sustituir los elementos genéricos por una escena causal y sincronizarla con su narración real, reutilizando sus voces cuando sigan siendo correctas.
