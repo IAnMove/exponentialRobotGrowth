@@ -1,6 +1,6 @@
 # Atlas — cola de mejoras
 
-Base GitHub comprobada tras los merges del usuario: `main` en `8f35920c660cf8e53731f1ee86d057d17a996d55` (PR #11), 29 septiembre 2026. El historial de Sites es distinto del repositorio de publicación: los commits GitHub se realizan en el worktree que parte de esta main.
+Base GitHub comprobada tras los merges del usuario: `main` en `8f35920c660cf8e53731f1ee86d057d17a996d55` (PR #11), comprobada de nuevo el 30 septiembre 2026. El historial de Sites es distinto del repositorio de publicación: los commits GitHub se realizan en el worktree que parte de esta main.
 
 Objetivo: mejorar una experiencia cada vez, empezar por las notas menores y guardar un commit por tarea terminada. Las notas son valoraciones editoriales, no una medida objetiva ni una promesa de fotorealismo.
 
@@ -11,7 +11,7 @@ Para dar una experiencia por terminada con objetivo 9: escena legible y represen
 | 1 | Starlink | 2 (canvas negro) | 8 | Terminada: 9 / 9 como simulación didáctica |
 | 2 | Ideas | 5 | 7,5 | Terminada: 9 / 9 como simulación didáctica |
 | 3 | Carbono | 5 | 7,5 | Terminada: 9 / 9 como simulación didáctica |
-| 4 | Evolución | 5 | 8 | Pendiente |
+| 4 | Evolución | 5 | 8 | Terminada: 9 / 9 como simulación didáctica |
 | 5 | Electricidad | 5,5 | 8 | Pendiente |
 | 6 | Microchip | 5,5 | 8 | Pendiente |
 | 7 | Célula | 5,5 | 8 | Pendiente |
@@ -64,6 +64,18 @@ Validación: suite completa 41/41; checks finales de Carbono, Ideas, escenas/con
 
 Límites permanentes: 100 unidades arbitrarias, no ppm, años ni temperatura. Geometría, árboles, volumen de agua y partículas son ilustrativos; los contadores/barras miden el carbono, que cambia de forma química al transferirse. No es una predicción del clima, el tamaño real de los depósitos no guarda estas proporciones y la parada fósil no equivale al cero neto de todos los gases. NASA, NOAA e IPCC enlazados en la página. Nota 9 editorial para una maqueta explicativa estilizada, sin pretensión de fotorealismo.
 
-## Evolución — siguiente tarea
+## Evolución — revisión completada
 
-Rehacer la copia de padres a descendientes: la escena actual agranda A para representar ventaja reproductiva y fuerza una hija B para cualquier mutación positiva. Se necesitan cohortes de 50 organismos y eventos de selección/copia/mutación que expliquen los números. El modelo es Wright–Fisher haploide, selección relativa 1+s, mutación simétrica y muestreo binomial. Rotular la referencia sin deriva como determinista, no media exacta bajo selección. Conservar las ocho voces sustancialmente correctas, y distinguir población real de proporciones continuas sin deriva. Investigación previa: Genetics 2014 (PMC4224163), NHGRI Genetic Drift y Mutation.
+Un laboratorio continuo conecta dos cohortes de 50 organismos haploides, su copia y un monitor de frecuencias. Placas, microscopio, cromosoma esquemático y letras A/B distinguen variantes del mismo gen, no especies. La selección muestra pesos 1+s y 1 y probabilidades; ambos tipos conservan el mismo tamaño. Cada descendiente y conexión procede de un evento registrado con progenitor de la generación anterior. Una ampliación sigue una copia real con marcador viajero; la mutación cambia únicamente a la hija. Los mutantes conservan su halo e inspector al convertirse en progenitores de la siguiente generación. La generación inicial de la semilla 41 produce exactamente 23 A, 27 B y una mutación A→B, aunque la probabilidad de A sea 53,42 %.
+
+El modelo Wright–Fisher conserva exactamente las trayectorias A/B anteriores. La genealogía usa otra extracción determinista dentro del alelo parental, sin consumir el RNG que decide las variantes. Contadores y curvas se actualizan solo cuando termina una generación; la animación intermedia muestra copias en formación. Probabilidades después de selección y mutación se distinguen de la composición muestreada. El gráfico conserva ejes 0–80 y 0–100 %, y revela solo generaciones completadas. Sin población finita desaparecen las cohortes y conexiones; se muestran proporciones continuas, sin redondear 50 organismos. Se rotula la referencia como determinista de población infinita, no como media exacta bajo selección.
+
+Cuatro voces MiniMax por idioma, reutilizadas sin cambios de texto. La guía presenta generación 0, ponderación, copia/mutación de la primera generación y después la trayectoria hasta 80. Los cuatro stands tienen botón físico y tecla E; escuchar conserva la cámara, caminar pausa, Esc libera el ratón. Encuadre guiado, giro, zoom, vista de ambas cohortes y paseo libre comparten tiempo fraccionario y recuperación del experimento/idioma. Los rótulos físicos se colocan sobre los pedestales y las anotaciones enfocan la etapa activa para evitar que tapen la escena. Etiquetas explícitas de los sliders y checkbox corrigen su asociación accesible con los inputs.
+
+Validación: suite completa 42/42, con comprobaciones finales de Evolution, escenas, controles y recursos después de ajustes visuales. 3.825 trayectorias exactamente iguales a la versión anterior; 4.000 ejecuciones de primera generación contrastan probabilidades conjuntas AA/AB/BA/BB, contribución parental y selección uniforme dentro de cada alelo. Parentesco, identidad, mutación simétrica, no mutaciones con μ=0, fijación absorbente y reintroducción de una variante comprobados. Escenas Three reales bilingües: tamaños iguales, mutación A→B solo después de su fase, retroceso y generaciones incompletas, modo continuo sin falsa población, cuatro acciones y cámaras. Controlador: pausa fraccionaria, cambio de idioma, recarga con sliders/semilla/estado manual conservados y voces pausadas sin sobreescribir el experimento. Navegador ES/EN: voces, primer ciclo 23/27, deriva neutra (semilla 3 acaba 50/0 frente a referencia 50 %), modo determinista, recarga y paseo; E, Esc y caminar. Móvil 390×844: cifras, copia real, controles de cámara y footer visibles, sin desbordamiento horizontal. Consola sin errores ni avisos.
+
+Límites permanentes: un gen y dos variantes, generaciones discretas, N=50 fijo y tasas didácticas. Geometría, tamaños y velocidad de las copias ilustrativos; no representa una especie ni una tasa genética medida. Sin dominancia, migración, recombinación, ecología ni estructura espacial. Cambiar un control recalcula desde generación 0, no cambia el ambiente dentro de la misma historia. Genetics 2014, NHGRI y Berkeley enlazados. Nota 9 editorial para una maqueta explicativa estilizada, sin pretensión de fotorealismo.
+
+## Electricidad — siguiente tarea
+
+Rehacer generación, conversión, transporte, consumo y batería como una instalación conectada. Corregir el desfase que consume la primera hora en t=0; el inicio debe conservar los 10 MWh de batería. Separar producción potencial, generación efectiva y recorte en origen, para que la energía recortada no viaje ni cause pérdidas de línea. Añadir inversor solar y conversión bidireccional de batería, núcleo magnético compartido en transformadores y distinción MW/MWh. Las cifras de demanda pertenecen a la ciudad ilustrativa, no a una vivienda. Conservar las ocho voces con límites de circuito equivalente RMS/PF=1 y batería ideal explícitos. Auditoría científica previa lista; no se han cambiado aún sus archivos.
