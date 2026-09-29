@@ -11,9 +11,10 @@ const source=readFileSync('site-src/museo/app.js','utf8')
   .replace(/import \{[^}]+\} from '\.\/model.js';/,'const {spawn,rooms,exhibits,stepVisitor,lookDelta,nearestExhibit,roomAt,standAt,routeTo,portalPose,yawLookingAt,SPEED}=model;')
   .replace(/import \{createMuseum\} from '\.\/world.js';/,'')
   .replace(/import \{immersiveHref\} from '[^']+';/,'')
-  .replace(/import \{StepGuide\} from '[^']+';/,'')
+  .replace(/import \{NotebookPlayer\} from '[^']+';/,'')
   .replace(/import \{LESSONS\} from '[^']+';/,'')
   .replace(/import \{VOICES\} from '[^']+';/,'');
+const players=[];
 for(const lang of ['es','en']){
   const elements=new Map(),events={},queued=[];let clock=0,lastPose,url;
   const element=id=>{if(!elements.has(id))elements.set(id,{id,hidden:id==='map',checked:false,dataset:{},style:{},textContent:'',classList:{add(){},remove(){},toggle(){}},setAttribute(k,v){this[k]=v;},addEventListener(name,fn){(this.handlers??={})[name]=fn;},setPointerCapture(){},append(){}});return elements.get(id);};
@@ -21,8 +22,10 @@ for(const lang of ['es','en']){
   const paintings=model.exhibits.map(e=>({...element('painting-'+e.id),dataset:{painting:e.id}}));
   const document={documentElement:{lang},body:element('body'),hidden:false,getElementById:element,createElement:element,exitPointerLock(){},addEventListener(){},querySelectorAll(selector){return selector==='[data-room]'?roomButtons:paintings;}};
   const window={addEventListener(name,fn){events[name]=fn;}};
+  // Stand-in for the shared player: records chapters and replays the onSync contract (index, running, reason).
+  class Player{constructor(o){this.o=o;this.clips=o.getClips(lang);this.index=0;this.running=false;players.push(this);}get current(){return {...this.clips[this.index],index:this.index};}stage(i,play=this.running){this.index=i;this.running=play;this.o.onSync({...this.current,running:this.running,reason:'seek'});}save(){}toggle(){this.running=!this.running;}pause(){this.running=false;}}
   class Guide extends StepGuide{constructor(options){super({...options,AudioClass:class{pause(){} removeAttribute(){} load(){} play(){return Promise.resolve();}}});}}
-  const ctx={LESSONS,document,window,console,URLSearchParams,model,immersiveHref,StepGuide:Guide,VOICES,matchMedia:()=>({matches:false}),performance:{now:()=>clock},location:{search:'',hash:'',assign:value=>{url=value;}},requestAnimationFrame:fn=>queued.push(fn),createMuseum:()=>({render:p=>{lastPose={...p};},pick:()=>null})};
+  const ctx={LESSONS,document,window,console,URLSearchParams,model,immersiveHref,NotebookPlayer:Player,StepGuide:Guide,VOICES,matchMedia:()=>({matches:false}),performance:{now:()=>clock},location:{search:'',hash:'',assign:value=>{url=value;}},requestAnimationFrame:fn=>queued.push(fn),createMuseum:()=>({render:p=>{lastPose={...p};},pick:()=>null})};
   vm.runInNewContext(source,ctx);
   function frames(n){for(let i=0;i<n;i++){clock+=1000/60;queued.shift()(clock);}}
   element('start').onclick();paintings.find(p=>p.dataset.painting==='llms').onclick();frames(600);
@@ -52,5 +55,10 @@ for(const lang of ['es','en']){
     assert.equal(url,`../journeys/index.html?topic=${id}&mode=immersive&entrance=painting`);
     events.pagehide();frames(2);
   }
+  const audio=players.at(-1),roomOf=id=>model.rooms.findIndex(r=>r.id===id);element('instant').checked=false;
+  assert.equal(audio.clips.length,model.rooms.length,'one audio-guide chapter per room');assert(audio.clips.every(c=>c.text&&c.title));
+  element('tour').onclick();frames(900);assert(audio.running,'the guided visit starts the audio guide');assert.equal(audio.index,roomOf('mind'),'the guide plays the chapter of the room reached');
+  paintings.find(p=>p.dataset.painting==='cell').onclick();frames(1400);assert.equal(audio.index,roomOf('life'),'walking into another room moves the playing guide there');
+  audio.stage(roomOf('cosmos'),true);frames(1400);assert.equal(model.roomAt(lastPose.x,lastPose.z).id,'cosmos','choosing a chapter walks the visitor to its room');
 }
-console.log('Museum controls: both languages, walking arrival, real portal URL, return pose, route interruption, free look during routes, map and truthful availability: OK');
+console.log('Museum controls: both languages, walking arrival, real portal URL, return pose, route interruption, free look during routes, audio guide by room, map and truthful availability: OK');
