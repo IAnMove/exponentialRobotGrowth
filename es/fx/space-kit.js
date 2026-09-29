@@ -1,4 +1,4 @@
-import * as T from '../vendor/three.module.js';
+import * as T from '../../vendor/three.module.js';
 
 // Deterministic procedural detail: no per-frame allocation, external models or random spawns.
 export function visualKit(own,{textures=true}={}) {
@@ -51,5 +51,20 @@ export function visualKit(own,{textures=true}={}) {
  // Camera-centred sky: always inside the far plane, with a warm haze low on the horizon.
  function sky(g,{top=0x1b4a7d,horizon=0x9fc0d4,haze=0xf2c9a0,toward=[-.55,.08,-.83]}={}){const m=own(new T.ShaderMaterial({side:T.BackSide,depthWrite:false,fog:false,uniforms:{top:{value:new T.Color(top)},horizon:{value:new T.Color(horizon)},haze:{value:new T.Color(haze)},toward:{value:new T.Vector3(...toward).normalize()}},vertexShader:'varying vec3 d;void main(){d=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'varying vec3 d;uniform vec3 top,horizon,haze,toward;void main(){vec3 n=normalize(d);float h=clamp(n.y,0.,1.);vec3 c=mix(horizon,top,pow(h,.5));float s=max(dot(n,toward),0.);c=mix(c,haze,pow(s,5.)*.55*(1.-h));c=mix(c,horizon*.85,smoothstep(0.,-.08,n.y));gl_FragColor=vec4(c,1.);\n#include <tonemapping_fragment>\n#include <colorspace_fragment>\n}'}));
   const dome=new T.Mesh(own(new T.SphereGeometry(150,48,24)),m);dome.frustumCulled=false;dome.renderOrder=-1;dome.onBeforeRender=(r,s,camera)=>{dome.position.copy(camera.position);dome.updateMatrixWorld();};g.add(dome);return dome;}
- return {mat,mesh,box,cyl,rod,ring,solar,crate,text,ship,plume,terrain,soilMaterial,atmosphere,craterSphere,moonMaterial,sky};
+ // Launch-tower lattice: corner legs, a platform every step and X-bracing on all four faces.
+ // Every member shares one unit cylinder, so a 24 m tower is a single geometry, not hundreds.
+ const unitRod=own(new T.CylinderGeometry(1,1,1,6)),up=new T.Vector3(0,1,0);
+ function member(g,a,b,r,material){const from=new T.Vector3(...a),to=new T.Vector3(...b),d=to.clone().sub(from),m=new T.Mesh(unitRod,material);m.position.copy(from).add(to).multiplyScalar(.5);m.scale.set(r,d.length(),r);m.quaternion.setFromUnitVectors(up,d.normalize());m.castShadow=m.receiveShadow=true;g.add(m);return m;}
+ function lattice(g,{x=0,z=0,height=24,width=2,step=2,color=0x87969b,brace=0xa7b3b8,deck=0x758a92,leg=.13}={}){
+  const a=new T.Group();a.position.set(x,0,z);g.add(a);const legM=mat(color),braceM=mat(brace),h=width/2;
+  const corners=[[-h,-h],[h,-h],[h,h],[-h,h]];
+  for(const [cx,cz] of corners)member(a,[cx,0,cz],[cx,height,cz],leg,legM);
+  for(let y=step;y<=height+1e-6;y+=step){box(a,[0,y,0],[width+.12,.14,width+.12],deck);
+   for(let i=0;i<4;i++){const [ax,az]=corners[i],[bx,bz]=corners[(i+1)%4];member(a,[ax,y-step,az],[bx,y,bz],leg*.35,braceM);member(a,[bx,y-step,bz],[ax,y,az],leg*.35,braceM);}}
+  return a;
+ }
+ // Earth that waits in night blue for its photo, keeps a faint night side and ignores reflections and haze.
+ function earthMaterial(url='../kardashev/earth-blue-marble.jpg'){const m=own(new T.MeshStandardMaterial({color:0x0d2238,roughness:.9,metalness:0,fog:false,envMapIntensity:0,emissive:0x0c1f33,emissiveIntensity:1}));
+  if(textures)new T.TextureLoader().load(url,tx=>{own(tx);tx.colorSpace=T.SRGBColorSpace;m.map=tx;m.emissiveMap=tx;m.emissive.set(0xffffff);m.emissiveIntensity=.1;m.color.set(0xffffff);m.needsUpdate=true;});return m;}
+ return {mat,mesh,box,cyl,rod,ring,solar,crate,text,ship,plume,terrain,soilMaterial,atmosphere,craterSphere,moonMaterial,sky,lattice,member,earthMaterial};
 }
