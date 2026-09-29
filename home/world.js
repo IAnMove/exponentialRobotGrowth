@@ -1,8 +1,9 @@
 import * as THREE from '../vendor/three.module.js';
+import {tuneRenderer} from '../fx/perf.js';
 import {CHORES} from './model.js';
 
 export function createHomeWorld(host){
- const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.setClearColor(0x18232c);host.append(renderer.domElement);
+ const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));tuneRenderer(renderer);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.setClearColor(0x18232c);host.append(renderer.domElement);
  const scene=new THREE.Scene(),camera=new THREE.OrthographicCamera(-9,9,7,-7,.1,100);scene.add(new THREE.HemisphereLight(0xe4f2ff,0xb4a78e,2.6));
  const sun=new THREE.DirectionalLight(0xfff0d9,3.2);sun.position.set(-5,12,7);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-10,right:10,top:10,bottom:-10});sun.shadow.normalBias=.025;scene.add(sun);
  const materials=new Map();function mat(c){if(!materials.has(c))materials.set(c,new THREE.MeshStandardMaterial({color:c,roughness:.8}));return materials.get(c);}

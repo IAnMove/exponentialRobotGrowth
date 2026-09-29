@@ -75,6 +75,7 @@ for language in ['en', 'es']:
         if source.suffix == '.js':
             content = content.replace("'./live/", "'../live/")
             content = content.replace("'./playback/", "'../playback/")
+            content = content.replace("'./fx/", "'../fx/")
             content = content.replace("'./vendor/", "'../vendor/") if language == 'en' else content.replace("'../vendor/", "'../../vendor/")
             if source.name == 'narrator.js':
                 content = content.replace("'./narration-catalog-en.js'", "'../narration-catalog-en.js'") if language == 'en' else content.replace("'../narration-catalog.js'", "'../../narration-catalog.js'")

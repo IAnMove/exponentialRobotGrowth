@@ -1,4 +1,5 @@
 import * as THREE from '../vendor/three.module.js';
+import {tuneRenderer} from '../fx/perf.js';
 import {GLTFLoader} from '../vendor/GLTFLoader.js';
 import {RoomEnvironment} from '../vendor/RoomEnvironment.js';
 
@@ -7,7 +8,7 @@ export const COLLECTOR_COUNT=1728;
 // NASA geometry is used for MarCO; the Dyson assemblies are illustrative.
 export function createWorld(host,{onAsset=()=>{}}={}) {
   const renderer=new THREE.WebGLRenderer({antialias:true});
-  renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));renderer.setClearColor(0x040810);
+  renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));tuneRenderer(renderer);renderer.setClearColor(0x040810);
   renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.1;host.append(renderer.domElement);
   const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(38,1,.05,240);
   const room=new RoomEnvironment(),pmrem=new THREE.PMREMGenerator(renderer),env=pmrem.fromScene(room,.04);
