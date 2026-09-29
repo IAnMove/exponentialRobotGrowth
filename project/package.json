@@ -1,4 +1,10 @@
 {
+  "private": true,
+  "scripts": {
+    "build": "python build-site.py",
+    "test": "node tools/run-checks.mjs",
+    "test:fast": "node tools/run-checks.mjs --no-build"
+  },
   "dependencies": {
     "three": "0.186.0"
   }

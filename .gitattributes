@@ -1,0 +1,7 @@
+# One line ending everywhere: builds on Windows no longer show untouched files as modified.
+* text=auto eol=lf
+*.mp3 binary
+*.jpg binary
+*.png binary
+*.webp binary
+*.glb binary
