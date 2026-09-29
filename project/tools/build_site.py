@@ -1,3 +1,4 @@
+import os
 """Compile the Spanish source into English (default) and Spanish static routes.
 
 Translations use one-pass exact phrase substitution: replacement text is never
@@ -91,7 +92,7 @@ for language in ['en', 'es']:
         (robots / source.name).write_text(content, encoding='utf-8')
     (robots / 'index.html').write_text((robots / 'factory.html').read_text(encoding='utf-8'), encoding='utf-8')
     # Standalone explanations use their own modules and bilingual content.
-    for folder in ['hub', 'fx', 'playback', 'lunar', 'terafab', 'growth', 'home', 'dyson', 'starlink', 'spacex', 'kardashev', 'llms', 'mente', 'modelos', 'museo', 'journeys', 'immersive', 'live']:
+    for folder in ['hub', 'about', 'fx', 'playback', 'lunar', 'terafab', 'growth', 'home', 'dyson', 'starlink', 'spacex', 'kardashev', 'llms', 'mente', 'modelos', 'museo', 'journeys', 'immersive', 'live']:
         target = destination if folder == 'hub' else destination / folder
         target.mkdir(exist_ok=True)
         for source in (ROOT / 'site-src' / folder).iterdir():
@@ -120,6 +121,16 @@ for language in ['en', 'es']:
                 content = content.replace('</head>', f'<meta property="og:type" content="website"><meta property="og:title" content="{html.escape(title, quote=True)}"><meta property="og:description" content="{description}"><meta name="twitter:card" content="summary"></head>')
             (target / source.name).write_text(content, encoding='utf-8')
 (ROOT / 'dist/.nojekyll').write_text('', encoding='utf-8')
+# Every page, in both languages and at any depth, carries the "About Atlas" tab.
+for page in (ROOT / 'dist').rglob('*.html'):
+    base = ROOT / 'dist' / ('es' if page.relative_to(ROOT / 'dist').parts[0] == 'es' else '')
+    src = os.path.relpath(base / 'about' / 'about.js', page.parent).replace(os.sep, '/')
+    content = page.read_text(encoding='utf-8')
+    if 'about/about.js' in content:
+        continue
+    tag = f'<script type="module" src="{src}"></script>'
+    content = content[:content.rfind('</body>')] + tag + content[content.rfind('</body>'):] if '</body>' in content else content + tag
+    page.write_text(content, encoding='utf-8')
 # Node reads the built pages as ES modules too (checks import them); say so instead of letting it guess.
 (ROOT / 'dist/package.json').write_text('{"type": "module"}' + chr(10), encoding='utf-8')
 print('Built Atlas, Robots and Terafab in English / and Spanish /es/; legacy robot URLs preserved.')
