@@ -16,7 +16,7 @@ assert.deepEqual(Object.keys(LESSONS),JOURNEY_IDS);
 for(const l of Object.values(LESSONS)){
  assert.equal(l.steps.length,4);assert(l.sources.length>=2);assert.equal(l.limitations.length,2);
  const cases=[defaults(l),...l.controls.flatMap(c=>[c.type==='toggle'?false:c.min,c.type==='toggle'?true:c.max].map(value=>({...defaults(l),[c.id]:value})))];
- for(const p of cases)for(let t=0;t<=l.horizon;t++){const m=l.evaluate(p,t);assert.equal(m.metrics.length,3);assert(m.series.every(s=>s.values.length===t+1&&s.values.every(Number.isFinite)));for(const v of Object.values(m))if(typeof v==='number')assert(Number.isFinite(v));}
+ for(const p of cases)for(let t=0;t<=l.horizon;t++){const m=l.evaluate(p,t);assert.equal(m.metrics.length,l.id==='carbon'?4:3);assert(m.series.every(s=>s.values.length===(l.id==='carbon'?61:t+1)&&s.values.every(Number.isFinite)));for(const v of Object.values(m))if(typeof v==='number')assert(Number.isFinite(v));}
  assert(immersiveHref(l.id).includes(`topic=${l.id}&mode=immersive`));assert(exhibits.find(e=>e.id===l.id)?.href.endsWith(`topic=${l.id}`));
  for(const lang of ['es','en']){
   const src=readFileSync(`site-src/journeys/voices-${l.id}.js`,'utf8'),json=JSON.parse(src.match(/export const VOICES = ([\s\S]*?);\r?\nconst base/)[1]);

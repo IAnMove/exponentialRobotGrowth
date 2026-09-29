@@ -3,7 +3,7 @@ const format=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}
 export class NotebookPlayer {
  constructor({id,language=document.documentElement.lang==='es'?'es':'en',getClips,onSync=()=>{},capture=()=>null,restore=()=>{},onLanguage=()=>{},autoplay=true}){
   Object.assign(this,{id,language,getClips,onSync,capture,restore,onLanguage});this.key='atlas-notebook-v2:'+id;this.wanted=autoplay;this.suspended=false;this.lastSave=0;
-  let saved;try{saved=JSON.parse(localStorage.getItem(this.key));}catch{}if(saved&&saved.version===2){if(['es','en'].includes(saved.language))this.language=saved.language;this.wanted=saved.playing!==false;try{restore(saved.extra);}catch{}}
+  let saved;try{saved=JSON.parse(localStorage.getItem(this.key));}catch{}if(saved&&saved.version===2){this.lastSavedPayload=JSON.stringify(saved);if(['es','en'].includes(saved.language))this.language=saved.language;this.wanted=saved.playing!==false;try{restore(saved.extra);}catch{}}
   const es=document.documentElement.lang==='es',t=(a,b)=>es?a:b;this.t=t;
   if(!document.querySelector('[data-atlas-player-css]')){const css=document.createElement('link');css.rel='stylesheet';css.href=new URL('./player.css',import.meta.url);css.dataset.atlasPlayerCss='';document.head.append(css);}
   this.root=document.createElement('section');this.root.className='atlas-player';this.root.setAttribute('aria-label',t('Reproductor del cuaderno','Notebook player'));
@@ -34,7 +34,7 @@ export class NotebookPlayer {
  stage(index,play=this.wanted){this.seek(this.clock.timeline[Math.max(0,Math.min(this.clock.timeline.length-1,index))].start,play);}
  toggle(){if(this.running)this.pause();else{this.wanted=true;this.clock.play();this.save();}}
  pause(){this.wanted=false;this.clock.pause();this.save();}
- save(){const c=this.clock.current;if(!c)return;try{localStorage.setItem(this.key,JSON.stringify({version:2,language:this.language,chapter:c.id,offset:this.clock.position-c.start,playing:this.wanted,extra:this.capture()}));}catch{}}
+ save(){const c=this.clock.current;if(!c)return;try{const payload=JSON.stringify({version:2,language:this.language,chapter:c.id,offset:this.clock.position-c.start,playing:this.wanted,extra:this.capture()});if(payload===this.lastSavedPayload)return;localStorage.setItem(this.key,payload);this.lastSavedPayload=payload;}catch{}}
  changeLanguage(language){const c=this.current,progress=c.progress,index=c.index;this.clock.dispose();this.language=language;this.onLanguage(language);this.clock=new TimelineClock({clips:this.getClips(language),onSync:s=>{this.paint(s);this.onSync(s);},onState:()=>this.paint(this.current)});this.marks();this.el('language').value=language;const next=this.clock.timeline[index]||this.clock.timeline[0];this.seek(next.start+progress*next.duration);}
  rebuild(){this.clock.dispose();this.clock=new TimelineClock({clips:this.getClips(this.language),onSync:s=>{this.paint(s);this.onSync(s);},onState:()=>this.paint(this.current)});this.marks();this.seek(0,false);}
  dispose(){this.save();this.disposed=true;this.clock.dispose();this.resize.disconnect();this.root.remove();document.body.classList.remove('has-atlas-player');}

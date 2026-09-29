@@ -1,3 +1,4 @@
+import {NotebookPlayer} from './site-src/playback/player.js';
 import assert from 'node:assert/strict';
 import {TimelineClock,makeTimeline,locate,restoredPosition} from './site-src/playback/timeline.js';
 import {responsePlaylist} from './site-src/llms/playlist.js';
@@ -21,4 +22,15 @@ let resolve;const pending=new Promise(r=>resolve=r);const race=new TimelineClock
 let loaded;const slow=new TimelineClock({clips,AudioClass:AudioStub,loadBlob:()=>new Promise(r=>loaded=r),urls:{createObjectURL:()=> 'blob:a',revokeObjectURL(){}}});const waiting=slow.seek(6,false);await slow.play();assert(slow.audio.paused);loaded({});await waiting;await Promise.resolve();assert.equal(slow.audio.currentTime,6);assert.equal(slow.state,'playing');slow.dispose();
 const voices=JSON.parse(readFileSync('site-src/llms/voices.js','utf8').split('export const VOICES = ')[1].split(/;\r?\n/)[0]);
 for(const language of ['es','en']){const list=responsePlaylist(language,DEFAULTS,voices[language],Array.from({length:8},(_,i)=>String(i)));assert(list.at(-1).snapshot.done);assert.equal(new Set(list.map(c=>c.id)).size,list.length,'repeated token chapters need unique restore IDs');const saved={chapter:list.at(-2).id,offset:2};assert(restoredPosition(saved,makeTimeline(list))>makeTimeline(list)[8].start);assert.equal(list[0].snapshot.generated.length,0);assert(list.at(-1).snapshot.generated.length>0);}
-console.log('Playback: exact seeking/resume, chapter gaps, autoplay denial, seek races, one audio owner, download reuse and reversible token histories: OK');
+// Two paused notebook instances share a key. An old tab must not periodically
+// overwrite the newer tab's position/parameters, nor do so on pagehide.
+const storage=new Map();let writes=0;globalThis.localStorage={setItem(k,v){storage.set(k,v);writes++;}};
+const pausedTab={key:'shared-notebook',language:'es',wanted:false,clock:{current:{id:'a',start:0},position:4.7},capture:()=>({params:{uptake:1},experiment:{source:'experiment',round:10.25}})};
+NotebookPlayer.prototype.save.call(pausedTab);const oldPayload=storage.get(pausedTab.key);
+const newerTab={...pausedTab,lastSavedPayload:oldPayload,clock:{current:{id:'b',start:13},position:20.35},capture:()=>({params:{uptake:2},experiment:{source:'experiment',round:59.8}})};
+NotebookPlayer.prototype.save.call(newerTab);const newPayload=storage.get(pausedTab.key);assert.notEqual(newPayload,oldPayload);const afterEdit=writes;
+for(let i=0;i<20;i++)NotebookPlayer.prototype.save.call(pausedTab);
+assert.equal(storage.get(pausedTab.key),newPayload,'unchanged old tab cannot rewind the new experiment');assert.equal(writes,afterEdit,'paused frames and pagehide do not rewrite unchanged state');
+const reopened={...newerTab,lastSavedPayload:newPayload};NotebookPlayer.prototype.save.call(reopened);assert.equal(writes,afterEdit,'a restored paused tab does not claim ownership');
+pausedTab.wanted=true;pausedTab.clock.position=6.5;NotebookPlayer.prototype.save.call(pausedTab);assert.equal(JSON.parse(storage.get(pausedTab.key)).offset,6.5,'a deliberate change is still persisted');
+console.log('Playback: exact seeking/resume, chapter gaps, autoplay denial, seek races, one audio owner, download reuse, stale-tab persistence and reversible token histories: OK');

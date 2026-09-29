@@ -10,7 +10,7 @@ Para dar una experiencia por terminada con objetivo 9: escena legible y represen
 |---|---|---:|---:|---|
 | 1 | Starlink | 2 (canvas negro) | 8 | Terminada: 9 / 9 como simulación didáctica |
 | 2 | Ideas | 5 | 7,5 | Terminada: 9 / 9 como simulación didáctica |
-| 3 | Carbono | 5 | 7,5 | Pendiente |
+| 3 | Carbono | 5 | 7,5 | Terminada: 9 / 9 como simulación didáctica |
 | 4 | Evolución | 5 | 8 | Pendiente |
 | 5 | Electricidad | 5,5 | 8 | Pendiente |
 | 6 | Microchip | 5,5 | 8 | Pendiente |
@@ -52,6 +52,18 @@ Validación: suite completa 40/40; checks del modelo, escenas y controlador, má
 
 Límites: modelo de cascada independiente basado en Kempe/Kleinberg/Tardos; población y topología sintéticas, no una predicción humana. Una semilla es una realización, no un promedio. Los contadores de emisores activos describen la frontera que puede compartir, y no a todos los nodos ya activados en la terminología del paper. No mide verdad, persuasión ni recomendación de plataformas. Nota 9 editorial para una visualización explicativa estilizada, sin pretensión de fotorealismo.
 
-## Carbono — siguiente tarea
+## Carbono — revisión completada
 
-Auditar la representación de depósitos y flujos antes de rehacerla: conservación de masa, combustibles fósiles, intercambio con océanos/tierra y persistencia tras detener emisiones. Sustituir los elementos genéricos por una escena causal y sincronizarla con su narración real, reutilizando sus voces cuando sigan siendo correctas.
+Un paisaje continuo conecta atmósfera, bosque y suelo, océano y reserva fósil. Árboles de dos tipos, terreno seccionado con estratos y carbón, agua transparente y chimenea conectada a la reserva. Las cinco rutas muestran dirección y partículas según los flujos del modelo; sus cantidades aparecen en tarjetas y los cuatro depósitos en el header. Una barra de masa distribuye exactamente las 100 unidades; las barras 3D comparten la escala 0–100. La molécula CO₂ ampliada separa materia y energía: IR entrante, vibración y un rayo reemitido, sin pared atmosférica ni reflexión especular.
+
+El ledger calcula las cinco transferencias a partir del estado anterior. Las cantidades se interpolan con el mismo tiempo usado por la escena, conservando total y balances individuales. Parar fósiles cierra únicamente ese flujo después del intervalo 10; los cuatro naturales continúan. Se distinguen parada, emisión cero y reserva agotada. La curva de comparación sin parada conserva los mismos parámetros de captación y emisión; el cursor muestra el intervalo activo sobre el horizonte fijo.
+
+Cuatro voces MiniMax por idioma, reutilizadas sin cambiar sus textos. El último capítulo parte de intervalo 9, muestra la parada durante la instrucción y llega a 11 al explicar que cesan las emisiones (aproximadamente 8,23 s ES / 8,59 s EN, medido a partir de pausas de las grabaciones; no alineación por palabra). Notebook y paseo comparten footer, textos y restauración de parámetros, voz y fracción del experimento. Cámara guiada con ampliaciones de CO₂, bosque y mar, vista completa, giro y acercamiento. Cuatro stands físicos con E, ratón libre con alternativa al bloqueo rechazado y Esc; escuchar un stand conserva la cámara. Una notificación tardía de un audio pausado ya no sobreescribe el experimento manual. El reproductor guarda solo cuando cambia su estado: una pestaña antigua en pausa ya no reescribe periódicamente la posición de una nueva. Se mantienen la clave y la compatibilidad de los datos existentes.
+
+Validación: suite completa 41/41; checks finales de Carbono, Ideas, escenas/control de journeys y reproducción. `check-carbon.mjs` cubre las 672 combinaciones de los sliders/toggle durante 60 intervalos, balances por depósito, no negatividad, equilibrio con flujos activos, parada desde 11, agotamiento parcial, interpolación, referencia y ocho guiones/archivos MiniMax. Geometría Three finita, mismos depósitos en las cuatro etapas, fósil invisible tras parada y reaparece al retroceder, flujos naturales visibles y barras con escala común. Navegador: voces reales ES/EN, textos, equilibrio 10/20/40/30 sin emisiones, agotamiento con emisión 2, pausa fraccional conservada tras recarga/cambio de voz/web↔3D, E, Esc y pausa al caminar. Móvil 390×844: cuatro depósitos, cinco flujos y footer legibles sin desbordamiento horizontal; encuadre ajustado a su frustum. El aviso de PCFSoftShadowMap eliminado en Three 0.186 se corrigió usando PCFShadowMap.
+
+Límites permanentes: 100 unidades arbitrarias, no ppm, años ni temperatura. Geometría, árboles, volumen de agua y partículas son ilustrativos; los contadores/barras miden el carbono, que cambia de forma química al transferirse. No es una predicción del clima, el tamaño real de los depósitos no guarda estas proporciones y la parada fósil no equivale al cero neto de todos los gases. NASA, NOAA e IPCC enlazados en la página. Nota 9 editorial para una maqueta explicativa estilizada, sin pretensión de fotorealismo.
+
+## Evolución — siguiente tarea
+
+Rehacer la copia de padres a descendientes: la escena actual agranda A para representar ventaja reproductiva y fuerza una hija B para cualquier mutación positiva. Se necesitan cohortes de 50 organismos y eventos de selección/copia/mutación que expliquen los números. El modelo es Wright–Fisher haploide, selección relativa 1+s, mutación simétrica y muestreo binomial. Rotular la referencia sin deriva como determinista, no media exacta bajo selección. Conservar las ocho voces sustancialmente correctas, y distinguir población real de proporciones continuas sin deriva. Investigación previa: Genetics 2014 (PMC4224163), NHGRI Genetic Drift y Mutation.

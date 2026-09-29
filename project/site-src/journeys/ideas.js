@@ -4,7 +4,7 @@ export {socialEdges,spread} from './ideas-model.js';
 let lastKey,lastTrace;
 export function experiment(p){const key=[p.contacts,p.probability,p.bridges,p.seed??731].join(':');if(key!==lastKey){lastTrace=cascade(p);lastKey=key;}return lastTrace;}
 export function ideaPose(i){const x=[-11,-3,6,13][i],z=13,dx=x,dz=z;return {x,z,yaw:Math.atan2(dx,dz),pitch:-Math.atan2(.45,Math.hypot(dx,dz))};}
-export const ideas={id:'ideas',room:'mind',title:L('Cómo se propaga una idea','How an idea spreads'),color:'#e5a5f2',unit:L('ronda','round'),horizon:64,
+export const ideas={id:'ideas',room:'mind',title:L('Cómo se propaga una idea','How an idea spreads'),color:'#e5a5f2',unit:L('ronda','round'),horizon:64,continuous:true,overview:{yaw:.2,pitch:.85,distance:11},fitLabel:L('Ver toda la red','Fit whole network'),
  poseAt:ideaPose,walk(p,f,s,dt){const n=Math.max(1,Math.hypot(f,s)),v=3.8*Math.min(.05,dt);return {...p,x:clamp(p.x+(-Math.sin(p.yaw)*f+Math.cos(p.yaw)*s)/n*v,-13,13),z:clamp(p.z+(-Math.cos(p.yaw)*f-Math.sin(p.yaw)*s)/n*v,-12,14)};},
  narrationTime(p,chapter,progress){return storyRound(experiment(p),chapter,progress);},
  challenge:L('Una persona, cuatro comunidades, 64 posibles lectores','One person, four communities, 64 possible readers'),controls:[control('probability',L('Probabilidad de transmitir · %','Transmission probability · %'),85,0,100,5),control('contacts',L('Vecinos por cada lado','Neighbours on each side'),2,1,4),toggle('bridges',L('Puentes entre comunidades','Bridges between communities'),true),control('seed',L('Azar reproducible · semilla','Repeatable randomness · seed'),731,1,999)],
