@@ -1,10 +1,15 @@
 import {CATALOG} from '../catalog.js';
+import {IMMERSIVE} from '../immersive/catalog.js';
 // One floor plan. Meshes and collision both read these boxes. No second yaw for the walls.
 export const EYE = 1.62;
 export const RADIUS = 0.32;
 export const SPEED = 3.6;
 export const STAND = 3.2;
 export const WALL_H = 5.6;
+// Both the renderer and interaction use this same front-facing canvas. The
+// portal threshold sits in front of the frame, reachable before wall collision.
+export const PAINTING=Object.freeze({centerY:2.35,defaultWidth:3.6,aspect:1.5,canvasOffset:.02,entryDistance:.65});
+const EPSILON=1e-9,PORTAL_ALIGNMENT=Math.cos(Math.PI/6);
 
 export const rooms=[
   {id:'hall',es:'Atrio',en:'Atrium',subtitle:['Un museo de ideas','A museum of ideas'],color:'#d9bd8d',x:0,z:1,minX:-6,maxX:6,minZ:-6,maxZ:8,gate:{x:0,z:0}},
@@ -23,7 +28,7 @@ export const walls=[
 
 // nx,nz is the screen's front: the direction from the glass toward the visitor.
 export const exhibits = [
-  {id:'lunar',room:'cosmos',x:14,z:7.65,nx:0,nz:-1,color:'#ffc478',es:'Tierra → Luna',en:'Earth → Moon',width:4.3},
+  {id:'lunar',room:'cosmos',x:14,z:7.65,nx:0,nz:-1,color:'#ffc478',es:'Tierra → Luna',en:'Earth → Moon',width:4.3,stand:3.6},
   {id:'robots',room:'industry',x:-16,z:-5.65,nx:0,nz:1,color:'#a7e0cf',es:'Robots',en:'Robots'},
   {id:'terafab',room:'industry',x:-22.65,z:-2,nx:1,nz:0,color:'#b9b1ff',es:'Terafab',en:'Terafab'},
   {id:'home',room:'industry',x:-22.65,z:4,nx:1,nz:0,color:'#efbd8c',es:'Hogar',en:'Home'},
@@ -63,6 +68,84 @@ export function standAt(exhibit) {
     yaw: yawLookingAt(-exhibit.nx, -exhibit.nz),
     pitch: .12
   };
+}
+
+export function paintingPlane(exhibit){
+ const width=exhibit.width||PAINTING.defaultWidth;
+ return {center:{x:exhibit.x+exhibit.nx*PAINTING.canvasOffset,y:PAINTING.centerY,z:exhibit.z+exhibit.nz*PAINTING.canvasOffset},
+  normal:{x:exhibit.nx,y:0,z:exhibit.nz},right:{x:exhibit.nz,y:0,z:-exhibit.nx},width,height:width/PAINTING.aspect};
+}
+const finitePose=pose=>!!pose&&['x','z','yaw','pitch'].every(field=>Number.isFinite(pose[field]));
+const eyeAt=pose=>({x:pose.x,y:EYE,z:pose.z});
+// THREE's camera rotation order is YXZ: positive pitch looks up; yaw zero
+// looks down -z. These values must come from the pose actually being rendered.
+const viewRay=pose=>({x:-Math.sin(pose.yaw)*Math.cos(pose.pitch),y:Math.sin(pose.pitch),z:-Math.cos(pose.yaw)*Math.cos(pose.pitch)});
+const dot=(a,b)=>a.x*b.x+a.y*b.y+a.z*b.z;
+const subtract=(a,b)=>({x:a.x-b.x,y:a.y-b.y,z:a.z-b.z});
+const along=(origin,direction,distance)=>({x:origin.x+direction.x*distance,y:origin.y+direction.y*distance,z:origin.z+direction.z*distance});
+
+// Finite segment against the exact wall boxes and height used by the renderer.
+// A painting behind a wall must not become a card or an E-key destination.
+function wallOccludes(origin,direction,distance){
+ for(const wall of walls){
+  let near=0,far=distance,intersects=true;
+  for(const [axis,min,max] of [['x',wall.minX,wall.maxX],['y',0,WALL_H],['z',wall.minZ,wall.maxZ]]){
+   if(Math.abs(direction[axis])<EPSILON){
+    if(origin[axis]<min||origin[axis]>max){intersects=false;break;}
+   }else{
+    const a=(min-origin[axis])/direction[axis],b=(max-origin[axis])/direction[axis];
+    near=Math.max(near,Math.min(a,b));far=Math.min(far,Math.max(a,b));
+    if(near>far){intersects=false;break;}
+   }
+  }
+  if(intersects&&far>EPSILON&&near<distance-EPSILON)return true;
+ }
+ return false;
+}
+function insideCanvas(point,plane){
+ const local=subtract(point,plane.center);
+ return Math.abs(dot(local,plane.right))<=plane.width/2+EPSILON&&Math.abs(local.y)<=plane.height/2+EPSILON;
+}
+
+export function focusHit(pose,maxDistance=5.5){
+ if(!finitePose(pose)||!Number.isFinite(maxDistance)||maxDistance<=0)return null;
+ const origin=eyeAt(pose),direction=viewRay(pose);
+ let best=null;
+ for(const exhibit of exhibits){
+  const plane=paintingPlane(exhibit),frontDistance=dot(subtract(origin,plane.center),plane.normal),toward=dot(direction,plane.normal);
+  if(frontDistance<=EPSILON||toward>=-EPSILON)continue;
+  const distance=-frontDistance/toward;
+  if(distance<=EPSILON||distance>maxDistance||(best&&distance>=best.distance))continue;
+  const point=along(origin,direction,distance);
+  if(!insideCanvas(point,plane)||wallOccludes(origin,direction,distance))continue;
+  best={exhibit,distance,point};
+ }
+ return best;
+}
+export function focusedExhibit(pose,maxDistance=5.5){return focusHit(pose,maxDistance)?.exhibit||null;}
+
+// A walking trigger, distinct from explicitly pressing E. Cross the plane in
+// front of the full canvas, facing and advancing within 30 degrees of its
+// inward normal. Pure strafing, reversing and Web-only paintings never enter.
+export function portalCrossing(from,to){
+ if(!finitePose(from)||!finitePose(to))return null;
+ const start=eyeAt(from),delta={x:to.x-from.x,y:0,z:to.z-from.z},length=Math.hypot(delta.x,delta.z);
+ if(length<=EPSILON)return null;
+ const direction={x:delta.x/length,y:0,z:delta.z/length},look={x:-Math.sin(to.yaw),y:0,z:-Math.cos(to.yaw)};
+ let best=null,bestFraction=Infinity;
+ for(const exhibit of exhibits){
+  if(!Object.hasOwn(IMMERSIVE,exhibit.id))continue;
+  const plane=paintingPlane(exhibit),advance=-dot(direction,plane.normal),facing=-dot(look,plane.normal);
+  if(advance<PORTAL_ALIGNMENT-EPSILON||facing<PORTAL_ALIGNMENT-EPSILON)continue;
+  const before=dot(subtract(start,plane.center),plane.normal),after=before+dot(delta,plane.normal);
+  if(before<PAINTING.entryDistance-EPSILON||after>PAINTING.entryDistance+EPSILON||before-after<=EPSILON)continue;
+  const fraction=Math.max(0,Math.min(1,(before-PAINTING.entryDistance)/(before-after)));
+  if(fraction>=bestFraction)continue;
+  const distance=length*fraction,point=along(start,direction,distance);
+  if(!insideCanvas(point,plane)||wallOccludes(start,direction,distance))continue;
+  best=exhibit;bestFraction=fraction;
+ }
+ return best;
 }
 
 export function collide(x, z, radius, boxes = walls) {
@@ -115,20 +198,10 @@ export function lookDelta(yaw, pitch, dx, dy, sensitivity = 0.0022) {
   };
 }
 
-// The screen in front of the visitor, not the one they already walked past.
+// Legacy horizontal-look entry point. New callers use the full rendered pose.
 export function nearestExhibit(x, z, lookX = 0, lookZ = -1, max = 4.4) {
-  let best = null;
-  let bestD = max;
-  const lookLen = Math.hypot(lookX, lookZ) || 1;
-  for (const e of exhibits) {
-    const dx = e.x - x;
-    const dz = e.z - z;
-    const d = Math.hypot(dx, dz);
-    if (!(d > 0.05) || d >= bestD) continue;
-    const facing = (dx * lookX + dz * lookZ) / (d * lookLen);
-    if (facing > 0.45) { best = e; bestD = d; }
-  }
-  return best;
+  if(!Number.isFinite(lookX)||!Number.isFinite(lookZ)||Math.hypot(lookX,lookZ)<=EPSILON)return null;
+  return focusedExhibit({x,z,yaw:yawLookingAt(lookX,lookZ),pitch:0},max);
 }
 
 export function roomName(z,x=0){return roomAt(x,z)?.id||'hall';}
@@ -141,10 +214,24 @@ export function routeTo(from,to){
   return [...path,safe].filter((p,i,list)=>Math.hypot(p.x-(i?list[i-1]:from).x,p.z-(i?list[i-1]:from).z)>.05);
 }
 export function portalPose(from,exhibit,progress){
-  const p=Math.max(0,Math.min(1,progress)),s=p*p*(3-2*p),yaw=standAt(exhibit).yaw;
-  return {x:from.x+(exhibit.x-exhibit.nx*.45-from.x)*s,z:from.z+(exhibit.z-exhibit.nz*.45-from.z)*s,yaw:from.yaw+Math.atan2(Math.sin(yaw-from.yaw),Math.cos(yaw-from.yaw))*Math.min(1,p*3),pitch:from.pitch*(1-s)};
+  const value=Number(progress),p=Number.isNaN(value)?0:Math.max(0,Math.min(1,value)),s=p*p*(3-2*p),yaw=standAt(exhibit).yaw,plane=paintingPlane(exhibit);
+  return {x:from.x+(plane.center.x-plane.normal.x*.45-from.x)*s,z:from.z+(plane.center.z-plane.normal.z*.45-from.z)*s,yaw:from.yaw+Math.atan2(Math.sin(yaw-from.yaw),Math.cos(yaw-from.yaw))*Math.min(1,p*3),pitch:from.pitch*(1-s)};
 }
 
 export function insideWall(x, z, boxes = walls) {
   return boxes.some(b => x > b.minX && x < b.maxX && z > b.minZ && z < b.maxZ);
+}
+
+export function isSafePose(pose){
+ if(!finitePose(pose)||Math.abs(pose.pitch)>1.05||!roomAt(pose.x,pose.z))return false;
+ const safe=collide(pose.x,pose.z,RADIUS);
+ return Math.hypot(safe.x-pose.x,safe.z-pose.z)<1e-7;
+}
+export function restorePose(candidate,fallback=spawn){
+ function clean(pose){
+  if(!finitePose(pose))return null;
+  const value={x:pose.x,z:pose.z,yaw:pose.yaw,pitch:Math.max(-1.05,Math.min(1.05,pose.pitch))};
+  return isSafePose(value)?value:null;
+ }
+ return clean(candidate)||clean(fallback)||{...spawn};
 }
