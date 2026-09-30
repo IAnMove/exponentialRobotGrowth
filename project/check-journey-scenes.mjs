@@ -5,6 +5,7 @@ import * as THREE from './node_modules/three/build/three.module.js';
 // Exercise the real scene builder and geometries, without a WebGL context or browser.
 globalThis.document={createElement:()=>({getContext:()=>({measureText:s=>({width:s.length*24}),fillText(){},clearRect(){},fillRect(){}})})};
 const {createLessonScene}=await import('./dist/journeys/world.js');
+const {microchipFraming}=await import('./dist/journeys/microchip-world.js');
 for(const es of [true,false])for(const lesson of Object.values(LESSONS)){
  const built=createLessonScene(lesson,es);const {scene,resources,targets,update}=built;
  if(lesson.id==='ideas'){assert.equal(built.people.length,64);assert.equal(built.stands.length,4);assert.equal(new Set(built.people.map(p=>p.g.uuid)).size,64);const s=lesson.evaluate(defaults(lesson),0);built.update(s,.5,0);assert.equal(built.state.known.size,1);assert.equal(built.packets.filter(p=>p.visible).length,4);assert.equal(built.links.filter(l=>l.m.visible).length,s.edges.length);built.update(s,1,0);assert.equal(built.state.known.size,5);assert.equal(built.people.filter(p=>p.halo.visible).length,4);}
@@ -49,6 +50,53 @@ for(const es of [true,false])for(const lesson of Object.values(LESSONS)){
   built.update(model,24,3,true);assert.equal(built.state.active,false);assert.equal(built.state.completed,24);assert.equal(built.state.hour,23);assert(built.routes.every(r=>r.flow===0&&visiblePackets(r)===0),'the completed day does not animate an invented 25th hour');near(built.battery.fill.scale.x,built.state.stored/20);assert.equal(built.curtail.power,0);
   for(const time of [.5,1,2,12.5,24]){built.update(model,time,3,true);scene.updateMatrixWorld(true);scene.traverse(object=>assert(object.matrixWorld.elements.every(Number.isFinite),'Electricity fractional/empty/end transforms are finite'));assert(built.battery.fill.scale.x>=0&&built.battery.fill.scale.x<=1);}
  }
+ if(lesson.id==='microchip'){
+  const colors={zero:0x5eafff,one:0x86e7b3,pending:0x526b7b},color=bit=>bit===null?colors.pending:bit===0?colors.zero:colors.one,near=(a,b)=>assert(Math.abs(a-b)<1e-8);
+  const expectedEdges=[['a','xor1'],['b','xor1'],['a','and1'],['b','and1'],['xor1','xor2'],['cin','xor2'],['xor1','and2'],['cin','and2'],['and1','or'],['and2','or'],['xor2','sum'],['or','cout']];
+  assert.deepEqual(built.routes.map(r=>[r.from,r.to]).sort(),expectedEdges.toSorted());assert.equal(built.routes.length,12);
+  assert.equal(built.gates.filter(g=>g.operation==='XOR').length,2);assert.equal(built.gates.filter(g=>g.operation==='AND').length,2);assert.equal(built.gates.filter(g=>g.operation==='OR').length,1);
+  assert(built.gates.every(g=>g.body.geometry.type==='ExtrudeGeometry'),'logical operations use three-dimensional gate symbols');
+  for(const g of built.gates.filter(g=>g.operation==='XOR'))assert(g.group.children.some(m=>m.geometry?.type==='TubeGeometry'),'XOR has its distinguishing extra input arc');
+  for(const route of built.routes){
+   const sourceTerminal=built.gateRecords[route.from]?`${route.from}.out`:route.from,targetTerminal=route.port?`${route.to}.${route.port}`:route.to;
+   const start=built.terminals[sourceTerminal],end=built.terminals[targetTerminal];
+   assert(start&&end,'every wire has a defined physical source and destination');assert.equal(route.sourceTerminal,sourceTerminal);assert.equal(route.targetTerminal,targetTerminal);
+   const semanticPin=['sum','cout'].includes(route.to)?route.to:({xor1:'x',and1:'ab',and2:'cx'}[route.from]||route.from);assert.equal(route.pin,semanticPin,'semantic input names stay distinct from physical in1/in2 ports');
+   const semanticTarget=built.terminals[built.gateRecords[route.to]?`${route.to}.${semanticPin}`:route.to];assert(semanticTarget&&semanticTarget.distanceTo(end)<1e-8,'the semantic signal reaches its corresponding physical pin');
+   assert(route.curve.getPoint(0).distanceTo(start)<1e-8,'wire starts at the actual source terminal');assert(route.curve.getPoint(1).distanceTo(end)<1e-8,'wire reaches its actual destination pin');
+  }
+  for(const gate of built.gates){const incoming=built.routes.filter(r=>r.to===gate.id);assert.equal(incoming.length,2);assert.notEqual(incoming[0].pin,incoming[1].pin);assert.deepEqual(incoming.map(r=>r.port).sort(),['in1','in2'],'every gate receives two distinct physical input pins');}
+  assert.equal(built.stands.length,4);assert.deepEqual(built.stands.map(b=>b.userData.action),[0,1,2,3]);assert(built.stands.every(b=>targets.includes(b)));
+  scene.updateMatrixWorld(true);const bounds=object=>new THREE.Box3().setFromObject(object),mos=built.mos;
+  const dielectric=bounds(mos.oxide),gate=bounds(mos.gate),channel=bounds(mos.channel),source=bounds(mos.source),drain=bounds(mos.drain);
+  assert(gate.min.y>=dielectric.max.y-1e-6&&dielectric.min.y>channel.max.y,'a separate dielectric lies between gate and conducting channel');
+  assert(!gate.intersectsBox(source)&&!gate.intersectsBox(drain),'the gate is not a metallic source-drain bridge');assert(!source.intersectsBox(drain));
+  assert(Math.abs(channel.min.x-source.max.x)<1e-6&&Math.abs(channel.max.x-drain.min.x)<1e-6,'the schematic channel actually reaches both doped regions');
+  for(const transistor of [built.inverter.pm,built.inverter.nm])assert(!bounds(transistor.gate).intersectsBox(bounds(transistor.channel)),'CMOS gates remain insulated from their conduction channels');
+  assert(built.inverter.gateWires.every(wire=>built.inverter.powerRails.every(rail=>!bounds(wire).intersectsBox(bounds(rail)))),'input wiring cannot short to the VDD/GND rails');
+  for(let a=0;a<=1;a++)for(let b=0;b<=1;b++)for(let cin=0;cin<=1;cin++){
+   const model=lesson.evaluate({a:!!a,b:!!b,carry:!!cin},0);built.update(model,1,2);
+   assert.equal(built.inverter.pm.on,!a);assert.equal(built.inverter.nm.on,!!a);assert.notEqual(built.inverter.paths.pullup.mesh.visible,built.inverter.paths.pulldown.mesh.visible,'exactly one static CMOS path conducts');
+   assert.equal(built.inverter.output.material.color.getHex(),color(1-a));assert.equal(built.inputs.a.value,a);assert.equal(built.inputs.a.pad.material.color.getHex(),color(a));
+   for(const input of ['a','b','cin'])for(const route of built.routes.filter(r=>r.from===input)){assert(route.packet.visible,'both zero and one propagate along active input wires');assert.equal(route.packet.material.color.getHex(),color({a,b,cin}[input]));}
+   assert(built.gates.every(g=>g.value===null));assert.equal(built.outputs.sum.value,null);assert.equal(built.outputs.sum.pad.material.color.getHex(),colors.pending,'pending is not blue logic zero');
+   built.update(model,4,2);assert.equal(built.gateRecords.xor1.value,a^b);assert.equal(built.gateRecords.and1.value,a&b);assert.equal(built.logicalNodes.xor1.material.color.getHex(),color(a^b));assert.equal(built.gateRecords.xor2.value,null);
+   built.update(model,8,3);assert.equal(built.gateRecords.xor2.value,(a+b+cin)%2);assert.equal(built.gateRecords.and2.value,cin&(a^b));assert.equal(built.outputs.sum.value,null);
+   built.update(model,10,3);assert.equal(built.gateRecords.or.value,Math.floor((a+b+cin)/2));assert.equal(built.outputs.cout.value,null);
+   built.update(model,12-1e-8,3);assert.equal(built.state.result.ready,false);assert.equal(built.outputs.sum.pad.material.color.getHex(),colors.pending);assert.equal(built.outputs.cout.pad.material.color.getHex(),colors.pending);
+   built.update(model,12,3);const sum=(a+b+cin)%2,cout=Math.floor((a+b+cin)/2);assert.equal(built.outputs.sum.value,sum);assert.equal(built.outputs.cout.value,cout);assert.equal(built.outputs.sum.pad.material.color.getHex(),color(sum));assert.equal(built.outputs.cout.pad.material.color.getHex(),color(cout));assert(built.routes.every(r=>!r.packet.visible),'completed propagation has no endless travelling pulses');
+   built.update(model,1,2);assert(built.gates.every(g=>g.value===null));assert.equal(built.outputs.sum.value,null);assert.equal(built.outputs.cout.value,null);assert(built.routes.filter(r=>!['a','b','cin'].includes(r.from)).every(r=>!r.packet.visible&&r.segments.every(s=>!s.visible)),'rewinding clears future wire illumination');
+  }
+  const model=lesson.evaluate(defaults(lesson),0);built.update(model,5.4,2);const positions=built.routes.map(r=>r.packet.position.clone());built.update(model,5.4,2);built.routes.forEach((r,i)=>assert(r.packet.position.equals(positions[i]),'paused fractional propagation is stationary'));
+  scene.updateMatrixWorld(true);
+  for(const [aspect,fov] of [[.55,65],[1.8,46]])for(const phase of [0,1,2,3,4]){
+   const framing=microchipFraming(Math.min(3,phase),{...lesson.overview,whole:phase===4},aspect,fov),camera=new THREE.PerspectiveCamera(fov,aspect,.1,150);
+   camera.position.copy(framing.center).addScaledVector(framing.direction,framing.distance);camera.lookAt(framing.center);camera.updateMatrixWorld(true);
+   const objects=phase===0?[mos.group]:phase===1?[built.inverter.group]:phase===2?[built.adder.group]:phase===3?[built.outputs.sum.group,built.outputs.cout.group]:[mos.group,built.inverter.group,built.adder.group];
+   for(const object of objects){const box=bounds(object);for(const x of [box.min.x,box.max.x])for(const y of [box.min.y,box.max.y])for(const z of [box.min.z,box.max.z]){const p=new THREE.Vector3(x,y,z).project(camera);assert(Math.abs(p.x)<=1+1e-6&&Math.abs(p.y)<=1+1e-6&&p.z>=-1&&p.z<=1,'real teaching geometry fits the desktop/mobile frustum');}}
+  }
+  for(const time of [0,1,4,5.4,8,10,11.999,12]){built.update(model,time,2);scene.updateMatrixWorld(true);scene.traverse(object=>assert(object.matrixWorld.elements.every(Number.isFinite),'Microchip causal/fractional/end transforms are finite'));}
+ }
  if(lesson.id==='electricity'){
   const model=lesson.evaluate(defaults(lesson),0);
   for(const time of [0,.5,6.3,12.4]){built.update(model,time,0);scene.updateMatrixWorld(true);const localAxis=new THREE.Vector3(0,1,0),shaftAxis=localAxis.clone().applyQuaternion(built.parts.shaft.getWorldQuaternion(new THREE.Quaternion())),magnetAxis=localAxis.clone().applyQuaternion(built.parts.magnetRotor.getWorldQuaternion(new THREE.Quaternion()));assert(Math.abs(shaftAxis.dot(magnetAxis))>1-1e-10,'generator rotation must remain coaxial with the turbine shaft');}
@@ -84,8 +132,8 @@ for(const es of [true,false])for(const lesson of Object.values(LESSONS)){
  }
  assert(targets.length>0,lesson.id+' needs inspectable teaching objects');
  const states=[lesson.evaluate(defaults(lesson),0),lesson.evaluate(defaults(lesson),lesson.horizon)];
- for(const state of states){update(state,lesson.continuous?(state.continuous??state.t??state.interval):5,3);scene.updateMatrixWorld(true);let meshes=0;scene.traverse(o=>{assert([...o.matrixWorld.elements].every(Number.isFinite),lesson.id+' invalid transform');if(o.isMesh){meshes++;const positions=o.geometry.attributes.position;assert([...positions.array].every(Number.isFinite),lesson.id+' invalid geometry');}});assert(meshes>40,lesson.id+' needs a built scene');}
- for(let stop=0;stop<4;stop++){const p=(lesson.poseAt||poseAt)(stop),camera=new THREE.PerspectiveCamera(60,1,.08,150);camera.position.set(p.x,1.65,p.z);camera.rotation.set(p.pitch,p.yaw,0,'YXZ');camera.updateMatrixWorld(true);const direction=new THREE.Vector3();camera.getWorldDirection(direction);const to=new THREE.Vector3(...(['evolution','electricity'].includes(lesson.id)?built.focus[stop]:lesson.id==='carbon'?[[-7,4.6,0],[-4,1.5,0],[5,0,0],[-1,1.5,1]][stop]:[0,lesson.id==='ideas'?1.2:1.9,lesson.id==='ideas'?0:-stop*16])).sub(camera.position).normalize();assert(direction.dot(to)>.97,'arrival faces the actual exhibit');}
+ for(const state of states){update(state,lesson.continuous?(typeof state.time==='number'?state.time:typeof state.continuous==='number'?state.continuous:state.t??state.interval):5,3);scene.updateMatrixWorld(true);let meshes=0;scene.traverse(o=>{assert([...o.matrixWorld.elements].every(Number.isFinite),lesson.id+' invalid transform');if(o.isMesh){meshes++;const positions=o.geometry.attributes.position;assert([...positions.array].every(Number.isFinite),lesson.id+' invalid geometry');}});assert(meshes>40,lesson.id+' needs a built scene');}
+ for(let stop=0;stop<4;stop++){const p=(lesson.poseAt||poseAt)(stop),camera=new THREE.PerspectiveCamera(60,1,.08,150);camera.position.set(p.x,1.65,p.z);camera.rotation.set(p.pitch,p.yaw,0,'YXZ');camera.updateMatrixWorld(true);const direction=new THREE.Vector3();camera.getWorldDirection(direction);const to=new THREE.Vector3(...(['evolution','electricity','microchip'].includes(lesson.id)?built.focus[stop]:lesson.id==='carbon'?[[-7,4.6,0],[-4,1.5,0],[5,0,0],[-1,1.5,1]][stop]:[0,lesson.id==='ideas'?1.2:1.9,lesson.id==='ideas'?0:-stop*16])).sub(camera.position).normalize();assert(direction.dot(to)>.97,'arrival faces the actual exhibit');}
  resources.forEach(r=>r.dispose());
 }
-console.log('16 bilingual scene builds: actual Three.js meshes, Electricity closed cores/isolated coils/power routes/storage/curtailment, finite geometry, Evolution genealogy/mutation timing, no rounded deterministic bodies, four actionable stands and camera poses: OK (no pixel rendering)');
+console.log('16 bilingual scene builds: causal Microchip fanout/zero signals/insulated MOS+CMOS/mobile frusta, Electricity cores/routes/storage/curtailment, finite geometry, Evolution genealogy, no rounded deterministic bodies, four actionable stands and camera poses: OK (no pixel rendering)');

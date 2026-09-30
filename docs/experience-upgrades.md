@@ -13,7 +13,7 @@ Para dar una experiencia por terminada con objetivo 9: escena legible y represen
 | 3 | Carbono | 5 | 7,5 | Terminada: 9 / 9 como simulación didáctica |
 | 4 | Evolución | 5 | 8 | Terminada: 9 / 9 como simulación didáctica |
 | 5 | Electricidad | 5,5 | 8 | Terminada: 9 / 9 como simulación didáctica |
-| 6 | Microchip | 5,5 | 8 | Pendiente |
+| 6 | Microchip | 5,5 | 8 | Terminada: 9 / 9 como simulación didáctica |
 | 7 | Célula | 5,5 | 8 | Pendiente |
 | 8 | Nuclear | 5,5 | 8 | Pendiente |
 | 9 | Museo | 6,5 | 7 | Pendiente |
@@ -88,6 +88,18 @@ Validación: suite completa 43/43, seguida de checks de modelos, controlador, es
 
 Límites: red aislada sintética y circuito AC equivalente con valores RMS, factor de potencia 1 y resistencia total 20 Ω; no red trifásica ni flujo de carga nacional. Batería ideal 20 MWh/6 MW y conversiones ideales. No frecuencia, potencia reactiva, fallos, pérdidas de inversores/almacenamiento ni pronóstico meteorológico. La política proporcional de recorte es ilustrativa. Los MW son de toda la comunidad; la vivienda es un ejemplo. Las espiras, el hardware y las proporciones son esquemáticos, no CAD de una instalación comercial. Fuentes EIA y DOE enlazadas. Nota 9 editorial para una explicación visual estilizada; publicación todavía pendiente de mezclar y desplegar el PR.
 
-## Próxima tarea — Microchip
+## Microchip — revisión completada
 
-Conectar la representación de transistores y puertas con el cálculo mostrado; revisar qué elementos son físicos y cuáles son esquemas, mejorar el recorrido causal de las señales y conservar las voces/textos y controles bilingües. Comprobarlo en navegador antes de actualizar su nota.
+Un único laboratorio conecta cuatro paradas: corte ampliado de NMOS planar, inversor CMOS independiente, sumador completo y sus indicadores. El canal está en el semiconductor, bajo el óxido; gate, aislante y contactos están separados. Tres flechas frontales representan el campo, con fuente a 0 V y drenador a +VDS como sesgo ilustrativo. CMOS muestra solamente el camino ideal correcto hacia VDD o GND. NOT A termina en esa demostración y no alimenta el sumador. Las cinco puertas usan símbolos funcionales extruidos: dos XOR, dos AND y una OR, con doce conexiones y fanout completos. Los cruces con profundidad distinta no crean uniones falsas. Se elevó el cable AB→OR sobre la mesa y se ajustaron las etiquetas para evitar ocultaciones.
+
+El modelo calcula una secuencia causal reversible para enseñar las dependencias. A/B llegan en 2; X y AB se evalúan en 4; Sum y CX en 8; Cout en 10. Los dos indicadores reciben sus señales en 12. Azul representa cero válido, verde uno y gris/puntos suspensivos lo aún no mostrado; los ceros también viajan. Los valores quedan en sus puertos al llegar. Ninguna salida se adelanta y al final los paquetes se detienen. Cambiar entradas pausa y reinicia a 0, conservando la cámara. Cuatro cifras sobre la escena distinguen entradas, X, indicadores y decimal esperado. Tres pistas muestran las señales internas con el futuro oculto y los pendientes separados del cero. La tabla de referencia contiene las ocho entradas y destaca la actual sin fingir que el resultado ya llegó.
+
+Se conservan exactamente las ocho voces MiniMax ES/EN. La guía presenta MOS/CMOS y después recorre dos veces el mismo sumador, con el reinicio explicado en texto. Footer, transcript y tiempos se mantienen al cambiar idioma, recargar o entrar en 3D. Cuatro stands físicos admiten E y click; escuchar conserva la cámara. Caminar pausa, Esc libera el ratón y existe alternativa cuando el navegador rechaza pointer lock. Vista general, detalle y zoom funcionan en ambas versiones. En móvil, los controles de cámara tienen una fila libre para no tapar la suma ni sus indicadores.
+
+Validación: suite completa 44/44, seguida de cuatro checks del modelo/journeys tras los ajustes móviles. El check específico verifica las ocho tablas de verdad y 528 muestras causales/fraccionarias, dependencias, ceros, límites, inmutabilidad y retroceso. Checks de escenas Three ES/EN cubren los doce endpoints/pins, separación MOS/CMOS, símbolos XOR, valores de puertos y salidas, fin inmóvil, cuatro stands y frustum de escritorio/móvil. El controlador comprueba todas las entradas, reinicio sin cambiar cámara, indicadores pendientes hasta 12, gráfico sin futuro, tabla y recuperación fraccionaria/idioma. Navegador real: las ocho sumas, voces MiniMax ES/EN y texto, pausa en paso 1,8 conservada después de idioma/recarga, cifras y salidas, E, caminar y Esc. El navegador integrado rechazó pointer lock y activó la alternativa. Móvil 390×844: contenido 375 px, cuatro cifras y cuatro señales visibles, salida 10₂ = 2 y reproductor sin desbordamiento. Consolas revisadas sin errores ni avisos.
+
+Límites: maqueta didáctica ampliada, no CAD ni layout de fabricación. NMOS planar y CMOS estabilizado ideal, sin transiciones analógicas, capacitancias, consumo ni fugas. Los símbolos lógicos contienen varios transistores; cinco puertas no son cinco transistores. El orden de doce pasos no representa latencias reales, electrones ni un reloj. Pendiente no significa alta impedancia o un voltaje indefinido físico; retroceder no vuelve reversible al circuito. El sesgo de fuente/drenador no calcula corriente. MIT 6.004, UT Austin e Intel enlazados en la página. Nota 9 editorial para una explicación visual estilizada; publicación pendiente de mezclar y desplegar el PR.
+
+## Próxima tarea — Célula
+
+Sustituir los bloques genéricos por estructuras celulares reconocibles y relacionar membrana, orgánulos y síntesis de proteínas con un recorrido causal. Mantener los guiones bilingües, cifras honestas y recuperación de audio; comprobar el notebook y el paseo en navegador antes de actualizar la nota.
