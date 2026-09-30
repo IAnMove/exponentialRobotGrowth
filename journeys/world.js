@@ -1,3 +1,4 @@
+import {createNuclearScene,createNuclearWorld} from './nuclear-world.js';
 import {createCellScene,createCellWorld} from './cell-world.js';
 import {createMicrochipScene,createMicrochipWorld} from './microchip-world.js';
 import {createElectricityScene,createElectricityWorld} from './electricity-world.js';
@@ -7,6 +8,7 @@ import {createIdeasScene,createIdeasWorld} from './ideas-world.js';
 import * as THREE from '../vendor/three.module.js';
 import {poseAt} from './common.js';
 export function createLessonScene(lesson,es){
+ if(lesson.id==='nuclear')return createNuclearScene(lesson,es);
  if(lesson.id==='cell')return createCellScene(lesson,es);
  if(lesson.id==='microchip')return createMicrochipScene(lesson,es);
  if(lesson.id==='electricity')return createElectricityScene(lesson,es);
@@ -31,6 +33,7 @@ export function createLessonScene(lesson,es){
 }
 
 export function createWorld(host,lesson,es,onInspect){
+ if(lesson.id==='nuclear')return createNuclearWorld(host,lesson,es,onInspect);
  if(lesson.id==='cell')return createCellWorld(host,lesson,es,onInspect);
  if(lesson.id==='microchip')return createMicrochipWorld(host,lesson,es,onInspect);
  if(lesson.id==='electricity')return createElectricityWorld(host,lesson,es,onInspect);
