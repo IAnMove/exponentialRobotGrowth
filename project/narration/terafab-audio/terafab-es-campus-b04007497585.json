@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Este es el campus previsto de Terafab, en Texas. El expediente público propone reunir diseño, máscaras, fabricación de obleas, encapsulado e integración. La imagen exterior es una referencia publicada; la distribución interior que recorremos es una interpretación. Abre las naves o cambia al corte vertical para reconocer sus funciones. Después entraremos en una sala didáctica y seguiremos una sola oblea. Las cifras de esa sala describen nuestra muestra, no la capacidad real del proyecto. Puedes pausar, mover la cámara, leer el texto o volver a cualquier etapa desde la barra inferior. La visita conserva tu posición al recargar.",
+  "duration_ms": 39888,
+  "billed_characters": 633,
+  "sample_rate": 32000,
+  "size_bytes": 639924,
+  "generated_at": "2026-10-03T02:16:54.444693+00:00"
+}

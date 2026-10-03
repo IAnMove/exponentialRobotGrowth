@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Follow the identified wafer inside the FOUP. The carrier reaches a port, docks and hands over the wafer. The enlarged section shows the same material state, with exaggerated thicknesses. First, green film grows over the silicon. The nine columns are visual units of this section. A later operation adds violet resist. Film and resist have different roles: one remains in the pattern and the other becomes a temporary mask. Watch the material bars; changing tools preserves what has already been made. The timing of this choreography does not measure a real factory's processing time.",
+  "duration_ms": 37512,
+  "billed_characters": 583,
+  "sample_rate": 32000,
+  "size_bytes": 601908,
+  "generated_at": "2026-10-03T02:17:38.529513+00:00"
+}

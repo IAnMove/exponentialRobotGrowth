@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "La oblea entra en el escáner de exposición. Una máscara transporta el patrón y la óptica lo proyecta sobre la resina. Esta maqueta no reproduce un escáner comercial ni su sistema óptico completo. Mira las tres zonas marcadas: recibir luz cambia su estado, pero todavía conserva la película de debajo. Después la oblea vuelve al equipo de revelado. En este ejemplo de resina positiva, las zonas expuestas desaparecen y quedan tres ventanas. Aún no hemos grabado la película. Retrocede en la barra para comparar exposición y revelado: verás que son cambios distintos y no un corte directo del silicio.",
+  "duration_ms": 37044,
+  "billed_characters": 599,
+  "sample_rate": 32000,
+  "size_bytes": 594420,
+  "generated_at": "2026-10-03T02:17:10.487703+00:00"
+}

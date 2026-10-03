@@ -20,6 +20,7 @@ JOBS = [
     ('mente', ROOT / 'narration' / 'mente.json', ROOT / 'site-src' / 'mente' / 'voices.js'),
     ('home', ROOT / 'narration' / 'home.json', ROOT / 'site-src' / 'home' / 'voices.js'),
     ('spacex', ROOT / 'narration' / 'spacex.json', ROOT / 'site-src' / 'spacex' / 'voices.js'),
+    ('terafab', ROOT / 'narration' / 'terafab.json', ROOT / 'site-src' / 'terafab' / 'voices.js'),
 ]
 
 
