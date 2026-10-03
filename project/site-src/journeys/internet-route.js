@@ -6,11 +6,15 @@ export const PLACES = {
  ashburn: {lat:39.04,lon:-77.49,name:'Ashburn'}
 };
 export const CABLE_KM=6600, FIBER_KM_PER_SECOND=200000;
-export const propagationMs=(km,speed=FIBER_KM_PER_SECOND)=>km/speed*1000;
-export function geoPoint({lat,lon},radius=10){const a=lat*Math.PI/180,b=lon*Math.PI/180;return [radius*Math.cos(a)*Math.sin(b),radius*Math.sin(a),radius*Math.cos(a)*Math.cos(b)];}
+export const propagationMs=(km,speed=FIBER_KM_PER_SECOND)=>{if(!Number.isFinite(km)||km<0||!Number.isFinite(speed)||speed<=0)throw new RangeError('Distance/speed must be finite and physically valid');const ms=km/speed*1000;if(!Number.isFinite(ms))throw new RangeError('Propagation is not representable');return ms;};
+export function geoPoint({lat,lon},radius=10){if(!Number.isFinite(lat)||Math.abs(lat)>90||!Number.isFinite(lon)||Math.abs(lon)>180||!Number.isFinite(radius)||radius<=0)throw new RangeError('Invalid geographic coordinate or radius');const a=lat*Math.PI/180,b=lon*Math.PI/180;return [radius*Math.cos(a)*Math.sin(b),radius*Math.sin(a),radius*Math.cos(a)*Math.cos(b)];}
 export function greatCircle(from,to,count=100,radius=10.05){
- const a=geoPoint(from,1),b=geoPoint(to,1),angle=Math.acos(Math.max(-1,Math.min(1,a.reduce((s,v,i)=>s+v*b[i],0))));
- return Array.from({length:count+1},(_,i)=>{const t=i/count,sa=angle<1e-7?1-t:Math.sin((1-t)*angle)/Math.sin(angle),sb=angle<1e-7?t:Math.sin(t*angle)/Math.sin(angle);return a.map((v,j)=>(v*sa+b[j]*sb)*radius);});
+ if(!Number.isInteger(count)||count<1||count>4096||!Number.isFinite(radius)||radius<=0)throw new RangeError('Invalid corridor samples or radius');
+ const a=geoPoint(from,1),b=geoPoint(to,1),dot=Math.max(-1,Math.min(1,a.reduce((s,v,i)=>s+v*b[i],0))),angle=Math.acos(dot);
+ let tangent=b.map((v,i)=>v-dot*a[i]),length=Math.hypot(...tangent);
+ if(length<1e-12&&dot<0){const axis=[0,0,0];axis[a.map(Math.abs).indexOf(Math.min(...a.map(Math.abs)))]=1;const projection=axis.reduce((n,v,i)=>n+v*a[i],0);tangent=axis.map((v,i)=>v-projection*a[i]);length=Math.hypot(...tangent);}
+ if(length>0)tangent=tangent.map(v=>v/length);
+ return Array.from({length:count+1},(_,i)=>{if(i===0)return a.map(v=>v*radius);if(i===count)return b.map(v=>v*radius);const q=angle*i/count,p=angle<1e-12?a:a.map((v,j)=>v*Math.cos(q)+tangent[j]*Math.sin(q));return p.map(v=>v*radius/Math.hypot(...p));});
 }
 export const STAGES=[
  {id:'home',scene:'city',place:['MADRID · TU CASA','MADRID · YOUR HOME'],title:['Un clic. Un viaje transatlántico.','One click. Across an ocean.'],caption:['Sigue una petición HTTPS desde este portátil hasta un servidor en Virginia.','Follow an HTTPS request from this laptop to a server in Virginia.'],badge:['Petición cifrada','Encrypted request'],fact:['HTTPS','La conexión ya está preparada','The connection is already established'],camera:[7,5.5,10],target:[0,1.2,0],distance:0},
@@ -30,5 +34,7 @@ export const SOURCES=[
  ['RFC 4271 · BGP', 'https://www.rfc-editor.org/rfc/rfc4271.html'],
  ['RFC 9293 · TCP', 'https://www.rfc-editor.org/rfc/rfc9293.html'],
  ['RFC 8446 · TLS 1.3', 'https://www.rfc-editor.org/rfc/rfc8446.html'],
- ['NASA · Blue Marble', 'https://visibleearth.nasa.gov/collection/1484/blue-marble']
+ ['NASA · Blue Marble', 'https://visibleearth.nasa.gov/collection/1484/blue-marble'],
+ ['Ciena · undersea optical amplification', 'https://www.ciena.com/insights/articles/to-repeat-or-not-repeat-that-is-the-question.html'],
+ ['RFC 9114 · HTTP/3', 'https://www.rfc-editor.org/rfc/rfc9114.html']
 ];

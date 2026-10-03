@@ -1,0 +1,1 @@
+Cada router reenvía según su información de encaminamiento. Corta el enlace directo y observa el desvío por la ruta alternativa. El dibujo comprime distancias y equipos: los datos viajan mediante señales físicas y el cambio de ruta real puede tardar.

@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Cada router reenvía según su información de encaminamiento. Corta el enlace directo y observa el desvío por la ruta alternativa. El dibujo comprime distancias y equipos: los datos viajan mediante señales físicas y el cambio de ruta real puede tardar.",
+  "duration_ms": 15948,
+  "billed_characters": 250,
+  "sample_rate": 32000,
+  "size_bytes": 256884,
+  "generated_at": "2026-09-26T02:50:07.331391+00:00",
+  "validation": {
+    "audio_sha256": "c52da71c4687205e7c1b2e3bda6a1c4b2d91f4edeedd1f3d6d313b1e2977b127",
+    "text_sha256": "bcbd1873f5c0101e5db3351d2821954ac0b0c957d1f2bea98764f19034b6a40a",
+    "script_sha256": "60b3b1c54f49a9860e4b7a77036352c08c16be7d728d3ccdbe6a1e42b89c209a",
+    "decoded_duration_seconds": 15.948,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

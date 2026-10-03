@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "We leave the house. Your computer communicates with the router over wifi or a cable. In a home fiber connection, an optical terminal converts between electrical and optical signals. Access fiber links the building to the operator's network, often through passive optical splitters. We compress many devices into this small city. There is no single dedicated tube straight to the website: we enter a series of interconnected networks.",
+  "duration_ms": 26460,
+  "billed_characters": 433,
+  "sample_rate": 32000,
+  "size_bytes": 425076,
+  "generated_at": "2026-09-26T19:16:43.949978+00:00",
+  "validation": {
+    "audio_sha256": "409bd9f0708bc55bfafde6ba738740a820e178f011fde49357c4d050ace17295",
+    "text_sha256": "8a4579b3e1f010962683d3de20c6ad461764e52036bc1aa7a32c6549185d32d7",
+    "script_sha256": "a778b0750e4d89e6087e6cd71c351a02668dfff1c7e0791126fa160bdd947cf8",
+    "decoded_duration_seconds": 26.46,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

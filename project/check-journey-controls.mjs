@@ -1,3 +1,4 @@
+import {sampleTCP} from './site-src/journeys/internet-tcp.js';
 import {sampleNuclear} from './site-src/journeys/nuclear-model.js';
 import {sampleCell} from './site-src/journeys/cell-model.js';
 import {sampleChip} from './site-src/journeys/microchip-model.js';
@@ -31,7 +32,7 @@ for(const lang of ['es','en'])for(const mode of ['web','immersive'])for(const [i
   pause(){super.pause();if(this.current)this.options.onSync({...this.current,running:false,reason:'pause'});}
   save(){if(lesson.continuous)savedForReload=JSON.parse(JSON.stringify(this.options.capture()));}
  }
- const ctx={sampleNuclear,sampleCell,sampleChip,sampleGrid,lineAtPower,sampleEvolution,sampleCarbon,FLUXES,RESERVOIRS,NotebookPlayer:NotebookFixture,LESSONS,defaults,poseAt,walk,StepGuide:Guide,VOICES,document,window:{addEventListener(n,f){events[n]=f;}},console,URLSearchParams,Intl,performance:{now:()=>now},matchMedia:()=>({matches:false}),location:{search:`?topic=${id}&mode=${mode}`,replace(url){redirect=url;}},requestAnimationFrame:f=>frames.push(f),createWorld:(host,lesson,es,fn)=>(inspect=fn,{canvas:element('canvas'),update(s,i){current=s;phase=i;},render(p,dt,animation,orbit,mode,time){pose={...p};sceneTime=time;orbitState={...orbit};},dispose(){}})};
+ const ctx={sampleTCP,sampleNuclear,sampleCell,sampleChip,sampleGrid,lineAtPower,sampleEvolution,sampleCarbon,FLUXES,RESERVOIRS,NotebookPlayer:NotebookFixture,LESSONS,defaults,poseAt,walk,StepGuide:Guide,VOICES,document,window:{addEventListener(n,f){events[n]=f;}},console,URLSearchParams,Intl,performance:{now:()=>now},matchMedia:()=>({matches:false}),location:{search:`?topic=${id}&mode=${mode}`,replace(url){redirect=url;}},requestAnimationFrame:f=>frames.push(f),createWorld:(host,lesson,es,fn)=>(inspect=fn,{canvas:element('canvas'),update(s,i){current=s;phase=i;},render(p,dt,animation,orbit,mode,time){pose={...p};sceneTime=time;orbitState={...orbit};},dispose(){}})};
  vm.runInNewContext(source,ctx);
  if(id==='internet'&&mode==='immersive'){assert.equal(redirect,'./internet-voyage.html');assert.equal(frames.length,0,'legacy gallery must not start behind redirect');redirectCases++;continue;}
  activeCases++;

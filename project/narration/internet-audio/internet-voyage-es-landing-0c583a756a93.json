@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Llegamos al extremo español del cable MAREA, en Sopelana, cerca de Bilbao. Aquí los equipos de transmisión preparan señales ópticas para el enlace submarino. Varias longitudes de onda pueden compartir una fibra, como canales diferentes de luz. El edificio y este corte ampliado son ilustraciones, no planos de la instalación. Los extremos del cable sí son reales: Sopelana y Virginia Beach. Entre ambos hay aproximadamente seis mil seiscientos kilómetros de cable.",
+  "duration_ms": 28584,
+  "billed_characters": 464,
+  "sample_rate": 32000,
+  "size_bytes": 459060,
+  "generated_at": "2026-09-26T19:16:26.654941+00:00",
+  "validation": {
+    "audio_sha256": "bc4e1c51fb3bb0c51434d55406279efa0cf95fb8edc9d42515375881ffaa9cf0",
+    "text_sha256": "a4de8fc40079bc34fea269d76f6c2bd87f799cd7d51810cd26a0d9908f0fe894",
+    "script_sha256": "934b23d8d2c2ecf30a0a491072059dc6bc4febe07de8218518739573bcd01321",
+    "decoded_duration_seconds": 28.584,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

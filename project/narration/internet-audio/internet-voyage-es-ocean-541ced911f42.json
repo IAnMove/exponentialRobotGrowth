@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Bajamos al Atlántico. Dentro del cable, la información se transmite mediante luz por fibras ópticas. Los repetidores amplifican la señal a lo largo del trayecto: no deciden a qué servidor enviar tu petición. Hemos agrandado el cable y ralentizado los pulsos para poder verlos. Si suponemos una velocidad de doscientos mil kilómetros por segundo en la fibra, seis mil seiscientos kilómetros requieren unos treinta y tres milisegundos, solo de propagación y solo en un sentido. Faltan los demás enlaces, las colas y el procesamiento.",
+  "duration_ms": 33372,
+  "billed_characters": 531,
+  "sample_rate": 32000,
+  "size_bytes": 535668,
+  "generated_at": "2026-09-26T19:16:31.330265+00:00",
+  "validation": {
+    "audio_sha256": "d6a39136f0bdf4332812390266238df60ddc4eb74d0329cb186cb74618bffa17",
+    "text_sha256": "9037614be9594e63582fcdec12bd5758e7f69df4050777183e931b5e5e113e36",
+    "script_sha256": "130ab2a3cb4cfd508c726cc3719db14ed52c7489939c4cf8fda84bb31653d68a",
+    "decoded_duration_seconds": 33.372,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

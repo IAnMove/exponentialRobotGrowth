@@ -1,0 +1,1 @@
+Your browser needs to locate a service and communicate with it. The computer sends data to its local network. A router provides a path to other networks; a Wi-Fi antenna does not contain the Internet. Here the example message is divided into numbered pieces.

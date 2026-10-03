@@ -1,0 +1,1 @@
+TCP provides an ordered byte stream. Missing data can be retransmitted; a duplicate does not duplicate the message. The server processes the request and returns data. The bar counts unique pieces received, while attempts include retransmitting the lost packet.
