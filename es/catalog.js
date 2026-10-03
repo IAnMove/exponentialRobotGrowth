@@ -5,7 +5,7 @@ export const CATALOG={
  museo:{number:'00',kinds:['walk'],voice:true},
  robots:{number:'01',kinds:['2d','3d','walk'],voice:true},
  terafab:{number:'02',kinds:['3d','walk'],voice:true},
- dyson:{number:'03',kinds:['3d'],voice:false},
+ dyson:{number:'03',kinds:['2d','3d','walk'],voice:true},
  home:{number:'04',kinds:['3d','walk'],voice:true},
  starlink:{number:'05',kinds:['3d'],voice:true},
  spacex:{number:'06',kinds:['3d'],voice:true},

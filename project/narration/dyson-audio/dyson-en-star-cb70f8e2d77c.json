@@ -1,0 +1,22 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "We begin with the Sun. Light leaves the star in every direction. Power and flux are different quantities: power counts all the energy leaving each second; flux counts how much reaches each square metre at a particular distance. Our example uses the nominal solar luminosity. At one astronomical unit, the flux is about thirteen hundred and sixty-one watts per square metre. Double the distance and the flux falls to one quarter. The star still emits the same power. Bodies in this model are enlarged so you can see them. Orbital motion compresses years, and light markers illustrate paths: their physical travel speed is not solved. We are not counting any built coverage yet. Change the radius and check the figures before moving to the collector.",
+  "duration_ms": 47304,
+  "billed_characters": 748,
+  "sample_rate": 32000,
+  "size_bytes": 758580,
+  "generated_at": "2026-10-03T07:23:45.443261+00:00",
+  "validation": {
+    "ffmpeg_decode": "passed",
+    "decoded_duration_seconds": 47.304,
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "audio_sha256": "1ac352728ce660e51aa714d1d92f0b6b3699685a18afd1c62c610d5b542cd7dd",
+    "text_sha256": "659915edc759663f31492d41e2c9093dab2ace5186235b872f0fc33cd9e42fb5",
+    "script_sha256": "a01fb97bb6a41e8b394ccc707b4dfb35c37b55baeebabbb42f0a1c695b8166d3"
+  }
+}

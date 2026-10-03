@@ -102,6 +102,9 @@ for(const lang of ['es','en']){
   assert.equal(element('enter-3d').hidden,false,'Robots opens its implemented walkable factory');
   assert.equal(element('web').href,'../robots/index.html');
   paintings.find(p=>p.dataset.painting==='dyson').onclick();frames(10);
+  assert.equal(element('enter-3d').hidden,false,'Dyson opens its implemented six-stand observatory');
+  assert.equal(element('web').href,'../dyson/index.html');element('enter-3d').onclick();frames(110);assert.equal(h.url,'../dyson/index.html?mode=immersive&entrance=painting');events.pagehide();frames(2);
+  paintings.find(p=>p.dataset.painting==='kardashev').onclick();frames(10);
   assert.equal(element('enter-3d').hidden,true,'unbuilt worlds are never presented as immersive');
   element('map-toggle').onclick();assert.equal(element('map').hidden,false);element('map-close').onclick();assert.equal(element('map').hidden,true);
   for(const id of Object.keys(LESSONS)){

@@ -1,0 +1,22 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Now we enter a one-square-metre reference plate. It is neither a real product nor a satellite we have just built. The Sun-facing surface absorbs light. Some becomes electricity, while the rest produces heat directly. Follow the connection to the load: we assume all electricity is used here, without storing it or sending it outside. Eventually it also becomes heat. That means electricity and final heat cannot be added as two independent gains: we would count the same energy twice. The editable efficiency changes the intermediate split. This isolated example plate emits thermal radiation from both faces. Its front surface, connections and radiators are separated to explain their functions. Sizes and marker speeds are illustrative; they do not describe a commercial machine.",
+  "duration_ms": 49788,
+  "billed_characters": 781,
+  "sample_rate": 32000,
+  "size_bytes": 798324,
+  "generated_at": "2026-10-03T07:23:47.035460+00:00",
+  "validation": {
+    "ffmpeg_decode": "passed",
+    "decoded_duration_seconds": 49.788,
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "audio_sha256": "cea6f58a9b01e04cf64f00ac80b66c9136dfdc263c4821e5a2da8d5a46f592c0",
+    "text_sha256": "559d2a1962720e4b89721295222cf2a197a75c7852a21226166ea62f78ee6b7c",
+    "script_sha256": "e17596c8ed94b08cdfd4267e46878127c5f1ae656740658df6b226ddcd8be0c2"
+  }
+}

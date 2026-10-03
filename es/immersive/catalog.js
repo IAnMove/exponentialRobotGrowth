@@ -1,10 +1,10 @@
 // Availability names actual built routes; a 3D scene alone is not a walkable world.
 export const JOURNEY_IDS=['internet','electricity','microchip','cell','ideas','nuclear','carbon','evolution'];
-export const IMMERSIVE={llms:{route:'llms',stops:8},mente:{route:'mente',stops:4},home:{route:'home',stops:7},terafab:{route:'terafab',stops:6},modelos:{route:'modelos',stops:12},growth:{route:'growth',stops:6},robots:{route:'robots',stops:5},...Object.fromEntries(JOURNEY_IDS.map(id=>[id,{route:'journeys',stops:4}]))};
+export const IMMERSIVE={llms:{route:'llms',stops:8},mente:{route:'mente',stops:4},home:{route:'home',stops:7},terafab:{route:'terafab',stops:6},modelos:{route:'modelos',stops:12},growth:{route:'growth',stops:6},robots:{route:'robots',stops:5},dyson:{route:'dyson',stops:6},...Object.fromEntries(JOURNEY_IDS.map(id=>[id,{route:'journeys',stops:4}]))};
 IMMERSIVE.internet.stops=9;
 export function immersiveHref(id,base='../'){
  if(!Object.hasOwn(IMMERSIVE,id))return null;
  if(id==='robots')return `${base}robots/factory.html?mode=immersive`;
- if(id==='mente'||id==='home'||id==='terafab'||id==='modelos'||id==='growth')return `${base}${id}/index.html?mode=immersive`;
+ if(id==='mente'||id==='home'||id==='terafab'||id==='modelos'||id==='growth'||id==='dyson')return `${base}${id}/index.html?mode=immersive`;
  return JOURNEY_IDS.includes(id)?`${base}journeys/index.html?topic=${encodeURIComponent(id)}&mode=immersive`:`${base}immersive/index.html?experience=${encodeURIComponent(id)}`;
 }

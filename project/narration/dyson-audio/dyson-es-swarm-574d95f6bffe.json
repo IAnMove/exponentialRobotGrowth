@@ -1,0 +1,22 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Volvemos al sistema y añadimos colectores en órbitas independientes. Este tramo empieza con cobertura cero y llega al objetivo que hayas elegido. Cada nueva parte del enjambre permite interceptar más luz. En el presupuesto ideal, una cobertura del dieciocho por ciento intercepta el dieciocho por ciento de la potencia solar, y el resto sigue escapando. La cobertura es una fracción efectiva que tú eliges, no una estimación obtenida del área de estas placas dibujadas. Las figuras representan muestras ampliadas de una población hipotética, no un inventario de satélites reales. Sus órbitas circulares se calculan con la gravedad solar: más lejos, el período es mayor. No resolvemos maniobras, colisiones, sombras entre colectores ni la fabricación de sus componentes. El crecimiento de este tramo es una presentación de cobertura, no un calendario de construcción ni una predicción de crecimiento exponencial.",
+  "duration_ms": 54936,
+  "billed_characters": 911,
+  "sample_rate": 32000,
+  "size_bytes": 880692,
+  "generated_at": "2026-10-03T07:23:33.419714+00:00",
+  "validation": {
+    "ffmpeg_decode": "passed",
+    "decoded_duration_seconds": 54.936,
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "audio_sha256": "4d80bc2056ae6f1ecf8e41caf5b4f507e21f96025c1ec93ffb7646bbdc9fb1e5",
+    "text_sha256": "b80df2779bedd62626262c59190f61c3ded30830cb724dd919c991c8a05989e9",
+    "script_sha256": "481a10ea177798cbe2cb514d88ad52cab56203231bf1e54326b04824839e7fb1"
+  }
+}
