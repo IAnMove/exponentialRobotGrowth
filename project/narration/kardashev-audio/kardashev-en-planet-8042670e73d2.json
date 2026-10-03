@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "We have reached Type One on the continuous scale: ten to the sixteenth watts. Earth itself has not changed; the civilization's energy capacity has. Imagine generation, storage and distribution at planetary scale. The satellites illustrate infrastructure and communications, but they do not produce all that power or define this level. This number does not imply control over the weather. Look at the multiplier above: reaching Type Two requires ten billion times as much power. A small step in the index means an enormous step in energy per second.",
+  "duration_ms": 35532,
+  "billed_characters": 548,
+  "sample_rate": 32000,
+  "size_bytes": 570228,
+  "generated_at": "2026-09-20T05:30:53.520719+00:00",
+  "validation": {
+    "audio_sha256": "708e97edd105d9fa06ddc149a5ff21f086b63be53a8d239535b776aebcdffc9b",
+    "text_sha256": "8965a7f1d1ac05630514efd8143244e9043d29de291bc3d54b8b1e2d7effc6be",
+    "script_sha256": "3f6aaa83d7ace539f204d5ff194c5f0f1283273d6ff6a86f97659f937570fe0a",
+    "decoded_duration_seconds": 35.532,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}
