@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Depot, tanker flights and lunar vehicle: a delivery requires a support campaign. We do not assume a fixed number of tanker flights. Green points show fuel and oxidizer being transferred. The lunar vehicle does not travel using only the energy supplied at launch. One delivery can require several support launches.",
+  "duration_ms": 21240,
+  "billed_characters": 313,
+  "sample_rate": 32000,
+  "size_bytes": 341556,
+  "generated_at": "2026-09-27T00:28:28.542385+00:00",
+  "validation": {
+    "audio_sha256": "c92bdd9efe4a624f751b462abd8c884f2b52a03af9c63feae28a1a4405ca1bea",
+    "text_sha256": "92a98af68ec76f309124e3eee1b419629d77e697a62fd68ec94eb78c62a715da",
+    "script_sha256": "d3f39f0f866708b2d4dab054502a22579372f195a3625a58d376c7691c42865d",
+    "decoded_duration_seconds": 21.24,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

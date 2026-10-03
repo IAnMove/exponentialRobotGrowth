@@ -1,0 +1,1 @@
+The text is now split into tokens. Each block is a piece: a word, a fragment, a space or punctuation. Its identifier appears underneath. Identical pieces share an identifier. Select a block to inspect it. These splits belong to our teaching tokenizer; a real model uses its own vocabulary. We have not generated the answer yet.

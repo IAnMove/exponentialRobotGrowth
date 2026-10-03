@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "DNS relaciona nombres con registros, entre ellos direcciones IP. Un resolvedor puede utilizar su caché o consultar otros servidores. Esta consulta es distinta de descargar la página. El armario DNS representa ese servicio distribuido, no una única máquina central.",
+  "duration_ms": 17604,
+  "billed_characters": 264,
+  "sample_rate": 32000,
+  "size_bytes": 283380,
+  "generated_at": "2026-09-26T02:50:03.625687+00:00",
+  "validation": {
+    "audio_sha256": "35272d0fbd177c0c463edea30ad0ac1f3cda5269f3a815dbbdb8463c535fb4fa",
+    "text_sha256": "e956e3dcf472082bb115443a1061766f7301628342be25b6d9409427a6b3949d",
+    "script_sha256": "d846f10d11e91aa63f08dc0ea47b5c94b9c784b4708f0407726d423a71ce169b",
+    "decoded_duration_seconds": 17.604,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

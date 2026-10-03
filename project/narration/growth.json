@@ -1,0 +1,66 @@
+{
+  "es": [
+    {
+      "id": "task",
+      "title": "La misma tarea",
+      "text": "En esta fábrica comparamos tres formas de hacer la misma tarea: personas, diez robots sin ampliar la flota, y robots que dedican parte de su trabajo a crear nuevos productores. Una unidad representa una hora efectiva. Suponemos el mismo ritmo y la misma calidad por hora. Sigue las piezas desde la entrada hasta la salida. Las cifras distinguen el presupuesto diario y lo que ya se ha producido. Son escenarios educativos independientes, no medidas de robots comerciales."
+    },
+    {
+      "id": "hours",
+      "title": "Más horas, más producción",
+      "text": "La primera ventaja es trabajar más horas. Cambia las horas por robot y los turnos humanos. Una planta humana también puede trabajar día y noche con personas distintas en cada turno. Con tres turnos de ocho horas y robots a veinticuatro, las diez posiciones tienen la misma capacidad, si el suministro lo permite. Más horas elevan el nivel de producción, pero mantener diez productores no genera crecimiento exponencial. Veintiuna horas es un supuesto con paradas; veinticuatro es un máximo ideal."
+    },
+    {
+      "id": "reinvest",
+      "title": "Bienes hoy o productores mañana",
+      "text": "Ahora sigue la bifurcación de la línea creciente. Una parte del trabajo entrega bienes y otra construye robots. Reinvertir más deja menos bienes disponibles hoy. Las dos partes suman el trabajo utilizado; no hemos creado recursos gratis. El saldo de construcción se acumula hasta completar robots enteros. La reinversión de este ejemplo se mide en trabajo, no en euros. Piezas, máquinas, energía e integración se suponen disponibles dentro de los límites elegidos."
+    },
+    {
+      "id": "commission",
+      "title": "Construir no es estar operativo",
+      "text": "Un robot construido todavía no produce. El lote termina al cerrar su día de fabricación, pasa dos días completos en puesta en marcha y entra en la flota al comienzo del día de fabricación más tres. Sigue su identificador entre montaje, pruebas y puesto activo. Puedes retroceder para comprobar que aparece primero construido, después pendiente y finalmente trabajando. La espera es un supuesto del ejemplo. Si no se reinvierte o no hay espacio, no aparece un productor nuevo."
+    },
+    {
+      "id": "compound",
+      "title": "Los productores crean productores",
+      "text": "Aquí está el bucle que buscamos entender. Más productores pueden fabricar más productores. En el ideal sin esperas y con capacidad divisible, reinvertir una fracción constante multiplica la flota en cada periodo. La simulación usa robots enteros y espera de puesta en marcha: las duplicaciones no siguen exactamente ese ideal. Las otras dos líneas conservan su capacidad. Observa las curvas y los bienes acumulados. Cuando el suministro o las plazas frenan la línea, crecer deja de ser exponencial. Desactivar límites es un experimento con recursos ilimitados, no una previsión."
+    },
+    {
+      "id": "cost",
+      "title": "Cuánto cuesta cada unidad",
+      "text": "Por último, compara cuánto cuesta la misma unidad. El coste humano suma material y trabajo. El robot suma material y reparte instalación, servicio, supervisión y electricidad entre sus horas activas. Cambia los supuestos: el ahorro puede aumentar, reducirse o desaparecer. Añadir robots idénticos no baja automáticamente el coste de cada unidad; más utilización reparte mejor sus costes fijos. Estos euros no financian la simulación anterior. Faltan costes comunes y financiación, y ningún valor es un precio comercial. El objetivo es entender por separado crecimiento, bienes disponibles y coste."
+    }
+  ],
+  "en": [
+    {
+      "id": "task",
+      "title": "The same task",
+      "text": "This factory compares three ways to perform the same task: people, ten robots without expanding the fleet, and robots allocating some work to create new producers. One unit represents one effective working hour. We assume the same hourly pace and quality. Follow the pieces from input to output. The figures distinguish a daily budget from what has already been produced. These are independent teaching scenarios, not measurements of commercial robots."
+    },
+    {
+      "id": "hours",
+      "title": "More hours, more output",
+      "text": "The first advantage is working more hours. Change robot hours and human shifts. A human factory can also run day and night with different people staffing each shift. With three eight-hour shifts and robots at twenty-four hours, ten workstations have the same capacity, if supply allows. More hours raise production, but keeping ten producers does not create exponential growth. Twenty-one hours is an assumption allowing downtime; twenty-four is an ideal maximum."
+    },
+    {
+      "id": "reinvest",
+      "title": "Goods today or producers tomorrow",
+      "text": "Now follow the branch in the growing line. Some work delivers goods and some builds robots. Reinvesting more leaves fewer goods available today. Both parts add up to utilized work; we have not created free resources. Construction work accumulates until whole robots are completed. Reinvestment in this example is measured in work, not euros. Parts, machines, energy and integration are assumed available within the selected limits."
+    },
+    {
+      "id": "commission",
+      "title": "Built does not mean operational",
+      "text": "A built robot does not produce immediately. Its batch completes at the close of its manufacturing day, spends two full days commissioning and joins the fleet at the start of manufacturing day plus three. Follow its identifier through assembly, testing and an active workstation. Rewind to check that it appears first built, then pending and finally working. The delay is a teaching assumption. With no reinvestment or no room, a new producer does not appear."
+    },
+    {
+      "id": "compound",
+      "title": "Producers make producers",
+      "text": "This is the loop we want to understand. More producers can make more producers. In the ideal without delays and with divisible capacity, reinvesting a constant fraction multiplies the fleet each period. The simulation uses whole robots and commissioning delays, so its doublings do not follow that ideal exactly. The other two lines retain their capacity. Watch the curves and cumulative goods. When supply or slots constrain the line, growth ceases to be exponential. Disabling limits assumes unlimited resources; it is not a forecast."
+    },
+    {
+      "id": "cost",
+      "title": "What each unit costs",
+      "text": "Finally, compare the cost of the same unit. Human cost adds material and labor. Robot cost adds material and spreads installation, service, supervision and electricity across active hours. Change the assumptions: savings can grow, shrink or disappear. Adding identical robots does not automatically lower each unit’s cost; higher utilization spreads fixed costs better. These euros do not finance the earlier simulation. Shared costs and financing are omitted, and no value is a commercial price. The aim is to understand growth, available goods and cost separately."
+    }
+  ]
+}

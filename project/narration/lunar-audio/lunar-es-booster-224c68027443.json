@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "El propulsor regresa a la Tierra. La nave superior continúa hacia órbita: son vehículos con destinos distintos. La cámara sigue ahora a Super Heavy hacia la torre. La recuperación que ves es esquemática. Reutilizar el propulsor permite preparar nuevos lanzamientos, pero no elimina el coste ni la necesidad de inspecciones.",
+  "duration_ms": 23292,
+  "billed_characters": 323,
+  "sample_rate": 32000,
+  "size_bytes": 374388,
+  "generated_at": "2026-09-27T00:28:07.726683+00:00",
+  "validation": {
+    "audio_sha256": "4d150232a3e44d91324ff47e9c492f7d44c2ea1136fb9b65b5e262e1da1878c7",
+    "text_sha256": "bf10bd68558dc1d0cf08a5d5b2bcc56510a009f8ed7c86773b71e9809d7723ab",
+    "script_sha256": "3212ec3a9bcc4bdf63174a9fa5d0886a25094601dd481d3a7b3577c4c0699a10",
+    "decoded_duration_seconds": 23.292,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

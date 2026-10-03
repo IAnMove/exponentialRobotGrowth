@@ -1,0 +1,1 @@
+Each router forwards according to its routing information. Cut the direct link and watch the alternate route. The diagram compresses distances and equipment: data travels as physical signals, and real routing changes can take time.

@@ -1,0 +1,1 @@
+TCP ofrece un flujo ordenado de bytes. Si faltan datos, puede retransmitirlos; recibir un duplicado no duplica el mensaje. El servidor procesa la petición y devuelve datos. La barra cuenta piezas únicas recibidas, mientras que los intentos incluyen la repetición del paquete perdido.

@@ -1,0 +1,1 @@
+Now one piece is selected. We can take the most likely option or sample from the distribution. Look at the options around the platform: a complete sentence does not come out at once. When this step finishes, exactly one new token appears in the answer. In this lab, the first choice uses probabilities; the rest follows a scripted continuation so we can study the path.

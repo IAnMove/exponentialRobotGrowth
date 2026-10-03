@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "El booster ya ha terminado su recorrido, pero entregar la carga es otro resultado. La etapa superior ha apagado su motor y la carga permanece sujeta hasta la separación. Ahora se libera el satélite de ejemplo. Su movimiento continúa desde el lugar de la entrega; no aparece en otro escenario. La vista general permite comparar la ruta de la carga con la del booster. Solo contamos una de las dos etapas como recuperada después del contacto con la barcaza o el suelo. Recuperar no significa volver a lanzar inmediatamente: hacen falta transporte, inspección, preparación y nueva integración. SpaceX publica una capacidad de hasta veintidós mil ochocientos kilos a órbita baja para Falcon nueve, no una carga garantizada en todas las misiones. Reservar combustible para volver limita el rendimiento, pero no imponemos una cifra universal de carga reutilizable ni un coste por kilo. La ventaja que sí ves es conservar una parte importante del vehículo.",
+  "duration_ms": 59364,
+  "billed_characters": 949,
+  "sample_rate": 32000,
+  "size_bytes": 951540,
+  "generated_at": "2026-10-03T01:17:15.364262+00:00"
+}

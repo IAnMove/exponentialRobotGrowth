@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "La señal llega a Virginia Beach. Ya hemos cruzado el océano, pero todavía no estamos en el servidor. Desde la estación de amarre, redes terrestres llevan los datos hacia centros de datos. Telxius documenta conexiones desde este punto hacia Ashburn y Richmond. En nuestro ejemplo elegimos Ashburn. La ubicación regional es real; la ruta exacta, el operador de destino y el servidor son parte de esta demostración.",
+  "duration_ms": 25956,
+  "billed_characters": 412,
+  "sample_rate": 32000,
+  "size_bytes": 417012,
+  "generated_at": "2026-09-26T19:16:31.450229+00:00",
+  "validation": {
+    "audio_sha256": "bc96bc0e0763ca3150bde16e6eb84e852f524782ebad0a4bc4816e2431b1f6ac",
+    "text_sha256": "accb71c49449e11d4f0734c99c48ebb928b2d8fc166604fb9d32ca79074f1fe1",
+    "script_sha256": "537c22989c028e6e20ed8f813fd67cc7e38b70e7504118325c5f440bcbc7ef36",
+    "decoded_duration_seconds": 25.956,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

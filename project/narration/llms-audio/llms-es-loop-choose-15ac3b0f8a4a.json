@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Nos detenemos antes de emitir la siguiente pieza. Al terminar este paso, solo se añade un token: puede ser una palabra, un fragmento o incluso un espacio.",
+  "duration_ms": 9576,
+  "billed_characters": 154,
+  "sample_rate": 32000,
+  "size_bytes": 154932,
+  "generated_at": "2026-09-20T18:03:43.256828+00:00",
+  "validation": {
+    "audio_sha256": "6dac7ff184927b78e934aed9f8e98fba9d723c6b327cc6f6b10f1465df49c8b0",
+    "text_sha256": "04b7be4e7663908bb172737efdcacb39e262dfee544a9c564392d27ac3b0d047",
+    "script_sha256": "363eb49f902f4df43d3d9c4f39df899e6398b4d290e26a2a4b0daa91c4a09cf6",
+    "decoded_duration_seconds": 9.576,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 9.576
+  }
+}

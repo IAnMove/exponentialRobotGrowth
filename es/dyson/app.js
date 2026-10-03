@@ -1,110 +1,37 @@
-import {defaults,snapshot,tickDyson,L_SUN,M_JUPITER,KARDASHEV_II,COLLECTOR_MAX} from './model.js';
+import {defaults,cleanDysonState,dysonFrameAt} from './model.js';
 import {createDysonWorld} from './world.js';
-const es=document.documentElement.lang==='es',t=(a,b)=>es?a:b,$=id=>document.getElementById(id);
-const nf=new Intl.NumberFormat(es?'es-ES':'en-US',{maximumFractionDigits:1}),fmt=x=>nf.format(x);
-const sciNf=new Intl.NumberFormat(es?'es-ES':'en-US',{maximumFractionDigits:2,minimumFractionDigits:1});
-function sci(x){if(!Number.isFinite(x)||x===0)return '0';const e=Math.floor(Math.log10(Math.abs(x))),m=x/10**e;return sciNf.format(m)+' × 10'+[...String(e)].map(d=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[d]??'⁻').join('');}
-function kelvin(k){return fmt(k)+' K · '+fmt(k-273.15)+' °C';}
-let state={...defaults},world,last=performance.now(),domAt=0;
-document.title=t('Esfera de Dyson — Enjambre y calor','Dyson sphere — Swarm and heat');
-$('app').innerHTML=`<nav class="nav"><a href="../index.html">← Atlas</a><a href="../kardashev/index.html">Kardashev</a><a href="../starlink/index.html">Starlink</a><a href="../spacex/index.html">SpaceX</a><a href="../home/index.html">${t('Hogar','Home')}</a><span><a href="${es?'../../dyson/index.html':'./index.html'}" lang="en">EN</a> / <a href="${es?'./index.html':'../es/dyson/index.html'}" lang="es">ES</a></span></nav>
-<header><div><span class="eyebrow">${t('NOTEBOOK 03 · ENERGÍA ESTELAR','NOTEBOOK 03 · STELLAR ENERGY')}</span><h1>${t('No es una cáscara rígida.<br>Es un enjambre.','Not a rigid shell.<br>A swarm.')}</h1></div><p>${t('Dyson (1960) imaginó interceptar la luz de una estrella con colectores en órbitas independientes, no con una bola sólida. Cambia la forma, la cobertura y el radio.','Dyson (1960) imagined intercepting a star’s light with collectors on independent orbits, not a solid ball. Change the form, coverage and radius.')}</p></header>
-<section class="dashboard" aria-label="${t('Energía y calor de este modelo','Energy and heat in this model')}">
-<article><span>${t('Energía interceptada','Intercepted energy')}</span><strong id="captured"></strong><small id="vs-world"></small></article>
-<article><span>${t('Luz que sigue escapando','Starlight still escaping')}</span><strong id="leaked"></strong><div class="split" aria-hidden="true"><i id="split-bar"></i></div><small>${t('El Sol no se apaga; se tapa una fracción del cielo.','The Sun does not go out; a fraction of its sky is blocked.')}</small></article>
-<article><span>${t('Temperatura','Temperature')}</span><strong id="temp"></strong><small id="temp-note"></small></article>
-</section>
-<div class="controls">
-<button id="play" class="primary">▶ ${t('Construir cobertura','Grow coverage')}</button>
-<button id="reset" aria-label="${t('Reiniciar','Reset')}">↺</button>
-<div class="forms" role="group" aria-label="${t('Forma','Form')}">
-<button id="form-swarm" aria-pressed="true">${t('Enjambre','Swarm')}</button>
-<button id="form-shell" aria-pressed="false">${t('Cáscara rígida','Rigid shell')}</button>
-</div>
-<label>${t('Cobertura','Coverage')} <output id="cover-value">18%</output><input id="coverage" type="range" min="0" max="100" step="1" value="18"></label>
-<label>${t('Radio','Radius')} <output id="radius-value">1 ua</output><input id="radius" type="range" min="40" max="250" step="5" value="100"></label>
-</div>
-<div class="layout">
-<section class="stage">
-<div class="scene-caption"><b id="scene-status"></b><span>${t('Anillos = órbitas. La Tierra azul marca 1 ua. Júpiter (beige, más lejos) es la reserva de materia. Sol y planetas no están a escala.','Rings = orbits. Blue Earth marks 1 au. Jupiter (tan, farther out) is the mass reserve. Sun and planets are not to scale.')}</span></div>
-<div id="space" role="img" tabindex="0" aria-label="${t('Modelo 3D: Sol, órbita terrestre, enjambre o cáscara. Arrastra, rueda o usa las flechas.','3D model: Sun, Earth orbit, swarm or shell. Drag, scroll or use the arrow keys.')}"></div>
-<p id="loading">${t('Preparando el sistema…','Preparing the system…')}</p>
-<div class="view-controls"><button id="fit">${t('Centrar','Center')}</button><button id="zoom-out" aria-label="${t('Alejar','Zoom out')}">−</button><button id="zoom-in" aria-label="${t('Acercar','Zoom in')}">+</button></div>
-<div class="scene-bottom"><span id="action"></span><strong id="percent"></strong></div>
-</section>
-<aside>
-<span class="eyebrow">${t('QUÉ ESTÁS MOVIENDO','WHAT YOU ARE CHANGING')}</span>
-<div class="detail">
-<h2 id="form-name"></h2>
-<p id="form-detail"></p>
-<dl>
-<div><dt>${t('Colectores visibles','Visible collectors')}</dt><dd id="collectors"></dd></div>
-<div><dt>${t('Flujo a este radio','Flux at this radius')}</dt><dd id="flux"></dd></div>
-<div><dt>${t('Enjambre · dos caras','Swarm · two-sided')}</dt><dd id="t-swarm"></dd></div>
-<div><dt>${t('Cáscara cerrada · una cara','Closed shell · one face')}</dt><dd id="t-shell"></dd></div>
-<div><dt>${t('Si Júpiter se extiende aquí','If Jupiter is spread here')}</dt><dd id="column"></dd></div>
-<div><dt>${t('Espesor a 3000 kg/m³','Thickness at 3000 kg/m³')}</dt><dd id="thick"></dd></div>
-<div><dt>${t('Masa a esta cobertura','Mass at this coverage')}</dt><dd id="mass"></dd></div>
-</dl>
-</div>
-</aside>
-</div>
-<section class="principles">
-<article><span class="eyebrow">01 · ${t('ENJAMBRE','SWARM')}</span><b>${t('Órbitas, no una bola','Orbits, not a ball')}</b><p>${t('Dyson aclaró que una cáscara o anillo rígido es mecánicamente imposible. Lo que imaginó es una colección suelta de objetos en órbitas independientes. Por eso el 3D dibuja anillos, no una reja esférica.','Dyson clarified that a rigid shell or ring is mechanically impossible. What he envisaged is a loose collection of objects on independent orbits. That is why the 3D view draws rings, not a spherical lattice.')}</p></article>
-<article><span class="eyebrow">02 · ${t('EL CALOR SALE','HEAT LEAVES')}</span><b>${t('La energía no desaparece','Energy does not vanish')}</b><p>${t('Lo interceptado acaba irradiándose como calor. Un enjambre radia por las dos caras; una cáscara cerrada solo puede radiar al espacio por fuera, así que queda más caliente. Dyson propuso buscar ese infrarrojo.','Whatever is intercepted is eventually radiated as heat. A swarm radiates from both faces; a closed shell can radiate to space only from the outside, so it runs hotter. Dyson proposed searching for that infrared.')}</p></article>
-<article><span class="eyebrow">03 · ${t('LA MATERIA','MASS')}</span><b>${t('Hace falta un planeta','A planet is the raw material')}</b><p>${t('Dyson tomó la masa de Júpiter como orden de magnitud. A 1 ua eso da una capa delgada, no una muralla. No modelamos minería, transporte ni plazos.','Dyson took Jupiter’s mass as the order of magnitude. At 1 au that yields a thin sheet, not a wall. Mining, transport and schedules are not modeled.')}</p></article>
-</section>
-<details class="assumptions"><summary>${t('Qué estamos suponiendo · números, física y límites','What we assume · numbers, physics and limits')}</summary>
-<p>${t('Luminosidad solar 3,828×10²⁶ W (IAU). Unidad astronómica 1,495978707×10¹¹ m. Constante de Stefan–Boltzmann 5,670374419×10⁻⁸ W/m²K⁴. Masa de Júpiter 1,898×10²⁷ kg. Consumo mundial de energía primaria ≈ 600 EJ en 2025, unos 19 TW de potencia media (Energy Institute, Statistical Review 2026). Tipo II de Kardashev (1964): 4×10²⁶ W, del orden de una estrella. Los colectores del 3D son un número didáctico, no un recuento de satélites reales.','Solar luminosity 3.828×10²⁶ W (IAU). Astronomical unit 1.495978707×10¹¹ m. Stefan–Boltzmann constant 5.670374419×10⁻⁸ W/m²K⁴. Jupiter mass 1.898×10²⁷ kg. World primary energy ≈ 600 EJ in 2025, about 19 TW of mean power (Energy Institute, Statistical Review 2026). Kardashev Type II (1964): 4×10²⁶ W, on the order of a star. Collectors in the 3D view are a teaching count, not a real satellite inventory.')}</p>
-<p>${t('La cobertura es la fracción geométrica de luz interceptada. No hay albedo: absorbedores perfectos. La temperatura del enjambre no depende de cuántos colectores hay, solo del radio: cada placa ve el mismo flujo y radia por ambas caras. La temperatura de cáscara cerrada solo aplica al 100 %. Una Tierra real intercepta πR² y radia por 4πR², más albedo: su temperatura efectiva (~255 K) no es la de este colector.','Coverage is the geometric fraction of intercepted light. There is no albedo: perfect absorbers. Swarm temperature does not depend on how many collectors there are, only on radius: each plate sees the same flux and radiates from both sides. Closed-shell temperature applies only at 100%. A real Earth intercepts πR² and radiates from 4πR², plus albedo: its effective temperature (~255 K) is not this collector’s.')}</p>
-<p>${t('Una cáscara rígida uniforme no sujeta a nadie en su cara interna (teorema de Newton) y es inestable a cualquier desplazamiento. El modelo agranda el Sol y los planetas para que se vean. No es un plan de ingeniería ni una búsqueda SETI.','A uniform rigid shell cannot hold anyone on its inner face (Newton’s shell theorem) and is unstable to any displacement. The model enlarges the Sun and planets so they remain visible. This is not an engineering plan or a SETI search.')} <a href="https://doi.org/10.1126/science.131.3414.1667" target="_blank" rel="noopener">Dyson 1960 · Science ↗</a></p>
-</details>
-<footer>${t('Atlas · Esfera de Dyson · notebook 03 · 18 septiembre 2026','Atlas · Dyson sphere · notebook 03 · 18 September 2026')}</footer>`;
-
-try{world=createDysonWorld($('space'));$('loading').hidden=true;}catch(e){$('loading').textContent=t('La vista 3D no está disponible. Puedes seguir los contadores y el texto.','The 3D view is unavailable. You can still follow the counters and the text.');console.error(e);}
-
-function setForm(form){state.form=form;$('form-swarm').setAttribute('aria-pressed',String(form==='swarm'));$('form-shell').setAttribute('aria-pressed',String(form==='shell'));paint();}
-function paint(){
- const v=snapshot(state);
- $('captured').textContent=sci(v.captured)+' W';
- $('vs-world').textContent=v.captured===0?t('Nada interceptado todavía','Nothing intercepted yet'):t('≈ ','≈ ')+sci(v.vsWorld)+t(' veces el consumo mundial de 2025',' times 2025 world consumption');
- $('leaked').textContent=sci(v.leaked)+' W';
- $('split-bar').style.width=v.coverage*100+'%';
- $('temp').textContent=kelvin(v.temperature);
- $('temp-note').textContent=v.closedShell?t('Cáscara cerrada: solo radia al espacio por fuera.','Closed shell: radiates to space only from the outside.'):t('Placa de dos caras. No cambia al añadir anillos.','Two-sided plate. It does not change as rings are added.');
- $('cover-value').textContent=Math.round(v.coverage*100)+'%';
- $('radius-value').textContent=fmt(v.radiusAu)+' '+(es?'ua':'au');
- $('coverage').value=Math.round(v.coverage*100);
- $('radius').value=Math.round(v.radiusAu*100);
- $('collectors').textContent=v.form==='swarm'?v.collectors+' / '+COLLECTOR_MAX:t('Cáscara continua','Continuous shell');
- $('flux').textContent=fmt(v.flux)+' W/m²';
- $('t-swarm').textContent=kelvin(v.swarmTemperature);
- $('t-shell').textContent=kelvin(v.shellTemperature);
- $('column').textContent=fmt(v.column)+' kg/m² · '+fmt(v.column/10)+' g/cm²';
- $('thick').textContent=fmt(v.thickness)+' m';
- $('mass').textContent=sci(v.massUsed)+' kg · '+fmt(v.massUsed/M_JUPITER)+' M♃';
- $('form-name').textContent=v.form==='swarm'?t('Enjambre de Dyson','Dyson swarm'):t('Cáscara rígida · malentendido habitual','Rigid shell · common misconception');
- $('form-detail').textContent=v.form==='swarm'?t('Anillos de colectores en órbitas distintas. Dyson llamó a esto una «biosfera»: una colección suelta. Tipo II de Kardashev (1964) = ','Rings of collectors on distinct orbits. Dyson called this a “biosphere”: a loose collection. Kardashev Type II (1964) = ')+sci(KARDASHEV_II)+t(' W, del orden de esta estrella (',' W, on the order of this star (')+sci(L_SUN)+' W).':t('Una esfera rígida aparece en la ciencia ficción. Es gravitatoriamente inestable, no se habita por la gravedad de la cáscara, y Dyson la descartó. Aquí crece como un casquete para que se vea el cubrimiento, no porque sea construible.','A rigid sphere appears in fiction. It is gravitationally unstable, is not inhabited by the shell’s gravity, and Dyson rejected it. It grows here as a cap so coverage is visible, not because it can be built.');
- $('scene-status').textContent=state.playing?t('AÑADIENDO ÓRBITAS','ADDING ORBITS'):v.coverage>=1?t('CIELO ESTELAR TAPADO','STELLAR SKY COVERED'):t('EN PAUSA','PAUSED');
- $('action').textContent=t('Arrastra · rueda · flechas · pellizca','Drag · scroll · arrows · pinch');
- $('percent').textContent=Math.round(v.coverage*100)+' %';
- $('play').textContent=state.playing?'Ⅱ '+t('Pausar','Pause'):v.coverage>=1?'↺ '+t('Repetir','Replay'):'▶ '+t('Construir cobertura','Grow coverage');
-}
-$('play').onclick=()=>{if(state.coverage>=1)state.coverage=0;state.playing=!state.playing;last=performance.now();paint();};
-$('reset').onclick=()=>{state={...defaults};world?.fit();paint();};
-$('form-swarm').onclick=()=>setForm('swarm');$('form-shell').onclick=()=>setForm('shell');
-$('coverage').oninput=e=>{state.playing=false;state.coverage=+e.target.value/100;paint();};
-$('radius').oninput=e=>{state.radiusAu=+e.target.value/100;paint();};
-$('fit').onclick=()=>{world?.fit();paint();};$('zoom-in').onclick=()=>{world?.zoomBy(1.12);paint();};$('zoom-out').onclick=()=>{world?.zoomBy(1/1.12);paint();};
-window.addEventListener('resize',paint);
-paint();
-function frame(now){
- const dt=Math.min(.1,(now-last)/1000);last=now;
- if(!document.hidden){
-  if(state.playing)tickDyson(state,dt);
-  world?.render(state,dt);
-  if(state.playing&&now-domAt>80){domAt=now;paint();}
- }
- requestAnimationFrame(frame);
-}
-requestAnimationFrame(frame);
+import {dysonPoseAt,restoreDysonPose,dysonWalk,dysonNearestStand,dysonGuidePath} from './walk.js';
+import {LESSONS} from './lessons.js';
+import {VOICES} from './voices.js';
+import {mountDyson,paintDysonView,dysonInputs,CONTROL_KEYS} from './presentation.js';
+import {NotebookPlayer} from '../playback/player.js';
+import {bindFirstPerson} from '../immersive/first-person.js';
+const es=document.documentElement.lang==='es',t=(a,b)=>es?a:b,$=id=>document.getElementById(id),query=new URLSearchParams(location.search),bounded=(v,a,b)=>Math.max(a,Math.min(b,Number.isFinite(v)?v:a));
+let params={...defaults},chapter=0,progress=0,timeSource='narration',mode=['diagram','notebook','immersive'].includes(query.get('mode'))?query.get('mode'):'notebook',pose=dysonPoseAt(0),enteredFPS=false,world,notebook,firstPerson,frame=dysonFrameAt(params,0,0),ready=false,restored=false,holdPose=false,changingVoice=false,aligning=false,playing=false,lookActive=false,wasLocked=false,last=performance.now(),raf,travel=null;
+const keys=new Set(),touch=new Set();mountDyson(es);
+function rebuild(){params={...cleanDysonState(params)};frame=dysonFrameAt(params,chapter,progress);}
+function save(){notebook?.save();}
+function manual(){timeSource='manual';playing=false;travel=null;notebook?.pause();}
+function align(){if(!ready||timeSource!=='manual')return;const c=notebook.clock.timeline[chapter];aligning=true;try{notebook.seek(c.start+progress*c.duration,false);}finally{aligning=false;}}
+function paint(){paintDysonView({es,params,frame,chapter,progress,mode,playing,text:VOICES[notebook?.language||(es?'es':'en')][chapter].text,language:notebook?.language||(es?'es':'en')});world?.render(frame);}
+function phase(value){manual();progress=bounded(value,0,1);rebuild();paint();align();save();}
+function listenAt(index,keep=false){playing=false;travel=null;timeSource='narration';holdPose=keep;notebook?.stage(index,true);holdPose=false;paint();}
+function release(){lookActive=false;firstPerson?.release();$('capture').textContent=t('Activar ratón','Enable mouse look');}
+function useMode(value){manual();keys.clear();touch.clear();release();mode=value;if(mode==='immersive'&&!enteredFPS){pose=dysonPoseAt(chapter);enteredFPS=true;}world?.setMode(mode);world?.setPose(pose);history.replaceState(null,'','?mode='+mode);paint();if(mode==='immersive')world?.canvas.focus({preventScroll:true});save();}
+try{world=createDysonWorld($('space'),{es,onAction:i=>listenAt(i,true),onView:()=>save()});$('loading').hidden=true;}catch(error){console.error(error);$('loading').textContent=t('3D no disponible: puedes seguir el esquema, cifras, texto y voz.','3D unavailable: follow the diagram, figures, text and narration.');mode='diagram';}
+notebook=new NotebookPlayer({id:'dyson',getClips:lang=>VOICES[lang],capture:()=>({params:{...params},chapter,progress,timeSource,mode,enteredFPS,pose:{...pose},camera:world?.getViewState(),follow:$('follow').checked}),restore(saved){if(!saved)return;params={...cleanDysonState(saved.params||defaults)};chapter=Math.floor(bounded(saved.chapter,0,5));progress=bounded(saved.progress,0,1);timeSource=saved.timeSource==='manual'?'manual':'narration';if(!['diagram','notebook','immersive'].includes(query.get('mode'))&&['diagram','notebook','immersive'].includes(saved.mode))mode=saved.mode;enteredFPS=saved.enteredFPS===true;pose=restoreDysonPose(saved.pose);$('follow').checked=saved.follow!==false;rebuild();if(saved.camera)world?.restoreViewState(saved.camera);restored=true;},onSync(s){if(!s||aligning)return;if(timeSource==='manual'&&!notebook?.wanted)return;if(changingVoice&&timeSource==='manual')return;const changed=chapter!==s.index;chapter=s.index;progress=s.progress;rebuild();if(ready&&changed&&$('follow').checked&&!holdPose){if(mode==='immersive')travel={path:dysonGuidePath(pose,dysonPoseAt(chapter)),index:1,target:dysonPoseAt(chapter)};else world?.focus(chapter);}paint();}});
+ready=true;if(!restored){chapter=notebook.current.index;progress=notebook.current.progress;rebuild();world?.focus(chapter);}if(mode==='immersive'&&!enteredFPS){pose=dysonPoseAt(chapter);enteredFPS=true;}world?.setMode(mode);world?.setPose(pose);dysonInputs(params,es);paint();
+if(world)firstPerson=bindFirstPerson({canvas:world.canvas,enabled:()=>mode==='immersive'&&lookActive,onLook:(dx,dy)=>{travel=null;pose.yaw-=dx*.0025;pose.pitch=bounded(pose.pitch-dy*.002,-1.25,1.25);world.setPose(pose);save();},onActivate:(x,y)=>{if(x==null)world.activate();else{const hit=world.inspect(x,y);if(Number.isInteger(hit?.action))listenAt(hit.action,true);else if(hit?.info){$('inspect').textContent=Array.isArray(hit.info)?hit.info[es?0:1]:String(hit.info);$('inspect').hidden=false;}}},onState(state){const locked=state==='locked';if(wasLocked&&!locked){manual();lookActive=false;paint();save();}wasLocked=locked;}});
+function enterCanvas(e){if(mode!=='immersive'||lookActive||e.button!==0)return;const hit=world?.inspect(e.clientX,e.clientY);if(Number.isInteger(hit?.action))listenAt(hit.action,true);lookActive=true;world?.canvas.focus({preventScroll:true});firstPerson?.request();$('capture').textContent=t('Ratón activo · Esc','Mouse active · Esc');save();}
+world?.canvas.addEventListener('click',enterCanvas);
+for(const id of CONTROL_KEYS)$(id).oninput=()=>{const el=$(id);if(el.value===''||!el.checkValidity())return;const value=+el.value;manual();params[id]=value;rebuild();dysonInputs(params,es);paint();align();save();};
+for(const form of ['swarm','shell'])$('form-'+form).onclick=()=>{manual();params.form=form;rebuild();dysonInputs(params,es);paint();align();save();};
+document.querySelectorAll('[data-chapter]').forEach(b=>b.onclick=()=>{manual();timeSource='narration';notebook.stage(+b.dataset.chapter,false);world?.focus(chapter);save();});
+$('listen').onclick=()=>listenAt(chapter,mode==='immersive');$('next').onclick=()=>listenAt(Math.min(5,chapter+1));$('listen-here').onclick=()=>{const hit=dysonNearestStand(pose);if(hit)listenAt(hit.index,true);};for(const m of ['diagram','notebook','immersive'])$('mode-'+m).onclick=()=>useMode(m);
+$('capture').onclick=()=>{lookActive=true;world?.canvas.focus({preventScroll:true});firstPerson?.request();$('capture').textContent=t('Ratón activo · Esc','Mouse active · Esc');};$('follow').onchange=()=>{if(!$('follow').checked)travel=null;save();};$('fit').onclick=()=>{world?.focus(chapter);save();};$('overview').onclick=()=>{world?.overview();save();};$('zoom-in').onclick=()=>{world?.zoomBy(1.12);save();};$('zoom-out').onclick=()=>{world?.zoomBy(1/1.12);save();};$('phase').oninput=()=>{const value=+$('phase').value;phase(value);};$('reset').onclick=()=>phase(0);$('finish').onclick=()=>phase(1);$('step').onclick=()=>phase(Math.min(1,progress+.125));$('play').onclick=()=>{const resume=!playing;manual();if(progress===1)progress=0;playing=resume;rebuild();paint();align();save();};$('preset-reset').onclick=()=>{manual();params={...defaults};rebuild();dysonInputs(params,es);paint();align();save();};
+const playerToggle=notebook.toggle.bind(notebook);notebook.toggle=()=>{if(!notebook.running)timeSource='narration';playing=false;playerToggle();};const playerLanguage=notebook.changeLanguage.bind(notebook);notebook.changeLanguage=lang=>{const wasManual=timeSource==='manual',oldChapter=chapter,oldProgress=progress;changingVoice=true;playerLanguage(lang);if(wasManual){timeSource='manual';chapter=oldChapter;progress=oldProgress;rebuild();paint();save();}changingVoice=false;};const playerSeek=notebook.seek.bind(notebook);notebook.seek=(seconds,play=notebook.wanted)=>{if(!aligning&&!changingVoice){timeSource='narration';playing=false;}playerSeek(seconds,play);};
+for(const b of document.querySelectorAll('[data-move]')){b.onpointerdown=e=>{manual();touch.add(b.dataset.move);b.setPointerCapture?.(e.pointerId);};b.onpointerup=b.onpointercancel=()=>{touch.delete(b.dataset.move);save();};}
+function keydown(e){if(e.target.matches('input,select,textarea,button,a')&&e.key!=='Escape')return;if(e.key==='Escape'){manual();release();keys.clear();touch.clear();paint();save();return;}if(mode!=='immersive')return;if(e.key.toLowerCase()==='e'){world?.activate();return;}if(['w','a','s','d','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();manual();keys.add(e.key.toLowerCase());}}
+window.addEventListener('keydown',keydown);const keyup=e=>{if(keys.delete(e.key.toLowerCase()))save();};window.addEventListener('keyup',keyup);const blur=()=>{keys.clear();touch.clear();travel=null;save();};window.addEventListener('blur',blur);const hidden=()=>{if(document.hidden){keys.clear();touch.clear();travel=null;playing=false;release();save();}};document.addEventListener('visibilitychange',hidden);
+function tick(now){const dt=bounded((now-last)/1000,0,.05);last=now;if(!document.hidden){if(playing){progress=Math.min(1,progress+dt/20);if(progress===1)playing=false;rebuild();paint();align();}if(mode==='immersive'){const forward=(keys.has('w')||keys.has('arrowup')||touch.has('forward')?1:0)-(keys.has('s')||keys.has('arrowdown')||touch.has('back')?1:0),strafe=(keys.has('d')||keys.has('arrowright')||touch.has('right')?1:0)-(keys.has('a')||keys.has('arrowleft')||touch.has('left')?1:0);if(forward||strafe){const n=Math.hypot(forward,strafe),d=dt*3.2;pose=dysonWalk(pose,(-Math.sin(pose.yaw)*forward+Math.cos(pose.yaw)*strafe)*d/n,(-Math.cos(pose.yaw)*forward-Math.sin(pose.yaw)*strafe)*d/n);travel=null;}else if(travel&&notebook?.running){const goal=travel.path[travel.index];if(!goal)travel=null;else{const dx=goal.x-pose.x,dz=goal.z-pose.z,n=Math.hypot(dx,dz);if(n<.05)travel.index++;else{const d=Math.min(n,dt*3.2);pose=dysonWalk(pose,dx*d/n,dz*d/n);}}}world?.setPose(pose);const stand=dysonNearestStand(pose);$('listen-here').textContent=stand?'E · '+t('Escuchar','Listen')+' '+LESSONS[stand.index].title[es?0:1]:t('Acércate a un botón del stand','Approach a stand button');$('listen-here').disabled=!stand;$('position').textContent=pose.x.toFixed(1)+' · '+pose.z.toFixed(1)+' m';}world?.render(frame);}raf=requestAnimationFrame(tick);}
+raf=requestAnimationFrame(tick);window.addEventListener('pagehide',()=>{save();cancelAnimationFrame(raf);firstPerson?.dispose();world?.canvas.removeEventListener('click',enterCanvas);world?.dispose();notebook.dispose();window.removeEventListener('keydown',keydown);window.removeEventListener('keyup',keyup);window.removeEventListener('blur',blur);document.removeEventListener('visibilitychange',hidden);});

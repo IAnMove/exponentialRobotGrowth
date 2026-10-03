@@ -1,0 +1,22 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Distance also changes the required area. Keep the same effective coverage and double the radius: the ideal area grows fourfold. With the same mass per square metre, total mass also increases by four. Surface density is an editable assumption, not a measured property of an available collector. This calculation counts only the ideal collecting surface. It excludes supports, manufacturing, payloads, transport, maintenance and shadows. The other side shows a separate historical comparison: spreading Jupiter's entire mass over a sphere at the selected radius. The resulting column and thickness illustrate a scale of material. They do not require dismantling Jupiter, and we are not simulating that process. Check how radius, flux, reference temperature, area and mass relate before visiting the shell.",
+  "duration_ms": 55116,
+  "billed_characters": 803,
+  "sample_rate": 32000,
+  "size_bytes": 883572,
+  "generated_at": "2026-10-03T07:23:57.047942+00:00",
+  "validation": {
+    "ffmpeg_decode": "passed",
+    "decoded_duration_seconds": 55.116,
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "audio_sha256": "777885d88a8780c14917e2795df00a35bc25535781a1b1995115702fa52a4fc6",
+    "text_sha256": "cedc140f3ba1808854d985eb18f32e1a541796770a758d4a54b6a5fe365bb7f9",
+    "script_sha256": "8711f4e6388ab06c1c670a3c179a8019955d181f8a5bbb8e04ce7ca8f93d0d56"
+  }
+}

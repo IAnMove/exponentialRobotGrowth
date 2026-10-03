@@ -1,0 +1,22 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Now watch the thermal output. Under our assumptions of local use and steady state, all intercepted power is eventually radiated: some becomes heat directly, and some first performs useful work. Orange markers show infrared in false color. A plate at about three hundred and thirty-one kelvin does not look red hot. That figure describes an isolated black plate at one astronomical unit, with two faces radiating freely. It is not a calculated temperature for a dense swarm: other collectors could block or return radiation. The graph compares reference blackbody spectra. A colder emitter peaks at longer wavelengths. An infrared excess would be a clue to investigate, not proof of technology: dust and other natural processes can also produce it. Change the radius or emissivity and follow the shifting peak.",
+  "duration_ms": 53244,
+  "billed_characters": 809,
+  "sample_rate": 32000,
+  "size_bytes": 853620,
+  "generated_at": "2026-10-03T07:23:52.962102+00:00",
+  "validation": {
+    "ffmpeg_decode": "passed",
+    "decoded_duration_seconds": 53.244,
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "audio_sha256": "8cb543524ace1629ae5d8eab998a3189df1cde213b90ebbaa205bb8a2b71c7e2",
+    "text_sha256": "68c1f73f6e16c72e29f4eb7e1b52e62f1d9672b9163b73b3cf6ca349294f0de3",
+    "script_sha256": "cf5c4dc08b8075d378ba7547d05505431e0fb040c6fe3743855b956f570a3190"
+  }
+}

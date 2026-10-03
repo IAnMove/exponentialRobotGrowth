@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Now the growth loop appears: part of the output is reinvested in new equipment, which helps manufacture the next generation. In the ideal case, doubling every twelve months gives one, two, four, eight and sixteen times the initial capacity. The gold curve shows that unconstrained mathematics. Green applies our constraints. Blue shows importing everything with the same deliveries. The gap grows because we use local mass, not because rockets magically multiply.",
+  "duration_ms": 31392,
+  "billed_characters": 463,
+  "sample_rate": 32000,
+  "size_bytes": 503988,
+  "generated_at": "2026-09-26T22:49:33.900032+00:00",
+  "validation": {
+    "audio_sha256": "a86b20ae7eaa96fa5751e2cefad9f0859084486be9d360e5bf5c717ff2cb123a",
+    "text_sha256": "d38c11e77f414038b0e0d26380a176e59c975bee91b66b89621dbd7a58dedde2",
+    "script_sha256": "7013914057d716a954098eb0b8e01813435f4850dd736e711b42c3f834443803",
+    "decoded_duration_seconds": 31.392,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

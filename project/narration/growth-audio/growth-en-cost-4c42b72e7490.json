@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Finally, compare the cost of the same unit. Human cost adds material and labor. Robot cost adds material and spreads installation, service, supervision and electricity across active hours. Change the assumptions: savings can grow, shrink or disappear. Adding identical robots does not automatically lower each unit’s cost; higher utilization spreads fixed costs better. These euros do not finance the earlier simulation. Shared costs and financing are omitted, and no value is a commercial price. The aim is to understand growth, available goods and cost separately.",
+  "duration_ms": 40644,
+  "billed_characters": 566,
+  "sample_rate": 32000,
+  "size_bytes": 652020,
+  "generated_at": "2026-10-03T04:32:36.142898+00:00"
+}

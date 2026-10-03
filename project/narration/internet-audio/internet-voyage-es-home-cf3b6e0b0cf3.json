@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Todo empieza aquí: en tu ordenador. Has pedido una página que, en este ejemplo, está alojada en Estados Unidos. Antes de enviar esta petición, el navegador ha obtenido una dirección IP mediante DNS y ha preparado una conexión HTTPS. Esa preparación también requiere intercambios por la red. Ahora seguimos los datos de la petición. El contenido viaja cifrado; los routers necesitan la información de encaminamiento, pero no leen la página dentro del cifrado. El punto dorado representa esos datos, no un objeto que atraviesa los cables.",
+  "duration_ms": 35100,
+  "billed_characters": 536,
+  "sample_rate": 32000,
+  "size_bytes": 563316,
+  "generated_at": "2026-09-26T19:16:22.518825+00:00",
+  "validation": {
+    "audio_sha256": "b12f62ab4a75f38310e86deddf6d31b5b18417cf31dcc79e45e9fd8578e1f3f9",
+    "text_sha256": "312d722891c1f4527758350893f3e815c2e7e463b13ca364d727b581793fe9f7",
+    "script_sha256": "a12c89077d83edf6b6566fd1f9b01597358b6972c93b886bcc2b59e862da4045",
+    "decoded_duration_seconds": 35.1,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

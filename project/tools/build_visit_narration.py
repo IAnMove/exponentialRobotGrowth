@@ -1,4 +1,4 @@
-"""Record the museum and models narrations. Reuse a clip when text, model and voice match.
+"""Record shared notebook narrations. Reuse matching clips.
 
 A failed request is not retried: the call may already have been billed.
 """
@@ -15,8 +15,13 @@ AUDIO = ROOT / 'dist' / 'audio'
 FFMPEG = shutil.which('ffmpeg') or str(Path.home() / 'ffmpeg' / 'bin' / 'ffmpeg.exe')
 
 JOBS = [
+    ('growth', ROOT / 'narration' / 'growth.json', ROOT / 'site-src' / 'growth' / 'voices.js'),
     ('modelos', ROOT / 'narration' / 'modelos.json', ROOT / 'site-src' / 'modelos' / 'voices.js'),
     ('museo', ROOT / 'narration' / 'museo.json', ROOT / 'site-src' / 'museo' / 'voices.js'),
+    ('mente', ROOT / 'narration' / 'mente.json', ROOT / 'site-src' / 'mente' / 'voices.js'),
+    ('home', ROOT / 'narration' / 'home.json', ROOT / 'site-src' / 'home' / 'voices.js'),
+    ('spacex', ROOT / 'narration' / 'spacex.json', ROOT / 'site-src' / 'spacex' / 'voices.js'),
+    ('terafab', ROOT / 'narration' / 'terafab.json', ROOT / 'site-src' / 'terafab' / 'voices.js'),
 ]
 
 
@@ -81,5 +86,11 @@ def catalog(notebook, scripts, destination):
 if __name__ == '__main__':
     if not Path(FFMPEG).exists():
         raise SystemExit('ffmpeg is required before any request, so a saved clip can be decoded.')
+    selected = set(sys.argv[1:])
+    unknown = selected - {job[0] for job in JOBS}
+    if unknown:
+        raise SystemExit('Unknown narration: ' + ', '.join(sorted(unknown)))
     for notebook, source, destination in JOBS:
+        if selected and notebook not in selected:
+            continue
         catalog(notebook, json.loads(source.read_text(encoding='utf-8')), destination)

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "The booster has completed its journey, but payload delivery is a different result. The upper stage has shut down its engine, and the payload stays attached until separation. The example satellite is released now. It continues from the delivery position rather than appearing in another scene. The overview compares its path with the booster path. Only one of the two stages counts as recovered after contact with sea platform or ground. Recovery does not mean launching again immediately: transport, inspection, preparation and integration are still needed. SpaceX publishes up to twenty-two thousand eight hundred kilograms to low Earth orbit for Falcon nine, not a guaranteed payload on every mission. Reserving return propellant limits performance, but we do not impose a universal reusable payload figure or cost per kilogram. The advantage you can see is retaining a major part of the vehicle.",
+  "duration_ms": 55188,
+  "billed_characters": 898,
+  "sample_rate": 32000,
+  "size_bytes": 884724,
+  "generated_at": "2026-10-03T01:18:00.266055+00:00"
+}

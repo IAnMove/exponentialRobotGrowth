@@ -1,0 +1,66 @@
+{
+  "es": [
+    {
+      "id": "terminal",
+      "title": "La antena envía tu petición",
+      "text": "Cuando abres una página, tu dispositivo envía una petición al router. La antena Starlink la transmite por radio hacia un satélite visible. Su conjunto de antenas dirige el haz electrónicamente. El punto luminoso representa un paquete; el enlace azul representa la radio. Mueve al usuario y observa cómo cambia la dirección. Los tamaños de los satélites están ampliados para poder verlos."
+    },
+    {
+      "id": "coverage",
+      "title": "La cobertura se mueve",
+      "text": "Los satélites de órbita baja atraviesan el cielo: ninguno permanece sobre tu casa. Su huella de visibilidad se desplaza y la red cambia de satélite para mantener la conexión. Activa el mapa y pausa las órbitas para verlo. Cada punto pertenece a una muestra didáctica: sus huecos no demuestran cortes reales del servicio, y visibilidad no significa capacidad disponible."
+    },
+    {
+      "id": "laser",
+      "title": "Láseres entre satélites",
+      "text": "Si el satélite no puede bajar directamente a una pasarela adecuada, el paquete puede continuar por enlaces láser entre satélites. Cada enlace necesita visión directa: la Tierra no puede cortar su trayectoria. Desactiva los láseres para comparar. Añadir saltos puede resolver un recorrido, pero también alargarlo. Esta ruta ilustra la geometría; no reproduce las decisiones privadas de Starlink."
+    },
+    {
+      "id": "gateway",
+      "title": "Una pasarela lo devuelve a tierra",
+      "text": "Una pasarela es una estación terrestre que comunica la constelación con la red de tierra. El último satélite debe verla para enviarle el paquete por radio. Si un satélite ve tanto tu antena como una pasarela, puede completar este tramo sin saltos láser. Los puntos azules son ubicaciones representativas para experimentar, no el inventario real de estaciones."
+    },
+    {
+      "id": "server",
+      "title": "El servidor está en internet",
+      "text": "Desde la pasarela, el tráfico recorre redes terrestres hasta un punto de conexión con internet y después alcanza el servidor solicitado. Starlink proporciona el acceso; la página no tiene que vivir en un satélite. Aquí el destino es ilustrativo. La longitud del tramo terrestre, los equipos y las colas también influyen en cuánto tarda la respuesta."
+    },
+    {
+      "id": "return",
+      "title": "La respuesta vuelve",
+      "text": "El servidor responde y los paquetes regresan a tu dispositivo. La ruta de vuelta puede ser diferente. Nuestra cifra de propagación es distancia dividida por velocidad de la luz: cuenta solo el viaje espacial representado. El tiempo de ida y vuelta añade ambos sentidos, tramos terrestres, planificación de radio, procesamiento y colas. Por eso esta cifra no equivale a un ping real."
+    }
+  ],
+  "en": [
+    {
+      "id": "terminal",
+      "title": "Your terminal sends the request",
+      "text": "When you open a page, your device sends a request through the router. The Starlink terminal transmits it by radio toward a visible satellite. Its antenna array steers the beam electronically. Our glowing point represents a packet, and the blue link represents radio. Move the user and watch the direction change. Satellite sizes are enlarged so you can see them."
+    },
+    {
+      "id": "coverage",
+      "title": "Coverage keeps moving",
+      "text": "Low Earth orbit satellites cross the sky; none stays above your home. Their visibility footprints move, and the network switches satellites to maintain the connection. Enable the map, then pause the orbits to inspect it. Every point belongs to a teaching sample: its gaps do not prove real service outages, and geometric visibility does not mean that capacity is available."
+    },
+    {
+      "id": "laser",
+      "title": "Lasers connect satellites",
+      "text": "If the satellite cannot downlink directly to a suitable gateway, the packet can continue through laser links between satellites. Each link needs a clear line of sight: Earth cannot block its path. Turn lasers off to compare. Extra hops can make a route possible, but also lengthen it. Our route demonstrates geometry; it does not reproduce Starlink's private routing decisions."
+    },
+    {
+      "id": "gateway",
+      "title": "A gateway brings it back to Earth",
+      "text": "A gateway is a ground station connecting the constellation to the terrestrial network. The final satellite must see it to send the packet down by radio. If one satellite can see both your terminal and a gateway, it can complete this section without laser hops. The blue points are representative locations for experimentation, rather than the real inventory of stations."
+    },
+    {
+      "id": "server",
+      "title": "The server is on the internet",
+      "text": "From the gateway, traffic travels through terrestrial networks to an internet connection point, then reaches the requested server. Starlink provides access; the website does not have to live on a satellite. The destination here is illustrative. The length of the terrestrial section, network equipment, and waiting queues also influence how long it takes for the reply to reach you."
+    },
+    {
+      "id": "return",
+      "title": "The reply returns",
+      "text": "The server replies, and packets return to your device. The return route may differ. Our propagation figure is distance divided by the speed of light: it counts only physical travel along the represented space path. Round trip time includes both directions, terrestrial sections, radio scheduling, processing, and queues. This is why our figure is not a measurement of real world ping."
+    }
+  ]
+}

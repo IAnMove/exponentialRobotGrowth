@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "TCP provides an ordered byte stream. Missing data can be retransmitted; a duplicate does not duplicate the message. The server processes the request and returns data. The bar counts unique pieces received, while attempts include retransmitting the lost packet.",
+  "duration_ms": 18144,
+  "billed_characters": 260,
+  "sample_rate": 32000,
+  "size_bytes": 292020,
+  "generated_at": "2026-09-26T02:50:24.468490+00:00",
+  "validation": {
+    "audio_sha256": "7b30cb93d2da4a9b1d07be78a84688791b1ee0762481b228a06d4fe30ad9da1d",
+    "text_sha256": "212b2987132c55b03a6ff5eea1517a4d9b918844c68dfdbecc42a53491891f4e",
+    "script_sha256": "9ae23264822ed32505d429e6dcebda9907fceaf4fcc6233c99acbd7b7c2ffaab",
+    "decoded_duration_seconds": 18.144,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

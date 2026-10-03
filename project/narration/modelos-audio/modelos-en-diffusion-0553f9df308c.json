@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Compare two rows of eight positions. The autoregressive row adds one position per round. The other begins masked and reveals positions following a multi-round schedule. A round can work on several positions. Change the round count and inspect the same journey from the start. This is a schematic inspired by discrete diffusion, without a word-predicting model or LLaDA’s exact strategy. Positions times rounds does not measure actual speed or cost.",
+  "duration_ms": 29772,
+  "billed_characters": 448,
+  "sample_rate": 32000,
+  "size_bytes": 478068,
+  "generated_at": "2026-10-03T03:54:27.307229+00:00"
+}

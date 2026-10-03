@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Responder utiliza los pesos existentes. Aprender durante el entrenamiento sí puede modificarlos. Para ver la diferencia cambiamos de experimento: aquí no se generan palabras. Tenemos una sola entrada igual a uno, un peso ajustable y una etiqueta que puedes elegir. Primero una función logística convierte el peso en probabilidad. Después calculamos la pérdida: cuánto se aleja esa predicción de la etiqueta. El gradiente indica cómo cambia la pérdida al cambiar el peso. La tasa de aprendizaje decide el tamaño del paso. Puedes retroceder por estas cuatro fases y comprobar que mostrar una pérdida o un gradiente todavía no modifica el peso. Al completar la explicación se aplica una sola actualización: peso nuevo igual a peso anterior menos tasa por gradiente. Compara entonces la probabilidad y la pérdida antes y después. Es un cálculo verificable de un modelo diminuto. No reproduce el entrenamiento de Grok ni el aprendizaje de un cerebro. Vuelve a responder para comprobar que, en ese modo, el peso no cambia.",
+  "duration_ms": 66312,
+  "billed_characters": 1016,
+  "sample_rate": 32000,
+  "size_bytes": 1062708,
+  "generated_at": "2026-09-30T05:21:38.249504+00:00"
+}

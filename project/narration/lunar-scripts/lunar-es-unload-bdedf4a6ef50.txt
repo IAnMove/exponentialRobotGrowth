@@ -1,0 +1,1 @@
+Un elevador deposita equipos; un vehículo los acerca a la base. La descarga representa una entrega, no una fábrica completa. El elevador es una solución prevista en HLS. Descargar, instalar y probar los equipos son pasos distintos. En nuestro modelo una entrega aporta veinticinco toneladas: un supuesto didáctico, no una prestación prometida por SpaceX.

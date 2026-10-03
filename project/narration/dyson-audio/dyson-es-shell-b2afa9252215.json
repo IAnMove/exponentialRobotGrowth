@@ -1,0 +1,22 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "La última exposición es un experimento aparte, con una cáscara cerrada idealizada. No modifica el objetivo de cobertura que guardaste para el enjambre. La cáscara intercepta toda la luz y sólo su superficie exterior puede evacuar energía al espacio. Suponiendo una temperatura uniforme, la referencia negra a una unidad astronómica es de unos trescientos noventa y cuatro kelvin, mayor que la de la placa aislada de dos caras. No calculamos la temperatura de una cáscara parcialmente construida. Observa también la estrella desplazada dentro de la esfera uniforme. El teorema de la cáscara da fuerza gravitatoria neta cero en su interior: no aparece una fuerza que vuelva a centrarla. Eso no es una animación de colapso ni un crecimiento automático del desplazamiento. Estructura, perturbaciones y control activo plantearían otros problemas que no resolvemos. La propuesta de Dyson permite pensar en objetos separados orbitando la estrella, sin convertir esta comparación rígida en un plan construible.",
+  "duration_ms": 61164,
+  "billed_characters": 1002,
+  "sample_rate": 32000,
+  "size_bytes": 980340,
+  "generated_at": "2026-10-03T07:23:41.339416+00:00",
+  "validation": {
+    "ffmpeg_decode": "passed",
+    "decoded_duration_seconds": 61.164,
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "audio_sha256": "e04cc8b814cce1521ea273bd81a7c82260caff1532d8d2d3a14704158dc7958e",
+    "text_sha256": "dd44a825e2f817559c7ea3a8afe78eb9ae01b84f1186fdacfd53b87e1a65d900",
+    "script_sha256": "0f254cf93c2bbc389c6c30c170d12b7e4e4a5735251c0174d8fd8ae17efa8360"
+  }
+}

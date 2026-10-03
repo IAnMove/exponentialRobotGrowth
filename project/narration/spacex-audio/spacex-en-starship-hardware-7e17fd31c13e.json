@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "We open a second journey. The reference architecture published by SpaceX stands one hundred and twenty-four metres tall: seventy-two for Super Heavy and fifty-two for the Starship spacecraft. Its diameter is nine metres. The booster has thirty-three Raptors and the ship six engines, three of them vacuum variants. Unlike Falcon nine, the ship has flaps and a protected surface for atmospheric return. It does not have a detachable fairing like the previous example. The tower integrates the stack, and its arms can receive the booster at its support points. Those arms do not hold the bottom of the rocket like a droneship. This scene represents a published architecture and an illustrative test sequence. It is neither a replay of one flight nor a claim that full and rapid reuse is routine.",
+  "duration_ms": 50616,
+  "billed_characters": 793,
+  "sample_rate": 32000,
+  "size_bytes": 811572,
+  "generated_at": "2026-10-03T01:18:06.096869+00:00"
+}

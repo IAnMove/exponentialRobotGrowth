@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Cada token selecciona un vector de la tabla de embeddings. En esta escena, cada columna vertical pertenece a un token, escrito debajo. Sus seis celdas representan seis dimensiones. Sumamos una codificación de posición para obtener X. Azul indica números positivos y coral, negativos. Puedes seleccionar una celda para leer su valor. Son valores sintéticos, no atributos humanos como inteligencia o verdad. Esta suma de posición es didáctica: otros modelos utilizan posiciones rotatorias en consultas y claves.",
+  "duration_ms": 34020,
+  "billed_characters": 509,
+  "sample_rate": 32000,
+  "size_bytes": 546036,
+  "generated_at": "2026-09-26T18:57:42.865050+00:00",
+  "validation": {
+    "audio_sha256": "96a2a9a2e09474fa9d91a7cb4785974388d8aa9b08c8c1c843a02f3e0a436255",
+    "text_sha256": "b509ed0420b4ec57529f6b739d31b3967b2a57227b82552395675e1aaf8cc705",
+    "script_sha256": "eeabbb662a87c00b1e4787cf71e6a03489e57e7ea15cf8e5dc66e5e4a2f2d2df",
+    "decoded_duration_seconds": 34.02,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 34.02
+  }
+}

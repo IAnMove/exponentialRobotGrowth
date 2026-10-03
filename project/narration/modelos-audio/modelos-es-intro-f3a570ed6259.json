@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Hay distintas formas de procesar información. Unas consultan tokens anteriores. Otras leen la entrada completa, actualizan un estado o rellenan posiciones en varias rondas. Aquí calculamos ejemplos pequeños para ver sus operaciones. Los colores identifican entrada, cálculo y resultado. Puedes detener cada paso. En la sala hay un botón para escuchar cada parada. Los objetos representan operaciones, no máquinas físicas ni modelos entrenados.",
+  "duration_ms": 28188,
+  "billed_characters": 443,
+  "sample_rate": 32000,
+  "size_bytes": 452724,
+  "generated_at": "2026-10-03T03:52:48.830489+00:00"
+}

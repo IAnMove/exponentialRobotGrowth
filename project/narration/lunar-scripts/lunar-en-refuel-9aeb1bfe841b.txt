@@ -1,0 +1,1 @@
+Depot, tanker flights and lunar vehicle: a delivery requires a support campaign. We do not assume a fixed number of tanker flights. Green points show fuel and oxidizer being transferred. The lunar vehicle does not travel using only the energy supplied at launch. One delivery can require several support launches.

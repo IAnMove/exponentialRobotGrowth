@@ -1,220 +1,72 @@
-import {NotebookPlayer} from '../playback/player.js';
-import {DEEPSEEK, FAMILIES, V2, createState, snapshot, contextMemory, repeatedPrefix, tariffById, requestsToBreakEven, ANTHROPIC_RULE} from './model.js';
+import {createState,cleanState,makeModelsTrace,modelsFrameAt} from './model.js';
 import {createModelsWorld} from './world.js';
-import {StepGuide} from '../llms/guide.js';
+import {modelsPoseAt,restoreModelsPose,modelsWalk,modelsNearestStand,modelsGuidePath} from './walk.js';
+import {NotebookPlayer} from '../playback/player.js';
+import {bindFirstPerson} from '../immersive/first-person.js';
 import {VOICES} from './voices.js';
-const es = document.documentElement.lang === 'es', t = (a, b) => es ? a : b, $ = id => document.getElementById(id);
-const nf = new Intl.NumberFormat(es ? 'es-ES' : 'en-US', {maximumFractionDigits: 2});
-const usd = new Intl.NumberFormat(es ? 'es-ES' : 'en-US', {style: 'currency', currency: 'USD', maximumFractionDigits: 4});
-const sciNf = new Intl.NumberFormat(es ? 'es-ES' : 'en-US', {maximumFractionDigits: 2, minimumFractionDigits: 1});
-function sci(x) {
-  if (!Number.isFinite(x) || Math.abs(x) < 1000) return nf.format(x);
-  const e = Math.floor(Math.log10(Math.abs(x))), m = x / 10 ** e;
-  return sciNf.format(m) + ' × 10' + [...String(e)].map(d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d] ?? '⁻').join('');
-}
-const copy = {
-  causal: [t('Decodificador', 'Decoder'), t('Es la familia del notebook 08 y de Grok. Cada pieza ve el pasado y se escribe después de la anterior. En la escena, la primera esfera solo se une a sí misma: el futuro pesa cero.', 'This is the family of notebook 08 and of Grok. Each piece sees the past and is written after the previous one. In the scene, the first sphere connects only to itself: the future weighs zero.')],
-  encoder: [t('Codificador', 'Encoder'), t('BERT lee el texto entero, hacia atrás y hacia delante, y devuelve una etiqueta o un vector. No continúa una frase. Por eso todas las esferas quedan unidas a la primera.', 'BERT reads the whole text, backward and forward, and returns a label or a vector. It does not continue a sentence. That is why every sphere is tied to the first.')],
-  encdec: [t('Codificador y decodificador', 'Encoder and decoder'), t('El dibujo de Vaswani de 2017, y el de T5: una mitad lee la fuente sin máscara causal y la otra escribe en serie, mirando en cada paso todas las posiciones ya leídas.', 'Vaswani’s 2017 diagram, and T5’s: one half reads the source with no causal mask and the other writes serially, looking at every position already read.')],
-  moe: [t('Expertos dispersos', 'Sparse experts'), t('Sigue siendo un decodificador. En algunas capas, cada token usa 2 de 8 expertos. Grok-1 y DeepSeek están aquí. Esos 2 de 8 no son una cuarta parte de todos los pesos: la atención sigue siendo densa.', 'It is still a decoder. In some layers, each token uses 2 of 8 experts. Grok-1 and DeepSeek sit here. Those 2 of 8 are not a quarter of every weight: attention stays dense.')],
-  ssm: [t('Estado, Mamba y Jamba', 'State, Mamba and Jamba'), t('Una capa recurrente guarda un estado de ancho fijo. No añade una clave por cada token nuevo. Jamba pone una capa de atención cada siete de Mamba, así que la caché de claves vive en un octavo de las capas. La esfera no crece cuando alargas el contexto. Las barras sí.', 'A recurrent layer keeps a fixed-width state. It does not add a key for every new token. Jamba places one attention layer for every seven Mamba layers, so the key cache lives in one eighth of the layers. The sphere does not grow as you lengthen the context. The bars do.')],
-  diffusion: [t('Difusión de texto', 'Text diffusion'), t('Todas las posiciones se proponen a la vez y se corrigen durante varias rondas. No hay una pieza 40 esperando a la 39. El precio de calcular se parece a rondas por longitud, no a una sola pasada de izquierda a derecha.', 'Every position is proposed at once and corrected over several rounds. Piece 40 does not wait for piece 39. The compute looks like rounds times length, not one left-to-right pass.')],
-  jepa: [t('JEPA', 'JEPA'), t('El error compara dos vectores, el predicho y el objetivo. No reparte probabilidad sobre un vocabulario, así que este modelo no escribe la frase. Es la familia de Yann LeCun, no un LLM autorregresivo.', 'The error compares two vectors, the prediction and the target. It does not spread probability over a vocabulary, so this model does not write the sentence. It is Yann LeCun’s family, not an autoregressive LLM.')],
-  jev: [t('Jev, la interfaz', 'Jev, the interface'), t('TypeSafe no ha publicado la arquitectura. Lo publicado es el contrato: una pasada, una opción de las que declaraste, y preguntas que no comparten una sola distribución. Una opción legal puede ser la decisión falsa. No es un modelo de lenguaje: no escribe.', 'TypeSafe has not published the architecture. What is published is the contract: one pass, one of the options you declared, and questions that do not share a single distribution. A legal option can still be the wrong decision. It is not a language model: it does not write.')],
-  cache: [t('Tres precios, no uno', 'Three prices, not one'), t('La entrada nueva se cobra a precio de fallo. El prefijo repetido, si acierta, se cobra a precio de acierto. La salida se vuelve a calcular siempre y no hereda el descuento. En Flash, fuera de hora punta, el acierto son 0,003 dólares por millón y el fallo 0,15: cincuenta veces menos.', 'Fresh input is billed at the miss price. A repeated prefix, on a hit, is billed at the hit price. The output is computed again every time and does not inherit the discount. On Flash, off-peak, a hit is 0.003 dollars per million and a miss is 0.15: fifty times less.')]
-};
-const TOUR = [
-  { id: 'intro', family: 'cache' }, { id: 'causal', family: 'causal' }, { id: 'encoder', family: 'encoder' },
-  { id: 'encdec', family: 'encdec' }, { id: 'moe', family: 'moe' }, { id: 'ssm', family: 'ssm' },
-  { id: 'diffusion', family: 'diffusion' }, { id: 'jepa', family: 'jepa' }, { id: 'jev', family: 'jev' },
-  { id: 'cache', family: 'cache' }, { id: 'disk', family: 'cache' }, { id: 'rule', family: 'cache' }
-];
-let notebook;
-let state = createState(), world, last = performance.now(), step = 0, voiceLanguage = es ? 'es' : 'en';
-document.title = t('Modelos — Familias, caché y precio', 'Models — Families, cache and price');
-$('app').innerHTML = `<nav class="nav"><a href="../index.html">← Atlas</a><a href="../museo/index.html#modelos">${t('Museo', 'Museum')}</a><a href="../llms/index.html">LLMs</a><a href="../mente/index.html">${t('Mente', 'Mind')}</a><span><a href="${es ? '../../modelos/index.html' : './index.html'}" lang="en">EN</a> / <a href="${es ? './index.html' : '../es/modelos/index.html'}" lang="es">ES</a></span></nav>
-<header><div><span class="eyebrow">${t('NOTEBOOK 10 · FAMILIAS Y PRECIO', 'NOTEBOOK 10 · FAMILIES AND PRICE')}</span><h1>${t('No todo modelo<br>escribe de uno en uno.', 'Not every model<br>writes one by one.')}</h1></div><p>${t('El notebook 08 es un decodificador. Aquí están las otras familias, y la factura: entrada nueva, entrada repetida y salida. El ejemplo con dólares es la tarifa publicada por DeepSeek.', 'Notebook 08 is a decoder. Here are the other families, and the bill: fresh input, repeated input and output. The dollar example is DeepSeek’s published tariff.')}</p></header>
-<section class="dashboard" aria-label="${t('Cifras de esta elección', 'Figures for this choice')}">
-<article><span id="d1-label"></span><strong id="d1"></strong><small id="d1-note"></small></article>
-<article><span id="d2-label"></span><strong id="d2"></strong><small id="d2-note"></small></article>
-<article><span id="d3-label"></span><strong id="d3"></strong><small id="d3-note"></small></article>
-</section>
-<div class="families" role="group" aria-label="${t('Familia', 'Family')}">${FAMILIES.map(f => `<button type="button" data-family="${f.id}" aria-pressed="${f.id === 'cache'}">${es ? f.es : f.en}</button>`).join('')}</div>
-<section class="voice-bar" aria-label="${t('Recorrido narrado', 'Narrated walkthrough')}"><button id="narrate" class="primary" type="button">${t('Escuchar el recorrido', 'Play the walkthrough')}</button><label><input id="voice-enabled" type="checkbox" checked> MiniMax</label><label>${t('Voz', 'Voice')} <select id="voice-language"><option value="es" ${es ? 'selected' : ''}>Español</option><option value="en" ${es ? '' : 'selected'}>English</option></select></label><span id="voice-state"></span><span id="voice-time"></span></section>
-<p id="voice-transcript"></p>
-<div class="controls">
-<label>${t('Tarifa DeepSeek', 'DeepSeek tariff')} <select id="tariff"><option value="flash-off">${t('Flash · valle', 'Flash · off-peak')}</option><option value="flash-peak">${t('Flash · punta', 'Flash · peak')}</option><option value="pro-off">${t('Pro · valle', 'Pro · off-peak')}</option><option value="pro-peak">${t('Pro · punta', 'Pro · peak')}</option></select></label>
-<label>${t('Prefijo repetible', 'Reusable prefix')} <output id="prefix-value"></output><input id="prefix" type="range" min="0" max="200000" step="1000" value="100000"></label>
-<label>${t('Cola nueva', 'New suffix')} <output id="suffix-value"></output><input id="suffix" type="range" min="0" max="20000" step="100" value="2000"></label>
-<label>${t('Salida', 'Output')} <output id="output-value"></output><input id="output" type="range" min="1" max="20000" step="100" value="4000"></label>
-<label>${t('Visitas', 'Visits')} <output id="repeats-value"></output><input id="repeats" type="range" min="1" max="200" step="1" value="50"></label>
-<label>${t('Tokens del contexto', 'Context tokens')} <output id="tokens-value"></output><input id="tokens" type="range" min="1" max="32000" step="1" value="4096"></label>
-</div>
-<div class="layout">
-<section class="stage">
-<div class="scene-caption"><b id="scene-status"></b><span>${t('La barra clara es la atención latente de DeepSeek-V2. La barra alta es una atención completa con las mismas 128 cabezas. La esfera es un estado que no crece. Ocho esferas: máscara causal o bidireccional.', 'The short bar is DeepSeek-V2’s latent attention. The tall bar is full attention with the same 128 heads. The sphere is a state that does not grow. Eight spheres: a causal or bidirectional mask.')}</span></div>
-<div id="space" role="img" tabindex="0" aria-label="${t('Barras de memoria y una fila de tokens. Arrastra para girar.', 'Memory bars and a row of tokens. Drag to turn.')}"></div>
-<p id="loading">${t('Preparando las familias…', 'Preparing the families…')}</p>
-<div class="view-controls"><button id="fit" type="button">${t('Centrar', 'Center')}</button><button id="zoom-out" type="button" aria-label="${t('Alejar', 'Zoom out')}">−</button><button id="zoom-in" type="button" aria-label="${t('Acercar', 'Zoom in')}">+</button></div>
-</section>
-<aside>
-<span class="eyebrow">${t('QUÉ ESTÁS MIRANDO', 'WHAT YOU ARE LOOKING AT')}</span>
-<div class="detail">
-<h2 id="focus-name"></h2>
-<p id="focus-detail"></p>
-<dl>
-<div><dt>${t('Acierto / fallo, Flash valle', 'Hit / miss, Flash off-peak')}</dt><dd id="ratio"></dd></div>
-<div><dt>${t('Elementos MHA por token', 'MHA elements per token')}</dt><dd id="mha"></dd></div>
-<div><dt>${t('Elementos MLA por token', 'MLA elements per token')}</dt><dd id="mla"></dd></div>
-<div><dt>${t('Veces más pequeña, V2', 'Times smaller, V2')}</dt><dd id="shrink"></dd></div>
-<div><dt>${t('Estado que no crece', 'State that does not grow')}</dt><dd id="ssm"></dd></div>
-<div><dt>${t('Capas con caché en Jamba', 'Layers with a cache in Jamba')}</dt><dd id="jamba"></dd></div>
-<div><dt>${t('Visitas para compensar una escritura 1,25×', 'Visits to repay a 1.25× write')}</dt><dd id="even"></dd></div>
-<div><dt>${t('Coste con acierto de prefijo', 'Cost if the prefix hits')}</dt><dd id="with"></dd></div>
-<div><dt>${t('Coste si se recalcula todo', 'Cost if everything is recomputed')}</dt><dd id="without"></dd></div>
-</dl>
-</div>
-</aside>
-</div>
-<section class="principles">
-<article><span class="eyebrow">01 · ${t('FAMILIA', 'FAMILY')}</span><b>${t('Escribir es una de ellas', 'Writing is one of them')}</b><p>${t('Decodificador, codificador, los dos a la vez, expertos, estado, difusión, JEPA y una interfaz de decisiones. Comparten matrices. No comparten qué se predice ni cuándo.', 'Decoder, encoder, both at once, experts, state, diffusion, JEPA and a decision interface. They share matrices. They do not share what is predicted, or when.')}</p></article>
-<article><span class="eyebrow">02 · ${t('FACTURA', 'BILL')}</span><b>${t('Entrada, caché y salida', 'Input, cache and output')}</b><p>${t('Un token de salida no se abarata porque el prefijo estuviera repetido. El descuento, cuando existe, es solo de la entrada que el servidor ya convirtió en claves y valores.', 'An output token does not get cheaper because the prefix was repeated. The discount, when there is one, covers only the input the server already turned into keys and values.')}</p></article>
-<article><span class="eyebrow">03 · ${t('DISCO', 'DISK')}</span><b>${t('Cabe porque la caché es chica', 'It fits because the cache is small')}</b><p>${t('DeepSeek-V2 comprime la clave y el valor en 576 números por token y capa, frente a 32.768 de una atención completa con 128 cabezas de dimensión 128. Esa caché cabe en disco. El anuncio de 2024 ya cobraba el acierto a una décima del fallo. La tarifa de ahora está en los controles.', 'DeepSeek-V2 compresses key and value into 576 numbers per token per layer, against 32,768 for full attention with 128 heads of dimension 128. That cache fits on disk. The 2024 announcement already priced a hit at a tenth of a miss. Today’s tariff is in the controls.')}</p></article>
-</section>
-<details class="assumptions"><summary>${t('Fuentes · tarifas del 19 de septiembre de 2026 y papeles', 'Sources · tariffs of 19 September 2026 and papers')}</summary>
-<p>${t('DeepSeek, hoja de precios: Flash valle 0,003 / 0,15 / 0,60 dólares por millón (acierto, fallo, salida). Punta es el doble: 0,006 / 0,30 / 1,20. Pro valle 0,022 / 0,66 / 1,98 y punta 0,044 / 1,32 / 3,96. La punta es de lunes a viernes, 01:00–04:00 y 06:00–10:00 UTC, fuera de los festivos chinos. El resto es valle, fines de semana incluidos.', 'DeepSeek price sheet: Flash off-peak 0.003 / 0.15 / 0.60 dollars per million (hit, miss, output). Peak is double: 0.006 / 0.30 / 1.20. Pro off-peak 0.022 / 0.66 / 1.98 and peak 0.044 / 1.32 / 3.96. Peak is Monday to Friday, 01:00–04:00 and 06:00–10:00 UTC, outside Chinese public holidays. Everything else is off-peak, including weekends.')} <a href="https://api-docs.deepseek.com/quick_start/pricing" target="_blank" rel="noopener">DeepSeek pricing ↗</a></p>
-<p>${t('El acierto exige un prefijo ya guardado y una coincidencia completa. La salida se sigue calculando. No hay garantía de acierto en cada llamada. El anuncio de caché en disco (0,014 el acierto y 0,14 el fallo, una décima) atribuye esa posibilidad a la atención latente de V2. No es la tarifa vigente.', 'A hit needs a prefix already stored and a complete match. The output is still computed. A hit is not guaranteed on every call. The disk-cache announcement (0.014 for a hit and 0.14 for a miss, one tenth) credits that possibility to V2’s latent attention. It is not the current tariff.')} <a href="https://api-docs.deepseek.com/news/news0802" target="_blank" rel="noopener">DeepSeek, 2024 ↗</a> · <a href="https://arxiv.org/abs/2405.04434" target="_blank" rel="noopener">DeepSeek-V2 ↗</a></p>
-<p>${t('Anthropic publica otra regla, distinta de estos dólares: escribir la caché de 5 minutos cuesta 1,25 veces la entrada, la de 1 hora cuesta 2 veces, y leerla cuesta 0,1. Con 1,25 y 0,1 la segunda visita ya compensa. DeepSeek no cobra un recargo de escritura en la hoja citada: la primera visita va a precio de fallo y la siguiente, si acierta, a precio de acierto.', 'Anthropic publishes a different rule, separate from these dollars: a 5-minute cache write costs 1.25 times input, a 1-hour write costs 2 times, and a read costs 0.1. With 1.25 and 0.1 the second visit already pays it back. DeepSeek charges no write surcharge on the cited sheet: the first visit is at the miss price and the next, on a hit, at the hit price.')} <a href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching" target="_blank" rel="noopener">Anthropic prompt caching ↗</a></p>
-<p>${t('Jamba, AI21: una capa de atención por cada siete de Mamba. Mamba, Gu y Dao 2023: el estado recurrente tiene ancho fijo. JEPA predice en el espacio de representaciones. Jev, TypeSafe, septiembre de 2026: interfaz publicada, pesos no. Las ocho esferas y las dos de ocho cajas son un esquema, no un modelo entrenado.', 'Jamba, AI21: one attention layer for every seven Mamba layers. Mamba, Gu and Dao 2023: the recurrent state has a fixed width. JEPA predicts in representation space. Jev, TypeSafe, September 2026: published interface, unpublished weights. The eight spheres and the two-of-eight boxes are a diagram, not a trained model.')}</p>
-</details>
-<footer>${t('Atlas · Modelos · notebook 10 · 21 septiembre 2026', 'Atlas · Models · notebook 10 · 21 September 2026')}</footer>`;
-
-try { world = createModelsWorld($('space')); $('loading').hidden = true; }
-catch (e) { $('loading').textContent = t('La vista 3D no está disponible. Las cifras siguen abajo y arriba.', 'The 3D view is unavailable. The figures above and beside it still work.'); console.error(e); }
-
-function paint() {
-  const v = snapshot(state);
-  const mem = contextMemory(state.tokens);
-  const [name, detail] = copy[state.family];
-  document.querySelectorAll('[data-family]').forEach(btn => btn.setAttribute('aria-pressed', String(btn.dataset.family === state.family)));
-  const prices = tariffById(state.tariff);
-  if (state.family === 'cache') {
-    $('d1-label').textContent = t('Con el prefijo en caché', 'With the prefix cached');
-    $('d1').textContent = usd.format(v.bill.withCache);
-    $('d1-note').textContent = t('Si cada visita, menos la primera, acierta el prefijo.', 'If every visit after the first hits the prefix.');
-    $('d2-label').textContent = t('Recalculando el prefijo', 'Recomputing the prefix');
-    $('d2').textContent = usd.format(v.bill.noCache);
-    $('d2-note').textContent = state.repeats + t(' visitas a precio de fallo.', ' visits at the miss price.');
-    $('d3-label').textContent = t('Diferencia', 'Difference');
-    $('d3').textContent = usd.format(v.bill.saved);
-    $('d3-note').textContent = usd.format(prices.hit) + t(' el millón acertado · ', ' per million hit · ') + usd.format(prices.output) + t(' el millón de salida', ' per million output');
-  } else if (state.family === 'ssm') {
-    $('d1-label').textContent = t('Atención completa', 'Full attention');
-    $('d1').textContent = sci(mem.mha);
-    $('d1-note').textContent = t('Números guardados a estos tokens, V2.', 'Numbers stored at this many tokens, V2.');
-    $('d2-label').textContent = t('Atención latente', 'Latent attention');
-    $('d2').textContent = sci(mem.mla);
-    $('d2-note').textContent = nf.format(v.mlaShrink) + t(' veces menos.', ' times less.');
-    $('d3-label').textContent = t('Estado recurrente', 'Recurrent state');
-    $('d3').textContent = sci(mem.ssm);
-    $('d3-note').textContent = t('No cambia con los tokens. Jamba guarda claves en el ', 'It does not change with the tokens. Jamba keeps keys in ') + nf.format(v.memory.jambaShare * 100) + t(' % de las capas.', '% of the layers.');
-  } else {
-    $('d1-label').textContent = t('Acierto por millón', 'Hit per million');
-    $('d1').textContent = usd.format(prices.hit);
-    $('d1-note').textContent = t('Fallo ', 'Miss ') + usd.format(prices.miss) + t(' · salida ', ' · output ') + usd.format(prices.output);
-    $('d2-label').textContent = t('Máscara o fracción', 'Mask or fraction');
-    $('d2').textContent = state.family === 'moe' ? '2 / 8' : state.family === 'causal' ? t('futuro 0', 'future 0') : state.family === 'encoder' || state.family === 'encdec' ? t('ve todo', 'sees all') : state.family === 'diffusion' ? state.denoise + t(' rondas', ' rounds') : state.family === 'jev' ? t('en el esquema', 'in the schema') : t('vectores', 'vectors');
-    $('d2-note').textContent = state.family === 'jev' ? t('Dos preguntas pueden valer lo mismo sin compartir una distribución.', 'Two questions can tie without sharing a distribution.') : t('El precio de arriba no depende de esta familia.', 'The price above does not depend on this family.');
-    $('d3-label').textContent = t('Visitas de ejemplo', 'Example visits');
-    $('d3').textContent = usd.format(v.bill.withCache);
-    $('d3-note').textContent = t('Misma factura de caché, por si comparas.', 'The same cache bill, so you can compare.');
-  }
-  $('prefix-value').textContent = nf.format(state.prefix);
-  $('suffix-value').textContent = nf.format(state.suffix);
-  $('output-value').textContent = nf.format(state.output);
-  $('repeats-value').textContent = String(state.repeats);
-  $('tokens-value').textContent = nf.format(state.tokens);
-  $('focus-name').textContent = name;
-  $('focus-detail').textContent = detail;
-  $('ratio').textContent = '1 / ' + nf.format(DEEPSEEK.flash.off.miss / DEEPSEEK.flash.off.hit);
-  $('mha').textContent = sci(mem.mha / state.tokens);
-  $('mla').textContent = sci(mem.mla / state.tokens);
-  $('shrink').textContent = nf.format(v.mlaShrink);
-  $('ssm').textContent = sci(mem.ssm);
-  $('jamba').textContent = '1 / 8';
-  $('even').textContent = nf.format(requestsToBreakEven(ANTHROPIC_RULE.write5m, ANTHROPIC_RULE.read));
-  $('with').textContent = usd.format(repeatedPrefix(prices, state).withCache);
-  $('without').textContent = usd.format(repeatedPrefix(prices, state).noCache);
-  $('scene-status').textContent = name.toUpperCase();
-  world?.render(state);
-}
-function getClip() {
-  const clip = (VOICES[voiceLanguage] || []).find(item => item.id === TOUR[step].id);
-  return clip?.src ? clip : { id: TOUR[step].id, title: TOUR[step].id, text: copy[TOUR[step].family][1], src: '', duration: 8 };
-}
-function renderVoice() {
-  if (!guide) return;
-  const clip = guide.clip || getClip();
-  $('voice-transcript').textContent = clip.text || '';
-  const labels = {
-    idle: t('Pulsa escuchar para recorrer cada familia', 'Press play to walk through each family'),
-    loading: t('Cargando narración…', 'Loading narration…'),
-    speaking: t('Escuchando · la escena espera', 'Listening · the scene waits'),
-    waiting: t('La escena se queda · siguiente paso en ', 'The scene holds · next step in ') + Math.ceil(guide.remaining) + ' s',
-    reading: t('Tiempo para leer · ', 'Reading time · ') + Math.ceil(guide.remaining) + ' s',
-    paused: t('Recorrido en pausa', 'Walkthrough paused'),
-    ready: t('Listo para el siguiente paso', 'Ready for the next step'),
-    finished: t('Recorrido completado', 'Walkthrough complete'),
-    blocked: t('Pulsa escuchar para permitir el audio', 'Press play to allow audio'),
-    error: t('No se pudo cargar la voz. Puedes cambiar de familia a mano.', 'The voice could not load. You can still change family by hand.')
-  };
-  $('voice-state').textContent = labels[guide.state] || '';
-  const elapsed = guide.audio?.currentTime || 0;
-  const duration = guide.audio?.duration || clip.duration || 0;
-  $('voice-time').textContent = guide.enabled && clip.src ? Math.floor(elapsed) + ' / ' + Math.ceil(duration) + ' s' : '';
-  $('narrate').textContent = guide.running ? t('Pausar voz', 'Pause voice') : guide.state === 'finished' ? t('Repetir recorrido', 'Replay walkthrough') : t('Escuchar el recorrido', 'Play the walkthrough');
-}
-const guide = new StepGuide({
-  gap: 3,
-  getClip,
-  onAdvance() {
-    if (step >= TOUR.length - 1) return false;
-    step += 1;
-    state.family = TOUR[step].family;
-    paint();
-    return true;
-  },
-  onChange() { renderVoice(); }
-});
-document.querySelectorAll('[data-family]').forEach(btn => { btn.onclick = () => {
-  const index = TOUR.findIndex(beat => beat.id === btn.dataset.family);
-  if (index >= 0) step = index;
-  guide.stop();
-  state.family = btn.dataset.family;
-  paint();
-  renderVoice();
-}; });
-for (const id of ['prefix', 'suffix', 'output', 'repeats', 'tokens']) {
-  $(id).oninput = e => { state[id] = Number(e.target.value); paint(); };
-}
-$('tariff').oninput = e => { state.tariff = e.target.value; paint(); };
-$('narrate').onclick = () => {
-  if (guide.state === 'finished') { step = 0; state.family = TOUR[0].family; paint(); }
-  if (guide.running) guide.pause(); else guide.resume();
-};
-$('voice-language').onchange = e => { voiceLanguage = e.target.value; const active = guide.running; guide.stop(); if (active) guide.enter(); else renderVoice(); };
-$('voice-enabled').onchange = e => guide.setEnabled(e.target.checked);
-$('fit').onclick = () => world?.fit();
-$('zoom-in').onclick = () => world?.zoomBy(1.12);
-$('zoom-out').onclick = () => world?.zoomBy(1 / 1.12);
-paint();
-
-notebook=new NotebookPlayer({id:'modelos',getClips:language=>TOUR.map(st=>VOICES[language].find(c=>c.id===st.id)),capture:()=>({state}),restore(saved){if(saved?.state){for(const key of ['prefix','suffix','output','repeats','tokens'])if(Number.isFinite(saved.state[key])){const el=$(key);state[key]=Math.max(+el.min,Math.min(+el.max,saved.state[key]));el.value=state[key];}}},onLanguage(language){voiceLanguage=language;$('voice-language').value=language;},onSync(s){if(!s)return;step=s.index;state.family=TOUR[step].family;paint();$('voice-transcript').textContent=s.text;}});
-$('narrate').onclick=()=>notebook.toggle();$('voice-language').onchange=e=>notebook.changeLanguage(e.target.value);document.querySelectorAll('[data-family]').forEach(btn=>{btn.onclick=()=>{const i=TOUR.findIndex(beat=>beat.id===btn.dataset.family);if(i>=0)notebook.stage(i,false);};});
-
-function frame(now) {
-  const dt = Math.min(0.05, (now - last) / 1000); last = now;
-  if (!document.hidden) { guide.tick(dt); world?.render(state, notebook?0:dt); renderVoice(); }
-  requestAnimationFrame(frame);
-}
-requestAnimationFrame(frame);
+import {LESSONS,SOURCES,scopeMarkup} from './lessons.js';
+const es=document.documentElement.lang==='es',t=(a,b)=>es?a:b,$=id=>document.getElementById(id),query=new URLSearchParams(location.search);
+const fmt=(n,d=2)=>new Intl.NumberFormat(es?'es-ES':'en-US',{maximumFractionDigits:d}).format(n),usd=n=>new Intl.NumberFormat(es?'es-ES':'en-US',{style:'currency',currency:'USD',maximumFractionDigits:4}).format(n),vec=v=>'['+v.map(n=>fmt(n)).join(' · ')+']';
+let params=createState(),chapter=0,progress=0,timeSource='narration',mode=query.get('mode')==='immersive'?'immersive':'notebook',enteredFPS=false,pose=modelsPoseAt(0),world,notebook,firstPerson,trace=makeModelsTrace(params),frame=modelsFrameAt(trace,0,0),ready=false,restored=false,holdPose=false,changingVoice=false,aligning=false,playing=false,lookActive=false,wasLocked=false,last=performance.now(),raf,travel=null;
+const keys=new Set(),touch=new Set(),controlKeys=['query','denoise','tokens','prefix','suffix','output','hitFraction','repeats','tariff','writeRule','readMultiplier'];
+const range=(id,a,b,step,label)=>`<label for="${id}">${label}<output id="${id}-value"></output><input id="${id}" type="range" min="${a}" max="${b}" step="${step}"></label>`;
+$('app').innerHTML=`<nav class="nav"><a href="../museo/index.html?pieza=modelos">← ${t('Museo','Museum')}</a><span>ATLAS / 10</span><a href="../llms/index.html">LLMs ↗</a><a id="page-language" href="${es?'../../modelos/index.html':'../es/modelos/index.html'}">${es?'EN':'ES'}</a></nav>
+<header><div><span class="eyebrow">${t('LABORATORIO DE MODELOS','MODEL LABORATORY')}</span><h1>${t('La misma información.<br>Distintas formas de procesarla.','The same information.<br>Different ways to process it.')}</h1></div><p>${t('Entra en cada mecanismo. Sigue sus valores, detén la operación y compara qué cambia: acceso, memoria, generación o factura.','Enter each mechanism. Follow its values, pause the operation and compare what changes: access, memory, generation or cost.')}</p></header>
+<p class="truth-strip">${t('Operaciones calculadas con valores de ejemplo · referencias publicadas identificadas · no ejecutamos modelos entrenados ni APIs.','Calculated operations with example values · identified published references · no trained models or APIs are executed.')}</p>
+<section id="metrics" class="dashboard" aria-label="${t('Cifras de la operación activa','Active operation figures')}"></section>
+<div class="modebar"><div><button id="mode-notebook">Notebook</button><button id="mode-immersive">${t('Entrar en la sala 3D','Enter the 3D room')} ↗</button></div><span id="mode-help"></span></div>
+<nav class="chapters" aria-label="${t('Doce paradas','Twelve stops')}">${LESSONS.map((l,i)=>`<button id="chapter-${i}" data-chapter="${i}"><small>${String(i+1).padStart(2,'0')}</small>${l.title[es?0:1]}</button>`).join('')}</nav>
+<div class="layout"><section class="stage visual"><div id="space" tabindex="0" role="img" aria-label="${t('Laboratorio de operaciones con tokens y vectores','Laboratory of token and vector operations')}"></div><p id="loading">${t('Preparando el laboratorio…','Preparing the laboratory…')}</p><div class="scene-heading"><b id="scene-status"></b><span id="scene-caption"></span></div><div class="view-controls"><button id="fit">${t('Detalle','Detail')}</button><button id="overview">${t('Sala completa','Whole room')}</button><button id="zoom-in" aria-label="${t('Acercar','Zoom in')}">+</button><button id="zoom-out" aria-label="${t('Alejar','Zoom out')}">−</button><button id="capture" hidden>${t('Activar ratón','Enable mouse look')}</button></div><small id="camera-help"></small><div id="walk-pad" class="walk-pad" hidden><button data-move="forward" aria-label="${t('Avanzar','Forward')}">↑</button><button data-move="left" aria-label="${t('Izquierda','Left')}">←</button><button data-move="back" aria-label="${t('Retroceder','Backward')}">↓</button><button data-move="right" aria-label="${t('Derecha','Right')}">→</button></div><button id="listen-here" hidden></button><span id="position" hidden></span><p id="inspect" hidden></p></section>
+<aside><span class="eyebrow" id="chapter-number"></span><h2 id="focus-name"></h2><p id="focus-detail"></p><div class="actions"><button id="listen" class="primary">▶ ${t('Escuchar esta parada','Listen to this stop')}</button><button id="next">${t('Siguiente','Next')} →</button></div><label class="check"><input id="follow" type="checkbox" checked>${t('Seguir las zonas de la voz','Follow narrated areas')}</label><p id="mechanism" class="mechanism"></p><details><summary>${t('Leer lo que dice la voz','Read the narration')}</summary><p id="narration-text"></p></details></aside></div>
+<section class="lab"><div class="lab-heading"><b>${t('Prueba la operación','Try the operation')}</b><span id="time-source"></span></div><div class="controls">
+<div data-control="attention">${range('query',0,7,1,t('Posición de la consulta','Query position'))}</div><div data-control="diffusion">${range('denoise',1,16,1,t('Rondas del ejemplo','Example rounds'))}</div><div data-control="disk">${range('tokens',0,32000,1,t('Tokens guardados · referencia V2','Stored tokens · V2 reference'))}</div>
+<div data-control="cache"><label for="tariff">${t('Tarifa DeepSeek · revisión 03/10/2026','DeepSeek tariff · checked 2026-10-03')}<select id="tariff"><option value="flash-off">Flash · ${t('valle','off-peak')}</option><option value="flash-peak">Flash · ${t('punta','peak')}</option><option value="pro-off">Pro · ${t('valle','off-peak')}</option><option value="pro-peak">Pro · ${t('punta','peak')}</option></select></label>${range('hitFraction',0,1,.05,t('Fracción recuperada del prefijo','Recovered prefix fraction'))}${range('prefix',0,200000,1000,t('Prefijo repetible · tokens','Reusable prefix · tokens'))}${range('suffix',0,20000,100,t('Entrada nueva · tokens','Fresh input · tokens'))}${range('output',0,20000,100,t('Salida en cada llamada · tokens','Output on every call · tokens'))}</div>
+<div data-control="calls">${range('repeats',1,200,1,t('Número de llamadas','Number of calls'))}</div><div data-control="rule"><label for="writeRule">${t('Escritura Anthropic','Anthropic write')}<select id="writeRule"><option value="5m">5 min · 1.25×</option><option value="1h">1 h · 2×</option></select></label><label for="readMultiplier">${t('Lectura · multiplicador publicado','Read · published multiplier')}<select id="readMultiplier"><option value="0.1">0.1× · ${t('estándar','standard')}</option><option value="0.05">0.05× · Opus 5.5</option><option value="0.025">0.025× · Fable / Mythos 5.1</option></select></label></div></div>
+<div class="experiment-controls"><button id="play" class="primary">▶ ${t('Reproducir operación','Play operation')}</button><button id="reset">↺</button><button id="step">${t('Avanzar','Advance')}</button><button id="finish">${t('Ver resultado','See result')}</button><label for="phase">${t('Posición del ejemplo','Example position')}<output id="phase-value"></output><input id="phase" type="range" min="0" max="1" step="0.001" value="0"></label></div><p class="experiment-note">${t('La posición muestra una coreografía de cálculo. No mide tiempo de inferencia. El footer mueve la misma operación con la voz; los controles permiten inspeccionarla sin audio.','Position shows a calculation choreography. It does not measure inference time. The footer moves the same operation with narration; controls let you inspect it without audio.')}</p><div id="ledger" class="ledger"></div><div id="chart" class="chart"></div></section>
+<details class="assumptions"><summary>${t('Qué es real, qué simplificamos y fuentes','What is real, what we simplify and sources')}</summary>${scopeMarkup(es)}<div class="source-links">${SOURCES.map(([name,url])=>`<a href="${url}" target="_blank" rel="noopener noreferrer">${name} ↗</a>`).join('')}</div></details><footer>Atlas · ${t('Modelos','Models')} · 03/10/2026</footer>`;
+const metricObserver=new ResizeObserver(()=>document.documentElement.style.setProperty('--metrics-height',Math.ceil($('metrics').offsetHeight)+'px'));metricObserver.observe($('metrics'));
+function inputs(){for(const id of controlKeys){$(id).value=params[id];if($(id+'-value'))$(id+'-value').textContent=id==='hitFraction'?fmt(params[id]*100,0)+' %':fmt(params[id],0);}}
+function rebuild(){params={...cleanState(params)};trace=makeModelsTrace(params);frame=modelsFrameAt(trace,chapter,progress);}
+function manual(){timeSource='manual';playing=false;travel=null;notebook?.pause();}
+function save(){notebook?.save();}
+function align(){if(!ready||timeSource!=='manual')return;const c=notebook.clock.timeline[chapter];aligning=true;try{notebook.seek(c.start+progress*c.duration,false);}finally{aligning=false;}}
+function phase(value){manual();progress=Math.min(1,Math.max(0,value));rebuild();paint();align();save();}
+function metric([label,value,note]){return `<article><span>${label}</span><strong>${value}</strong><small>${note}</small></article>`;}
+function metrics(){const a=frame.attention||trace.attention.causal[params.query],p=progress;let m;
+ if(chapter===0)m=[[t('Paradas narradas','Narrated stops'),'12',t('Con botones físicos en la sala','With physical buttons in the room')],[t('Conceptos','Concepts'),'9',t('Atención, memoria, generación y coste','Attention, memory, generation and cost')],[t('Tokens del ejemplo','Example tokens'),'8',t('Identidad y valores visibles','Visible identities and values')],[t('Modelos entrenados ejecutados','Trained models executed'),'0',t('Operaciones didácticas calculadas','Calculated teaching operations')]];
+ else if(chapter>=1&&chapter<=3)m=[[t('Consulta','Query'),'t'+params.query,t('Vector Q de ejemplo','Example Q vector')],[t('Posiciones permitidas','Allowed positions'),a.allowed.filter(Boolean).length+' / 8',t('Permiso ≠ peso de atención','Permission ≠ attention weight')],[t('Suma de pesos','Weight sum'),p>=.5?fmt(a.weights.reduce((s,n)=>s+n,0)):'…','softmax(QKᵀ / √2 + mask)'],[t('Vector mezclado','Mixed vector'),p>=.8?vec(a.output):'…',t('Σ peso × V · no una palabra','Σ weight × V · not a word')]];
+ else if(chapter===4)m=[[t('Expertos activos','Active experts'),'2 / 8',t('Ejemplo top-2 · referencia Grok-1','Top-2 example · Grok-1 reference')],[t('Elegidos por el router','Selected by router'),trace.moe.active.map(i=>'E'+i).join(' + '),t('Mayores puntuaciones, no azar','Highest scores, not chance')],[t('Pesos de mezcla','Mixing weights'),trace.moe.active.map(i=>fmt(trace.moe.weights[i])).join(' / '),t('Normalizados entre los elegidos','Normalized among selected experts')],[t('Salida de la mezcla','Mixture output'),p>=.8?vec(trace.moe.output):'…',t('La atención previa también cuesta','Earlier attention also costs compute')]];
+ else if(chapter===5)m=[[t('Entradas procesadas','Processed inputs'),frame.completed+' / 8',t('Actualización recurrente de ejemplo','Example recurrent update')],[t('Ancho del estado','State width'),'3',t('Mismo ancho al avanzar','Same width as processing advances')],[t('Valores del estado','State values'),vec(trace.ssm.states[frame.completed]),t('Se reemplazan, no se añaden','Replaced, not appended')],[t('Jamba original','Original Jamba'),'7 M + 1 A',t('Proporción de capas, no de RAM','Layer ratio, not RAM ratio')]];
+ else if(chapter===6)m=[[t('Posiciones de salida','Output positions'),'8',t('Misma longitud en ambas filas','Same length in both rows')],[t('Ronda de difusión','Diffusion round'),frame.round+' / '+params.denoise,t('Calendario sintético de máscaras','Synthetic mask schedule')],[t('Rondas autoregresivas','Autoregressive rounds'),'8',t('Una posición nueva por ronda','One new position per round')],[t('Posiciones × rondas','Positions × rounds'),8*params.denoise,t('No son FLOPs, precio ni velocidad','Not FLOPs, price or speed')]];
+ else if(chapter===7)m=[[t('Dimensiones del ejemplo','Example dimensions'),'6',t('Representaciones, no píxeles','Representations, not pixels')],[t('Componentes comparados','Compared components'),Math.min(6,Math.floor(p*6))+' / 6',t('Diferencias cuadradas por dimensión','Squared differences per dimension')],[t('Error medio completo','Full mean error'),p===1?fmt(trace.jepa.error,4):'…',t('MSE de ejemplo · sin entrenamiento','Example MSE · no training')],[t('Objetivo','Target'),t('Latente','Latent'),t('El encoder objetivo ve la imagen entera','Target encoder sees the whole image')]];
+ else if(chapter===8)m=[[t('Campos declarados','Declared fields'),'2',t('Decisiones separadas','Separate decisions')],[t('Esquema permitido','Allowed schema'),'yes / no',t('Opciones de nuestro ejemplo','Options in our example')],[t('P(yes) por campo','P(yes) per field'),trace.jev.map((v,i)=>i<frame.typedRevealed?fmt(v.probabilities[0]*100,1)+'%':'…').join(' · '),t('Cada distribución suma 100 %','Each distribution sums to 100%')],[t('Valores elegidos','Selected values'),trace.jev.map((v,i)=>i<frame.typedRevealed?v.choice:'…').join(' · '),t('Formato válido no garantiza verdad','Valid format does not guarantee truth')]];
+ else if(chapter===10){const n=frame.memoryTokens;m=[[t('Tokens almacenados','Stored tokens'),fmt(n,0),t('Hasta el contexto elegido','Up to selected context')],[t('MHA · números','MHA · numbers'),fmt(n*1966080,0),'60 × 2 × 128 × 128 × N'],[t('MLA · números','MLA · numbers'),fmt(n*34560,0),'60 × (512 + 64) × N'],[t('Relación de tamaños','Size ratio'),'56.89×',t('Misma referencia analítica V2','Same V2 analytic reference')]];}
+ else if(chapter===11){const r=trace.rule,k=Math.floor(p*params.repeats);m=[[t('Escritura / lectura','Write / read'),r.write+'× / '+r.read+'×',t('Multiplicadores del prefijo','Prefix multipliers')],[t('Llamadas completadas','Completed calls'),k+' / '+params.repeats,t('Primera escribe, siguientes leen','First writes, later calls read')],[t('Entrada base acumulada','Accumulated base input'),usd(r.withCache[k]),t('Sin caché: ','Without cache: ')+usd(r.noCache[k])],[t('Primera llamada más barata','First cheaper call'),r.firstCheaper===null?t('Ninguna','None'):String(r.firstCheaper),t('Incluye el recargo inicial','Includes initial write premium')]];}
+ else {const k=Math.floor(p*params.repeats),b=trace.bill,withCost=k?b.first.total+(k-1)*b.later.total:0,noCost=k*b.first.total;m=[[t('Llamadas completadas','Completed calls'),k+' / '+params.repeats,t('Primera llamada fría','First call cold')],[t('Coste con caché','Cost with cache'),usd(withCost),t('Solo el prefijo recuperado recibe descuento','Only recovered prefix is discounted')],[t('Sin caché','Without cache'),usd(noCost),t('Misma entrada y salida en ambas','Same input and output in both')],[t('Ahorro acumulado','Accumulated saving'),usd(noCost-withCost),t('Salida calculada y cobrada siempre','Output always calculated and billed')]];}
+ $('metrics').innerHTML=m.map(metric).join('');}
+function graph(series,title,xmax,unit='×',axisMax){const max=Math.max(1e-6,axisMax??Math.max(...series.flatMap(s=>s.data))),point=(n,i,x)=>`${65+635*(x??i)/Math.max(1,xmax)},${126-111*n/max}`;return `<b>${title}</b><svg viewBox="0 0 720 160" role="img" aria-label="${title}"><path d="M65,15V126H700" fill="none" stroke="#7d776b"/><text x="5" y="20">${fmt(max,3)}${unit}</text><text x="30" y="130">0</text>${series.map(s=>`<polyline fill="none" stroke="${s.color}" stroke-width="3" points="${s.data.map((n,i)=>point(n,i,s.x?.[i])).join(' ')}"/>`).join('')}<text x="65" y="152">0</text><text x="690" y="152" text-anchor="end">${xmax}</text></svg><div class="chart-key">${series.map(s=>`<span style="--line:${s.color}">${s.name}</span>`).join('')}</div>`;}
+function ledger(){const p=progress,a=frame.attention;if(chapter>=1&&chapter<=3&&a){$('ledger').innerHTML=`<b>${t('Permiso y peso son cosas distintas','Permission and weight are different')}</b><div class="weights">${a.weights.map((v,i)=>`<span class="weight ${a.allowed[i]?'':'masked'}"><b>t${i}</b><small>${a.allowed[i]?t('permitido','allowed'):t('bloqueado','blocked')}</small><i style="height:${p>=.5?v*60:0}px"></i><output>${p>=.5?fmt(v,3):'…'}</output></span>`).join('')}</div><details class="numeric-table"><summary>${t('Leer los vectores y pesos','Read vectors and weights')}</summary><table><thead><tr><th>Token</th><th>K</th><th>V</th><th>${t('Peso','Weight')}</th></tr></thead><tbody>${a.keys.map((key,i)=>`<tr><td>t${i}${a.allowed[i]?'':' ×'}</td><td>${vec(key)}</td><td>${vec(a.values[i])}</td><td>${p>=.5?fmt(a.weights[i],3):'…'}</td></tr>`).join('')}</tbody></table></details>`;$('chart').innerHTML='';}
+ else if(chapter===10){$('ledger').innerHTML=`<p>${t('V2 por token y capa: MHA 32.768 valores; MLA 576. Las dos barras usan la misma escala.','V2 per token and layer: MHA 32,768 values; MLA 576. Both bars use the same scale.')}</p>`;const k=frame.memoryTokens;$('chart').innerHTML=graph([{name:'MHA',color:'#e5bc75',data:[0,k*1966080],x:[0,k]},{name:'MLA',color:'#83cdb9',data:[0,k*34560],x:[0,k]}],t('Números guardados · contexto mostrado','Stored numbers · shown context'),params.tokens,'',Math.max(1,params.tokens*1966080));}
+ else if(chapter===9){const b=trace.bill,k=Math.floor(p*params.repeats),cached=Array.from({length:k+1},(_,i)=>i?b.first.total+(i-1)*b.later.total:0);$('ledger').innerHTML=`<div class="cost-parts"><span>${t('Llamada inicial','First call')}<b>${usd(b.first.total)}</b></span><span>${t('Prefijo recuperado, posterior','Later recovered prefix')}<b>${usd(b.later.hitCost)}</b></span><span>${t('Entrada nueva o no recuperada','Fresh or unrecovered input')}<b>${usd(b.later.missCost)}</b></span><span>${t('Salida en cada llamada','Output on every call')}<b>${usd(b.later.outputCost)}</b></span></div>`;$('chart').innerHTML=graph([{name:t('Sin caché','Without cache'),color:'#e5bc75',data:cached.map((_,i)=>i*b.first.total)},{name:t('Con caché','With cache'),color:'#83cdb9',data:cached}],t('Coste acumulado · llamadas completadas','Accumulated cost · completed calls'),params.repeats,' $',chapter===11?Math.max(...trace.rule.noCache,...trace.rule.withCache):trace.bill.noCache);}
+ else if(chapter===11){const r=trace.rule,k=Math.floor(p*params.repeats);$('ledger').innerHTML=`<p>${t('Prefijo únicamente. Con caché = escritura + (llamadas − 1) × lectura. Sin caché = llamadas × 1.','Prefix only. Cached = write + (calls − 1) × read. Uncached = calls × 1.')}</p>`;$('chart').innerHTML=graph([{name:t('Sin caché','Without cache'),color:'#e5bc75',data:r.noCache.slice(0,k+1)},{name:t('Con caché','With cache'),color:'#83cdb9',data:r.withCache.slice(0,k+1)}],t('Compensar la primera escritura','Repaying the first write'),params.repeats,' $',chapter===11?Math.max(...trace.rule.noCache,...trace.rule.withCache):trace.bill.noCache);}
+ else if(chapter===7){$('ledger').innerHTML=`<div class="cost-parts">${trace.jepa.squared.map((v,i)=>`<span>d${i} · (p − t)²<b>${p>=(i+1)/6?fmt(v,3):'…'}</b></span>`).join('')}</div>`;$('chart').innerHTML='';}else{$('ledger').innerHTML=`<p>${LESSONS[chapter].formula[es?0:1]}</p>`;$('chart').innerHTML='';}}
+function paint(){const l=LESSONS[chapter];$('chapter-number').textContent=String(chapter+1).padStart(2,'0')+' / 12';$('focus-name').textContent=l.title[es?0:1];$('focus-detail').textContent=l.body[es?0:1];$('mechanism').textContent=l.formula[es?0:1];$('scene-status').textContent=l.title[es?0:1];$('scene-caption').textContent=l.caption[es?0:1];$('phase').value=progress;$('phase-value').textContent=fmt(progress*100,1)+' %';$('time-source').textContent=timeSource==='manual'?t('Inspección manual','Manual inspection'):t('Sigue la voz','Following narration');$('play').textContent=playing?'Ⅱ':'▶ '+t('Reproducir operación','Play operation');const lang=notebook?.language||(es?'es':'en');$('narration-text').textContent=VOICES[lang][chapter].text;$('narration-text').lang=lang;
+ document.querySelectorAll('[data-chapter]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.chapter===chapter)));
+ for(const [id,show] of Object.entries({attention:chapter>=1&&chapter<=3,diffusion:chapter===6,disk:chapter===10,cache:chapter===9,calls:[9,11].includes(chapter),rule:chapter===11}))document.querySelector(`[data-control="${id}"]`).hidden=!show;
+ for(const id of ['capture','walk-pad','position','listen-here'])$(id).hidden=mode!=='immersive';$('mode-notebook').setAttribute('aria-pressed',String(mode==='notebook'));$('mode-immersive').setAttribute('aria-pressed',String(mode==='immersive'));$('mode-help').textContent=mode==='immersive'?t('WASD · ratón · E para escuchar','WASD · mouse · E to listen'):t('Arrastra para girar · rueda para acercar','Drag to orbit · wheel to zoom');$('camera-help').textContent=mode==='immersive'?t('Esc libera el ratón y pausa. Caminar detiene la guía.','Esc releases the mouse and pauses. Walking stops the guide.'):t('Los valores viajan por las conexiones del ejemplo.','Values travel through the example connections.');metrics();ledger();world?.render(frame);}
+function listenAt(index,keep=false){playing=false;travel=null;timeSource='narration';holdPose=keep;notebook?.stage(index,true);holdPose=false;paint();}
+function release(){lookActive=false;firstPerson?.release();$('capture').textContent=t('Activar ratón','Enable mouse look');}
+function useMode(value){manual();keys.clear();touch.clear();release();mode=value;if(mode==='immersive'&&!enteredFPS){pose=modelsPoseAt(chapter);enteredFPS=true;}world?.setMode(mode);world?.setPose(pose);history.replaceState(null,'','?mode='+mode);paint();if(mode==='immersive')world?.canvas.focus({preventScroll:true});save();}
+try{world=createModelsWorld($('space'),es,i=>listenAt(i,true),info=>{$('inspect').textContent=Array.isArray(info)?info[es?0:1]:String(info);$('inspect').hidden=false;});$('loading').hidden=true;}catch(error){console.error(error);$('loading').textContent=t('3D no disponible: puedes seguir cifras, texto y voz.','3D unavailable: follow numbers, text and narration.');}
+notebook=new NotebookPlayer({id:'modelos',getClips:lang=>VOICES[lang],capture:()=>({params:{...params},chapter,progress,timeSource,mode,enteredFPS,pose:{...pose},camera:world?.getViewState(),follow:$('follow').checked}),restore(saved){if(!saved)return;restored=true;params={...cleanState(saved.params||saved.state)};chapter=Math.max(0,Math.min(11,saved.chapter||0));progress=Math.max(0,Math.min(1,saved.progress||0));timeSource=saved.timeSource==='manual'?'manual':'narration';if(['notebook','immersive'].includes(query.get('mode')))mode=query.get('mode');else if(['notebook','immersive'].includes(saved.mode))mode=saved.mode;enteredFPS=saved.enteredFPS===true;pose=restoreModelsPose(saved.pose);$('follow').checked=saved.follow!==false;rebuild();if(saved.camera)world?.restoreViewState(saved.camera);},onLanguage(){changingVoice=true;queueMicrotask(()=>changingVoice=false);},onSync(s){if(!s||aligning)return;const changed=chapter!==s.index;if(timeSource==='manual'&&!notebook?.wanted)return;if(changingVoice&&timeSource==='manual')return;chapter=s.index;progress=s.progress;params.family=LESSONS[chapter].family;rebuild();if(ready&&changed&&$('follow').checked&&!holdPose){if(mode==='immersive')travel={path:modelsGuidePath(pose,modelsPoseAt(chapter)),index:1,target:modelsPoseAt(chapter)};else world?.focus(chapter);}paint();}});
+ready=true;if(!restored){chapter=notebook.current.index;progress=notebook.current.progress;params.family=LESSONS[chapter].family;rebuild();if(mode==='immersive'){pose=modelsPoseAt(chapter);enteredFPS=true;}world?.focus(chapter);}if(mode==='immersive'&&!enteredFPS){pose=modelsPoseAt(chapter);enteredFPS=true;}world?.setMode(mode);world?.setPose(pose);inputs();paint();
+if(world)firstPerson=bindFirstPerson({canvas:world.canvas,enabled:()=>mode==='immersive'&&lookActive,onLook:(dx,dy)=>{travel=null;pose.yaw-=dx*.0025;pose.pitch=Math.max(-1.3,Math.min(1.3,pose.pitch-dy*.002));world.setPose(pose);save();},onActivate:(x,y)=>{if(x==null)world.activate();else{const hit=world.inspect(x,y);if(Number.isInteger(hit?.action))listenAt(hit.action,true);else if(hit?.info){$('inspect').textContent=hit.info[es?0:1];$('inspect').hidden=false;}}},onState(state){const locked=state==='locked';if(wasLocked&&!locked){manual();lookActive=false;paint();save();}wasLocked=locked;}});
+for(const id of controlKeys)$(id).oninput=()=>{manual();params[id]=['tariff','writeRule'].includes(id)?$(id).value:+$(id).value;rebuild();inputs();paint();align();save();};
+document.querySelectorAll('[data-chapter]').forEach(b=>b.onclick=()=>{manual();timeSource='narration';notebook.stage(+b.dataset.chapter,false);world?.focus(chapter);save();});
+$('listen').onclick=()=>listenAt(chapter,mode==='immersive');$('next').onclick=()=>listenAt(Math.min(11,chapter+1));$('listen-here').onclick=()=>{const hit=modelsNearestStand(pose);if(hit)listenAt(hit.index,true);};$('mode-notebook').onclick=()=>useMode('notebook');$('mode-immersive').onclick=()=>useMode('immersive');$('capture').onclick=()=>{lookActive=true;world?.canvas.focus({preventScroll:true});firstPerson?.request();$('capture').textContent=t('Ratón activo · Esc','Mouse active · Esc');};$('fit').onclick=()=>{world?.focus(chapter);save();};$('overview').onclick=()=>{world?.overview();save();};$('zoom-in').onclick=()=>{world?.zoomBy(1.12);save();};$('zoom-out').onclick=()=>{world?.zoomBy(1/1.12);save();};$('phase').oninput=()=>phase(+$('phase').value);$('reset').onclick=()=>phase(0);$('finish').onclick=()=>phase(1);$('step').onclick=()=>phase(Math.min(1,progress+.125));$('play').onclick=()=>{const resume=!playing;manual();if(progress===1)progress=0;playing=resume;paint();save();};
+const playerToggle=notebook.toggle.bind(notebook);notebook.toggle=()=>{if(!notebook.running)timeSource='narration';playing=false;playerToggle();};const playerLanguage=notebook.changeLanguage.bind(notebook);notebook.changeLanguage=lang=>{const wasManual=timeSource==='manual',savedProgress=progress;changingVoice=true;playerLanguage(lang);if(wasManual){timeSource='manual';progress=savedProgress;rebuild();paint();save();}changingVoice=false;};const playerSeek=notebook.seek.bind(notebook);notebook.seek=(seconds,play=notebook.wanted)=>{if(!aligning&&!changingVoice){timeSource='narration';playing=false;}playerSeek(seconds,play);};
+for(const b of document.querySelectorAll('[data-move]')){b.onpointerdown=e=>{manual();touch.add(b.dataset.move);b.setPointerCapture?.(e.pointerId);};b.onpointerup=b.onpointercancel=()=>touch.delete(b.dataset.move);}
+function keydown(e){if(e.target.matches('input,select,textarea,button,a')&&e.key!=='Escape')return;if(e.key==='Escape'){manual();release();keys.clear();touch.clear();paint();save();return;}if(mode!=='immersive')return;if(e.key.toLowerCase()==='e'){world?.activate();return;}if(['w','a','s','d','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();manual();keys.add(e.key.toLowerCase());}}
+window.addEventListener('keydown',keydown);const keyup=e=>keys.delete(e.key.toLowerCase());window.addEventListener('keyup',keyup);const blur=()=>{keys.clear();touch.clear();};window.addEventListener('blur',blur);
+function tick(now){const dt=Math.min(.05,(now-last)/1000);last=now;if(!document.hidden){if(playing){progress=Math.min(1,progress+dt/20);if(progress===1)playing=false;rebuild();paint();align();}if(mode==='immersive'){const forward=(keys.has('w')||keys.has('arrowup')||touch.has('forward')?1:0)-(keys.has('s')||keys.has('arrowdown')||touch.has('back')?1:0),strafe=(keys.has('d')||keys.has('arrowright')||touch.has('right')?1:0)-(keys.has('a')||keys.has('arrowleft')||touch.has('left')?1:0);if(forward||strafe){const n=Math.hypot(forward,strafe),d=dt*3.2;pose=modelsWalk(pose,(-Math.sin(pose.yaw)*forward+Math.cos(pose.yaw)*strafe)*d/n,(-Math.cos(pose.yaw)*forward-Math.sin(pose.yaw)*strafe)*d/n);travel=null;}else if(travel&&notebook?.running){const goal=travel.path[travel.index];if(!goal){pose.yaw=travel.target.yaw;pose.pitch=travel.target.pitch;travel=null;}else{const dx=goal.x-pose.x,dz=goal.z-pose.z,n=Math.hypot(dx,dz);if(n<.05)travel.index++;else{const d=Math.min(n,dt*3.2);pose=modelsWalk(pose,dx*d/n,dz*d/n);}}}world?.setPose(pose);const stand=modelsNearestStand(pose);$('listen-here').textContent=stand?'E · '+t('Escuchar','Listen')+' '+LESSONS[stand.index].title[es?0:1]:t('Acércate a un botón del stand','Approach a stand button');$('listen-here').disabled=!stand;$('position').textContent=fmt(pose.x,1)+' · '+fmt(pose.z,1)+' m';}world?.render(frame);}raf=requestAnimationFrame(tick);}
+raf=requestAnimationFrame(tick);window.addEventListener('pagehide',()=>{save();metricObserver.disconnect();cancelAnimationFrame(raf);firstPerson?.dispose();world?.dispose();notebook.dispose();window.removeEventListener('keydown',keydown);window.removeEventListener('keyup',keyup);window.removeEventListener('blur',blur);});

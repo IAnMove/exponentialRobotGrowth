@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Hay que reducir la velocidad y descender de forma controlada. La Luna no tiene una atmósfera útil para frenar con paracaídas. La forma de la nave se inspira en Starship HLS. Las patas, los sistemas de energía y la bodega alta ayudan a reconocerla. Los motores y la trayectoria están simplificados.",
+  "duration_ms": 19296,
+  "billed_characters": 297,
+  "sample_rate": 32000,
+  "size_bytes": 310452,
+  "generated_at": "2026-09-27T00:28:16.390852+00:00",
+  "validation": {
+    "audio_sha256": "ada3b9adcb0078dcd8a765abe9b7cc2ba20c01c0b18e5c6f369b633202443fd6",
+    "text_sha256": "76c5f937af290cc913c7b4fa59db0ee64f5bae060acbe8b5f4622b682d4bc850",
+    "script_sha256": "ad289baa66bc833970a671db8180d45f18fed4e1fb6eb561120b4acf5cd30f62",
+    "decoded_duration_seconds": 19.296,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

@@ -7,3 +7,6 @@
 #world canvas:focus-visible{outline:none}.scene-caption{background:linear-gradient(#05070fbb,#05070f00);padding-bottom:10px}
 
 @media(min-width:1081px){.steps button{font-size:14px}.operation-dock{width:min(700px,calc(100% - 40px))}.operation-dock p{font-size:13px}}
+
+/* Local narration scrubber follows the reader column. */
+.audio-scrub{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:0 25px 12px;font-size:11px;line-height:1.5;color:#b5c8d8}.audio-scrub output{color:#ffc478;font-variant-numeric:tabular-nums}.audio-scrub input{grid-column:1/-1;display:block;min-width:0;width:100%;margin:0;accent-color:#ffc478;box-sizing:border-box}.reader-compact .audio-scrub{display:none}@media(max-width:700px){.reader{grid-template-rows:38px auto minmax(0,1fr) 28px}.audio-scrub{grid-column:1/-1;padding:4px 0 8px;gap:4px}}

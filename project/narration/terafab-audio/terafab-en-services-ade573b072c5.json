@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "A factory needs more than processing machines. The vertical section distinguishes the process floor from supporting services. The application includes filtration, cooling, water, waste treatment, gas distribution and electrical equipment. Their specific connections here are illustrative. In the teaching room you will see overhead transport and an enclosed carrier called a FOUP. It is not a robot that manufactures chips: it protects and carries wafers. Our carrier will lower onto a load port before handing material into a tool. Follow the identified object, and notice that transport and transformation are different operations.",
+  "duration_ms": 42516,
+  "billed_characters": 633,
+  "sample_rate": 32000,
+  "size_bytes": 681972,
+  "generated_at": "2026-10-03T02:17:32.891818+00:00"
+}

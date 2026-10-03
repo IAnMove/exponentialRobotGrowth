@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Now we change scale. This example starts in Madrid and takes the data towards the coast of Biscay. Within an operator, several hops are possible. Between operators, BGP exchanges route information and applies policies: it does not simply search for the shortest line on a map. The golden line is an illustrative corridor. We have not measured your connection or located all its cables. Even an American website might respond from a nearby cache.",
+  "duration_ms": 27720,
+  "billed_characters": 445,
+  "sample_rate": 32000,
+  "size_bytes": 445236,
+  "generated_at": "2026-09-26T19:16:46.955938+00:00",
+  "validation": {
+    "audio_sha256": "1044f43facef794af5d332f1b1325ed9995c192e1c6295017cb5d112e36466ba",
+    "text_sha256": "dd4fc3dfe14bf5cac62e778280933c15ae5cfcff8d197cf651832b1ea5ea4cd2",
+    "script_sha256": "7c7904cf008468a6877236bfe0e25d67aabfe6e99295d67d424ec5d541c5e26b",
+    "decoded_duration_seconds": 27.72,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Aquí hay dos operaciones de atención. El codificador representa la fuente completa. El decodificador solo usa su propio pasado, y además consulta esa fuente mediante atención cruzada. Su consulta Q se compara con claves de los estados del codificador; los pesos mezclan sus valores. El acceso a toda la fuente no desbloquea el futuro del decodificador. Esta separación aparece en el Transformer original y en T5.",
+  "duration_ms": 26028,
+  "billed_characters": 412,
+  "sample_rate": 32000,
+  "size_bytes": 418164,
+  "generated_at": "2026-10-03T03:53:04.931266+00:00"
+}

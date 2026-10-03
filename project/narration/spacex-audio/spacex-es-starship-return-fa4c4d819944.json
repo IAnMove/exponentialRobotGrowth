@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "La nave ha apagado sus motores durante la costa y ahora entra en la atmósfera. Su superficie protegida recibe el calentamiento, y los alerones ayudan a controlar la orientación y el descenso. No confundas ese resplandor con un motor encendido. Cerca del final cambia de orientación y realiza un encendido de descenso. En este esquema termina sobre el mar, inspirado en la secuencia de amerizaje de pruebas: no contamos la nave como recuperada para un nuevo vuelo. La carga permanece dentro; este recorrido no demuestra una entrega orbital ni una misión lunar. Recuperar Super Heavy es solo una parte del objetivo de reutilizar todo el sistema. Repetir vuelos exige resolver también la protección térmica, el regreso, la inspección y la preparación de la nave. Por eso distinguimos lo que has visto físicamente en la maqueta, lo demostrado en pruebas y el objetivo de reutilización completa. Puedes retroceder libremente para comparar los dos vehículos y sus fases sin empuje.",
+  "duration_ms": 61344,
+  "billed_characters": 975,
+  "sample_rate": 32000,
+  "size_bytes": 983220,
+  "generated_at": "2026-10-03T01:17:37.526638+00:00"
+}

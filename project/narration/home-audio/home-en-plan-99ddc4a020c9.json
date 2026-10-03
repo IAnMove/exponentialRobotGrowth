@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "The final stop is the study. A fictional example gathers the household list, drafts a proposal and shows a review. We access no accounts, sensors or real language model. AI can help organize chores; accepting a proposal without review is another assumption, different from generating text. Planning receives fifteen reference minutes. With all seven chores resolved, the human scenario totals a hundred and forty-five active minutes and zero released. Delegating everything without assistance releases those hundred and forty-five example minutes. Retaining twenty percent for assistance and review leaves twenty-nine associated human minutes and a hundred and sixteen released. These are not unexecuted chores: they are assumed assistance. The list does not cover all household care or repairs. The person remains home; what changes is who performs these operations and how much human time the scenario retains.",
+  "duration_ms": 60480,
+  "billed_characters": 912,
+  "sample_rate": 32000,
+  "size_bytes": 969396,
+  "generated_at": "2026-10-03T00:24:29.235182+00:00"
+}

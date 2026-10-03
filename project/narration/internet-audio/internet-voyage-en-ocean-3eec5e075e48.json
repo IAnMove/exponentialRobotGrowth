@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "We descend into the Atlantic. Inside the cable, light carries information through optical fibers. Repeaters amplify the signal along the route; they do not decide which server should receive your request. We have enlarged the cable and slowed the pulses so you can see them. Assuming light travels at two hundred thousand kilometers per second in fiber, six thousand six hundred kilometers takes about thirty-three milliseconds of propagation, in one direction alone. Other links, queues and processing add more delay.",
+  "duration_ms": 32400,
+  "billed_characters": 518,
+  "sample_rate": 32000,
+  "size_bytes": 520116,
+  "generated_at": "2026-09-26T19:16:51.787883+00:00",
+  "validation": {
+    "audio_sha256": "670887b57416c53d834f9b9d3cf709da41b2bd8ee4fb84bf4f4247f0b2b302e5",
+    "text_sha256": "6869c492d5020c8570b59e368ecdb9f159dec8588ea851db295961db48b4fc36",
+    "script_sha256": "f59d333ca4343c30f2d641187d99c303be03b935090cc2932ac719bb64be04aa",
+    "decoded_duration_seconds": 32.4,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

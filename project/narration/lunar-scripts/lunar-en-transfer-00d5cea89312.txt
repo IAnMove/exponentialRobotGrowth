@@ -1,0 +1,1 @@
+The vehicle leaves Earth orbit, travels for days and maneuvers to reach the Moon. The curve and time are compressed. Neither sizes nor vehicle speed are to scale. What matters is following the same cargo from Earth orbit to its arrival at the Moon.

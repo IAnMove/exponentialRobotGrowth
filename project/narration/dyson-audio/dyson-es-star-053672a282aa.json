@@ -1,0 +1,22 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Empezamos por el Sol. La luz sale de la estrella y se reparte en todas las direcciones. Potencia y flujo no significan lo mismo: la potencia cuenta toda la energía que sale por segundo; el flujo cuenta cuánto recibe cada metro cuadrado a una distancia concreta. En nuestro ejemplo usamos la luminosidad solar nominal. A una unidad astronómica, el flujo es de unos mil trescientos sesenta y un vatios por metro cuadrado. Si duplicas la distancia, el flujo baja a una cuarta parte. La estrella sigue emitiendo la misma potencia. Los cuerpos de esta maqueta están ampliados para verlos. El movimiento orbital comprime años, y los marcadores de luz ilustran recorridos: no viajan a una velocidad física resuelta. Aquí todavía no contamos cobertura construida. Puedes mover el radio y comprobar las cifras antes de pasar al colector.",
+  "duration_ms": 50976,
+  "billed_characters": 828,
+  "sample_rate": 32000,
+  "size_bytes": 817332,
+  "generated_at": "2026-10-03T07:23:29.360301+00:00",
+  "validation": {
+    "ffmpeg_decode": "passed",
+    "decoded_duration_seconds": 50.976,
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "audio_sha256": "90ec9b0b7b6dca9e05b407f6acf5280ce15265766bb71291cf4043fbfcff9059",
+    "text_sha256": "bd3dda05232792c86ccaab0a2e7dae27e7d550f5cd4858305257f4e2188f1d2e",
+    "script_sha256": "06f29079ea513bf51a3343677380233d39dc9f0b136de7d9376e8275dae6e93c"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Hemos llegado al token de final de secuencia. La respuesta está terminada. Cada pieza se generó usando el contexto anterior. Los pesos no cambiaron. Puedes repetir el recorrido o comparar otro contexto y otra fuente.",
+  "duration_ms": 14040,
+  "billed_characters": 216,
+  "sample_rate": 32000,
+  "size_bytes": 226356,
+  "generated_at": "2026-09-20T18:03:46.649930+00:00",
+  "validation": {
+    "audio_sha256": "637c20d2761a75102b4b36f1339d2c139a16ecff10a70b8955e14942133c077c",
+    "text_sha256": "a48ab75dd7e1dee1244f21b82f5cedccfd02d07ee915050084ee0b509ecc5d60",
+    "script_sha256": "a58086f12785b4b4638d095fcff162c8229cb5fd91c035eb038552418cb80b4f",
+    "decoded_duration_seconds": 14.04,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 14.04
+  }
+}

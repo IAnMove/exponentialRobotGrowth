@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Back at home, the browser receives and decrypts the response. It then interprets the document and draws the page. The pieces you see are a metaphor for progressive reception, not a real division into four packets. A page usually needs more requests for images, styles and scripts, and can start displaying content before everything arrives. Your click has connected local equipment, network operators, light beneath the ocean and servers. Distance matters, but final loading speed depends on much more than kilometers.",
+  "duration_ms": 32688,
+  "billed_characters": 518,
+  "sample_rate": 32000,
+  "size_bytes": 524724,
+  "generated_at": "2026-09-26T19:17:02.226945+00:00",
+  "validation": {
+    "audio_sha256": "18448f0fd41c7c4bc10472ad5080e25f1891a64befc0b09dcb9769c4a586b7f1",
+    "text_sha256": "471bf40a26cb5ccafdbc094b1c73afe3e689bc7d14d23cfee89ee7938e174a13",
+    "script_sha256": "1cad57c028b46bdf118dbcd4bc46c2e50ac0f863fd8bdf5395c90f65b3511c6b",
+    "decoded_duration_seconds": 32.688,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

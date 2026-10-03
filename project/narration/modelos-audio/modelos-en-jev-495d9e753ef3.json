@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Two questions declare yes and no options. Each question has its own distribution, summing to one hundred percent. The first is tied; this example’s rule selects the first option. The second has a preferred option. The returned values fit the schema, but that does not establish true decisions. This stop illustrates Jev’s published interface. The probabilities are ours: we do not call its API or claim to know its internal operations.",
+  "duration_ms": 28620,
+  "billed_characters": 435,
+  "sample_rate": 32000,
+  "size_bytes": 459636,
+  "generated_at": "2026-10-03T03:54:38.437467+00:00"
+}

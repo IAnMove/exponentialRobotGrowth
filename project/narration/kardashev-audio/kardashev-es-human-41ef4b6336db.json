@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Estás viendo la Tierra, con una imagen real de la NASA sobre el globo. La escala de Kardashev compara la potencia que utiliza una civilización: cuánta energía puede aprovechar cada segundo. Partimos de veinte teravatios como referencia redondeada, no como una medición de hoy. El índice es aproximadamente cero coma setenta y tres. Parece cercano a uno, pero solo representa el cero coma dos por ciento de la potencia del tipo uno. Todavía habría que multiplicar por quinientos. Puedes inspeccionar el pequeño satélite: es el modelo de MarCO publicado por la NASA, ampliado para verlo. Su posición junto a la Tierra es ilustrativa; su misión real viajó hacia Marte.",
+  "duration_ms": 42660,
+  "billed_characters": 665,
+  "sample_rate": 32000,
+  "size_bytes": 684276,
+  "generated_at": "2026-09-20T05:30:37.713708+00:00",
+  "validation": {
+    "audio_sha256": "ca4f22f68b5f383d7a918424e460a818fc7bf2ae9263c767a29b02f1a695567a",
+    "text_sha256": "934c53bb601aa3b0f1a0c2f3f5f659697f9cf256ea0e8663a7ef1d580dbcbbef",
+    "script_sha256": "625bb4a82fccd7d87f21d94b26383bce0aabb1d982ab707b3581b73aeb2d1a63",
+    "decoded_duration_seconds": 42.66,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

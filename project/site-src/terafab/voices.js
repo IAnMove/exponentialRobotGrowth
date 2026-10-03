@@ -1,0 +1,93 @@
+// Recorded with MiniMax speech-2.8-hd. No credentials are shipped.
+export const VOICES = {
+  "es": [
+    {
+      "id": "campus",
+      "title": "Terafab: el proyecto y la maqueta",
+      "text": "Este es el campus previsto de Terafab, en Texas. El expediente público propone reunir diseño, máscaras, fabricación de obleas, encapsulado e integración. La imagen exterior es una referencia publicada; la distribución interior que recorremos es una interpretación. Abre las naves o cambia al corte vertical para reconocer sus funciones. Después entraremos en una sala didáctica y seguiremos una sola oblea. Las cifras de esa sala describen nuestra muestra, no la capacidad real del proyecto. Puedes pausar, mover la cámara, leer el texto o volver a cualquier etapa desde la barra inferior. La visita conserva tu posición al recargar.",
+      "file": "terafab-es-campus-b04007497585.mp3",
+      "duration": 39.888
+    },
+    {
+      "id": "services",
+      "title": "La infraestructura que permite fabricar",
+      "text": "Una fábrica necesita algo más que máquinas. En el corte vertical distinguimos la zona de proceso y los servicios auxiliares. El expediente incluye filtración, refrigeración, agua, tratamiento de residuos, distribución de gases y equipos eléctricos. Sus conexiones concretas aquí son ilustrativas. En la sala didáctica verás un transporte elevado y un recipiente cerrado llamado FOUP. No es un robot que fabrica chips: protege y lleva las obleas. Nuestro recipiente bajará a un puerto de carga antes de transferir el material al equipo. Sigue el objeto marcado, y observa que transporte y transformación son operaciones diferentes.",
+      "file": "terafab-es-services-415bebfc4744.mp3",
+      "duration": 41.796
+    },
+    {
+      "id": "layers",
+      "title": "Una oblea, una película y una resina",
+      "text": "Seguimos la oblea identificada dentro del FOUP. El recipiente llega al puerto, se acopla y entrega la oblea. La ampliación lateral muestra el mismo estado material, con espesores exagerados. Primero crece la película verde sobre el silicio. Las nueve columnas son unidades visuales de esta sección. Después otra operación añade resina violeta. La película y la resina tienen funciones distintas: una permanecerá en el patrón y la otra será una máscara temporal. Observa sus barras de material; cambiar de máquina conserva lo ya fabricado. El tiempo de esta coreografía no indica cuánto tarda una fábrica real.",
+      "file": "terafab-es-layers-802cf3c4af69.mp3",
+      "duration": 39.384
+    },
+    {
+      "id": "expose",
+      "title": "La luz prepara; el revelador abre",
+      "text": "La oblea entra en el escáner de exposición. Una máscara transporta el patrón y la óptica lo proyecta sobre la resina. Esta maqueta no reproduce un escáner comercial ni su sistema óptico completo. Mira las tres zonas marcadas: recibir luz cambia su estado, pero todavía conserva la película de debajo. Después la oblea vuelve al equipo de revelado. En este ejemplo de resina positiva, las zonas expuestas desaparecen y quedan tres ventanas. Aún no hemos grabado la película. Retrocede en la barra para comparar exposición y revelado: verás que son cambios distintos y no un corte directo del silicio.",
+      "file": "terafab-es-expose-9cc680d5411e.mp3",
+      "duration": 37.044
+    },
+    {
+      "id": "transfer",
+      "title": "Transferir, limpiar y comprobar",
+      "text": "Ahora el grabado retira película por las ventanas de la resina. En la ampliación quedan seis de las nueve unidades verdes; las otras tres figuran como material retirado. La limpieza elimina después las seis unidades de resina que aún protegían la superficie. El patrón verde permanece. Las barras separan lo presente de lo retirado, sin confundir color con masa real. Un equipo inspecciona el resultado. A continuación condensamos otras operaciones en capas y conexiones de un circuito de ejemplo. Esta repetición no representa todas las recetas, transistores o tratamientos necesarios para fabricar un chip real. El dibujo simple permite seguir la continuidad eléctrica.",
+      "file": "terafab-es-transfer-49fc1074c138.mp3",
+      "duration": 43.128
+    },
+    {
+      "id": "assembly",
+      "title": "Del circuito de muestra al conjunto",
+      "text": "Las puntas de prueba recorren nueve circuitos de muestra. Cada resultado aparece después de medir: pendiente no significa defectuoso. En el modo de defecto didáctico, una conexión abierta hace fallar el primer circuito; no es una estimación del rendimiento de Terafab. Después separamos las nueve piezas, que conservan su identidad y quedan en la bandeja. Solo una pieza válida pasa al soporte del paquete. Las demás siguen allí, incluida la rechazada. El conjunto entra en el banco final, donde comprobamos sus conexiones de ejemplo. Una prueba de continuidad no certifica todas las funciones de un chip. Mira el inventario: las piezas cambian de lugar y función, sin desaparecer por avanzar de etapa.",
+      "file": "terafab-es-assembly-054c724843ac.mp3",
+      "duration": 44.604
+    }
+  ],
+  "en": [
+    {
+      "id": "campus",
+      "title": "Terafab: the project and the model",
+      "text": "This is the planned Terafab campus in Texas. The public application proposes co-locating design, masks, wafer fabrication, packaging and integration. The exterior image is a published reference; the interior arrangement we explore is an interpretation. Open the halls or switch to the vertical section to recognize their roles. We will then enter a teaching room and follow a single wafer. The numbers in that room describe our sample, not the project's actual capacity. You can pause, move the camera, read the transcript or return to any chapter using the footer. Reloading preserves your place in the visit.",
+      "file": "terafab-en-campus-98a90d4a34dd.mp3",
+      "duration": 38.304
+    },
+    {
+      "id": "services",
+      "title": "The infrastructure behind fabrication",
+      "text": "A factory needs more than processing machines. The vertical section distinguishes the process floor from supporting services. The application includes filtration, cooling, water, waste treatment, gas distribution and electrical equipment. Their specific connections here are illustrative. In the teaching room you will see overhead transport and an enclosed carrier called a FOUP. It is not a robot that manufactures chips: it protects and carries wafers. Our carrier will lower onto a load port before handing material into a tool. Follow the identified object, and notice that transport and transformation are different operations.",
+      "file": "terafab-en-services-ade573b072c5.mp3",
+      "duration": 42.516
+    },
+    {
+      "id": "layers",
+      "title": "One wafer, a film and a resist",
+      "text": "Follow the identified wafer inside the FOUP. The carrier reaches a port, docks and hands over the wafer. The enlarged section shows the same material state, with exaggerated thicknesses. First, green film grows over the silicon. The nine columns are visual units of this section. A later operation adds violet resist. Film and resist have different roles: one remains in the pattern and the other becomes a temporary mask. Watch the material bars; changing tools preserves what has already been made. The timing of this choreography does not measure a real factory's processing time.",
+      "file": "terafab-en-layers-e20eb7acd12c.mp3",
+      "duration": 37.512
+    },
+    {
+      "id": "expose",
+      "title": "Light prepares; developer opens",
+      "text": "The wafer enters the exposure scanner. A mask carries the pattern and the optics project it onto the resist. This model does not reproduce a commercial scanner or its full optical system. Look at the three highlighted regions: light changes their state, while the film underneath remains intact. The wafer then returns to the developing tool. In this positive-resist example, exposed regions disappear and leave three windows. We have not etched the film yet. Rewind to compare exposure and development: they are separate changes, rather than light directly cutting silicon.",
+      "file": "terafab-en-expose-aba44aed8d8f.mp3",
+      "duration": 36.936
+    },
+    {
+      "id": "transfer",
+      "title": "Transfer, clean and inspect",
+      "text": "Etching now removes film through the resist windows. Six of the nine green units remain in the enlarged section; the other three are recorded as removed material. Cleaning then removes the six resist units that still protected the surface. The green pattern remains. The bars distinguish present and removed material, without equating color with real mass. A tool inspects the result. We then condense other operations into layers and connections of an example circuit. This repetition does not represent all recipes, transistors or treatments required to manufacture a real chip. The simple structure lets us follow electrical continuity.",
+      "file": "terafab-en-transfer-d5bbfbb0703b.mp3",
+      "duration": 41.652
+    },
+    {
+      "id": "assembly",
+      "title": "From sample circuit to assembly",
+      "text": "Probe tips visit nine sample circuits. Each result appears after measurement: pending does not mean defective. In the teaching defect mode, an open connection makes the first circuit fail; this is not an estimate of Terafab's yield. We then separate nine pieces, which keep their identities and remain on the tray. Only one valid piece moves onto the package support. The others stay there, including the rejected one. The assembly enters a final test fixture to check its example connections. A continuity test does not certify every function of a chip. Watch the inventory: pieces change location and role, rather than disappearing when the chapter advances.",
+      "file": "terafab-en-assembly-010884fc514f.mp3",
+      "duration": 42.948
+    }
+  ]
+};
+const base = new URL(document.documentElement.lang === 'es' ? '../../audio/' : '../audio/', import.meta.url);
+for (const entries of Object.values(VOICES)) for (const entry of entries) entry.src = new URL(entry.file, base).href;

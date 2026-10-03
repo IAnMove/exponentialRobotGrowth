@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Your browser needs to locate a service and communicate with it. The computer sends data to its local network. A router provides a path to other networks; a Wi-Fi antenna does not contain the Internet. Here the example message is divided into numbered pieces.",
+  "duration_ms": 16091,
+  "billed_characters": 258,
+  "sample_rate": 32000,
+  "size_bytes": 259188,
+  "generated_at": "2026-09-26T02:50:15.042702+00:00",
+  "validation": {
+    "audio_sha256": "52543a79c8ebf4f09542f138cca735f6672bcc4d12f4eca1cec9b9fc935be99f",
+    "text_sha256": "a1f32127d3d0bc3b5313294e707a9779284aef22734cd1a26cfb5eebadf6beea",
+    "script_sha256": "abbd008d6ee63b341c0bf9aff59bea482593c20bb35234ffaae575e3e3913696",
+    "decoded_duration_seconds": 16.092,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Here kits become finished robots. The delivery control divides new robots between two destinations: remaining in industry or leaving for cities. A dispatched robot leaves the industrial workforce. The total fleet counts both destinations, including robots in transit or waiting at the depot, but that does not mean they are all manufacturing. Both maps use the same delivery percentage and delays: the reference supplies cities too. The difference is that it keeps its six facilities, while your region can build new ones. Each facility adds workstations and machinery, but needs kits, electricity, transport and available workers. Compare robots manufactured per cycle as well as the accumulated fleet. Added capacity becomes useful after construction finishes, and only when the entire chain can supply it.",
+  "duration_ms": 50508,
+  "billed_characters": 808,
+  "sample_rate": 32000,
+  "size_bytes": 809844,
+  "generated_at": "2026-10-03T06:32:05.972794+00:00",
+  "validation": {
+    "ffmpeg_decode": "passed",
+    "decoded_duration_seconds": 50.508,
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "audio_sha256": "2facc93ee436c3a9c909bd85140295d899c888682560ccff13a2e2cbeb634c4f",
+    "text_sha256": "a25520af2d90eaf5c89143f5c59a31796581e50133b7e589108f1059730ac4b9",
+    "script_sha256": "6ddf5f37895c04a6780b82ab3572188027bc105246cf5dc9273e09b079dee997"
+  }
+}

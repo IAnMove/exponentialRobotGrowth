@@ -1,0 +1,22 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "La distancia también cambia la cantidad de superficie necesaria. Si mantenemos la misma cobertura efectiva y duplicamos el radio, el área ideal crece cuatro veces. Con la misma masa por metro cuadrado, la masa total también se multiplica por cuatro. El control de densidad superficial es una hipótesis editable; no es una propiedad medida de un colector disponible. Este cálculo cuenta sólo la superficie colectora ideal. No incluye soportes, fabricación, carga útil, transporte, mantenimiento ni sombras. En el otro lado hay una comparación histórica distinta: extender toda la masa de Júpiter sobre una esfera al radio elegido. La columna y el espesor resultantes muestran una escala de materia, no una exigencia de desmontar Júpiter ni un proceso que estemos simulando. Comprueba cómo se relacionan el radio, el flujo, la temperatura de referencia, el área y la masa antes de ir a la cáscara.",
+  "duration_ms": 59076,
+  "billed_characters": 895,
+  "sample_rate": 32000,
+  "size_bytes": 946932,
+  "generated_at": "2026-10-03T07:23:39.958626+00:00",
+  "validation": {
+    "ffmpeg_decode": "passed",
+    "decoded_duration_seconds": 59.076,
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "audio_sha256": "5216b51142d1350d3c802f7b9d4a92ef4e0734b586e381a8c162f820e7b365ff",
+    "text_sha256": "e2444a032fdf30cf2f181310579bc6b5288f7cc51d5fe3ea5c50182ef7bc12f3",
+    "script_sha256": "8a60b940d6f0b4f595c53164775e34ff1829405c82605533fcb301a0d0a124d6"
+  }
+}

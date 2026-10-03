@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Ahora acompaña siete prendas. Salen de la cesta, entran en una máquina de lavado y secado y después se colocan dobladas. Seguimos las mismas prendas; no sustituimos objetos sucios por otros nuevos que aparezcan de repente. Los movimientos de recoger y colocar pertenecen al agente. El lavado y el secado pertenecen al aparato y se muestran comprimidos, sin representar sus tiempos ni su física interna. Veinticinco minutos es la referencia de manejo humano activo, no la duración de un programa de lavado. La tela es flexible y difícil de manipular: esta secuencia esquemática supone que el agente puede reconocerla y tratarla con fiabilidad. Al terminar, los muebles y la máquina siguen en la casa. Solo se resuelve un quehacer de la lista. Retrocede con la barra para ver dónde estaba cada prenda antes de entrar en la máquina.",
+  "duration_ms": 51444,
+  "billed_characters": 829,
+  "sample_rate": 32000,
+  "size_bytes": 824820,
+  "generated_at": "2026-10-03T00:23:31.168421+00:00"
+}

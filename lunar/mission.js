@@ -8,16 +8,17 @@ export const MISSION_STAGES=[
  ['unload','Bajar la carga a la superficie','Lower cargo to the surface','Un elevador deposita equipos; un vehículo los acerca a la base. La descarga representa una entrega, no una fábrica completa.','An elevator lowers equipment; a rover takes it toward the base. Unloading represents a delivery, not a complete factory.'],
  ['return','Qué vuelve, y adónde','What returns, and where','HLS regresa a órbita lunar en la arquitectura tripulada. No lleva el escudo ni las aletas de la versión que reentra en la Tierra. El ciclo de carga futuro puede ser diferente.','HLS returns to lunar orbit in the crewed architecture. It lacks the heat shield and flaps of the Earth-reentry variant. Future cargo cycles may differ.']
 ].map(([id,es,en,tes,ten])=>({id,month:0,view:'mission',title:[es,en],text:[tes,ten]}));
-export function missionPose(id,progress){const u=Math.max(0,Math.min(1,progress)),smooth=u*u*(3-2*u);switch(id){
+export function missionPose(id,progress){if(!MISSION_STAGES.some(s=>s.id===id)||typeof progress!=='number'||!Number.isFinite(progress))throw new RangeError('Valid mission stage and finite progress required');const u=Math.max(0,Math.min(1,progress)),smooth=u*u*(3-2*u),ease=x=>{x=Math.max(0,Math.min(1,x));return x*x*(3-2*x);};switch(id){
  case 'liftoff':return {u,height:42*u*u,flame:1,camera:[30,19+35*u*u,43],target:[0,12+42*u*u,0]};
- case 'booster':return {u,height:42*(1-smooth),upper:54+55*u,separation:8*u,flame:u<.25||u>.72?1:0,camera:[31,18+30*(1-smooth),44],target:[0,10+30*(1-smooth),0]};
- case 'refuel':return {u,camera:[30-6*u,16,34],target:[0,4,0]};
+ case 'booster':return {u,height:42*(1-smooth),upper:57.7+55*u,separation:8*u,upperIgnited:u>.08&&u<1,captured:u===1,flame:u<1&&(u<.25||u>.72)?1:0,camera:[31,18+30*(1-smooth),44],target:[0,10+30*(1-smooth),0]};
+ case 'refuel':{const transferProgress=ease((u-.3)/.4),connected=u>=.25&&u<.8;return {u,camera:[30-6*u,16,34],target:[0,4,0],refuel:{phase:u<.2?'approach':u<.3?'connect':u<.7?'transfer':u<.8?'complete':'separate',connected,transferProgress,arrived:u>=.2,departed:u===1,tankerApproach:ease(u/.2),departProgress:ease((u-.8)/.2),depotLevel:1-transferProgress,shipLevel:transferProgress}};}
  case 'transfer':return {u,camera:[0,19,55-6*u],target:[0,1,0]};
  case 'descent':return {u,height:36*(1-smooth),flame:u<.97?1:0,camera:[25,14+22*(1-smooth),36],target:[0,9+25*(1-smooth),0]};
- case 'unload':return {u,lift:Math.max(0,1-u/.55),cargo:Math.max(0,(u-.6)/.4),camera:[21-5*u,13-3*u,25],target:[1,7,0]};
- default:return {u,height:45*u*u,flame:u>.04?1:0,camera:[28,15+36*u*u,40],target:[0,10+45*u*u,0]};
+ case 'unload':return {u,arrived:true,lift:1-ease((u-.08)/.42),loadProgress:ease(u/.08),handoffProgress:ease((u-.5)/.06),depositProgress:ease((u-.92)/.08),cargo:ease((u-.65)/.27),cargoLocation:u<.08?'ship':u<.5?'elevator':u<.56?'handoff':u<.92?'rover':u<1?'deposit':'surface',camera:[21-5*u,13-3*u,25],target:[1,7,0]};
+ case 'return':return {u,height:45*u*u,flame:u>.04&&u<1?1:0,cargoLocation:'surface',lunarOrbit:u===1,camera:[28,15+36*u*u,40],target:[0,10+45*u*u,0]};
 }}
 
-// One marker is one modeled lunar delivery, irrespective of the tanker campaign.
-export function deliveryEvents(run){return run.rows.flatMap(r=>Array.from({length:r.arrivals},(_,i)=>({number:r.flights-r.arrivals+i+1,arrival:r.month,departure:r.month-.85+i/Math.max(1,r.arrivals)*.2})));}
-export function deliveriesAt(events,month){return events.filter(e=>month>=e.departure&&month<e.arrival).map(e=>({...e,progress:(month-e.departure)/(e.arrival-e.departure)}));}
+// One marker may represent a disclosed monthly delivery batch. Seed deliveries
+// happened before the scenario starts; tanker support flights are not counted.
+export function deliveryEvents(run){return Object.freeze(run.rows.filter(r=>r.arrivals>0).map(r=>Object.freeze({number:r.flights,first:r.flights-r.arrivals+1,last:r.flights,count:r.arrivals,arrival:r.month,departure:r.month-.85})));}
+export function deliveriesAt(events,month){if(typeof month!=='number'||!Number.isFinite(month))throw new RangeError('Finite delivery time required');return events.filter(e=>month>=e.departure&&month<e.arrival).map(e=>Object.freeze({...e,progress:(month-e.departure)/(e.arrival-e.departure)}));}

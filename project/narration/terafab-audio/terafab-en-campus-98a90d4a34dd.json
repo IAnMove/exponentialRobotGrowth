@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This is the planned Terafab campus in Texas. The public application proposes co-locating design, masks, wafer fabrication, packaging and integration. The exterior image is a published reference; the interior arrangement we explore is an interpretation. Open the halls or switch to the vertical section to recognize their roles. We will then enter a teaching room and follow a single wafer. The numbers in that room describe our sample, not the project's actual capacity. You can pause, move the camera, read the transcript or return to any chapter using the footer. Reloading preserves your place in the visit.",
+  "duration_ms": 38304,
+  "billed_characters": 610,
+  "sample_rate": 32000,
+  "size_bytes": 614580,
+  "generated_at": "2026-10-03T02:17:27.701294+00:00"
+}

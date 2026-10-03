@@ -3,7 +3,7 @@ import {missionPose} from './mission.js';
 import {visualKit} from './visuals.js';
 const V=a=>new T.Vector3(...a),GOLD=0xffbd73;
 export function buildMission(es,{textures=true}={}){
- const group=new T.Group(),resources=[],own=x=>(resources.push(x),x);
+ const group=new T.Group(),resources=[],own=x=>(resources.push(x),x),parts={};
  const kit=visualKit(own,{textures}),{box,ship,solar,rod,ring,crate}=kit;
  const mat=(c,e=0)=>kit.mat(c,'metal',e),cylinder=kit.cyl;
  const earthmat=own(new T.MeshStandardMaterial({color:0x0d2238,roughness:.9,metalness:0,fog:false,envMapIntensity:0,emissive:0x0c1f33,emissiveIntensity:1}));if(textures)new T.TextureLoader().load('../kardashev/earth-blue-marble.jpg',tx=>{own(tx);tx.colorSpace=T.SRGBColorSpace;earthmat.map=tx;earthmat.emissiveMap=tx;earthmat.emissive.set(0xffffff);earthmat.emissiveIntensity=.1;earthmat.color.set(0xffffff);earthmat.needsUpdate=true;});
@@ -21,35 +21,62 @@ box(launch,[0,.04,0],[13,.3,13],0x67787e,'soil');cylinder(launch,[0,1.3,0],2.8,2
  for(let y=2;y<24;y+=2){rod(launch,[-7,y,-2],[-5,y+2,-2],.05);rod(launch,[-5,y,-2],[-7,y+2,-2],.05);}
  for(const z of [-3,3]){rod(launch,[-6,15,z],[1,15,z],.16);rod(launch,[-6,13,z],[0,15,z],.08);}
  for(let i=0;i<5;i++){ring(launch,[-20+i*3,4.7,-10],1.11,.04,0x6c8c93);rod(launch,[-20+i*3,4,-10],[-20+i*3,.3,-10],.06);}
- const booster=ship(launch,{booster:true}),upper=ship(launch,{stowed:true});
+ const booster=ship(launch,{booster:true}),lunarShip=ship(launch,{stowed:true});
+ lunarShip.group.userData.vehicleId='lunar-hls-01';booster.group.userData.vehicleId='super-heavy-01';
+ const payload=crate(lunarShip.group,[.15,8.0735,0],.85);payload.name='industrial-pallet-01';payload.userData.payloadId=payload.name;
  // Soft billboard particles: atmospheric launch exhaust; lunar ejecta is a thin radial sheet.
  function cloud(g,count,color){const geo=own(new T.PlaneGeometry(1,1));const m=own(new T.ShaderMaterial({transparent:true,depthWrite:false,side:T.DoubleSide,uniforms:{tint:{value:new T.Color(color)},opacity:{value:.35}},vertexShader:'varying vec2 v;void main(){v=uv;vec4 p=modelViewMatrix*vec4(0.,0.,0.,1.);p.xy+=position.xy*vec2(length(modelMatrix[0].xyz),length(modelMatrix[1].xyz));gl_Position=projectionMatrix*p;}',fragmentShader:'varying vec2 v;uniform vec3 tint;uniform float opacity;void main(){float r=length(v-.5)*2.;float a=pow(max(0.,1.-r*r),2.);gl_FragColor=vec4(tint,a*opacity);}'}));return Array.from({length:count},()=>{const p=new T.Mesh(geo,m);p.frustumCulled=false;g.add(p);return p;});}
  const smoke=cloud(launch,40,0xbfc7cd);
- const orbitalEarth=planet(orbit,[0,-70,-20],58,earthmat);orbitalEarth.rotation.set(-1.05,4.4,0);kit.atmosphere(orbit,orbitalEarth,58);const lunarOrbiter=ship(orbit),depot=ship(orbit,{depot:true}),tanker=ship(orbit,{depot:true});lunarOrbiter.group.rotation.z=Math.PI/2;lunarOrbiter.group.position.set(-2,5,0);depot.group.rotation.z=-Math.PI/2;depot.group.position.set(2,5,0);tanker.group.scale.setScalar(.5);tanker.group.rotation.z=Math.PI/2;tanker.group.position.set(14,0,-8);[lunarOrbiter,depot,tanker].forEach(s=>s.burn.visible=false);
-
- const fuel=Array.from({length:20},()=>planet(orbit,[0,0,0],.10,mat(0x87e3c3,2)));
- const transitEarth=planet(crossing,[-17,0,-4],6,earthmat);kit.atmosphere(crossing,transitEarth,6);const transitMoon=new T.Mesh(kit.craterSphere(),kit.moonMaterial());transitMoon.position.set(18,0,0);transitMoon.scale.setScalar(3.4);crossing.add(transitMoon);const curve=new T.CatmullRomCurve3([V([-16,5,-2]),V([-10,12,1]),V([7,11,4]),V([17,3,3])]);const line=new T.Mesh(own(new T.TubeGeometry(curve,100,.035,6,false)),mat(0x4c829f,.2));crossing.add(line);const transit=ship(crossing);transit.group.scale.setScalar(.3);transit.burn.visible=false;
+ const orbitalEarth=planet(orbit,[0,-70,-20],58,earthmat);orbitalEarth.rotation.set(-1.05,4.4,0);kit.atmosphere(orbit,orbitalEarth,58);const depot=ship(orbit,{depot:true}),tanker=ship(orbit,{variant:'tanker',scale:.55,stowed:true});depot.group.position.set(3,0,0);tanker.group.rotation.z=Math.PI/2;[depot,tanker].forEach(s=>s.burn.visible=false);
+ const docking=new T.Group();orbit.add(docking);const portFrom=[1.9,5,0],portTo=[-1.5,5,0];rod(docking,portFrom,portTo,.11,0x718e9c);for(const point of [portFrom,portTo]){const collar=cylinder(docking,point,.19,.15,0xb3cbd1);collar.rotation.z=Math.PI/2;}rod(orbit,[4.1,3.5,0],[4.35,3.5,0],.19,0xb3cbd1);
+ const fuelCurve=new T.LineCurve3(V(portFrom),V(portTo)),fuel=Array.from({length:5},()=>planet(docking,[0,0,0],.10,mat(0x87e3c3,2)));
+ const gauges=new T.Group();orbit.add(gauges);box(gauges,[-4,13.3,2],[4,.22,.12],0x203848);box(gauges,[4,13.3,2],[4,.22,.12],0x203848);const shipLevel=box(gauges,[-6,13.3,2.1],[4,.16,.06],0x87e3c3),depotLevel=box(gauges,[2,13.3,2.1],[4,.16,.06],0xffbd73);for(const level of [shipLevel,depotLevel])level.geometry=own(new T.BoxGeometry(1,1,1).translate(.5,0,0));kit.text(gauges,es?'NAVE':'SHIP',[-4,14.2,2.1],3.3);kit.text(gauges,es?'DEPÓSITO':'DEPOT',[4,14.2,2.1],3.3);kit.text(gauges,es?'FRACCIÓN DEL LOTE ILUSTRATIVO':'FRACTION OF ILLUSTRATIVE BATCH',[0,15.3,2.1],8.4);
+ parts.refuel={docking,portFrom,portTo,curve:fuelCurve,markers:fuel,shipLevel,depotLevel,state:null,quantity:'fraction-of-illustrative-transfer-batch'};
+ const transitEarth=planet(crossing,[-17,0,-4],6,earthmat);kit.atmosphere(crossing,transitEarth,6);const transitMoon=new T.Mesh(kit.craterSphere(),kit.moonMaterial());transitMoon.position.set(18,0,0);transitMoon.scale.setScalar(3.4);crossing.add(transitMoon);const curve=new T.CatmullRomCurve3([V([-16,5,-2]),V([-10,12,1]),V([7,11,4]),V([17,3,3])]);const line=new T.Mesh(own(new T.TubeGeometry(curve,100,.035,6,false)),mat(0x4c829f,.2));crossing.add(line);
 
  kit.terrain(surface);
  const earthrise=planet(surface,[10,26,-85],7,earthmat);earthrise.rotation.y=2.4;kit.atmosphere(surface,earthrise,7);
- const landed=ship(surface),elevator=new T.Group();landed.group.add(elevator);
- box(elevator,[2.4,0,0],[2.4,.13,2.4],0x859aa4);const pallet=crate(elevator,[2.4,.08,0]);
+ const ground=-.25,shipGround=ground-lunarShip.group.userData.footDatum,elevator=new T.Group();lunarShip.group.add(elevator);
+ const elevatorDeck=box(elevator,[2.4,0,0],[2.4,.13,2.4],0x859aa4);
  for(const z of [-1.1,1.1]){rod(elevator,[1.3,.1,z],[3.5,.1,z],.035,0xffc77b);for(const x of [1.3,3.5])rod(elevator,[x,0,z],[x,.4,z],.025);}
- const cable=box(landed.group,[2.1,5,0],[.04,8,.04],0xd2dedf);rod(landed.group,[.9,9.1,0],[3.4,9.1,0],.09);rod(landed.group,[.9,9.8,0],[3.3,9.1,0],.045);cylinder(landed.group,[2.5,9.1,0],.18,.3,0x526678);
+ const cable=box(lunarShip.group,[2.1,5,0],[.04,8,.04],0xd2dedf);const crane=new T.Group();lunarShip.group.add(crane);rod(crane,[.9,9.1,0],[3.4,9.1,0],.09);rod(crane,[.9,9.8,0],[3.3,9.1,0],.045);cylinder(crane,[2.5,9.1,0],.18,.3,0x526678);
  const rover=new T.Group();surface.add(rover);box(rover,[0,.65,0],[2.4,.38,1.8],0xb1bfbe);box(rover,[0,.87,0],[2.3,.1,1.9],0x344654);
  const wheels=[];for(const x of [-.9,0,.9])for(const z of [-1,1]){const axle=cylinder(rover,[x,.38,z],.38,.26,0x3b4650);axle.rotation.x=Math.PI/2;const hub=cylinder(rover,[x,.38,z*1.15],.18,.04,0xbac4c5);hub.rotation.x=Math.PI/2;wheels.push(axle);for(let j=0;j<12;j++){const lug=box(axle,[Math.cos(j*Math.PI/6)*.37,0,Math.sin(j*Math.PI/6)*.37],[.08,.29,.04],0x899497);lug.rotation.y=-j*Math.PI/6;}rod(rover,[x,.65,0],[x,.38,z],.065);}
  rod(rover,[-.95,1,0],[-.95,1.9,0],.04);box(rover,[-.95,1.9,0],[.27,.17,.3],0x22384a);for(const z of [-.65,.65])box(rover,[1.21,.68,z],[.03,.13,.2],0xb7eeea,'metal',1);
- const hauled=crate(rover,[.15,.92,0],.85);
+ const roverLift=new T.Group();rover.add(roverLift);rod(roverLift,[-.8,.885,-.55],[.8,.885,-.55],.035);rod(roverLift,[-.8,.885,.55],[.8,.885,.55],.035);const liftBoom=box(rover,[1,.7,0],[.12,1,.12],0x8098a8);
+ parts.vehicles={booster,lunarShip,depot,tanker,rover};parts.payload={mesh:payload,id:payload.name,location:'ship',worldBottom:0};parts.unload={elevator,elevatorDeck,cable,rover,roverLift,liftBoom,ground,shipGround,bedHeight:.92,roverStationX:4.85};
  const dust=cloud(surface,50,0xb4aaa0);
  for(let i=0;i<28;i++)for(const z of [-1,1])box(surface,[4+i*.37,-.21,z],[.21,.015,.24],0x65666b,'soil');
  // Small deployed instruments and marked cargo pallets, separate from the landing zone.
  for(const x of [15,20]){crate(surface,[x,0,-5],.65);solar(surface,[x,1,-7],3,2);rod(surface,[x,0,-7],[x,1,-7],.06);}
- function update(id,progress){const p=missionPose(id,progress),launching=['liftoff','booster'].includes(id);launch.visible=launching;orbit.visible=id==='refuel';crossing.visible=id==='transfer';surface.visible=['descent','unload','return'].includes(id);booster.group.position.set(0,2.6+(p.height||0),0);upper.group.position.set(id==='booster'?p.separation:0,id==='booster'?p.upper:15.7+(p.height||0),0);booster.burn.visible=!!p.flame;upper.burn.visible=id==='booster';
+ const attach=(parent,p)=>{if(payload.parent!==parent)parent.add(payload);payload.position.copy(V(p));payload.quaternion.identity();payload.scale.setScalar(.85);};
+ function update(id,progress,pose){const p=pose||missionPose(id,progress),launching=['liftoff','booster'].includes(id);launch.visible=launching;orbit.visible=id==='refuel';crossing.visible=id==='transfer';surface.visible=['descent','unload','return'].includes(id);
+  const parent=launching?launch:id==='refuel'?orbit:id==='transfer'?crossing:surface;if(lunarShip.group.parent!==parent)parent.add(lunarShip.group);lunarShip.group.position.set(0,0,0);lunarShip.group.quaternion.identity();lunarShip.group.scale.setScalar(id==='transfer'?.3:1);lunarShip.setStowed(launching||id==='refuel'||id==='transfer');
+  booster.group.position.set(0,2.6+(p.height||0),0);lunarShip.group.position.set(id==='booster'?p.separation:0,id==='booster'?p.upper:15.7+(p.height||0),0);booster.burn.visible=launching&&!!p.flame&&(id!=='booster'||p.u<1);lunarShip.burn.visible=id==='booster'&&!!p.upperIgnited;
   smoke.forEach((m,i)=>{m.visible=id==='liftoff'&&p.u<.65;const q=p.u*26+i*.23;m.position.set(Math.sin(i*2.4)*q,.3+i%5*.36,Math.cos(i*2.4)*q);m.scale.set(3+q*.37,2+q*.2,1);m.material.uniforms.opacity.value=.38*(1-T.MathUtils.smoothstep(p.u,.35,.65));});
-  fuel.forEach((m,i)=>{m.position.set(2-((p.u*3+i/20)%1)*4,5,0);});tanker.group.position.x=16-4*Math.sin(p.u*Math.PI);const q=curve.getPointAt(p.u);transit.group.position.copy(q);transit.group.quaternion.setFromUnitVectors(V([0,1,0]),curve.getTangentAt(p.u));
-  landed.group.position.y=.3+(p.height||0);landed.burn.visible=!!p.flame;elevator.position.y=id==='unload'?.6+7.4*p.lift:8;cable.visible=id==='unload';cable.scale.y=9.1-elevator.position.y;cable.position.y=(9.1+elevator.position.y)/2;elevator.visible=id!=='return';pallet.visible=id!=='unload'||p.u<.6;rover.visible=id==='unload';rover.position.set(2.4+10*(p.cargo||0),0,0);hauled.visible=id==='unload'&&p.u>=.6;wheels.forEach(w=>w.rotation.y=(p.cargo||0)*26);
+  if(id==='refuel'){const r=p.refuel;lunarShip.group.rotation.z=Math.PI/2;lunarShip.group.position.set(-1.5-4*(1-T.MathUtils.smoothstep(p.u,0,.25))-4*r.departProgress,5,0);tanker.group.position.set(18-7*r.tankerApproach,3.5,-10*(1-r.tankerApproach));docking.visible=r.connected;shipLevel.scale.x=4*r.shipLevel;depotLevel.scale.x=4*r.depotLevel;parts.refuel.state=r;
+   fuel.forEach((m,i)=>{const f=r.transferProgress-i*.045;m.visible=r.connected&&r.phase==='transfer'&&f>=0&&f<=1;if(m.visible)m.position.copy(fuelCurve.getPoint(f));});
+  }else fuel.forEach(m=>m.visible=false);
+  if(id==='transfer'){lunarShip.group.position.copy(curve.getPointAt(p.u));lunarShip.group.quaternion.setFromUnitVectors(V([0,1,0]),curve.getTangentAt(p.u));lunarShip.burn.visible=false;}
+  if(surface.visible){lunarShip.group.position.set(0,shipGround+(p.height||0),0);lunarShip.burn.visible=!!p.flame;}
+  elevator.visible=id==='unload';crane.visible=id==='unload';cable.visible=id==='unload';const low=ground+.92-shipGround-.065;elevator.position.y=id==='unload'?low+(8-low)*p.lift:8;cable.scale.y=(9.1-elevator.position.y)/8;cable.position.y=(9.1+elevator.position.y)/2;
+  rover.visible=id==='unload'||id==='return';rover.position.set(4.85+10*(p.cargo|| (id==='return'?1:0)),ground,0);wheels.forEach(w=>w.rotation.y=(p.cargo||0)*26);
+  const deposit=p.depositProgress||0,extend=2.2*T.MathUtils.smoothstep(deposit,0,.45),lower=.92*T.MathUtils.smoothstep(deposit,.45,1);roverLift.position.set(extend,-lower,0);roverLift.visible=id==='unload'&&['rover','deposit'].includes(p.cargoLocation);liftBoom.visible=roverLift.visible;
+  const armBase=V([1,.65,0]),armEnd=V([extend,.885-lower,0]),arm=armEnd.clone().sub(armBase);liftBoom.position.copy(armBase).add(armEnd).multiplyScalar(.5);liftBoom.scale.y=arm.length();liftBoom.quaternion.setFromUnitVectors(V([0,1,0]),arm.normalize());
+  attach(lunarShip.group,[.15,8.0735,0]);payload.visible=true;
+  if(id==='unload'){
+   const location=p.cargoLocation,load=p.loadProgress||0,handoff=p.handoffProgress||0,deposit=p.depositProgress||0;
+   if(location==='ship')attach(lunarShip.group,[.15+(2.4-.15)*load,8.0735,0]);
+   else if(location==='elevator')attach(elevator,[2.4,.0735,0]);
+   else if(location==='handoff')attach(surface,[2.4+(4.85-2.4)*handoff,ground+.92+.0085,0]);
+   else if(location==='rover')attach(rover,[0,.9285,0]);
+   else attach(surface,[14.85+extend,ground+.0085+.92-lower,0]);
+   parts.payload.location=location;
+  }else if(id==='return'){attach(surface,[17.05,ground+.0085,0]);parts.payload.location='surface';}
+  else parts.payload.location='ship';
   dust.forEach((m,i)=>{const force=id==='descent'?T.MathUtils.smoothstep(p.u,.55,.87)*(1-T.MathUtils.smoothstep(p.u,.96,1)):id==='return'?(1-T.MathUtils.smoothstep(p.u,.25,.7))*T.MathUtils.smoothstep(p.u,.04,.1):0;m.visible=force>0;const q=(p.u*5+i/50)%1,r=1+q*22;m.position.set(Math.cos(i*2.4)*r,.12+q*.22,Math.sin(i*2.4)*r);m.scale.set(1+q*5,.12+q*.22,1);m.material.uniforms.opacity.value=force*.25;});
-  [booster,upper,landed].forEach(s=>{const big=s===booster&&id==='liftoff';s.burn.scale.set(big?1.45:1,(.94+.06*Math.sin(p.u*220))*(big?1.7:1),big?1.45:1);s.burn.userData.material.uniforms.phase.value=p.u*25;s.light.visible=s.burn.visible;s.light.intensity=s.burn.visible?24:0;});return p;
+  [booster,lunarShip].forEach(s=>{const big=s===booster&&id==='liftoff';s.burn.scale.set(big?1.45:1,(.94+.06*Math.sin(p.u*220))*(big?1.7:1),big?1.45:1);s.burn.userData.material.uniforms.phase.value=p.u*25;s.light.visible=s.burn.visible;s.light.intensity=s.burn.visible?24:0;});group.updateMatrixWorld(true);parts.payload.worldBottom=new T.Box3().setFromObject(payload).min.y;parts.pose=p;return p;
  }
- return {group,update,dispose(){resources.forEach(r=>r.dispose());}};
+ function subjectObjects(id){if(id==='liftoff')return [booster.group,lunarShip.group];if(id==='booster')return [booster.group];if(id==='refuel')return [lunarShip.group,depot.group,tanker.group,gauges,docking];if(id==='transfer')return [transitEarth,transitMoon,lunarShip.group];return [lunarShip.group,...(id==='unload'?[rover,payload]:[])];}
+ return {group,parts,update,subjectObjects,dispose(){resources.forEach(r=>r.dispose());}};
 }

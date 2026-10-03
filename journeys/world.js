@@ -1,6 +1,20 @@
+import {createNuclearScene,createNuclearWorld} from './nuclear-world.js';
+import {createCellScene,createCellWorld} from './cell-world.js';
+import {createMicrochipScene,createMicrochipWorld} from './microchip-world.js';
+import {createElectricityScene,createElectricityWorld} from './electricity-world.js';
+import {createEvolutionScene,createEvolutionWorld} from './evolution-world.js';
+import {createCarbonScene,createCarbonWorld} from './carbon-world.js';
+import {createIdeasScene,createIdeasWorld} from './ideas-world.js';
 import * as THREE from '../vendor/three.module.js';
 import {poseAt} from './common.js';
 export function createLessonScene(lesson,es){
+ if(lesson.id==='nuclear')return createNuclearScene(lesson,es);
+ if(lesson.id==='cell')return createCellScene(lesson,es);
+ if(lesson.id==='microchip')return createMicrochipScene(lesson,es);
+ if(lesson.id==='electricity')return createElectricityScene(lesson,es);
+ if(lesson.id==='ideas')return createIdeasScene(lesson,es);
+ if(lesson.id==='carbon')return createCarbonScene(lesson,es);
+ if(lesson.id==='evolution')return createEvolutionScene(lesson,es);
  const scene=new THREE.Scene();scene.fog=new THREE.Fog(0x10202d,26,110);scene.add(new THREE.HemisphereLight(0xd2e9ff,0x314339,2.4));const sun=new THREE.DirectionalLight(0xffe7c3,3);sun.position.set(7,15,5);scene.add(sun);
  const resources=[],targets=[],groups=[],own=x=>(resources.push(x),x),color=Number.parseInt(lesson.color.slice(1),16);
  const material=(c,extra={})=>own(new THREE.MeshStandardMaterial({color:c,roughness:.45,metalness:.22,...extra}));
@@ -12,20 +26,27 @@ export function createLessonScene(lesson,es){
  function tube(g,points,r,c,info){const curve=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));return mesh(g,new THREE.TubeGeometry(curve,Math.max(16,points.length*8),r,6,false),[0,0,0],c,info);}
  function pulse(g,points,c){const m=sphere(g,points[0],.14,c,null,{emissive:c,emissiveIntensity:1});return (path,progress)=>{if(path.length<2){m.visible=false;return;}m.visible=true;const f=(progress%1)*(path.length-1),i=Math.floor(f);m.position.set(...path[i]).lerp(new THREE.Vector3(...path[Math.min(path.length-1,i+1)]),f-i);};}
  function group(i){if(!groups[i]){const g=new THREE.Group();g.position.z=-i*16;g.rotation.y=Math.PI/2;scene.add(g);groups[i]=g;}return groups[i];}
- box(scene,[1,-.18,-24],[21,.3,70],0x253b44);for(let z=8;z>-58;z-=2)box(scene,[1,.001,z],[20,.006,.012],0x78909a);for(let x=-8;x<11;x+=2)box(scene,[x,.001,-24],[.012,.006,68],0x647e86);
- const outlines=[];for(let i=0;i<4;i++){box(scene,[0,.09,-i*16],[8,.18,10],0x2b4955);const g=group(i);label(g,lesson.steps[i].title[es?0:1],0,5,0,8);const ring=new THREE.Mesh(own(new THREE.TorusGeometry(4,.04,6,80)),material(color,{emissive:color,emissiveIntensity:.4}));ring.rotation.x=Math.PI/2;ring.position.set(0,.21,-i*16);scene.add(ring);outlines.push(ring);box(scene,[7,.03,-i*16],[.06,.04,14],color);}
- const k={scene,group,box,sphere,cylinder,label,tube,pulse,color,THREE,own};const update=lesson.build(k);
+ box(scene,[1,-.18,-24],[21,.3,70],0x253b44);if(lesson.id!=='internet'){for(let z=8;z>-58;z-=2)box(scene,[1,.001,z],[20,.006,.012],0x78909a);for(let x=-8;x<11;x+=2)box(scene,[x,.001,-24],[.012,.006,68],0x647e86);}
+ const outlines=[];for(let i=0;i<4;i++){box(scene,[0,.09,-i*16],[8,.18,10],0x2b4955);const g=group(i);if(lesson.id!=='internet')label(g,lesson.steps[i].title[es?0:1],0,5,0,8);const ring=new THREE.Mesh(own(new THREE.TorusGeometry(4,.04,6,80)),material(color,{emissive:color,emissiveIntensity:.4}));ring.rotation.x=Math.PI/2;ring.position.set(0,.21,-i*16);ring.visible=lesson.id!=='internet';scene.add(ring);outlines.push(ring);box(scene,[7,.03,-i*16],[.06,.04,14],color);}
+ const k={scene,group,box,sphere,cylinder,label,tube,pulse,color,THREE,own,es};const update=lesson.build(k);
  return {scene,resources,targets,outlines,update};
 }
 
 export function createWorld(host,lesson,es,onInspect){
+ if(lesson.id==='nuclear')return createNuclearWorld(host,lesson,es,onInspect);
+ if(lesson.id==='cell')return createCellWorld(host,lesson,es,onInspect);
+ if(lesson.id==='microchip')return createMicrochipWorld(host,lesson,es,onInspect);
+ if(lesson.id==='electricity')return createElectricityWorld(host,lesson,es,onInspect);
+ if(lesson.id==='ideas')return createIdeasWorld(host,lesson,es,onInspect);
+ if(lesson.id==='carbon')return createCarbonWorld(host,lesson,es,onInspect);
+ if(lesson.id==='evolution')return createEvolutionWorld(host,lesson,es,onInspect);
  const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setClearColor(0x10202d);renderer.toneMapping=THREE.ACESFilmicToneMapping;host.append(renderer.domElement);renderer.domElement.tabIndex=0;
  const {scene,resources,targets,outlines,update}=createLessonScene(lesson,es);
  const camera=new THREE.PerspectiveCamera(60,1,.08,150);camera.rotation.order='YXZ';const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();let state,elapsed=0,phase=0,mode='web';
- function resize(){renderer.setSize(host.clientWidth,host.clientHeight,false);camera.aspect=host.clientWidth/Math.max(1,host.clientHeight);camera.fov=Math.min(108,2*Math.atan(Math.tan(31*Math.PI/180)/Math.min(1,camera.aspect/1.2))*180/Math.PI);camera.updateProjectionMatrix();}const observer=new ResizeObserver(resize);observer.observe(host);resize();
+ function resize(){renderer.setSize(host.clientWidth,host.clientHeight,false);camera.aspect=host.clientWidth/Math.max(1,host.clientHeight);camera.fov=lesson.id==='internet'?50:Math.min(108,2*Math.atan(Math.tan(31*Math.PI/180)/Math.min(1,camera.aspect/1.2))*180/Math.PI);camera.updateProjectionMatrix();}const observer=new ResizeObserver(resize);observer.observe(host);resize();
  return {canvas:renderer.domElement,update(s,i){state=s;phase=i;outlines.forEach((r,j)=>{r.material.emissiveIntensity=j===i?1:.12;});},render(player,dt,animation=true,orbit={yaw:.5,pitch:.4,distance:11},view='web',timeOverride=null){
   mode=view;if(Number.isFinite(timeOverride))elapsed=timeOverride;else if(animation)elapsed+=dt;if(state)update(state,elapsed,phase);
   if(mode==='immersive'){camera.position.set(player.x,1.65,player.z);camera.rotation.set(player.pitch,player.yaw,0,'YXZ');}
-  else{const center=new THREE.Vector3(0,1.9,-phase*16),d=orbit.distance;camera.position.set(Math.cos(orbit.yaw)*Math.cos(orbit.pitch)*d,1.9+Math.sin(orbit.pitch)*d,center.z+Math.sin(orbit.yaw)*Math.cos(orbit.pitch)*d);camera.lookAt(center);}renderer.render(scene,camera);
+  else{const bounds=lesson.viewBounds?.[phase],center=bounds?new THREE.Vector3(bounds.center[2],bounds.center[1],-phase*16-bounds.center[0]):new THREE.Vector3(0,1.9,-phase*16),fit=bounds?Math.max(bounds.height,bounds.width/camera.aspect)*.57/Math.tan(camera.fov*Math.PI/360):0,d=Math.max(orbit.distance,fit);camera.position.set(center.x+Math.cos(orbit.yaw)*Math.cos(orbit.pitch)*d,center.y+Math.sin(orbit.pitch)*d,center.z+Math.sin(orbit.yaw)*Math.cos(orbit.pitch)*d);camera.lookAt(center);}renderer.render(scene,camera);
  },inspect(x,y){const r=renderer.domElement.getBoundingClientRect();pointer.set((x-r.left)/r.width*2-1,1-(y-r.top)/r.height*2);ray.setFromCamera(pointer,camera);const hit=ray.intersectObjects(targets)[0];if(hit&&hit.distance<30)onInspect(hit.object.userData.info);},dispose(){observer.disconnect();resources.forEach(r=>r.dispose());renderer.dispose();},poseAt};
 }

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "En el dormitorio observamos la manta y dos almohadas. La tarea exige alcanzar la tela, extenderla y ordenar las almohadas mediante contactos visibles. La cama conserva su lugar y sus piezas. Es importante distinguir una cama arreglada de ocultar simplemente una mancha o hacer girar toda la manta sin una acción. La representación de la tela es geométrica: no calcula pliegues, tensión ni una estrategia real de agarre. Ya se han mostrado robots haciendo camas en entornos de investigación; trasladar esa capacidad a muchas casas y resolver fallos sin ayuda requiere algo más que esta animación. En nuestra referencia, hacer la cama representa diez minutos activos. La persona realiza las mismas operaciones en el escenario humano, y la delegación puede liberar esos minutos bajo las capacidades y el apoyo que hayas elegido.",
+  "duration_ms": 51480,
+  "billed_characters": 825,
+  "sample_rate": 32000,
+  "size_bytes": 825396,
+  "generated_at": "2026-10-03T00:23:37.478707+00:00"
+}

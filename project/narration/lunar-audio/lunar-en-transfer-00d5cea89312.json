@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "The vehicle leaves Earth orbit, travels for days and maneuvers to reach the Moon. The curve and time are compressed. Neither sizes nor vehicle speed are to scale. What matters is following the same cargo from Earth orbit to its arrival at the Moon.",
+  "duration_ms": 15228,
+  "billed_characters": 248,
+  "sample_rate": 32000,
+  "size_bytes": 245364,
+  "generated_at": "2026-09-27T00:28:28.188962+00:00",
+  "validation": {
+    "audio_sha256": "0d3ef8b56888c2ba337579cdbc29855c63c307d1d967bf7a5ff821afd62f67cf",
+    "text_sha256": "aabb78d7f087efe177564ad8953cb9aeb479be0edfe33e326ef4a90d9de1c78d",
+    "script_sha256": "21c94521938c49a98043bd5cf2c81251cbff0718df0358925c7d7346568678c0",
+    "decoded_duration_seconds": 15.228,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

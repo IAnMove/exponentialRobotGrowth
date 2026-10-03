@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "We start with your question. These cards represent the instructions and messages the application gathers before calling the model. If there is an earlier conversation, it may be included here. The model receives this input, not everything you know or the whole internet. Watch the information enter the same processing path. We will stop at every step.",
+  "duration_ms": 21816,
+  "billed_characters": 352,
+  "sample_rate": 32000,
+  "size_bytes": 350772,
+  "generated_at": "2026-09-20T18:03:50.329185+00:00",
+  "validation": {
+    "audio_sha256": "3c321eeb2043cd14d79408b16f7327ddce12b6de72af7e06b17a3397ddc56779",
+    "text_sha256": "859ceb73ad8de8b6a3527814e41764f4a09be721c1bfde17f66abe2773a53921",
+    "script_sha256": "06afa5fc676ff8dd1971eb927fff331911e96c0e3d0db9968b741a3c99437dc3",
+    "decoded_duration_seconds": 21.816,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 21.816
+  }
+}

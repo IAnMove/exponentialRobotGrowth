@@ -1,0 +1,1 @@
+Nos detenemos antes de emitir la siguiente pieza. Al terminar este paso, solo se añade un token: puede ser una palabra, un fragmento o incluso un espacio.

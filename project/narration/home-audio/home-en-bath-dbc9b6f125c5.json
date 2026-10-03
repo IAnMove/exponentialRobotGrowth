@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "In the bathroom, follow a cloth and six marks on accessible surfaces. Each mark is removed after the cloth visits it. The floor and basin remain. Reaching a surface, maintaining contact and treating it are different actions from displaying an oscillating arm. We make those contacts visible, but do not model disinfection, chemicals, water, forces or electrical safety. The reliable household robot in this scene is an assumption; we do not claim that a consumer machine can complete this entire bathroom unaided today. The human scenario uses the same operations so the comparison is understandable. Twenty minutes is illustrative active work. Counters change when the chore closes, not because a robot moves faster. Pause and approach to check which mark has been treated and which still waits.",
+  "duration_ms": 50292,
+  "billed_characters": 796,
+  "sample_rate": 32000,
+  "size_bytes": 806388,
+  "generated_at": "2026-10-03T00:24:23.498715+00:00"
+}

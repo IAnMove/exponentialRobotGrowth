@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "We pause before emitting the next piece. When this step ends, just one token is added. It may be a word, a fragment, or even a space.",
+  "duration_ms": 10368,
+  "billed_characters": 133,
+  "sample_rate": 32000,
+  "size_bytes": 167604,
+  "generated_at": "2026-09-20T18:04:11.000900+00:00",
+  "validation": {
+    "audio_sha256": "f7b54bf64404b7045874289cdcb070a798e67a074aa0a316a867213b861d7d81",
+    "text_sha256": "5dc0b47ff3a5f61eec801fe1dead0bc5c31a03bf4bd8ab0562f08b976b639418",
+    "script_sha256": "44b3d6a7fc1dfc3e5d7ce0d412f9b9468e3a5e8e1852cbd1e9fab4a163bb2aa7",
+    "decoded_duration_seconds": 10.368,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 10.368
+  }
+}

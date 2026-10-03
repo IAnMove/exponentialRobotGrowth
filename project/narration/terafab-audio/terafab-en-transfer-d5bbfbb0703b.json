@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Etching now removes film through the resist windows. Six of the nine green units remain in the enlarged section; the other three are recorded as removed material. Cleaning then removes the six resist units that still protected the surface. The green pattern remains. The bars distinguish present and removed material, without equating color with real mass. A tool inspects the result. We then condense other operations into layers and connections of an example circuit. This repetition does not represent all recipes, transistors or treatments required to manufacture a real chip. The simple structure lets us follow electrical continuity.",
+  "duration_ms": 41652,
+  "billed_characters": 639,
+  "sample_rate": 32000,
+  "size_bytes": 668148,
+  "generated_at": "2026-10-03T02:17:49.005728+00:00"
+}

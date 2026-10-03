@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Antes de multiplicar fábricas hay que mantenerlas funcionando. La base necesita generación eléctrica, almacenamiento o fuentes complementarias, distribución y control de temperatura. Muchas regiones lunares tienen noches de aproximadamente dos semanas; el lugar concreto importa. En la simulación, la actividad efectiva reduce el ritmo de fabricación. Además, cada tonelada de capacidad industrial exige una potencia supuesta. Cuando alcanzamos el techo de potencia disponible, no podemos activar más equipos, aunque queden componentes en el almacén.",
+  "duration_ms": 33768,
+  "billed_characters": 550,
+  "sample_rate": 32000,
+  "size_bytes": 542004,
+  "generated_at": "2026-09-26T22:49:11.230331+00:00",
+  "validation": {
+    "audio_sha256": "f1a7c752aae2df81d48a66151d6bc12bac43de30aa6ebe08130c1858f07de245",
+    "text_sha256": "6e874d82eed5906a866a65f82f8ab8b1f5fbe0ca31a5deb942af7ea4bf3c3d13",
+    "script_sha256": "2354a7bde7513796693f3e277298ec63aaae2f522ff18c8549521866d7fb4716",
+    "decoded_duration_seconds": 33.768,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

@@ -1,279 +1,120 @@
 import * as THREE from '../../vendor/three.module.js';
-import {GROK1, VISUAL, TOKEN_INTERVAL, snapshot} from './model.js';
-import {createPost, adaptiveScale, pointScaleFor, pointMaterial} from '../fx/fx.js';
+import * as Model from './model.js';
+export const MIND_CHAPTERS=['units','memory','learn','energy'];
+export const MIND_FOCUS=[[-11.6,2.55,0],[-3,2.55,0],[6,2.55,0],[12,2.55,0]];
+export const MIND_BOUNDS=[[-14.2,.55,-1.4,-8.2,4.7,2.05],[-7.6,1,-.7,2.1,4.35,1.3],[3.9,1,-.6,8.3,4.25,1.2],[9.65,1,-.8,14.4,4.3,1.2],[-14.2,.55,-1.6,14.4,4.75,2.05]];
+export const mindOverview={yaw:.1,pitch:.23,distance:10,whole:false};
+export const MIND_STAGE_BOUNDS={query:[-7.55,1.65,-.6,-4.45,4.25,1.1],scores:[-5.65,1.1,-.6,-2.7,4.25,1.1],mix:[-3.9,1.15,-.6,-.8,4.25,1.1],route:[-1.55,1.15,-.6,1.55,4.25,1.2],logits:[-.15,1.15,-.6,2.15,4.25,1.2],emit:[-1.6,1.05,-.6,2.15,4.25,1.5]};
+const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v)),chapterIndex=x=>typeof x==='string'?Math.max(0,MIND_CHAPTERS.indexOf(x)):Math.max(0,Math.min(3,Number(x)||0));
+export const MIND_SOLIDS=[[-14.7,-1.8,-7.9,2],[-7.8,-1.8,2.5,2],[3.6,-1.8,8.7,2],[9.35,-1.8,14.8,2],[-17,-3.9,17,-3.1],...[-12,-3,6,12].map(x=>[x-1.05,3.65,x+1.05,4.95])];
+const inside=(x,z)=>MIND_SOLIDS.some(b=>x>b[0]&&x<b[2]&&z>b[1]&&z<b[3]);
+export function mindPoseAt(i=0){const x=[-12,-3,6,12][i],[tx,ty,tz]=MIND_FOCUS[i],z=6.4;return {x,z,yaw:Math.atan2(x-tx,z-tz),pitch:Math.atan2(ty-1.65,Math.hypot(x-tx,z-tz))};}
+export function restoreMindPose(p){if(!p||!['x','z','yaw','pitch'].every(k=>Number.isFinite(p[k])))return mindPoseAt(1);const q={x:clamp(p.x,-16,16),z:clamp(p.z,-3.8,8),yaw:p.yaw,pitch:clamp(p.pitch,-1.25,1.25)};if(q.z< -3.1)q.z=-3.05;else if(inside(q.x,q.z))q.z=q.z>3?5.05:2.15;return q;}
+export function mindWalk(p,input,dt){const f=input.forward||0,s=input.strafe||0,n=Math.max(1,Math.hypot(f,s)),d=3.5*Math.min(.05,Math.max(0,dt));let x=clamp(p.x+(-Math.sin(p.yaw)*f+Math.cos(p.yaw)*s)/n*d,-16,16),z=clamp(p.z+(-Math.cos(p.yaw)*f-Math.sin(p.yaw)*s)/n*d,-3.8,8);if(inside(x,p.z))x=p.x;if(inside(x,z))z=p.z;return {...p,x,z};}
+const C={cream:0xe9e1ce,steel:0x819597,dark:0x273d49,gold:0xe8c482,pink:0xe0a9c5,blue:0x8bc0e5,green:0x94c7b3,inactive:0x7f929e};
+const number=(v,p=2)=>Number.isFinite(v)?v.toFixed(p):'—',visible=o=>{for(let p=o;p;p=p.parent)if(!p.visible)return false;return true;};
 
-function mulberry32(a) {
-  return function () {
-    a |= 0; a = a + 0x6D2B79F5 | 0;
-    let t = Math.imul(a ^ a >>> 15, 1 | a);
-    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-    return ((t ^ t >>> 14) >>> 0) / 4294967296;
-  };
+export function createMindScene(es=true){
+ const t=(a,b)=>es?a:b,scene=new THREE.Scene();scene.background=new THREE.Color(0xb8c7c7);scene.fog=new THREE.Fog(0xb8c7c7,45,100);
+ const resources=[],resourceSet=new Set(),targets=[],stands=[],own=x=>{if(!resourceSet.has(x)){resourceSet.add(x);resources.push(x);}return x;},release=x=>{if(resourceSet.delete(x)){const i=resources.indexOf(x);if(i>=0)resources.splice(i,1);x.dispose();}},mat=(color,extra={})=>own(new THREE.MeshStandardMaterial({color,roughness:.55,metalness:.08,...extra}));
+ const unitBox=own(new THREE.BoxGeometry(1,1,1)),unitSphere=own(new THREE.SphereGeometry(1,24,16)),unitCylinder=own(new THREE.CylinderGeometry(1,1,1,20));
+ const materials=Object.fromEntries(Object.entries(C).map(([k,v])=>[k,mat(v,k==='steel'?{metalness:.42,roughness:.35}:k==='gold'?{metalness:.30}:{})]));
+ function mesh(g,geometry,material,p=[0,0,0]){const m=new THREE.Mesh(geometry,material);m.position.set(...p);m.castShadow=true;m.receiveShadow=true;g.add(m);return m;}
+ function box(g,p,size,color=C.dark,extra={}){const m=mesh(g,unitBox,color?.isMaterial?color:mat(color,extra),p);m.scale.set(...size);return m;}
+ function ball(g,p,scale,color=C.pink,extra={}){const m=mesh(g,unitSphere,color?.isMaterial?color:mat(color,extra),p);m.scale.set(...(Array.isArray(scale)?scale:[scale,scale,scale]));return m;}
+ function rod(g,a,b,r,material=materials.steel){const p=new THREE.Vector3(...a),q=new THREE.Vector3(...b),m=mesh(g,unitCylinder,material,p.clone().add(q).multiplyScalar(.5).toArray());m.scale.set(r,p.distanceTo(q),r);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),q.sub(p).normalize());return m;}
+ function tube(g,points,r,material=materials.pink){const curve=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p))),m=mesh(g,own(new THREE.TubeGeometry(curve,points.length*5,r,6,false)),material);return {mesh:m,curve};}
+ function instances(g,records,material,geometry=unitSphere){const m=own(new THREE.InstancedMesh(geometry,material,records.length)),dummy=new THREE.Object3D();records.forEach((r,i)=>{dummy.position.set(...r.p);dummy.scale.set(...(Array.isArray(r.s)?r.s:[r.s,r.s,r.s]));dummy.rotation.set(...(r.r||[0,0,0]));dummy.updateMatrix();m.setMatrixAt(i,dummy.matrix);});m.instanceMatrix.needsUpdate=true;m.computeBoundingBox();m.computeBoundingSphere();g.add(m);return m;}
+ function label(g,initial,p,width=2.4,{height=96,bg=true,color='#f7efde',depthTest=true,cacheLimit=96,minWidth=96,maxHeight=Infinity}={}){
+  const material=own(new THREE.SpriteMaterial({transparent:true,depthWrite:false,depthTest})),sprite=new THREE.Sprite(material),cache=new Map();sprite.position.set(...p);g.add(sprite);let last;
+  function set(value){const words=String(value);if(words===last)return;last=words;let entry=cache.get(words);if(!entry){const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d'),lines=words.split('\n');ctx.font='600 54px system-ui';canvas.width=Math.max(minWidth,Math.min(2048,Math.ceil(Math.max(...lines.map(line=>ctx.measureText(line).width))+44)));canvas.height=height;if(bg){ctx.fillStyle='#273d49ed';ctx.fillRect(0,0,canvas.width,height);}ctx.fillStyle=color;ctx.font='600 54px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';lines.forEach((line,i)=>ctx.fillText(line,canvas.width/2,height*(i+.5)/lines.length,canvas.width-32));const texture=own(new THREE.CanvasTexture(canvas));texture.colorSpace=THREE.SRGBColorSpace;const displayWidth=Math.min(width,maxHeight*canvas.width/height);entry={texture,width:displayWidth,height:displayWidth*height/canvas.width};cache.set(words,entry);if(cache.size>cacheLimit){const [key,old]=cache.entries().next().value;cache.delete(key);release(old.texture);}}else{cache.delete(words);cache.set(words,entry);}material.map=entry.texture;material.needsUpdate=true;sprite.scale.set(entry.width,entry.height,1);}set(initial);return {m:sprite,set,cache};
+ }
+ function inspect(m,a,b){m.userData.info=[a,b||a];targets.push(m);return m;}
+ scene.add(new THREE.HemisphereLight(0xfff8e6,0x647c8a,2.5));const sun=new THREE.DirectionalLight(0xffe8d0,3.3);sun.position.set(-7,14,11);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);Object.assign(sun.shadow.camera,{left:-18,right:18,top:10,bottom:-10,near:.1,far:40});sun.shadow.normalBias=.04;scene.add(sun);own(sun.shadow);
+ const floor=box(scene,[0,-.15,1.7],[34,.3,13],materials.cream),wall=box(scene,[0,3.3,-3.5],[34,6.6,.18],mat(0xbac7c5,{roughness:.85})),panels=[];for(let x=-14;x<=14;x+=3.5)panels.push({p:[x,3.7,-3.35],s:[.05,4.6,.05]});instances(scene,panels,materials.steel,unitBox);const light=own(new THREE.MeshBasicMaterial({color:0xfff2d6}));for(let x=-12;x<=12;x+=6){box(scene,[x,5.8,-.5],[3.5,.06,.6],light);rod(scene,[x-1.2,5.8,-.5],[x-1.2,6.3,-.5],.018);rod(scene,[x+1.2,5.8,-.5],[x+1.2,6.3,-.5],.018);}
+ const zoneGroups=Array.from({length:4},()=>{const g=new THREE.Group();scene.add(g);return g;}),annotations=Array.from({length:4},()=>{const g=new THREE.Group();scene.add(g);return g;}),overviewLabelsGroup=new THREE.Group();scene.add(overviewLabelsGroup);
+ function bench(i,x,w){box(zoneGroups[i],[x,.67,0],[w,.18,2.4],materials.dark);box(zoneGroups[i],[x,.82,0],[w+.08,.12,2.5],materials.steel);const legs=[];for(const side of [-1,1])for(const z of [-.8,.8])legs.push({p:[x+side*(w/2-.3),.32,z],s:[.12,.64,.12]});instances(zoneGroups[i],legs,materials.steel,unitBox);}
+ bench(0,-11.3,6.2);bench(1,-2.7,9.4);bench(2,6,4.4);bench(3,12,4.6);
+ const names=es?['UNIDADES','CONTEXTO Y CÁLCULO','PESOS','ENERGÍA']:['UNITS','CONTEXT & COMPUTATION','WEIGHTS','ENERGY'];names.forEach((s,i)=>label(overviewLabelsGroup,s,[MIND_FOCUS[i][0],4.6,-.25],i===1?5:3.7,{bg:false,color:'#344d58',height:80}));
+ // Stable census samples inside a recognizable anatomical analogy. No simulated spikes.
+ const brainGroup=new THREE.Group();brainGroup.position.set(-12.6,2.75,0);zoneGroups[0].add(brainGroup);const cortexGlass=mat(0xe3b8cd,{transparent:true,opacity:.25,depthWrite:false,side:THREE.DoubleSide}),cerebellumGlass=mat(0xe9c998,{transparent:true,opacity:.34,depthWrite:false,side:THREE.DoubleSide}),hemispheres=[],lobes=[],gyri=[];
+ for(const side of [-1,1]){hemispheres.push(ball(brainGroup,[side*.57,.27,0],[.69,1.05,1.05],cortexGlass));for(const [y,z,s] of [[.46,.57,[.68,.61,.61]],[.6,-.47,[.64,.63,.62]],[-.2,-.67,[.58,.63,.55]],[-.3,.32,[.63,.53,.77]]])lobes.push(ball(brainGroup,[side*.65,y,z],s,cortexGlass));for(let k=0;k<7;k++){const p=[];for(let j=0;j<=20;j++){const u=j/20*Math.PI;p.push([side*(.24+.76*Math.sin(u)),-.50+k*.22+.045*Math.sin(u*6+k),Math.cos(u)*(.94-.07*Math.abs(k-3))]);}gyri.push(tube(brainGroup,p,.026,materials.pink).mesh);}}
+ const cerebellum=ball(brainGroup,[0,-.97,-.34],[.77,.47,.61],cerebellumGlass),stem=rod(brainGroup,[0,-1,-.37],[0,-1.72,-.16],.15,materials.cream),sample=(n,center,spread,size)=>Array.from({length:n},(_,i)=>{const y=1-2*(i+.5)/n,a=i*2.399963229728653,r=Math.cbrt((i*.61803398875+.31)%1),s=Math.sqrt(1-y*y);return {p:[center[0]+Math.cos(a)*s*r*spread[0],center[1]+y*r*spread[1],center[2]+Math.sin(a)*s*r*spread[2]],s:size};}),cortexSamples=[...sample(35,[-.57,.27,0],[.56,.92,.92],.038),...sample(35,[.57,.27,0],[.56,.92,.92],.038)],cerebellarSamples=sample(280,[0,-.97,-.34],[.70,.39,.53],.024),pointGeometry=own(new THREE.IcosahedronGeometry(1,0)),corticalPoints=instances(brainGroup,cortexSamples,materials.blue,pointGeometry),cerebellarPoints=instances(brainGroup,cerebellarSamples,materials.gold,pointGeometry),brain={group:brainGroup,hemispheres,lobes,gyri,cerebellum,stem,corticalPoints,cerebellarPoints,sampleCounts:{cortical:70,cerebellar:280},samples:{cortex:cortexSamples,cerebellum:cerebellarSamples},activity:false};
+ inspect(hemispheres[0],t('Hemisferios y pliegues esquemáticos. Los puntos son muestras de un recuento, no descargas neuronales.','Schematic hemispheres and folds. Dots sample a census; they are not neural spikes.'));
+ inspect(cerebellum,t('Cerebelo: menor volumen dibujado y más puntos de muestra. No es una densidad anatómica medida.','Cerebellum: smaller drawn volume with more sample dots. This is not a measured anatomical density.'));
+ label(annotations[0],t('CEREBRO · RECUENTO PUBLICADO','BRAIN · PUBLISHED CENSUS'),[-12.6,4.4,.3],3.1,{height:80});label(annotations[0],t('70 + 280 puntos de muestra\nSin actividad neuronal simulada','70 + 280 sample dots\nNo simulated neural activity'),[-12.6,1.04,1],3,{height:128});
+ const cardGroup=new THREE.Group();cardGroup.position.set(-9.1,2.15,0);zoneGroups[0].add(cardGroup);const board=box(cardGroup,[0,0,0],[1.5,1.45,.1],mat(0x405b60)),chip=box(cardGroup,[0,.04,.15],[.75,.78,.2],materials.dark),pins=[];for(let i=0;i<8;i++)for(const side of [-1,1]){pins.push({p:[side*.48,(i-3.5)*.095,.13],s:[.15,.034,.055]});pins.push({p:[(i-3.5)*.095,side*.50,.13],s:[.034,.15,.055]});}instances(cardGroup,pins,materials.gold,unitBox);label(cardGroup,'Grok-1',[0,.05,.35],.71,{bg:false,height:80});label(annotations[0],t('FICHA HISTÓRICA · MARZO 2024','HISTORICAL CARD · MARCH 2024'),[-9.1,3.86,.35],2.65,{height:80});label(annotations[0],'314 × 10⁹ '+t('parámetros\n8 expertos · 2 activos / token','parameters\n8 experts · 2 active / token'),[-9.1,1.08,.5],2.6,{height:128});const card={group:cardGroup,board,chip,illustration:true};inspect(chip,t('Chip decorativo para la ficha pública de Grok-1. No muestra el hardware ni el reparto físico de sus parámetros.','Decorative chip for the public Grok-1 card. It does not show hardware or physical parameter placement.'));
+ // One causal toy pipeline: the label values always come from frameAt.
+ const attentionGroup=new THREE.Group();zoneGroups[1].add(attentionGroup);box(attentionGroup,[-4.13,2.68,-.32],[6.55,2.88,.14],materials.dark);const attentionLabels=new THREE.Group();annotations[1].add(attentionLabels);const ROWS=12,spacing=.20,rowY=i=>3.78-i*spacing,rows=[];
+ for(const [s,x,w] of [['Q',-6.97,.4],['K',-5.53,.4],['score',-4.37,.79],['softmax',-3.4,.95],['V',-2.2,.4]])label(attentionLabels,s,[x,4.05,.12],w,{height:80,maxHeight:.24});
+ const query=[],queryLabels=[];for(let d=0;d<3;d++){query.push(box(attentionGroup,[-7.03,3.36-d*.4,.04],[.75,.35,.12],mat(C.blue)));queryLabels.push(label(attentionLabels,'—',[-7.03,3.36-d*.4,.18],.65,{bg:false,height:80,color:'#203744'}));}
+ for(let i=0;i<ROWS;i++){const y=rowY(i),row={index:i,group:new THREE.Group(),key:[],value:[],score:null,weight:null,token:null};attentionGroup.add(row.group);row.token=label(row.group,'',[-6.27,y,.12],.64,{bg:false,height:70,maxHeight:.16});for(let d=0;d<3;d++){row.key.push(box(row.group,[-5.77+d*.23,y,.01],[.205,.155,.10],mat(C.blue)));row.value.push(box(row.group,[-2.45+d*.23,y,.01],[.205,.155,.10],mat(C.green)));}row.scoreBar=box(row.group,[-4.62,y,.06],[.04,.13,.10],mat(C.pink));row.weightBar=box(row.group,[-3.68,y,.06],[.04,.13,.10],mat(C.gold));row.scoreText=label(row.group,'—',[-4.18,y,.19],.55,{bg:false,height:70,maxHeight:.16});row.weightText=label(row.group,'—',[-3.11,y,.19],.48,{bg:false,height:70,maxHeight:.16});row.key.forEach(m=>targets.push(m));row.value.forEach(m=>targets.push(m));row.group.visible=false;rows.push(row);}
+ const mix=[],mixLabels=[];for(let d=0;d<3;d++){mix.push(box(attentionGroup,[-1.27,3.2-d*.42,.05],[.75,.35,.16],mat(C.green)));mixLabels.push(label(attentionLabels,'—',[-1.27,3.2-d*.42,.25],.65,{bg:false,height:80,color:'#203744'}));}label(attentionLabels,'Σ aᵢVᵢ',[-1.27,4.05,.2],1.16,{height:80,maxHeight:.24});
+ const readyCaption=label(attentionLabels,t('EJEMPLO CALCULADO · 1 CABEZA · d = 3','COMPUTED TOY · 1 HEAD · d = 3'),[-4.9,1.05,.62],3.8,{height:80,maxHeight:.20}),contextCaption=label(attentionLabels,'',[-5.4,1.38,.55],3,{height:80,maxHeight:.22}),attention={group:attentionGroup,rows,query,queryLabels,mix,mixLabels,labels:attentionLabels,readyCaption,contextCaption,maxRows:ROWS,values:null};
+ const routerGroup=new THREE.Group();zoneGroups[1].add(routerGroup);const routerBlocks=[];for(let i=0;i<8;i++){const x=i%2===0?-.04:.7,y=3.51-Math.floor(i/2)*.5,body=box(routerGroup,[x,y,0],[.59,.34,.38],mat(C.inactive)),caption=label(annotations[1],String(i+1)+'\n—',[x,y,.29],.50,{bg:false,height:128,minWidth:160,color:'#203744'});routerBlocks.push({index:i,mesh:body,caption,score:null,selected:false});inspect(body,t('Expertos de juguete: dos entre ocho seleccionados a partir del vector recibido. No son áreas del cerebro.','Toy experts: two of eight selected from the received vector. These are not brain areas.'));}
+ const routerCaption=label(annotations[1],'ROUTER · 2 / 8',[.33,4.06,.2],1.9,{height:80}),router={group:routerGroup,blocks:routerBlocks,caption:routerCaption,selected:[],scores:[],outputs:null,mixed:null};
+ const probabilityScope=label(annotations[1],t('6 MÁS PROBABLES / 12','TOP 6 / 12'),[1.52,3.86,.2],1.28,{height:80});const outputGroup=new THREE.Group();zoneGroups[1].add(outputGroup);const screen=box(outputGroup,[1.52,2.68,0],[.8,2.14,.16],materials.dark),outputCaption=label(annotations[1],'—',[1.52,3.37,.23],.78,{height:80}),probabilityBars=[];for(let i=0;i<6;i++){const body=box(outputGroup,[1.36,2.97-i*.27,.15],[.025,.09,.035],mat(C.pink)),caption=label(annotations[1],'',[1.56,2.97-i*.27,.21],.72,{bg:false,height:64});probabilityBars.push({mesh:body,caption,value:null});}const tapeLabel=label(annotations[1],'',[-.4,1.3,.92],3.2,{height:80,maxHeight:.20}),output={group:outputGroup,screen,caption:outputCaption,probabilityBars,tapeLabel,emitted:[],value:null,ready:false};
+ const routePoints=[[-7.03,2.36,.65],[-5.52,2.36,.65],[-4.37,2.36,.65],[-3.4,2.36,.65],[-2.2,2.36,.65],[-1.27,2.36,.65],[.33,2.36,.65],[1.52,2.36,.65]],route=tube(zoneGroups[1],routePoints,.025,materials.gold),marker=ball(zoneGroups[1],routePoints[0],.095,C.gold,{emissive:C.gold,emissiveIntensity:.45}),routeStages={query:[0,.18],scores:[.18,.48],mix:[.48,.68],route:[.68,.85],logits:[.85,.94],emit:[.94,1]};
+ // A single logistic parameter; the brain specimen is never changed by this control.
+ const learningGroup=new THREE.Group();zoneGroups[2].add(learningGroup);box(learningGroup,[6,2.65,-.24],[4,2.9,.12],materials.dark);const plotPoints=[];for(let i=0;i<=80;i++){const w=-3+i/80*6;plotPoints.push([4.5+i/80*3,1.72+(1/(1+Math.exp(-w)))*1.55,.08]);}const curve=tube(learningGroup,plotPoints,.024,materials.pink);rod(learningGroup,[4.5,1.69,.1],[7.5,1.69,.1],.015);rod(learningGroup,[4.5,1.69,.1],[4.5,3.27,.1],.015);const weightPoint=ball(learningGroup,[5.4,2,.15],.08,C.gold,{emissive:C.gold,emissiveIntensity:.42}),arrow=rod(learningGroup,[5.4,1.90,.27],[5.4,1.91,.27],.025,materials.gold),weightBefore=box(learningGroup,[5.22,1.17,.35],[.7,.22,.4],mat(C.blue)),weightAfter=box(learningGroup,[6.8,1.17,.35],[.7,.22,.4],mat(C.pink));
+ const lockGroup=new THREE.Group();learningGroup.add(lockGroup);mesh(lockGroup,own(new THREE.TorusGeometry(.24,.043,8,28,Math.PI)),materials.gold,[6,3.37,.18]);box(lockGroup,[6,3.23,.18],[.5,.32,.16],materials.gold);
+ let plotBefore=null;const plotAxis={min:-3,max:3};const axisLabels=[label(annotations[2],'-3',[4.5,1.55,.30],.38,{bg:false,height:70}),label(annotations[2],'3',[7.5,1.55,.30],.38,{bg:false,height:70})];
+ const probabilityGuide=rod(learningGroup,[6,2.5,.05],[7.55,2.5,.05],.007,materials.steel),probabilityAxis=label(annotations[2],'p = σ(w)',[4.13,2.60,.18],.42,{height:80,maxHeight:.16}),probabilityCaption=label(annotations[2],'p = —',[7.88,2.5,.30],.60,{height:80,maxHeight:.20});
+ label(annotations[2],'0',[4.31,1.72,.18],.18,{bg:false,height:70,maxHeight:.12});label(annotations[2],'1',[4.31,3.27,.18],.18,{bg:false,height:70,maxHeight:.12});const weightAxis=label(annotations[2],'w',[7.87,1.45,.18],.18,{bg:false,height:70,maxHeight:.12});
+ const modeCaption=label(annotations[2],t('INFERENCIA · PESOS QUIETOS','INFERENCE · FROZEN WEIGHTS'),[6,3.95,.3],3.65,{height:80}),trainingCaption=label(annotations[2],'',[6,1.60,.5],2.4,{height:80,maxHeight:.30}),beforeCaption=label(annotations[2],'',[5.22,1.02,.65],1.45,{height:80,maxHeight:.28}),afterCaption=label(annotations[2],'',[6.8,1.02,.65],1.45,{height:80,maxHeight:.28}),weights={group:learningGroup,curve:curve.mesh,weightPoint,arrow,before:weightBefore,after:weightAfter,lock:lockGroup,modeCaption,trainingCaption,beforeCaption,afterCaption,weightAxis,probabilityAxis,probabilityCaption,probabilityGuide,probability:null,value:null};
+ label(annotations[2],t('SIGMOIDE · EJEMPLO CALCULADO','SIGMOID · COMPUTED TOY'),[6,3.62,.18],2.95,{height:80});inspect(weightPoint,t('Un parámetro logístico de juguete. Inferencia lo mantiene fijo; entrenamiento calcula probabilidad, pérdida, gradiente y actualización. No simula Grok ni aprendizaje cerebral.','One toy logistic parameter. Inference keeps it fixed; training computes probability, loss, gradient and an update. It does not simulate Grok or brain learning.'));
+ // Whole-organ energy estimate. No invented inference energy or zero-valued model bar.
+ const energyGroup=new THREE.Group();zoneGroups[3].add(energyGroup);const tank=box(energyGroup,[11.05,2.37,0],[1.03,2.78,.6],mat(0xc9e0df,{transparent:true,opacity:.23,depthWrite:false,side:THREE.DoubleSide})),fill=box(energyGroup,[11.05,1.07,0],[.83,.03,.44],mat(C.gold,{emissive:C.gold,emissiveIntensity:.18}));for(let i=0;i<5;i++){box(energyGroup,[11.73,1+i*.66,.1],[.18,.015,.04],materials.steel);label(annotations[3],String(i*300)+' J',[12.13,1+i*.66,.25],.67,{bg:false,height:70});}
+ const server=box(energyGroup,[13.4,2.2,0],[1.14,2.38,.7],materials.dark),vents=[];for(let i=0;i<8;i++)vents.push({p:[13.4,1.48+i*.2,.37],s:[.86,.065,.03]});instances(energyGroup,vents,materials.steel,unitBox);label(annotations[3],'?',[13.4,3.3,.41],.44,{bg:false,height:80});const energyCaption=label(annotations[3],'',[11.05,4,.3],2.65,{height:128}),unknownCaption=label(annotations[3],t('MODELO · JULIOS NO PUBLICADOS\nSin coste supuesto por respuesta','MODEL · JOULES NOT PUBLISHED\nNo assumed cost per reply'),[13.37,1,.52],2.13,{height:128}),energy={group:energyGroup,tank,fill,server,caption:energyCaption,unknownCaption,joules:null,watts:20,seconds:null};
+ inspect(fill,t('Estimación de orden para todo el cerebro: aproximadamente 20 W multiplicados por el intervalo. No es la energía específica de una frase.','Whole-brain order estimate: approximately 20 W multiplied by the interval. This is not the specific energy of a sentence.'));inspect(server,t('Sin un dato publicado comparable, el modelo no recibe una cifra inventada de julios ni una barra en cero.','Without comparable published data, the model has no invented joule figure or zero-valued bar.'));
+ const groupingGroup=new THREE.Group();zoneGroups[0].add(groupingGroup);const groupingTiles=[],groupFrames=[];box(groupingGroup,[-11.5,.92,1.47],[5.15,.10,.50],materials.dark);
+ for(let i=0;i<8;i++){const x=-13.6+i*.6,body=box(groupingGroup,[x,.99,1.47],[.42,.075,.34],materials.cream),symbol=label(groupingGroup,String.fromCharCode(65+i),[x,1.09,1.55],.23,{bg:false,color:'#203744',height:80});groupingTiles.push({index:i,mesh:body,symbol,label:String.fromCharCode(65+i)});}
+ for(let i=0;i<8;i++){const left=box(groupingGroup,[0,1.045,1.28],[.025,.025,.40],materials.gold),right=box(groupingGroup,[0,1.045,1.28],[.025,.025,.40],materials.gold),top=box(groupingGroup,[0,1.045,1.26],[.50,.025,.025],materials.gold),bottom=box(groupingGroup,[0,1.045,1.68],[.50,.025,.025],materials.gold);groupFrames.push({left,right,top,bottom,items:[]});}
+ const groupingCaption=label(annotations[0],t('ANALOGÍA HUMANA · 8 FICHAS','HUMAN ANALOGY · 8 TILES'),[-9.3,.70,1.90],2.1,{height:128,maxHeight:.20}),groupingTray={group:groupingGroup,tiles:groupingTiles,frames:groupFrames,caption:groupingCaption,groups:[],grouped:false,scope:'illustrative-grouping-not-memory-performance'};
+ inspect(groupingTiles[0].mesh,'Ocho símbolos se pueden agrupar en cuatro parejas. Es una analogía de organización; no predice qué recordará una persona.','Eight symbols can be grouped into four pairs. This is an organization analogy; it does not predict what a person will remember.');
+ const standsGroup=new THREE.Group();scene.add(standsGroup);for(let i=0;i<4;i++){const x=[-12,-3,6,12][i],z=4.3;box(standsGroup,[x,.48,z],[1.55,.96,.65],materials.dark);box(standsGroup,[x,1,z],[1.7,.08,.79],materials.steel);const button=box(standsGroup,[x,1.13,z+.1],[.74,.18,.42],mat(C.gold,{emissive:C.gold,emissiveIntensity:.35}));button.userData.action=i;targets.push(button);stands.push(button);label(standsGroup,String(i+1)+' · '+(i===1?t('CONTEXTO','CONTEXT'):names[i]),[x,.63,z+.34],1.4,{height:80});label(standsGroup,t('▶ ESCUCHAR','▶ LISTEN'),[x,1.28,z+.18],.8,{height:80});}
+ let lastFrame,activeChapter=0;
+ function update(frame,chapter=frame?.chapter??'memory',whole=false,immersive=false){
+  if(!frame)return;lastFrame=frame;activeChapter=chapterIndex(chapter);const a=frame.attention||{},prefix=frame.prefix||[],n=Math.min(ROWS,a.keys?.length||0),ready=a.ready||{},queryReady=!!ready.query,scoresReady=!!ready.scores,mixReady=!!ready.mixed,routerReady=!!frame.router?.ready,logitsReady=!!frame.logitsReady,phase=frame.phase||'query';
+  attention.values=a;attention.rowIndices=Array.from({length:n},(_,i)=>a.keyPositions?.[i]??i);attention.queryValue=queryReady?a.query:null;attention.mixed=mixReady?a.mixed:null;
+  query.forEach((m,d)=>{m.material.color.setHex((a.query?.[d]||0)>=0?C.blue:C.pink);m.visible=queryReady;queryLabels[d].m.visible=queryReady;queryLabels[d].set(number(a.query?.[d]));m.userData.value=queryReady?a.query[d]:null;});
+  rows.forEach((row,i)=>{row.group.visible=i<n;row.sourceIndex=a.keyPositions?.[i]??i;row.keyValues=ready.keys?a.keys?.[i]||null:null;row.valueValues=ready.values?a.values?.[i]||null:null;row.score=scoresReady?(a.scores?.[i]??null):null;row.weight=ready.weights?(a.weights?.[i]??null):null;row.token.set(prefix[i]?.label||String(i+1));row.key.forEach((m,d)=>{const v=row.keyValues?.[d]??null;m.userData.value=v;m.material.color.setHex(v===null?C.inactive:v>=0?C.blue:C.pink);m.userData.info=['K · posición '+row.sourceIndex+' · componente '+(d+1)+' = '+number(v),'K · position '+row.sourceIndex+' · component '+(d+1)+' = '+number(v)];m.material.emissive.setHex(C.blue);m.material.emissiveIntensity=v===null?0:.08+.10*Math.min(1,Math.abs(v));});row.value.forEach((m,d)=>{const v=row.valueValues?.[d]??null;m.userData.value=v;m.material.color.setHex(v===null?C.inactive:v>=0?C.green:C.pink);m.userData.info=['V · posición '+row.sourceIndex+' · componente '+(d+1)+' = '+number(v),'V · position '+row.sourceIndex+' · component '+(d+1)+' = '+number(v)];m.material.emissive.setHex(C.green);m.material.emissiveIntensity=mixReady?.08+.10*Math.min(1,Math.abs(v||0)):0;});row.scoreBar.visible=scoresReady;row.weightBar.visible=!!ready.weights;row.scoreText.m.visible=scoresReady;row.weightText.m.visible=!!ready.weights;const sw=.3*Math.min(1,Math.abs(row.score||0)/3),ww=.45*Math.max(0,row.weight||0);row.scoreBar.scale.x=Math.max(.015,sw);row.scoreBar.position.x=-4.64+sw/2;row.weightBar.scale.x=Math.max(.012,ww);row.weightBar.position.x=-3.72+ww/2;row.scoreText.set(number(row.score));row.weightText.set(number(row.weight,3));});
+  mix.forEach((m,d)=>{m.visible=mixReady;mixLabels[d].m.visible=mixReady;mixLabels[d].set(number(a.mixed?.[d]));m.userData.value=mixReady?a.mixed[d]:null;});contextCaption.set((a.sampled?t('Filas representativas · ','Representative rows · '):t('Prefijo causal · ','Causal prefix · '))+n+' / '+(a.fullPositionCount??prefix.length));
+  const r=frame.router||{};router.selected=routerReady?[...(r.selected||[])]:[];router.scores=routerReady?r.scores||[]:[];router.outputs=routerReady?r.outputs||null:null;router.mixed=routerReady?r.mixed||null:null;routerBlocks.forEach((record,i)=>{record.score=routerReady?r.scores?.[i]??null:null;record.selected=routerReady&&router.selected.includes(i);record.mesh.material.color.setHex(record.selected?C.pink:C.inactive);record.mesh.material.emissive.setHex(C.pink);record.mesh.material.emissiveIntensity=record.selected?.34:0;record.caption.set(String(i+1)+'\n'+(routerReady?number(record.score):'—'));});routerCaption.set('ROUTER · '+(routerReady?router.selected.map(i=>i+1).join(' + '):'2 / 8'));
+  const probabilities=frame.probabilities||[],probabilityRanking=probabilities.map((v,i)=>i).sort((a,b)=>probabilities[b]-probabilities[a]||a-b),predictionReady=!!frame.output?.ready;output.value=predictionReady?frame.output.label:null;output.ready=predictionReady;output.emitted=[...(frame.emitted||[])];outputCaption.set(predictionReady?frame.output.label:t('Pendiente','Pending'));probabilityBars.forEach((record,i)=>{const id=probabilityRanking[i],v=probabilities[id];record.index=id;record.value=logitsReady?v:null;record.mesh.visible=logitsReady&&Number.isFinite(v);record.caption.m.visible=record.mesh.visible;const w=.52*Math.max(0,v||0);record.mesh.scale.x=Math.max(.012,w);record.mesh.position.x=1.14+w/2;record.caption.set((Model.TOY_VOCAB?.[id]||String(id+1))+' '+number(record.value,2));});tapeLabel.set(output.emitted.join(' ')||t('Aún no hay tokens emitidos','No emitted tokens yet'));
+  const ranges={...routeStages,values:routeStages.mix},range=ranges[phase]||ranges.query,p=clamp(frame.stageProgress??0),u=range[0]+(range[1]-range[0])*p;marker.visible=frame.mode!=='learn'&&!!frame.inferenceActive;marker.position.copy(route.curve.getPoint(u));marker.material.color.setHex(phase==='route'?C.pink:phase==='values'?C.green:C.gold);route.mesh.visible=frame.mode!=='learn';marker.userData.phase=phase;marker.userData.progress=p;marker.userData.value=frame.packets?.find(packet=>packet.active)?.value??null;
+  const tr=frame.training||{},before=tr.before??-1.2,after=tr.after??null;if(plotBefore!==before){plotBefore=before;plotAxis.min=before-3;plotAxis.max=before+3;const p=[];for(let i=0;i<=80;i++){const w=plotAxis.min+i/80*6;p.push(new THREE.Vector3(4.5+i/80*3,1.72+(1/(1+Math.exp(-w)))*1.55,.08));}const nextCurve=new THREE.CatmullRomCurve3(p);release(curve.mesh.geometry);curve.mesh.geometry=own(new THREE.TubeGeometry(nextCurve,p.length*5,.024,6,false));curve.curve=nextCurve;axisLabels[0].set(number(plotAxis.min,1));axisLabels[1].set(number(plotAxis.max,1));}weights.axis={...plotAxis};const current=frame.mode==='learn'&&Number.isFinite(after)?after:before,prob=1/(1+Math.exp(-current)),x=4.5+(current-plotAxis.min)/6*3;weights.value=current;weights.probability=prob;const probabilityY=1.72+prob*1.55;weightPoint.position.set(x,probabilityY,.15);weightPoint.userData.probability=prob;probabilityCaption.set('p = '+number(prob));probabilityCaption.m.position.y=probabilityY;probabilityGuide.position.set((x+7.55)/2,probabilityY,.05);probabilityGuide.scale.set(.007,Math.max(.01,7.55-x),.007);probabilityGuide.rotation.z=-Math.PI/2;const xb=4.5+(before-plotAxis.min)/6*3,xa=4.5+((after??before)-plotAxis.min)/6*3;arrow.position.set((xb+xa)/2,1.89,.28);arrow.scale.set(.025,Math.abs(xa-xb),.025);arrow.rotation.z=-Math.PI/2;arrow.visible=frame.mode==='learn'&&Number.isFinite(after);weightAfter.visible=Number.isFinite(after)&&frame.mode==='learn';lockGroup.visible=frame.mode!=='learn';modeCaption.set(frame.mode==='learn'?t('ENTRENAMIENTO · 1 PESO DE JUGUETE','TRAINING · 1 TOY WEIGHT'):t('INFERENCIA · PESOS QUIETOS','INFERENCE · FROZEN WEIGHTS'));beforeCaption.set('w = '+number(before));afterCaption.set(after===null?t('Pendiente','Pending'):'w′ = '+number(after));trainingCaption.set(frame.mode!=='learn'?'Δw = 0':Number.isFinite(tr.delta)?'Δw = '+number(tr.delta):Number.isFinite(tr.gradient)?'∂L/∂w = '+number(tr.gradient):Number.isFinite(tr.loss)?'L = '+number(tr.loss):Number.isFinite(tr.probability)?'σ(w) = '+number(tr.probability):'σ → L → ∂L → Δw');
+  const b=frame.brain||{},human=b.human||{},groups=human.groups||[['A'],['B'],['C'],['D'],['E'],['F'],['G'],['H']];groupingTray.groups=groups.map(g=>[...g]);groupingTray.grouped=!!human.grouped;groupFrames.forEach((r,i)=>{r.items=groups[i]||[];for(const m of [r.left,r.right,r.top,r.bottom])m.visible=i<groups.length;if(!r.items.length)return;const indexes=r.items.map(c=>String(c).charCodeAt(0)-65),min=-13.6+Math.min(...indexes)*.6-.255,max=-13.6+Math.max(...indexes)*.6+.255;r.left.position.x=min;r.right.position.x=max;r.top.position.x=r.bottom.position.x=(min+max)/2;r.top.scale.x=r.bottom.scale.x=max-min;});groupingCaption.set(t('ANALOGÍA HUMANA · ','HUMAN ANALOGY · ')+groups.length+' '+t('grupos','groups')+'\n'+t('Sin predicción de recuerdo','No memory-performance prediction'));const seconds=b.elapsedSeconds??0,joules=b.energyJoules??0,watts=b.watts??20,h=2.64*clamp(joules/1200);energy.joules=joules;energy.seconds=seconds;energy.watts=watts;fill.scale.y=Math.max(.015,h);fill.position.y=1+h/2;energyCaption.set('≈ '+number(watts,0)+' W × '+number(seconds,1)+' s\n≈ '+number(joules,0)+' J '+t('estimados','estimated'));
+  annotations.forEach((g,i)=>g.visible=!whole&&i===activeChapter);overviewLabelsGroup.visible=whole;standsGroup.visible=immersive;stands.forEach((button,i)=>button.material.emissiveIntensity=i===activeChapter?.7:.18);
+ }
+ scene.updateMatrixWorld(true);
+ return {scene,resources,targets,stands,standsGroup,parts:{floor,wall,brain,card,attention,router,output,weights,energy,marker,route,groupingTray},brain,card,attention,router,output,weights,energy,marker,route,groupingTray,annotations,zoneGroups,overviewLabelsGroup,outlines:[],focus:MIND_FOCUS,bounds:MIND_BOUNDS,solids:MIND_SOLIDS,update,get state(){return lastFrame;},get chapter(){return activeChapter;}};
 }
-function inBall(rng) {
-  const u = rng(), v = rng(), th = 2 * Math.PI * u, ph = Math.acos(2 * v - 1), r = Math.cbrt(rng());
-  return [r * Math.sin(ph) * Math.cos(th), r * Math.cos(ph), r * Math.sin(ph) * Math.sin(th)];
+export function mindFraming(chapter=0,orbit={},aspect=1,fov=46,frame){
+ const phase=chapterIndex(chapter),whole=orbit.whole===true,stage=frame?.phase==='values'?'mix':frame?.phase,bounds=whole?MIND_BOUNDS[4]:phase===1&&!orbit.zoneOverview&&MIND_STAGE_BOUNDS[stage]?MIND_STAGE_BOUNDS[stage]:MIND_BOUNDS[phase],center=new THREE.Vector3((bounds[0]+bounds[3])/2,(bounds[1]+bounds[4])/2,(bounds[2]+bounds[5])/2),yaw=orbit.yaw??mindOverview.yaw,pitch=orbit.pitch??mindOverview.pitch,direction=new THREE.Vector3(Math.sin(yaw)*Math.cos(pitch),Math.sin(pitch),Math.cos(yaw)*Math.cos(pitch)),right=new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw)),up=new THREE.Vector3(-Math.sin(yaw)*Math.sin(pitch),Math.cos(pitch),-Math.cos(yaw)*Math.sin(pitch)),tan=Math.tan(fov*Math.PI/360);let distance=2.2;
+ for(const x of [bounds[0],bounds[3]])for(const y of [bounds[1],bounds[4]])for(const z of [bounds[2],bounds[5]]){const p=new THREE.Vector3(x,y,z).sub(center),depth=p.dot(direction);distance=Math.max(distance,depth+Math.abs(p.dot(right))/(tan*Math.max(.1,aspect)),depth+Math.abs(p.dot(up))/tan);}distance*=1.1*(orbit.distance??10)/10;return {center,distance,direction,bounds};
 }
-
-export function createMindWorld(host) {
-  const renderer = new THREE.WebGLRenderer({antialias: false, powerPreference: 'high-performance'});
-  let dpr = Math.min(devicePixelRatio || 1, 1.75);
-  renderer.setPixelRatio(dpr);
-  host.append(renderer.domElement);
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x05040a);
-  scene.fog = new THREE.FogExp2(0x05040a, 0.022);
-  const pointScale = {value: 400};
-  scene.add(new THREE.HemisphereLight(0xc9d4ff, 0x1a1020, 0.55));
-  const key = new THREE.DirectionalLight(0xfff1e4, 1.15);
-  key.position.set(4, 8, 6);
-  scene.add(key);
-
-  const rng = mulberry32(20260321);
-  const dummy = new THREE.Object3D();
-  const color = new THREE.Color();
-  function cloud(count, center, spread, seedShift) {
-    const local = mulberry32(seedShift);
-    const mesh = new THREE.InstancedMesh(
-      new THREE.SphereGeometry(1, 10, 8),
-      new THREE.MeshStandardMaterial({color: 0xffffff, roughness: 0.62, metalness: 0.04}),
-      count
-    );
-    const points = [];
-    for (let i = 0; i < count; i++) {
-      const p = inBall(local);
-      const x = center[0] + p[0] * spread[0], y = center[1] + p[1] * spread[1], z = center[2] + p[2] * spread[2];
-      const s = 0.055 + rng() * 0.04;
-      dummy.position.set(x, y, z);
-      dummy.scale.setScalar(s);
-      dummy.rotation.set(0, 0, 0);
-      dummy.updateMatrix();
-      mesh.setMatrixAt(i, dummy.matrix);
-      points.push(new THREE.Vector3(x, y, z));
-    }
-    mesh.instanceMatrix.needsUpdate = true;
-    mesh.frustumCulled = false;
-    scene.add(mesh);
-    return {mesh, points};
-  }
-  const cerebellum = cloud(VISUAL.cerebellar, [-6.15, 0.05, 0], [2.7, 1.45, 2.15], 11);
-  const cortex = cloud(VISUAL.cortical, [-5.7, 2.85, 0.15], [1.15, 1.7, 1.15], 29);
-  // Spikes: every neuron has a glow sprite whose brightness decays after it fires.
-  function spikes(group, color, size) {
-    const n = group.points.length, geo = new THREE.BufferGeometry(), pos = new Float32Array(n * 3);
-    group.points.forEach((p, i) => pos.set([p.x, p.y, p.z], i * 3));
-    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    geo.setAttribute('aSize', new THREE.BufferAttribute(new Float32Array(n).fill(size), 1));
-    geo.setAttribute('aAlpha', new THREE.BufferAttribute(new Float32Array(n), 1));
-    const pts = new THREE.Points(geo, pointMaterial(pointScale, color, 2.8));
-    pts.frustumCulled = false; scene.add(pts);
-    return {pts, level: new Float32Array(n), alpha: geo.attributes.aAlpha};
-  }
-  const cerebellumSpikes = spikes(cerebellum, 0xffa070, .42), cortexSpikes = spikes(cortex, 0xbcd8ff, .5);
-  // Cortical neighbours, used to propagate activity as travelling waves.
-  const neighbours = cortex.points.map((p, i) => cortex.points.map((q, j) => j).filter(j => j !== i && p.distanceTo(cortex.points[j]) < 0.75).slice(0, 5));
-
-  const linkPos = [];
-  cortex.points.forEach((p, i) => {
-    for (let j = i + 1; j < cortex.points.length && linkPos.length < 80 * 6; j++) {
-      if (p.distanceTo(cortex.points[j]) < 0.72) linkPos.push(p.x, p.y, p.z, cortex.points[j].x, cortex.points[j].y, cortex.points[j].z);
-    }
-  });
-  scene.add(new THREE.LineSegments(
-    new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(linkPos, 3)),
-    new THREE.LineBasicMaterial({color: new THREE.Color(0x8eb6de).multiplyScalar(1.3), transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending, depthWrite: false})
-  ));
-
-  const dim = {cerebellum: new THREE.Color(0x6a4038), cortex: new THREE.Color(0x314864)};
-  const hot = {cerebellum: new THREE.Color(0xffb089), cortex: new THREE.Color(0xd5e8ff)};
-  // About one neuron in twelve is active at a time, as before; activity now arrives in spikes that fade.
-  function tintCloud(group, name, clock, motion, sp, dt = 0, links = null) {
-    const fraction = 12, n = group.points.length;
-    for (let i = 0; i < n; i++) {
-      const on = motion ? Math.floor(clock * 2.4 + i * 0.37) % fraction === 0 : i % fraction === 0;
-      if (on && sp.level[i] < .5) { sp.level[i] = 1; if (links && motion) for (const j of links[i]) sp.level[j] = Math.max(sp.level[j], .55); }
-      sp.level[i] = motion ? Math.max(0, sp.level[i] - dt * 2.2) : (on ? 1 : 0);
-      sp.alpha.setX(i, sp.level[i]);
-      group.mesh.setColorAt(i, color.copy(dim[name]).lerp(hot[name], sp.level[i]));
-    }
-    sp.alpha.needsUpdate = true;
-    group.mesh.instanceColor.needsUpdate = true;
-  }
-
-  const layers = [];
-  for (let i = 0; i < VISUAL.layers; i++) {
-    const mesh = new THREE.Mesh(
-      new THREE.BoxGeometry(3.15, 0.16, 1.35),
-      new THREE.MeshStandardMaterial({color: 0x7f93b8, emissive: 0x243044, roughness: 0.18, metalness: 0.5, transparent: true, opacity: 0.85})
-    );
-    mesh.position.set(5.55, -1.15 + i * 0.48, 0);
-    scene.add(mesh);
-    layers.push(mesh);
-  }
-  const experts = [];
-  for (let i = 0; i < VISUAL.experts; i++) {
-    const lit = i < VISUAL.activeExperts;
-    const mesh = new THREE.Mesh(
-      new THREE.BoxGeometry(0.34, 0.34, 0.34),
-      new THREE.MeshStandardMaterial({
-        color: lit ? 0xf0b4c4 : 0x3a4254,
-        emissive: lit ? 0x7a3148 : 0x000000,
-        emissiveIntensity: lit ? 1.6 : 0,
-        roughness: 0.4
-      })
-    );
-    mesh.position.set(8.05, -1.05 + i * 0.46, 0.9);
-    scene.add(mesh);
-    experts.push(mesh);
-  }
-
-  const tokenGeo = new THREE.SphereGeometry(0.13, 16, 12);
-  const tokens = [];
-  const tokenAt = [];
-  for (let i = 0; i < VISUAL.tokens; i++) {
-    const mesh = new THREE.Mesh(tokenGeo, new THREE.MeshStandardMaterial({color: 0x2c3344, emissive: 0x000000, roughness: 0.45}));
-    mesh.position.set(5.55, -2.15, (i - (VISUAL.tokens - 1) / 2) * 0.42);
-    scene.add(mesh);
-    tokens.push(mesh);
-    tokenAt.push(mesh.position.clone());
-  }
-  const attnMax = VISUAL.tokens * 2;
-  const attnPos = new Float32Array(attnMax * 3);
-  const attnGeo = new THREE.BufferGeometry();
-  attnGeo.setAttribute('position', new THREE.BufferAttribute(attnPos, 3));
-  attnGeo.setDrawRange(0, 0);
-  const attn = new THREE.LineSegments(attnGeo, new THREE.LineBasicMaterial({color: new THREE.Color(0xf0b4c4).multiplyScalar(1.8), transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending, depthWrite: false}));
-  // A glowing activation climbs the layer stack while a token is computed.
-  const climber = new THREE.Points(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute([0, 0, 0], 3)).setAttribute('aSize', new THREE.Float32BufferAttribute([.9], 1)).setAttribute('aAlpha', new THREE.Float32BufferAttribute([1], 1)), pointMaterial(pointScale, 0xffc0d2, 3));
-  climber.frustumCulled = false; scene.add(climber);
-  scene.add(attn);
-
-  const track = new THREE.Mesh(new THREE.BoxGeometry(3.4, 0.05, 0.12), new THREE.MeshBasicMaterial({color: 0x3a3344}));
-  track.position.set(5.55, -2.62, 0);
-  scene.add(track);
-  const fill = new THREE.Mesh(new THREE.BoxGeometry(3.4, 0.09, 0.16), new THREE.MeshBasicMaterial({color: 0xf0b4c4}));
-  fill.position.set(5.55, -2.62, 0);
-  scene.add(fill);
-  const quiet = new THREE.Mesh(new THREE.TorusGeometry(0.26, 0.045, 10, 22), new THREE.MeshBasicMaterial({color: 0xf0b4c4}));
-  quiet.position.set(7.35, 2.85, 0);
-  scene.add(quiet);
-  const grad = new THREE.Line(
-    new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(6.85, 2.35, 0.85), new THREE.Vector3(6.85, -1.2, 0.85)]),
-    new THREE.LineBasicMaterial({color: 0xff9a4a})
-  );
-  scene.add(grad);
-
-  const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 200);
-  const post = createPost(renderer, scene, camera, {strength: .85, radius: .6, threshold: .95});
-  scene.environmentIntensity = .25;
-  const quality = adaptiveScale(dpr, {min: .7, apply(s) { dpr = s; renderer.setPixelRatio(dpr); resize(); }});
-  let theta = 0.52, phi = 0.34, dist = 22, dragging = false, lastX = 0, lastY = 0, userZoom = false, pinch = 0, clock = 0;
-  const look = new THREE.Vector3(0, 0.45, 0), want = new THREE.Vector3(0, 0.45, 0);
-  let wantDist = 22, currentFocus = 'memory';
-  const frames = {
-    units: {p: [0, 0.7, 0], d: 23},
-    memory: {p: [0.4, 0.15, 0], d: 20},
-    learn: {p: [6.1, 0.35, 0], d: 12.5},
-    energy: {p: [-6, 0.9, 0], d: 12.5}
-  };
-  function place() {
-    phi = Math.min(1.15, Math.max(-0.95, phi));
-    dist = Math.min(64, Math.max(6, dist));
-    const cp = Math.cos(phi);
-    camera.position.set(look.x + dist * Math.sin(theta) * cp, look.y + dist * Math.sin(phi), look.z + dist * Math.cos(theta) * cp);
-    camera.lookAt(look);
-  }
-  function resize() {
-    const w = host.clientWidth, h = Math.max(1, host.clientHeight);
-    renderer.setSize(w, h);
-    post.setSize(w, h, dpr);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-    pointScale.value = pointScaleFor(h, dpr, camera.fov);
-    place();
-  }
-  new ResizeObserver(resize).observe(host);
-  resize();
-  host.addEventListener('pointerdown', e => { if (e.target !== renderer.domElement) return; dragging = true; lastX = e.clientX; lastY = e.clientY; host.setPointerCapture(e.pointerId); });
-  host.addEventListener('pointerup', () => { dragging = false; });
-  host.addEventListener('pointermove', e => { if (!dragging) return; theta -= (e.clientX - lastX) * 0.005; phi += (e.clientY - lastY) * 0.0045; lastX = e.clientX; lastY = e.clientY; place(); });
-  host.addEventListener('wheel', e => { e.preventDefault(); userZoom = true; dist *= e.deltaY > 0 ? 1.07 : 0.93; place(); }, {passive: false});
-  host.addEventListener('touchstart', e => { if (e.touches.length === 2) pinch = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); }, {passive: true});
-  host.addEventListener('touchmove', e => { if (e.touches.length !== 2) return; const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); if (pinch) { userZoom = true; dist *= pinch / d; place(); } pinch = d; }, {passive: true});
-  host.addEventListener('keydown', e => {
-    const step = 0.12;
-    if (e.key === 'ArrowLeft') theta -= step;
-    else if (e.key === 'ArrowRight') theta += step;
-    else if (e.key === 'ArrowUp') phi -= step;
-    else if (e.key === 'ArrowDown') phi += step;
-    else if (e.key === '+' || e.key === '=') { userZoom = true; dist /= 1.12; }
-    else if (e.key === '-') { userZoom = true; dist *= 1.12; }
-    else return;
-    e.preventDefault();
-    place();
-  });
-  host.tabIndex = 0;
-  renderer.domElement.addEventListener('webglcontextlost', e => e.preventDefault());
-
-  function render(state, dt) {
-    const view = snapshot(state);
-    const motion = !matchMedia('(prefers-reduced-motion: reduce)').matches && Number.isFinite(dt) && dt > 0;
-    if (motion) clock += dt;
-    currentFocus = frames[state.focus] ? state.focus : 'memory';
-    const frame = frames[currentFocus];
-    want.set(frame.p[0], frame.p[1], frame.p[2]);
-    wantDist = frame.d;
-    if (!dragging) {
-      look.lerp(want, motion ? 0.08 : 1);
-      if (!userZoom) dist += (wantDist - dist) * (motion ? 0.08 : 1);
-    }
-    const step = motion ? dt : 0;
-    tintCloud(cerebellum, 'cerebellum', clock, motion, cerebellumSpikes, step);
-    tintCloud(cortex, 'cortex', clock, motion, cortexSpikes, step, neighbours);
-    const sweep = state.playing ? Math.min(VISUAL.layers - 1, Math.floor(state.time / TOKEN_INTERVAL * VISUAL.layers)) : -1;
-    layers.forEach((mesh, i) => {
-      const on = sweep === i;
-      mesh.material.emissive.set(on ? 0xf0b4c4 : 0x243044);
-      mesh.material.emissiveIntensity = on ? 0.9 : 0.25;
-    });
-    const rise = state.playing ? (state.time / TOKEN_INTERVAL) % 1 : 0;
-    climber.visible = state.playing;
-    climber.position.set(5.55, -1.15 + rise * (VISUAL.layers - 1) * 0.48, 0.75);
-    tokens.forEach((mesh, i) => {
-      const on = i < view.generated;
-      const active = view.generated > 0 && i === view.generated - 1;
-      mesh.material.color.set(on ? 0xf0b4c4 : 0x2c3344);
-      mesh.material.emissive.set(active ? 0xffe1ea : on ? 0x5a3040 : 0x000000);
-      mesh.material.emissiveIntensity = active ? 2.2 : 1;
-    });
-    let vertex = 0;
-    if (view.generated > 1) {
-      const head = tokenAt[view.generated - 1];
-      for (let i = 0; i < view.generated - 1; i++) {
-        const tail = tokenAt[i];
-        const o = vertex * 3;
-        attnPos[o] = head.x; attnPos[o + 1] = head.y; attnPos[o + 2] = head.z;
-        attnPos[o + 3] = tail.x; attnPos[o + 4] = tail.y; attnPos[o + 5] = tail.z;
-        vertex += 2;
-      }
-    }
-    attnGeo.setDrawRange(0, vertex);
-    attnGeo.attributes.position.needsUpdate = true;
-    const fraction = view.kept / GROK1.context;
-    const width = 3.4 * fraction;
-    fill.visible = fraction > 0;
-    fill.scale.x = Math.max(fraction, 1e-4);
-    fill.position.x = 5.55 - 1.7 + width / 2;
-    fill.material.color.set(view.dropped > 0 ? 0xff5d5d : 0xf0b4c4);
-    quiet.visible = view.mode !== 'learn';
-    grad.visible = view.mode === 'learn';
-    place();
-    post.render(step);
-    quality.frame(dt || 0);
-  }
-  return {
-    render,
-    zoomBy(f) { userZoom = true; dist /= f; place(); },
-    fit() { userZoom = false; theta = 0.52; phi = 0.34; const frame = frames[currentFocus]; want.set(frame.p[0], frame.p[1], frame.p[2]); wantDist = frame.d; look.copy(want); dist = wantDist; place(); }
-  };
+export function createMindWorld(host,es=true,onListen=()=>{},onInfo=()=>{}){
+ const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio||1,1.5));renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;host.append(renderer.domElement);const built=createMindScene(es),camera=new THREE.PerspectiveCamera(46,1,.08,120),ray=new THREE.Raycaster(),pointer=new THREE.Vector2(),canvas=renderer.domElement,orbit={...mindOverview};let frame,chapter=1,mode='notebook',pose=mindPoseAt(1),dragging=false,lastX=0,lastY=0,pinch=0,pointerDown,disposed=false;
+ canvas.tabIndex=0;
+ function resize(){const width=Math.max(1,host.clientWidth),height=Math.max(1,host.clientHeight);renderer.setSize(width,height,false);camera.aspect=width/height;camera.fov=camera.aspect<1?64:46;camera.updateProjectionMatrix();}
+ const observer=new ResizeObserver(resize);observer.observe(host);resize();
+ function draw(){if(disposed)return;if(frame)built.update(frame,chapter,orbit.whole&&mode!=='immersive',mode==='immersive');if(mode==='immersive'){camera.position.set(pose.x,1.65,pose.z);camera.rotation.set(pose.pitch,pose.yaw,0,'YXZ');}else{const f=mindFraming(chapter,orbit,camera.aspect,camera.fov,frame);camera.position.copy(f.center).addScaledVector(f.direction,f.distance);camera.lookAt(f.center);}camera.updateMatrixWorld();built.scene.updateMatrixWorld(true);renderer.render(built.scene,camera);}
+ function hit(x,y){const r=canvas.getBoundingClientRect();if(!r.width||!r.height)return null;pointer.set(x===null?0:(x-r.left)/r.width*2-1,y===null?0:1-(y-r.top)/r.height*2);ray.setFromCamera(pointer,camera);return ray.intersectObjects(built.targets.filter(visible))[0]||null;}
+ function inspect(x=null,y=null){const h=hit(x,y);if(!h)return null;const action=h.object.userData.action;if(action!==undefined)onListen(action);else if(h.object.userData.info)onInfo(h.object.userData.info);return action!==undefined?{chapter:action}:h.object.userData.info;}
+ function nearest(p=pose){let best=null,d=3.8;built.stands.forEach((stand,i)=>{const q=stand.getWorldPosition(new THREE.Vector3()),distance=Math.hypot(p.x-q.x,p.z-q.z);if(distance<d){d=distance;best=i;}});return best;}
+ function activate(){const h=hit(null,null),i=h?.object.userData.action??nearest();if(i!==null&&i!==undefined)onListen(i);return i;}
+ const listeners=[],listen=(target,type,fn,options)=>{target.addEventListener(type,fn,options);listeners.push(()=>target.removeEventListener(type,fn,options));};
+ listen(canvas,'pointerdown',e=>{if(mode==='immersive')return;dragging=true;lastX=e.clientX;lastY=e.clientY;pointerDown={x:e.clientX,y:e.clientY};canvas.setPointerCapture?.(e.pointerId);});
+ listen(canvas,'pointermove',e=>{if(!dragging||mode==='immersive')return;orbit.yaw-=(e.clientX-lastX)*.005;orbit.pitch=clamp(orbit.pitch+(e.clientY-lastY)*.004,-.55,1.1);lastX=e.clientX;lastY=e.clientY;draw();});
+ listen(canvas,'pointerup',e=>{if(dragging&&pointerDown&&Math.hypot(e.clientX-pointerDown.x,e.clientY-pointerDown.y)<6)inspect(e.clientX,e.clientY);dragging=false;pointerDown=null;});
+ listen(canvas,'pointercancel',()=>{dragging=false;pointerDown=null;});
+ listen(canvas,'wheel',e=>{if(mode==='immersive')return;e.preventDefault();orbit.distance=clamp(orbit.distance*(e.deltaY>0?1.08:.92),4,35);draw();},{passive:false});
+ listen(canvas,'touchstart',e=>{if(e.touches.length===2)pinch=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);},{passive:true});
+ listen(canvas,'touchmove',e=>{if(mode==='immersive'||e.touches.length!==2)return;const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);if(pinch&&d){orbit.distance=clamp(orbit.distance*pinch/d,4,35);draw();}pinch=d;},{passive:true});
+ listen(canvas,'keydown',e=>{if(mode==='immersive')return;if(e.key==='ArrowLeft')orbit.yaw-=.1;else if(e.key==='ArrowRight')orbit.yaw+=.1;else if(e.key==='ArrowUp')orbit.pitch-=.08;else if(e.key==='ArrowDown')orbit.pitch+=.08;else return;e.preventDefault();draw();});
+ listen(canvas,'webglcontextlost',e=>e.preventDefault());
+ function getViewState(){return {yaw:orbit.yaw,pitch:orbit.pitch,distance:orbit.distance,whole:!!orbit.whole,zoneOverview:!!orbit.zoneOverview};}
+ function restoreViewState(value={}){const v=value&&typeof value==='object'?(value.orbit||value):{};for(const k of ['yaw','pitch','distance'])if(Number.isFinite(v[k]))orbit[k]=k==='distance'?clamp(v[k],4,35):k==='pitch'?clamp(v[k],-.55,1.1):v[k];orbit.whole=v.whole===true;orbit.zoneOverview=v.zoneOverview===true;draw();}
+ return {canvas,dom:canvas,scene:built.scene,built,camera,orbit,update(value,i){frame=value;chapter=chapterIndex(i??value?.chapter??chapter);},render(value,dt,i){if(value){frame=value;chapter=chapterIndex(i??value.chapter??chapter);}draw();},focus(i){chapter=chapterIndex(i);orbit.whole=false;orbit.zoneOverview=false;draw();},setMode(value){mode=value==='immersive'?'immersive':'notebook';dragging=false;draw();},setPose(value){pose=restoreMindPose(value);},fit(options={}){Object.assign(orbit,mindOverview,options);draw();},overview(all=true){orbit.whole=all!==false&&all!=='zone';orbit.zoneOverview=!orbit.whole;draw();},zoomBy(f){if(Number.isFinite(f)&&f>0)orbit.distance=clamp(orbit.distance/f,4,35);draw();},getViewState,restoreViewState,inspect,nearest,activate,poseAt:mindPoseAt,walk:mindWalk,get stats(){return {calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures};},dispose(){if(disposed)return;disposed=true;observer.disconnect();listeners.forEach(fn=>fn());for(const r of [...built.resources])r.dispose();renderer.dispose();canvas.remove();}};
 }

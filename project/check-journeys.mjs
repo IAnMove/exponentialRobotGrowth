@@ -4,6 +4,7 @@ import {LESSONS} from './site-src/journeys/catalog.js';
 import {defaults,walk,poseAt} from './site-src/journeys/common.js';
 import {fullAdder} from './site-src/journeys/microchip.js';
 import {gridRun} from './site-src/journeys/electricity.js';
+import {lineAtPower} from './site-src/journeys/electricity-model.js';
 import {translate} from './site-src/journeys/cell.js';
 import {spread} from './site-src/journeys/ideas.js';
 import {heatBalance} from './site-src/journeys/nuclear.js';
@@ -16,7 +17,7 @@ assert.deepEqual(Object.keys(LESSONS),JOURNEY_IDS);
 for(const l of Object.values(LESSONS)){
  assert.equal(l.steps.length,4);assert(l.sources.length>=2);assert.equal(l.limitations.length,2);
  const cases=[defaults(l),...l.controls.flatMap(c=>[c.type==='toggle'?false:c.min,c.type==='toggle'?true:c.max].map(value=>({...defaults(l),[c.id]:value})))];
- for(const p of cases)for(let t=0;t<=l.horizon;t++){const m=l.evaluate(p,t);assert.equal(m.metrics.length,3);assert(m.series.every(s=>s.values.length===t+1&&s.values.every(Number.isFinite)));for(const v of Object.values(m))if(typeof v==='number')assert(Number.isFinite(v));}
+ for(const p of cases)for(let t=0;t<=l.horizon;t++){const m=l.evaluate(p,t);assert.equal(m.metrics.length,['internet','carbon','electricity','microchip','cell','nuclear'].includes(l.id)?4:3);assert(m.series.every(s=>s.values.length===(l.id==='carbon'?61:l.id==='evolution'?81:l.id==='electricity'?25:l.id==='cell'||l.id==='nuclear'?25:l.id==='microchip'?13:t+1)&&s.values.every(v=>l.id==='microchip'?v===null||v===0||v===1:Number.isFinite(v))));for(const v of Object.values(m))if(typeof v==='number')assert(Number.isFinite(v));}
  assert(immersiveHref(l.id).includes(`topic=${l.id}&mode=immersive`));assert(exhibits.find(e=>e.id===l.id)?.href.endsWith(`topic=${l.id}`));
  for(const lang of ['es','en']){
   const src=readFileSync(`site-src/journeys/voices-${l.id}.js`,'utf8'),json=JSON.parse(src.match(/export const VOICES = ([\s\S]*?);\r?\nconst base/)[1]);
@@ -26,8 +27,8 @@ for(const l of Object.values(LESSONS)){
 }
 const net=LESSONS.internet,p=defaults(net),normal=net.evaluate(p,30),cut=net.evaluate({...p,cut:true},30);assert(cut.delay>normal.delay);assert.equal(normal.unique,normal.packets);assert.equal(net.evaluate({...p,loss:true},30).unique,normal.packets);
 for(const loss of [false,true]){let previous=0;for(let t=0;t<=30;t++){const s=net.evaluate({...p,loss},t);assert(s.unique>=previous&&s.unique<=s.packets);previous=s.unique;}}
-for(const voltage of [50,200,400])for(const demand of [10,22,45])for(const sun of [0,28,40])for(const h of gridRun({voltage,demand,sun},23)){assert(h.stored>=0&&h.stored<=20);assert(h.served<=demand);near(h.generated+h.discharge,h.served+h.loss+h.charge+h.curtailed);near(h.stored,h.before+h.charge-h.discharge);}
-assert(gridRun({sun:28,demand:22,voltage:400},12)[12].loss<gridRun({sun:28,demand:22,voltage:50},12)[12].loss);
+for(const voltage of [50,200,400])for(const demand of [10,22,45])for(const sun of [0,28,40])for(const h of gridRun({voltage,demand,sun},23)){assert(h.stored>=0&&h.stored<=20);assert(h.served<=demand);near(h.generated+h.discharge,h.served+h.loss+h.charge);near(h.potential,h.generated+h.curtailed);near(h.stored,h.before+h.charge-h.discharge);}
+near(lineAtPower(30,50).current,600);near(lineAtPower(30,50).loss,7.2);near(lineAtPower(30,100).loss,lineAtPower(30,50).loss/4);
 for(let a=0;a<2;a++)for(let b=0;b<2;b++)for(let c=0;c<2;c++){const s=fullAdder(a,b,c);assert.equal(s.sum+2*s.carry,a+b+c);}
 assert.deepEqual(translate(['AUG','GCU','UUU','GAA','UAA']),['Met','Ala','Phe','Glu']);assert.deepEqual(translate(['AUG','GCU','UUC','GAA','UAA']),translate(['AUG','GCU','UUU','GAA','UAA']));assert.equal(translate(['AUG','GCU','UAA','GAA','UAA']).length,2);
 assert.equal(spread({contacts:2,probability:100,bridges:false},24).known.size,16);assert.equal(spread({contacts:2,probability:100,bridges:true},24).known.size,64);assert.equal(spread({contacts:4,probability:0,bridges:true},24).known.size,1);

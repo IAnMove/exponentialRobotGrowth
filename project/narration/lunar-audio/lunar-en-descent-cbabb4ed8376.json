@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Velocity must be reduced for a controlled descent. The Moon has no useful atmosphere for parachute braking. The vehicle shape is inspired by Starship HLS. Landing legs, power systems and the high cargo bay help identify it. Engines and trajectory are simplified.",
+  "duration_ms": 18504,
+  "billed_characters": 262,
+  "sample_rate": 32000,
+  "size_bytes": 297780,
+  "generated_at": "2026-09-27T00:28:30.859159+00:00",
+  "validation": {
+    "audio_sha256": "53b4e67e2466db71f898af161b3427d2ace30a6603eef53b03d2c23ea51771ce",
+    "text_sha256": "14a5c0b6e73089ae1e6d1276588ac82388e6c3fda87a8ca3492f40814336d4f9",
+    "script_sha256": "79ddb94ee666c571097c6d380932a307e49a893f0c362173537d66686cbaf3dc",
+    "decoded_duration_seconds": 18.504,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "The router calculates eight scores from the input vector. The two highest scores select the working experts. Weights are normalized among those experts and mix their two outputs. Selecting two out of eight does not mean using one quarter of the entire network: other operations also exist. Two out of eight is Grok one’s published configuration, not a rule for every expert model. Scores and transformations in this example are synthetic.",
+  "duration_ms": 27072,
+  "billed_characters": 438,
+  "sample_rate": 32000,
+  "size_bytes": 434868,
+  "generated_at": "2026-10-03T03:54:16.327890+00:00"
+}
