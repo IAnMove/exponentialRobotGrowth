@@ -8,7 +8,7 @@ export const CATALOG={
  dyson:{number:'03',kinds:['3d'],voice:false},
  home:{number:'04',kinds:['3d','walk'],voice:true},
  starlink:{number:'05',kinds:['3d'],voice:true},
- spacex:{number:'06',kinds:['3d'],voice:false},
+ spacex:{number:'06',kinds:['3d'],voice:true},
  kardashev:{number:'07',kinds:['3d'],voice:true},
  llms:{number:'08',kinds:['3d','walk'],voice:true},
  mente:{number:'09',kinds:['3d','walk'],voice:true},

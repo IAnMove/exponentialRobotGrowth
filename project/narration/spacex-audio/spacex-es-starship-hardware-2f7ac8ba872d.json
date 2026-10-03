@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Abrimos un segundo recorrido. La arquitectura de referencia publicada por SpaceX mide ciento veinticuatro metros: setenta y dos de Super Heavy y cincuenta y dos de la nave Starship. El diámetro es de nueve metros. El booster lleva treinta y tres Raptor y la nave seis motores, tres de ellos de vacío. A diferencia de Falcon nueve, la nave tiene alerones y una superficie protegida para volver a entrar en la atmósfera. No tiene una cofia separable como la del ejemplo anterior. La torre integra el conjunto y sus brazos pueden recibir el booster por sus puntos de apoyo. Esos brazos no sostienen la base del cohete como una barcaza. Esta maqueta representa una arquitectura publicada y una secuencia ilustrativa de pruebas. No es la reproducción de un vuelo concreto ni una afirmación de que la reutilización completa y rápida sea una operación rutinaria.",
+  "duration_ms": 49824,
+  "billed_characters": 855,
+  "sample_rate": 32000,
+  "size_bytes": 798900,
+  "generated_at": "2026-10-03T01:17:20.624477+00:00"
+}

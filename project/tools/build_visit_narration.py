@@ -19,6 +19,7 @@ JOBS = [
     ('museo', ROOT / 'narration' / 'museo.json', ROOT / 'site-src' / 'museo' / 'voices.js'),
     ('mente', ROOT / 'narration' / 'mente.json', ROOT / 'site-src' / 'mente' / 'voices.js'),
     ('home', ROOT / 'narration' / 'home.json', ROOT / 'site-src' / 'home' / 'voices.js'),
+    ('spacex', ROOT / 'narration' / 'spacex.json', ROOT / 'site-src' / 'spacex' / 'voices.js'),
 ]
 
 
