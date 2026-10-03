@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Every delivery has to reach the lunar surface. Launching into orbit is not the same as landing on the Moon: it takes a transfer trajectory, maneuvers, descent and possibly other support flights. Here we count useful cargo delivered, without modeling fuel or refueling. At twenty-five tonnes per delivery, the one-hundred-tonne seed requires four initial deliveries. The frequency control then sets how many additional loads arrive each year. Vehicles and distances are schematic.",
+  "duration_ms": 29448,
+  "billed_characters": 479,
+  "sample_rate": 32000,
+  "size_bytes": 472884,
+  "generated_at": "2026-09-26T22:49:24.391969+00:00",
+  "validation": {
+    "audio_sha256": "23f72b8e1d98491d36fa2d65a1b601df18244344adc60f5ba9fac25b7337a43c",
+    "text_sha256": "fc51cb3d6b4301065274a7b6d6907f7481a1517e9aa556715aeb5cf57be908dd",
+    "script_sha256": "07f26bf6fa32d81f0a9a6d6ddaf76b36dd49018ffbc485ce7c4cbd1b6717ed5b",
+    "decoded_duration_seconds": 29.448,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

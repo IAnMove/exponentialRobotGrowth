@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "HLS returns to lunar orbit in the crewed architecture. It lacks the heat shield and flaps of the Earth-reentry variant. Future cargo cycles may differ. That is why we do not show this same vehicle landing back on Earth. Now we zoom out. Each vehicle on the map represents a lunar delivery like the one we just followed; support flights are not included in the delivery counter.",
+  "duration_ms": 24120,
+  "billed_characters": 377,
+  "sample_rate": 32000,
+  "size_bytes": 387636,
+  "generated_at": "2026-09-27T00:28:36.222518+00:00",
+  "validation": {
+    "audio_sha256": "c8083b151bb0c451024d2dbc77dd9a48eedc7cd1dce2df798ee8abf38ca9b39f",
+    "text_sha256": "1132b34beb560cdef710c719d0acb9125f2a3c722e355cb2bb4cece6ccb9f7d9",
+    "script_sha256": "ee98b0eea53a92d243a74e685786c13d78c76a7d327b4f92365a27c44ab40cbc",
+    "decoded_duration_seconds": 24.12,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

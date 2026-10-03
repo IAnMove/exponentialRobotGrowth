@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Exponential growth cannot continue forever. This lab shows two explicit limits: imported components and available power. Real constraints would also include breakdowns, wear, heat, funding and processes we cannot yet industrialize there. The Kardashev scale measures power, not tonnes of factories. That is why the date calculator is separate: reaching those thresholds would require a justified growth path for power use as well. The quoted dates are conditional scenarios, not demonstrated outcomes.",
+  "duration_ms": 33984,
+  "billed_characters": 501,
+  "sample_rate": 32000,
+  "size_bytes": 545460,
+  "generated_at": "2026-09-26T22:49:35.340772+00:00",
+  "validation": {
+    "audio_sha256": "4cead59f963ce66d76ec225084ed75352e43c5bee0c9965d380992ca926b40ee",
+    "text_sha256": "8dc93fb020758c3ed77d1cb077d75d5318e982149e5c100ed84211dfbe9defd2",
+    "script_sha256": "0472c98c4d17abbb46c8aa462d6abd4b67a6fda42bf48986368af5fbacc369db",
+    "decoded_duration_seconds": 33.984,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

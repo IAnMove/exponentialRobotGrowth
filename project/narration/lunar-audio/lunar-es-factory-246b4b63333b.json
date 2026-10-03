@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "La fábrica transforma materiales y ensambla equipos capaces de producir más. Esta es la diferencia entre levantar edificios y ampliar capacidad industrial. Incluso con estructuras locales, chips, sensores, herramientas y otros componentes pueden seguir dependiendo de la Tierra. Cada nueva ampliación consume una parte local y una parte importada; el modelo lleva la cuenta de ambas. Si el almacén de componentes se vacía, disponer de más regolito no basta para completar las máquinas.",
+  "duration_ms": 28764,
+  "billed_characters": 485,
+  "sample_rate": 32000,
+  "size_bytes": 461940,
+  "generated_at": "2026-09-26T22:49:15.776022+00:00",
+  "validation": {
+    "audio_sha256": "8956314be32766fe91678286b36dd11aec6b8419421f91249a3f4444043bb7f5",
+    "text_sha256": "089329fe1080baf1b4360204c36a70ca51b379f576b7d0ea114fb8a91254270b",
+    "script_sha256": "399f2377f09a1cf3922a90f539671120cbee43265b6b331f91cfe527b966664a",
+    "decoded_duration_seconds": 28.764,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

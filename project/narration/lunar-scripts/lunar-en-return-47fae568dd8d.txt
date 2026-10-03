@@ -1,0 +1,1 @@
+HLS returns to lunar orbit in the crewed architecture. It lacks the heat shield and flaps of the Earth-reentry variant. Future cargo cycles may differ. That is why we do not show this same vehicle landing back on Earth. Now we zoom out. Each vehicle on the map represents a lunar delivery like the one we just followed; support flights are not included in the delivery counter.

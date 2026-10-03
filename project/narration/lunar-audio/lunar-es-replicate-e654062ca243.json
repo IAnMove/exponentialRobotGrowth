@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Ahora aparece el bucle de crecimiento: una parte de la producción se reinvierte en nuevos equipos, que ayudan a fabricar los siguientes. En el caso ideal, duplicar cada doce meses produce uno, dos, cuatro, ocho y dieciséis veces la capacidad inicial. La curva dorada enseña esa matemática sin límites. La verde aplica nuestras restricciones. La azul muestra qué pasaría importándolo todo con las mismas entregas. La diferencia crece porque aprovechamos masa local, no porque los cohetes se multipliquen por arte de magia.",
+  "duration_ms": 33120,
+  "billed_characters": 521,
+  "sample_rate": 32000,
+  "size_bytes": 531636,
+  "generated_at": "2026-09-26T22:49:15.749108+00:00",
+  "validation": {
+    "audio_sha256": "ee19ee9424b96c4c1555cb5e5cb75a6c64ee593fb51e6c93a059bae5607673fc",
+    "text_sha256": "74b13f420499bb05022704d81bd4b8c0a37321401abe47eb41eab7edb759a63e",
+    "script_sha256": "43937178dbfe225be874d45fb481ce6ca810db920f824323e87260254d298a13",
+    "decoded_duration_seconds": 33.12,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

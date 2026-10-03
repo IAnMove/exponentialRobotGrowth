@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "The factory transforms materials and assembles equipment that can produce more. This is the difference between erecting buildings and adding industrial capacity. Even with local structures, chips, sensors, tools and other components may still depend on Earth. Each expansion consumes a local share and an imported share; the model accounts for both. If the component store runs empty, having more regolith cannot complete the machines.",
+  "duration_ms": 27468,
+  "billed_characters": 435,
+  "sample_rate": 32000,
+  "size_bytes": 441204,
+  "generated_at": "2026-09-26T22:49:30.722965+00:00",
+  "validation": {
+    "audio_sha256": "2fce71c62d4b22d675431a75f362b714e3decba2c99efce974534fd347f43146",
+    "text_sha256": "6e0a6d2d0402ff790e7aa3726ec32315c9f0e29be7a5a1e76b9c60971ec64612",
+    "script_sha256": "dcfd3cf23e6dfbcda569252e42b12670dc00c47391bdda7b74e9b1f851a74631",
+    "decoded_duration_seconds": 27.468,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

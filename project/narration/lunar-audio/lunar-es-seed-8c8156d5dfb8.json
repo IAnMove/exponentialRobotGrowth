@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "La primera fase empieza en la Tierra. No se trata de transportar una civilización entera, sino de enviar una semilla industrial: equipos de energía, excavación, procesamiento, fabricación y reparación. En este laboratorio empezamos con cien toneladas de equipos ya instalados en dos mil treinta. Son valores ilustrativos, no un plan de misión. La pregunta es qué ocurre después: seguir enviándolo todo, o aprovechar recursos lunares para construir parte de la siguiente generación de equipos.",
+  "duration_ms": 30348,
+  "billed_characters": 492,
+  "sample_rate": 32000,
+  "size_bytes": 487284,
+  "generated_at": "2026-09-26T22:49:03.712321+00:00",
+  "validation": {
+    "audio_sha256": "2ed813c7337607fa5d16e4f38a5e10178603cf514eaed837eb67286fe698a235",
+    "text_sha256": "29d8fec7beee04cc49f78315064e595d703684eb3e13fd87301bfb2b249a33e8",
+    "script_sha256": "dd87fb7f90e79d565bc1ee55484301764967686cd0354a74a8efa2b209f80525",
+    "decoded_duration_seconds": 30.348,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

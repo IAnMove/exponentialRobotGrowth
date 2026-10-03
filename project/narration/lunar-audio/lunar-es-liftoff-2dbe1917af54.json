@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Super Heavy impulsa la nave lunar. La carga industrial empieza aquí, pero aún no ha llegado a la Luna. Seguimos los mismos equipos durante el ascenso. Comprimimos tiempo y distancias para ver cada paso. Es una arquitectura prevista, no una misión de carga lunar ya completada.",
+  "duration_ms": 18648,
+  "billed_characters": 276,
+  "sample_rate": 32000,
+  "size_bytes": 300084,
+  "generated_at": "2026-09-27T00:28:07.655731+00:00",
+  "validation": {
+    "audio_sha256": "ca2c868da0f8c482dbe5c6123e5e61a6c3d53d0915d2c95dc0528b8e8f58a493",
+    "text_sha256": "05b0badd9325ca72f68d036fb9840d755f6b61259afb6e4a1fcd0cfe09f8e1b5",
+    "script_sha256": "f4b0f70b2927742f0f29666b4558af5a618c9d066457640c9e162f4a668f12f2",
+    "decoded_duration_seconds": 18.648,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

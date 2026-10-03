@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Super Heavy launches the lunar vehicle. Industrial cargo starts here, but has not yet reached the Moon. We follow the same equipment during ascent. Time and distance are compressed to reveal each step. This is a proposed architecture, not an already completed lunar cargo mission.",
+  "duration_ms": 17820,
+  "billed_characters": 280,
+  "sample_rate": 32000,
+  "size_bytes": 286836,
+  "generated_at": "2026-09-27T00:28:23.200924+00:00",
+  "validation": {
+    "audio_sha256": "9b9d8ebdd36d83b8e2e6b2327d2054b7c30a781c89fdacd8688f07d0fd8f0b71",
+    "text_sha256": "0f5c7502fbe7df507022f2fd38953f5e6ac996c71c07332c3351bb94538d43aa",
+    "script_sha256": "001c572d7e2b9ab01746a93247dffb34b204eff86227d7b7d66a8ff6c5dd71f5",
+    "decoded_duration_seconds": 17.82,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

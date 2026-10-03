@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Cada entrega tiene que llegar hasta la superficie lunar. Lanzar a órbita no es lo mismo que alunizar: hacen falta una trayectoria de transferencia, maniobras, descenso y posiblemente otros vuelos de apoyo. Aquí contamos toneladas de carga útil entregadas, sin simular combustible ni repostajes. Con veinticinco toneladas por entrega, la semilla de cien toneladas requiere cuatro entregas iniciales. Después, el control de frecuencia determina cuántas cargas adicionales llegan cada año. Los vehículos y las distancias están representados de forma esquemática.",
+  "duration_ms": 34308,
+  "billed_characters": 559,
+  "sample_rate": 32000,
+  "size_bytes": 550644,
+  "generated_at": "2026-09-26T22:49:03.724963+00:00",
+  "validation": {
+    "audio_sha256": "032fd96f2bff2ec5ac6b85f93dc846d277e8c873455280a82425c12d135a2050",
+    "text_sha256": "190f68e9ef367136442d130c46189eeab9b3d109ebc71aeadab5f180a35e8629",
+    "script_sha256": "9375a5124ed6103c452c21076b8a7ab883bde2687a281cbb9151444df962ea1b",
+    "decoded_duration_seconds": 34.308,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}
