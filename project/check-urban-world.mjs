@@ -39,7 +39,8 @@ assert.equal(hidden.render(createTerritory(),0),6);
 globalThis.document={createElement(){return {getContext(){return {fillText(){}};}};}};
 const factoryCode=fs.readFileSync('dist/factory-world.js','utf8')
  .replace("import * as THREE from './vendor/three.module.js';",'const THREE=globalThis.testTHREE;')
- .replace("'./factory-model.js'",JSON.stringify(new URL('./dist/factory-model.js',import.meta.url).href));
+ .replace("'./factory-model.js'",JSON.stringify(new URL('./dist/factory-model.js',import.meta.url).href))
+ .replaceAll("'./robot-walk.js'",JSON.stringify(new URL('./dist/robot-walk.js',import.meta.url).href));
 const {createFactoryWorld,POSITIONS}=await import('data:text/javascript;base64,'+Buffer.from(factoryCode).toString('base64'));
 for(const width of [390,1200]){
  const world=createFactoryWorld({clientWidth:width,clientHeight:600,parentElement:{style:{}},append(){}});

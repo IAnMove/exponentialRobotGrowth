@@ -99,8 +99,10 @@ for(const lang of ['es','en']){
   const kardashev=model.standAt(model.exhibits.find(e=>e.id==='kardashev'));assert(Math.hypot(h.lastPose.x-kardashev.x,h.lastPose.z-kardashev.z)<.01,'a route keeps going while the visitor looks around');
   near(h.lastPose.yaw,freeHeading.yaw,'a guided route never recenters a head that the visitor has turned');near(h.lastPose.pitch,freeHeading.pitch);
   element('instant').checked=true;paintings.find(p=>p.dataset.painting==='robots').onclick();frames(10);
-  assert.equal(element('enter-3d').hidden,true,'unbuilt worlds are never presented as immersive');
+  assert.equal(element('enter-3d').hidden,false,'Robots opens its implemented walkable factory');
   assert.equal(element('web').href,'../robots/index.html');
+  paintings.find(p=>p.dataset.painting==='dyson').onclick();frames(10);
+  assert.equal(element('enter-3d').hidden,true,'unbuilt worlds are never presented as immersive');
   element('map-toggle').onclick();assert.equal(element('map').hidden,false);element('map-close').onclick();assert.equal(element('map').hidden,true);
   for(const id of Object.keys(LESSONS)){
     paintings.find(p=>p.dataset.painting===id).onclick();frames(10);

@@ -1,0 +1,22 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Con el relevo automático y los supuestos actuales, los robots fabricados por esta línea pueden cubrir sus diez tareas: dos por puesto. Comprueba el contador mientras avanzan varios días simulados. Si desactivas el relevo automático, el resultado depende de las incorporaciones que elijas y puede conservar puestos humanos. Una vez cubiertas las diez tareas, los robots adicionales quedan en el stock de salida; no añaden nuevos puestos ni trabajan también en otra fábrica. El contador de fabricados puede seguir aumentando, pero la flota de esta línea ya no crece. Empezamos con ciento sesenta kits y llegan hasta ciento sesenta nuevos cada día, con espacio de almacén limitado. La maquinaria y esos suministros restringen la producción. El acumulado puede subir mientras el ritmo diario se estabiliza: eso no es crecimiento exponencial sostenido. Para volver a acelerar harían falta más capacidad y una cadena capaz de abastecerla.",
+  "duration_ms": 59004,
+  "billed_characters": 932,
+  "sample_rate": 32000,
+  "size_bytes": 945780,
+  "generated_at": "2026-10-03T06:34:17.664361+00:00",
+  "validation": {
+    "ffmpeg_decode": "passed",
+    "decoded_duration_seconds": 59.004,
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "audio_sha256": "706ee8a91febf2c8a38d58fe2d3610e354740cf6d02c7208fa7fef2813863a7b",
+    "text_sha256": "e0242bce6e0554b38a824ef6b733ed980939bb8b097646faf277251b84e3bdb2",
+    "script_sha256": "c93b05880c421e34754ae11b28a50ba412eb37439e9b37cc6fd9117f8be00b06"
+  }
+}

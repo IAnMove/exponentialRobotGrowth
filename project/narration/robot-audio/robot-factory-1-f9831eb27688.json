@@ -1,0 +1,22 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "En este puesto, personas o robots ensamblan la estructura que sostiene el torso y las extremidades. Observa la muestra del producto, su identificador y el porcentaje de trabajo. El mismo identificador permite relacionar una pieza con sus pasos por la línea. Las figuras de cada puesto son muestras del proceso; las colas y los contadores indican las cantidades reales del modelo. Una estructura montada todavía no es un robot operativo: faltan actuadores, batería, calibración y pruebas. Si automatizas este puesto mientras otro es más lento, puedes llenar una cola sin terminar muchos robots adicionales. El modo automático refuerza los puestos con menor capacidad diaria. Puedes desactivarlo para elegir dónde destinar un robot que la propia línea ya haya terminado.",
+  "duration_ms": 47484,
+  "billed_characters": 768,
+  "sample_rate": 32000,
+  "size_bytes": 761460,
+  "generated_at": "2026-10-03T06:31:53.985638+00:00",
+  "validation": {
+    "ffmpeg_decode": "passed",
+    "decoded_duration_seconds": 47.484,
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "audio_sha256": "ef29c01d324fa7ef1e7980eca5ccf3ae5e4fe81dcb61cbf512d98af7096c24fc",
+    "text_sha256": "d1869ef312f8e08605efc5b8144f1e332f11c5cca7fb1ba30c4f31e2b465656c",
+    "script_sha256": "ae8b51b135730337357e0d1dfd1edc35ec0af9d90ecdb4db54a95018d3468317"
+  }
+}

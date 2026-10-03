@@ -17,7 +17,7 @@
   },
   "region-3": {
     "title": "Factories producing robots",
-    "text": "This is the center of the loop. Kits become robots, and every finished robot joins the regional fleet. A new facility creates more workstations and machinery for robots to use. But building capacity does not automatically mean producing at that capacity. Kits, electricity, transport and available workers are required. Compare your region's curve with the reference. The reference also reinvests all its new robots, but keeps its six facilities. Eventually it accumulates robots its machinery cannot use. Your region can invest some resources in building more capacity. The difference appears after construction is completed, and depends on the entire chain being able to supply the new facilities."
+    "text": "Here kits become finished robots. The delivery control divides new robots between two destinations: remaining in industry or leaving for cities. A dispatched robot leaves the industrial workforce. The total fleet counts both destinations, including robots in transit or waiting at the depot, but that does not mean they are all manufacturing. Both maps use the same delivery percentage and delays: the reference supplies cities too. The difference is that it keeps its six facilities, while your region can build new ones. Each facility adds workstations and machinery, but needs kits, electricity, transport and available workers. Compare robots manufactured per cycle as well as the accumulated fleet. Added capacity becomes useful after construction finishes, and only when the entire chain can supply it."
   },
   "region-4": {
     "title": "Energy must grow too",
@@ -45,6 +45,6 @@
   },
   "region-city-2": {
     "title": "Valley city: distance matters too",
-    "text": "This city has one hundred and eighty equivalent tasks and receives each delivery after five cycles. It can have robots reserved while its coverage bar is still low, because those robots are in transit. This separates manufacturing, dispatching and using robots. As the scenario advances, coverage can approach that of the other cities, but each sector retains its automation limits. If all feasible coverage is already reserved or filled, additional robots wait at the depot. A larger industrial network can offer more capacity; that does not mean every city can use it without limits."
+    "text": "This city has one hundred and eighty equivalent tasks and receives each delivery after five cycles. Robots can be reserved while its bar remains low because they are still in transit. Coverage rises when robots arrive, not when they are manufactured or dispatched. The intermediate scope retains sector limits and human tasks. The Full hypothesis allows all one hundred and eighty tasks in this city, and all six hundred across the three cities, to be covered. This is an assumed future delegation, not a demonstrated capability or a forecast about professions. If eligible tasks are already covered or reserved, additional robots wait at the depot. A larger industrial network can deliver more robots, but distance delays arrival and the chosen scope determines where they can work."
   }
 }

@@ -3,7 +3,7 @@
 // '3d' = notebook with a 3D scene, '2d' = notebook built on 2D charts. voice: has MiniMax narration.
 export const CATALOG={
  museo:{number:'00',kinds:['walk'],voice:true},
- robots:{number:'01',kinds:['3d'],voice:true},
+ robots:{number:'01',kinds:['2d','3d','walk'],voice:true},
  terafab:{number:'02',kinds:['3d','walk'],voice:true},
  dyson:{number:'03',kinds:['3d'],voice:false},
  home:{number:'04',kinds:['3d','walk'],voice:true},

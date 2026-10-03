@@ -1,11 +1,12 @@
 import * as THREE from '../vendor/three.module.js';
 
 export const WORLD={width:98,depth:90,home:{x:-35,z:38},park:{x:-35,z:-4},canteen:{x:-35,z:13},charging:{x:35,z:38},hub:{x:11,z:37}};
-export function createWorld(scene,industries){
-  const materials=new Map(),cube=new THREE.BoxGeometry(1,1,1);
-  function mat(color,roughness=.75,metalness=.05){const key=color+':'+roughness; if(!materials.has(key))materials.set(key,new THREE.MeshStandardMaterial({color,roughness,metalness}));return materials.get(key);}
+export function createWorld(scene,industries,options={}){
+  const es=options.es??!String(globalThis.document?.documentElement?.lang||'es').startsWith('en');
+  const resources=[],owned=new Set(),own=r=>{if(r&&!owned.has(r)){owned.add(r);resources.push(r);}return r;};let disposed=false;const materials=new Map(),cube=own(new THREE.BoxGeometry(1,1,1));
+  function mat(color,roughness=.75,metalness=.05){const key=color+':'+roughness+':'+metalness; if(!materials.has(key))materials.set(key,own(new THREE.MeshStandardMaterial({color,roughness,metalness})));return materials.get(key);}
   function box(parent,x,y,z,w,h,d,m,shadow=true){const o=new THREE.Mesh(cube,m);o.position.set(x,y,z);o.scale.set(w,h,d);o.castShadow=shadow;o.receiveShadow=true;parent.add(o);return o;}
-  function cyl(parent,x,y,z,r,h,m,segments=12){const o=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,segments),m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o;}
+  function cyl(parent,x,y,z,r,h,m,segments=12){const o=new THREE.Mesh(own(new THREE.CylinderGeometry(r,r,h,segments)),m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o;}
   function pipe(parent,a,b,r,m){const p=new THREE.Vector3(...a),q=new THREE.Vector3(...b),mid=p.clone().add(q).multiplyScalar(.5),o=cyl(parent,mid.x,mid.y,mid.z,r,p.distanceTo(q),m,8);o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),q.sub(p).normalize());return o;}
   const palette={white:mat(0xe5efeb),dark:mat(0x253e50),wall:mat(0xacbabc),mint:mat(0x7bbcad),blue:mat(0x6291c6),yellow:mat(0xe6b85e),orange:mat(0xee9959),road:mat(0x334957),floor:mat(0x749296)};
   const windows=new THREE.MeshStandardMaterial({color:0xf8c677,emissive:0xffb35e,emissiveIntensity:.1,roughness:.4});
@@ -36,7 +37,7 @@ export function createWorld(scene,industries){
       hall(g,palette.blue);for(let j=0;j<3;j++){bench(g,-4+j*4,1.4,palette.blue);box(g,-4+j*4,2.1,1.4,.3,1.1,.3,palette.yellow);box(g,-4+j*4,2.7,1.4,1.3,.25,.9,palette.dark);}
       for(let j=0;j<5;j++)box(g,5.9,.6+j*.16,2,1,.12,3,palette.wall);
     }else if(s.kind==='motor'){
-      hall(g,palette.orange);for(let j=0;j<4;j++){bench(g,-4.8+j*3.1,1.6,palette.orange);const wheel=cyl(g,-4.8+j*3.1,1.9,1.6,.6,.65,palette.dark,16);wheel.rotation.z=Math.PI/2;machines.push({o:wheel,site:i,type:'spin'});cyl(g,-4.8+j*3.1,1.93,1.6,.2,.8,palette.yellow,12).rotation.z=Math.PI/2;}
+      hall(g,palette.orange);for(let j=0;j<4;j++){bench(g,-4.8+j*3.1,1.6,palette.orange);const wheel=cyl(g,-4.8+j*3.1,1.9,1.6,.6,.65,palette.dark,16);wheel.rotation.z=Math.PI/2;machines.push({o:wheel,site:i,type:'spin',rest:wheel.quaternion.clone()});cyl(g,-4.8+j*3.1,1.93,1.6,.2,.8,palette.yellow,12).rotation.z=Math.PI/2;}
     }else if(s.kind==='battery'){
       hall(g,palette.mint);for(let j=0;j<12;j++){cyl(g,-4.7+(j%6)*1.65,.98,1+Math.floor(j/6)*1.8,.42,1.2,palette.mint);cyl(g,-4.7+(j%6)*1.65,1.62,1+Math.floor(j/6)*1.8,.24,.12,palette.dark);}
     }else if(s.kind==='electronics'){
@@ -48,11 +49,11 @@ export function createWorld(scene,industries){
       box(g,0,.5,-.5,13,.2,7,palette.floor);box(g,0,1.8,-4,13,2.5,.2,palette.wall);
       for(const x of [-6,6])for(const z of [-4,3])box(g,x,2.2,z,.23,3.7,.23,palette.dark);
       box(g,0,4,-4,12.6,.3,.3,palette.mint);box(g,0,4,3,12.6,.3,.3,palette.mint);
-      for(let j=0;j<5;j++){bench(g,-4.8+j*2.4,-.3,palette.white);const arm=new THREE.Group();arm.position.set(-4.8+j*2.4,1.5,-1);g.add(arm);pipe(arm,[0,0,0],[.4,1,0],.13,palette.mint);pipe(arm,[.4,1,0],[1,.7,.1],.1,palette.mint);machines.push({o:arm,site:i,type:'dig'});}
+      for(let j=0;j<5;j++){bench(g,-4.8+j*2.4,-.3,palette.white);const arm=new THREE.Group();arm.position.set(-4.8+j*2.4,1.5,-1);g.add(arm);pipe(arm,[0,0,0],[.4,1,0],.13,palette.mint);const shaft=cyl(arm,.4,.6,.5,.065,1,palette.dark,8),tip=box(arm,0,.39,1.0,.18,.08,.18,palette.yellow),target=new THREE.Vector3(0,.39,1.0);machines.push({o:arm,shaft,tip,target,site:i,type:'contact',sample:j,representation:'aggregate operation example; not an individual lot'});}
     }else{
       box(g,0,.45,-1,12,.35,7,palette.dark);for(let j=0;j<4;j++){const x=-4.5+j*3;box(g,x,.7,-1,2,.1,5,palette.mint);for(const side of [-1,1])box(g,x+side,2,-2,.13,2.7,.13,palette.wall);box(g,x,3.4,-2,2.2,.18,.2,palette.white);box(g,x,3.27,-2,1.8,.06,.1,windows,false);}
     }
-    const extra=new THREE.Group();g.add(extra);extensions.push(extra);
+    const extra=new THREE.Group();g.add(extra);extensions.push(extra);for(let j=0;j<6;j++){const x=-6+(j%4)*3.3,z=-6.7-Math.floor(j/4)*2;const module=new THREE.Group();module.userData={moduleIndex:j+2,site:i};extra.add(module);box(module,x,.9,z,2.6,1.4,1.5,palette.wall);box(module,x,1.7,z,2.8,.2,1.7,palette.mint);module.visible=false;}
     const crane=new THREE.Group();crane.position.set(7,0,-5);g.add(crane);cranes.push(crane);box(crane,0,3,0,.23,5.8,.23,palette.yellow);box(crane,-2.4,5.7,0,5.7,.2,.23,palette.yellow);pipe(crane,[-4.4,5.6,0],[-4.4,2,0],.03,palette.dark);box(crane,-4.4,1.8,0,.8,.7,.6,palette.orange);crane.visible=false;
   });
   const village=new THREE.Group();village.position.set(WORLD.home.x,0,WORLD.home.z);board.add(village);box(village,0,.1,0,20,.16,14,mat(0x6a9981));
@@ -68,9 +69,24 @@ export function createWorld(scene,industries){
   const dispatch=new THREE.Group();dispatch.position.set(WORLD.hub.x,0,WORLD.hub.z);board.add(dispatch);box(dispatch,0,.2,0,16,.3,12,palette.floor);for(let j=0;j<6;j++)box(dispatch,-5.5+j*2.2,.4,0,1.6,.12,7,palette.mint);box(dispatch,-7,2.3,-3,.25,4.2,.25,palette.orange);box(dispatch,7,2.3,-3,.25,4.2,.25,palette.orange);box(dispatch,0,4.4,-3,14.3,.3,.3,palette.orange);
   for(const x of [-46,-25,2,26,47])for(const z of [-16,7,30,45]){cyl(board,x,2,z,.08,3.8,palette.dark,8);box(board,x,4,z,1.1,.15,.5,lamps,false);}
   for(let i=0;i<28;i++){const x=i<14?-47+(i%14)*7: i%2?-46:47,z=i<14?-39: -34+Math.floor((i-14)/2)*11;cyl(board,x,.7,z,.12,1.2,mat(0x82765e),6);const tree=new THREE.Mesh(new THREE.IcosahedronGeometry(.9,1),mat(i%2?0x75a28c:0x629b83));tree.position.set(x,2,z);tree.scale.y=1.4;tree.castShadow=true;board.add(tree);}
-  function update(frame,time){cranes.forEach((g,i)=>g.visible=Boolean(frame.projects[i]));machines.forEach(m=>{if(!frame.flow[m.site]||!frame.capacity[m.site])return;if(m.type==='spin')m.o.rotation.y=time*1.4;else m.o.rotation.y=Math.sin(time*.8+m.site)*.22;});}
-  function rebuild(frame){extensions.forEach((g,i)=>{for(const child of [...g.children])g.remove(child);for(let n=2;n<frame.modules[i];n++){const j=n-2,x=-6+(j%4)*3.3,z=-6.7-Math.floor(j/4)*2;box(g,x,.9,z,2.6,1.4,1.5,palette.wall);box(g,x,1.7,z,2.8,.2,1.7,palette.mint);}});}
-  return {board,groups,windows,lamps,mat,box,cyl,palette,update,rebuild};
+  const quaternion=new THREE.Quaternion(),axisY=new THREE.Vector3(0,1,0),axisUp=new THREE.Vector3(0,1,0),joint=new THREE.Vector3(.4,1,0),end=new THREE.Vector3(),direction=new THREE.Vector3();
+  function update(frame,time){if(disposed)return;const abs=Number(frame.absHour)||0,clock=Number.isFinite(time)&&time>=abs&&time<abs+1?time:abs;
+    cranes.forEach((g,i)=>{g.visible=Boolean(frame.projects[i]);g.userData.project=frame.projects[i]||null;});
+    machines.forEach(m=>{const active=Number(frame.flow[m.site])>0&&Number(frame.capacity[m.site])>0&&(m.type!=='contact'||m.sample<Math.min(5,Number(frame.flow[m.site]))),phase=(clock*.4+(m.sample||0)*.21)%1;m.o.userData={site:m.site,active,observedRate:frame.flow[m.site],completedHour:frame.worked?.hour??null,representation:m.representation||'schematic equipment cycle',phase:active?phase:0};
+      if(m.type==='spin')m.o.quaternion.copy(m.rest).multiply(quaternion.setFromAxisAngle(axisY,active?clock*1.4:0));
+      else if(m.type==='contact'){const contact=active&&phase>=.45&&phase<=.75;end.copy(m.target);if(!contact)end.y+=.26;direction.copy(end).sub(joint);m.shaft.position.copy(end).add(joint).multiplyScalar(.5);m.shaft.scale.y=direction.length();m.shaft.quaternion.setFromUnitVectors(axisUp,direction.normalize());m.tip.position.copy(end);m.tip.position.y+=.04;Object.assign(m.o.userData,{contact,contactPoint:end.toArray(),materialPoint:m.target.toArray(),countsAsObject:false});}
+      else m.o.rotation.y=active?Math.sin(clock*.8+m.site)*.22:0;
+    });board.updateMatrixWorld(true);
+  }
+  function rebuild(frame){if(disposed)return;extensions.forEach((g,i)=>g.children.forEach((module,j)=>{module.visible=j<Math.max(0,Number(frame.modules[i])-2);module.userData.installed=module.visible;}));}
+  board.traverse(o=>{if(o.isInstancedMesh)own(o);own(o.geometry);for(const material of(Array.isArray(o.material)?o.material:[o.material]))if(material){own(material);own(material.map);}});
+  return {es,board,groups,extensions,cranes,machines,windows,lamps,mat,box,cyl,palette,resources,owns:r=>owned.has(r),update,rebuild,dispose(){if(disposed)return;disposed=true;for(const resource of resources)resource.dispose?.();board.removeFromParent();}};
+
 }
 export function roadRoute(from,to){const rows=[-14,8,31,44],cols=[-43,-23,0,24,45],nearest=(v,list)=>list.reduce((a,b)=>Math.abs(v-a)<Math.abs(v-b)?a:b);const a=nearest(from.z,rows),b=nearest(to.z,rows),x=nearest((from.x+to.x)/2,cols);return [from,{x:from.x,z:a},{x,z:a},{x,z:b},{x:to.x,z:b},to];}
 export function routePoint(points,t){let total=0;const lengths=points.slice(1).map((p,i)=>{const d=Math.hypot(p.x-points[i].x,p.z-points[i].z);total+=d;return d;});let d=Math.max(0,Math.min(1,t))*total;for(let i=0;i<lengths.length;i++){if(d<=lengths[i]||i===lengths.length-1){const a=points[i],b=points[i+1],u=lengths[i]?Math.min(1,d/lengths[i]):0;return {x:a.x+(b.x-a.x)*u,z:a.z+(b.z-a.z)*u,angle:Math.atan2(b.x-a.x,b.z-a.z)};}d-=lengths[i];}return {...points[0],angle:0};}
+
+// Shared geometric anchors for representative task samples and operator hands.
+// Their existence does not add stock or fabricate a tracked production lot.
+export function districtWorkPoint(industries,site,slot){const s=industries[site];let x,z;if(slot<18){x=-5.7+(slot%9)*1.42;z=4.1+Math.floor(slot/9)*1.8;}else if(slot<30){const n=slot-18;x=n%2?-7.15:7.15;z=-5+Math.floor(n/2)*2;}else{const n=slot-30;x=-5.7+(n%9)*1.42;z=[-5.8,-.1,2.7][Math.min(2,Math.floor(n/9))];}let facing=Math.PI;if(site===7&&slot<10){x=-4.8+(slot%5)*2.4;z=slot<5?1.1:-1.5;facing=slot<5?Math.PI:0;}else if(site===2&&slot<6){x=-4+(slot%3)*4;z=slot<3?3.2:-.4;facing=slot<3?Math.PI:0;}else if(site===3&&slot<8){x=-4.8+(slot%4)*3.1;z=slot<4?3.4:-.4;facing=slot<4?Math.PI:0;}else if(site===5&&slot<8){x=-4+(slot%4)*2.5;z=slot<4?3.5:-.2;facing=slot<4?Math.PI:0;}const radius=Math.hypot(x+1.4,z+1.2),ground=site===0&&radius>=1.4&&radius<7.4?.05+Math.floor((radius-1.4)/1.2)*.28:0;return {x:s.x+x,z:s.z+z,ground,angle:facing};}
+export function districtContactTargets(industries,site,slot){const p=districtWorkPoint(industries,site,slot),angle=p.angle,targets=[-.25,.25].map(x=>[p.x+Math.cos(angle)*x+Math.sin(angle)*.55,1.38+p.ground,p.z-Math.sin(angle)*x+Math.cos(angle)*.55]);return {point:p,targets,scope:'representative task sample; no tracked lot identity'};}
