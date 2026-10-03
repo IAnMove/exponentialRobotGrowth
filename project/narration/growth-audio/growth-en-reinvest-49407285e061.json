@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Now follow the branch in the growing line. Some work delivers goods and some builds robots. Reinvesting more leaves fewer goods available today. Both parts add up to utilized work; we have not created free resources. Construction work accumulates until whole robots are completed. Reinvestment in this example is measured in work, not euros. Parts, machines, energy and integration are assumed available within the selected limits.",
+  "duration_ms": 29376,
+  "billed_characters": 431,
+  "sample_rate": 32000,
+  "size_bytes": 471732,
+  "generated_at": "2026-10-03T04:32:18.874527+00:00"
+}

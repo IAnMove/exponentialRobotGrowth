@@ -101,7 +101,7 @@ for language in ['en', 'es']:
             if source.suffix not in ['.html', '.js', '.css']:
                 continue
             content = source.read_text(encoding='utf-8')
-            if folder in ['fx', 'lunar', 'terafab', 'home', 'dyson', 'starlink', 'spacex', 'kardashev', 'llms', 'mente', 'modelos', 'museo', 'journeys', 'immersive'] and language == 'es' and source.suffix == '.js':
+            if folder in ['fx', 'growth', 'lunar', 'terafab', 'home', 'dyson', 'starlink', 'spacex', 'kardashev', 'llms', 'mente', 'modelos', 'museo', 'journeys', 'immersive'] and language == 'es' and source.suffix == '.js':
                 content = content.replace("'../vendor/", "'../../vendor/")
             if source.suffix == '.html':
                 content = content.replace('{{EN}}', './index.html' if language == 'en' else '../index.html').replace('{{ES}}', './es/index.html' if language == 'en' else './index.html')

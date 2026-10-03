@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "La primera ventaja es trabajar más horas. Cambia las horas por robot y los turnos humanos. Una planta humana también puede trabajar día y noche con personas distintas en cada turno. Con tres turnos de ocho horas y robots a veinticuatro, las diez posiciones tienen la misma capacidad, si el suministro lo permite. Más horas elevan el nivel de producción, pero mantener diez productores no genera crecimiento exponencial. Veintiuna horas es un supuesto con paradas; veinticuatro es un máximo ideal.",
+  "duration_ms": 30456,
+  "billed_characters": 496,
+  "sample_rate": 32000,
+  "size_bytes": 489012,
+  "generated_at": "2026-10-03T04:31:41.468237+00:00"
+}

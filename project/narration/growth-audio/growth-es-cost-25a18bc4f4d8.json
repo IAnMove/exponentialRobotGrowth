@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Por último, compara cuánto cuesta la misma unidad. El coste humano suma material y trabajo. El robot suma material y reparte instalación, servicio, supervisión y electricidad entre sus horas activas. Cambia los supuestos: el ahorro puede aumentar, reducirse o desaparecer. Añadir robots idénticos no baja automáticamente el coste de cada unidad; más utilización reparte mejor sus costes fijos. Estos euros no financian la simulación anterior. Faltan costes comunes y financiación, y ningún valor es un precio comercial. El objetivo es entender por separado crecimiento, bienes disponibles y coste.",
+  "duration_ms": 39348,
+  "billed_characters": 597,
+  "sample_rate": 32000,
+  "size_bytes": 631284,
+  "generated_at": "2026-10-03T04:32:03.484036+00:00"
+}

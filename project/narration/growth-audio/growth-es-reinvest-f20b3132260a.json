@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Ahora sigue la bifurcación de la línea creciente. Una parte del trabajo entrega bienes y otra construye robots. Reinvertir más deja menos bienes disponibles hoy. Las dos partes suman el trabajo utilizado; no hemos creado recursos gratis. El saldo de construcción se acumula hasta completar robots enteros. La reinversión de este ejemplo se mide en trabajo, no en euros. Piezas, máquinas, energía e integración se suponen disponibles dentro de los límites elegidos.",
+  "duration_ms": 31140,
+  "billed_characters": 464,
+  "sample_rate": 32000,
+  "size_bytes": 499956,
+  "generated_at": "2026-10-03T04:31:46.863396+00:00"
+}

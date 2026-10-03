@@ -15,6 +15,7 @@ AUDIO = ROOT / 'dist' / 'audio'
 FFMPEG = shutil.which('ffmpeg') or str(Path.home() / 'ffmpeg' / 'bin' / 'ffmpeg.exe')
 
 JOBS = [
+    ('growth', ROOT / 'narration' / 'growth.json', ROOT / 'site-src' / 'growth' / 'voices.js'),
     ('modelos', ROOT / 'narration' / 'modelos.json', ROOT / 'site-src' / 'modelos' / 'voices.js'),
     ('museo', ROOT / 'narration' / 'museo.json', ROOT / 'site-src' / 'museo' / 'voices.js'),
     ('mente', ROOT / 'narration' / 'mente.json', ROOT / 'site-src' / 'mente' / 'voices.js'),

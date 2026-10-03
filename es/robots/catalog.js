@@ -13,7 +13,7 @@ export const CATALOG={
  llms:{number:'08',kinds:['3d','walk'],voice:true},
  mente:{number:'09',kinds:['3d','walk'],voice:true},
  modelos:{number:'10',kinds:['3d','walk'],voice:true},
- growth:{number:'11',kinds:['2d'],voice:false},
+ growth:{number:'11',kinds:['2d','3d','walk'],voice:true},
  internet:{number:'12',kinds:['3d','walk'],voice:true},
  electricity:{number:'13',kinds:['3d','walk'],voice:true},
  microchip:{number:'14',kinds:['3d','walk'],voice:true},
