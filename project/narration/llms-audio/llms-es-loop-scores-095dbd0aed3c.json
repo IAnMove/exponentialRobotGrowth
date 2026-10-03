@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Se vuelve a calcular una distribución para la siguiente pieza. Aquí la continuación está guionizada. La columna más alta muestra el siguiente token previsto en esta demostración.",
+  "duration_ms": 12024,
+  "billed_characters": 178,
+  "sample_rate": 32000,
+  "size_bytes": 194100,
+  "generated_at": "2026-09-20T18:03:43.057514+00:00",
+  "validation": {
+    "audio_sha256": "d7d9e5ed42e0bff723a471f1e78a8c233720ba4a25015e7dde2bf22e18f1f9f5",
+    "text_sha256": "444bd2239a59a9dc2613a2341abd5449f52b807d3a5380c8b0af9511fbc757d2",
+    "script_sha256": "b8f73ef20efb2c0574ea290c2d9ffe416be26da6cb348dc49445b9c2ff0de319",
+    "decoded_duration_seconds": 12.024,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 12.024
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "text": "Follow one input row, outlined in gold. First, we multiply X by three different weight matrices. This produces Q, queries; K, keys; and V, values. These branches can be computed in parallel. The weights remain fixed. Now we compare the active query with the keys. Each dot product produces a score. We divide by the square root of the dimension, three in this example. The gold row shows those comparisons. They are not probabilities yet. We apply the causal mask. Future positions receive negative infinity, shown as crosses. Then softmax turns the row into coefficients that sum to one. Future positions have exactly zero weight. This does not measure whether a claim is true. Those coefficients weight the value vectors. Follow the pulses from the active row through V to the result Z. A larger pulse means a larger weight in the mixture. The result is a vector of numbers, not a word retrieved from a library. Finally, we project the mixture and add the input through a residual connection. We normalize and apply a network to each position, followed by another addition and normalization. Our example uses one head, six dimensions and synthetic weights. Real models combine heads and repeat blocks. The light illustrates activation flow, not a physical bit or a thought.",
+  "duration_ms": 88720.09375,
+  "cues": [
+    {
+      "start": 0,
+      "end": 18.954625
+    },
+    {
+      "start": 18.954625,
+      "end": 33.757374999999996
+    },
+    {
+      "start": 33.757374999999996,
+      "end": 50.47575
+    },
+    {
+      "start": 50.47575,
+      "end": 64.976625
+    },
+    {
+      "start": 64.976625,
+      "end": 88.72009375
+    }
+  ],
+  "provider": "MiniMax components",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "size_bytes": 1421036,
+  "components": [
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "English_expressive_narrator",
+      "language": "English",
+      "text": "Follow one input row, outlined in gold. First, we multiply X by three different weight matrices. This produces Q, queries; K, keys; and V, values. These branches can be computed in parallel. The weights remain fixed.",
+      "duration_ms": 19008,
+      "billed_characters": 216,
+      "sample_rate": 32000,
+      "size_bytes": 305844,
+      "generated_at": "2026-09-21T16:36:44.434513+00:00",
+      "file": "llms-en-layers-part0-f5b0910aa28b.mp3",
+      "audio_sha256": "b4039d96c93884687cc39aa2811966adf850d9ee3e4da3815b46f17dab39320f",
+      "decoded_duration_seconds": 19.008
+    },
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "English_expressive_narrator",
+      "language": "English",
+      "text": "Now we compare the active query with the keys. Each dot product produces a score. We divide by the square root of the dimension, three in this example. The gold row shows those comparisons. They are not probabilities yet.",
+      "duration_ms": 14868,
+      "billed_characters": 221,
+      "sample_rate": 32000,
+      "size_bytes": 239604,
+      "generated_at": "2026-09-21T16:36:47.783501+00:00",
+      "file": "llms-en-layers-part1-bcace4fb8ff6.mp3",
+      "audio_sha256": "85f690d65a25749deefa04ed009286ff1180409c400d452304a79b95de5d73e4",
+      "decoded_duration_seconds": 14.868
+    },
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "English_expressive_narrator",
+      "language": "English",
+      "text": "We apply the causal mask. Future positions receive negative infinity, shown as crosses. Then softmax turns the row into coefficients that sum to one. Future positions have exactly zero weight. This does not measure whether a claim is true.",
+      "duration_ms": 16776,
+      "billed_characters": 239,
+      "sample_rate": 32000,
+      "size_bytes": 270132,
+      "generated_at": "2026-09-21T16:36:51.296791+00:00",
+      "file": "llms-en-layers-part2-aeba0d0e1f3a.mp3",
+      "audio_sha256": "24e3411a95f4a66f221460e579fe49ea36a76b2dbad77d46db92358d1d59d1e2",
+      "decoded_duration_seconds": 16.776
+    },
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "English_expressive_narrator",
+      "language": "English",
+      "text": "Those coefficients weight the value vectors. Follow the pulses from the active row through V to the result Z. A larger pulse means a larger weight in the mixture. The result is a vector of numbers, not a word retrieved from a library.",
+      "duration_ms": 14544,
+      "billed_characters": 234,
+      "sample_rate": 32000,
+      "size_bytes": 234420,
+      "generated_at": "2026-09-21T16:36:54.840780+00:00",
+      "file": "llms-en-layers-part3-b192af479e36.mp3",
+      "audio_sha256": "45710c5ab1380c317d839f6893bf46ac8a854316a1ae26291c8c41605809bc06",
+      "decoded_duration_seconds": 14.544
+    },
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "English_expressive_narrator",
+      "language": "English",
+      "text": "Finally, we project the mixture and add the input through a residual connection. We normalize and apply a network to each position, followed by another addition and normalization. Our example uses one head, six dimensions and synthetic weights. Real models combine heads and repeat blocks. The light illustrates activation flow, not a physical bit or a thought.",
+      "duration_ms": 23760,
+      "billed_characters": 361,
+      "sample_rate": 32000,
+      "size_bytes": 381876,
+      "generated_at": "2026-09-21T16:37:00.083714+00:00",
+      "file": "llms-en-layers-part4-b8250d92f28d.mp3",
+      "audio_sha256": "aad8c6354d83229768e1696088d4f9ccd96057a9957158585cffa7f7d62d5e3c",
+      "decoded_duration_seconds": 23.76
+    }
+  ],
+  "validation": {
+    "audio_sha256": "57fa6b1a0b1c9c7c04a306c257349d60794f8133bbbbe3d9603652342e4a8ee7",
+    "text_sha256": "daef87d9e9b57e4213c9c5d933620a88eccfb93e590190e727680cf0d109ada9",
+    "script_sha256": "2982355026752f655720895c5e88868e9cd9c01e1af65ff25e7ec30dc5e617a1",
+    "decoded_duration_seconds": 88.776,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 88.72009375
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "text": "Another piece: the input produces queries, keys and values. The query is compared with the keys using dot products. The mask blocks the future. Softmax normalizes the row. The coefficients mix the values into another vector. Residual connections and the network transform the result. This small window is recomputed to show the operations; a real implementation can reuse a cache.",
+  "duration_ms": 25007.96875,
+  "cues": [
+    {
+      "start": 0,
+      "end": 5.0735625
+    },
+    {
+      "start": 5.0735625,
+      "end": 8.394031250000001
+    },
+    {
+      "start": 8.394031250000001,
+      "end": 12.3530625
+    },
+    {
+      "start": 12.3530625,
+      "end": 15.499375
+    },
+    {
+      "start": 15.499375,
+      "end": 25.00796875
+    }
+  ],
+  "provider": "MiniMax components",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "size_bytes": 401516,
+  "components": [
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "English_expressive_narrator",
+      "language": "English",
+      "text": "Another piece: the input produces queries, keys and values.",
+      "duration_ms": 5112,
+      "billed_characters": 59,
+      "sample_rate": 32000,
+      "size_bytes": 83508,
+      "generated_at": "2026-09-21T16:36:46.359694+00:00",
+      "file": "llms-en-loop-layers-part0-72054fe7773e.mp3",
+      "audio_sha256": "0c23150db9f8a3f985edbdf1e0eb8a24bf6d17d12126a3ac8d236f318b0c0b48",
+      "decoded_duration_seconds": 5.112
+    },
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "English_expressive_narrator",
+      "language": "English",
+      "text": "The query is compared with the keys using dot products.",
+      "duration_ms": 3384,
+      "billed_characters": 55,
+      "sample_rate": 32000,
+      "size_bytes": 55860,
+      "generated_at": "2026-09-21T16:36:48.551125+00:00",
+      "file": "llms-en-loop-layers-part1-280fb2469873.mp3",
+      "audio_sha256": "caf89f55a00a36a130c3701c312ebf2921409fd027134d95e6107a5b0185c241",
+      "decoded_duration_seconds": 3.384
+    },
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "English_expressive_narrator",
+      "language": "English",
+      "text": "The mask blocks the future. Softmax normalizes the row.",
+      "duration_ms": 3996,
+      "billed_characters": 55,
+      "sample_rate": 32000,
+      "size_bytes": 65652,
+      "generated_at": "2026-09-21T16:36:50.586318+00:00",
+      "file": "llms-en-loop-layers-part2-c5cb8bd80150.mp3",
+      "audio_sha256": "ca6b862974ed70b8f617770c1969e35d722a984411233c33e611611c6b9d2309",
+      "decoded_duration_seconds": 3.996
+    },
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "English_expressive_narrator",
+      "language": "English",
+      "text": "The coefficients mix the values into another vector.",
+      "duration_ms": 3204,
+      "billed_characters": 52,
+      "sample_rate": 32000,
+      "size_bytes": 52980,
+      "generated_at": "2026-09-21T16:36:52.831160+00:00",
+      "file": "llms-en-loop-layers-part3-8592d596870f.mp3",
+      "audio_sha256": "228617102ffdb70c2f09d3557e3eefc9d8d0461c7ce69b3d5bdd03b673efaebe",
+      "decoded_duration_seconds": 3.204
+    },
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "English_expressive_narrator",
+      "language": "English",
+      "text": "Residual connections and the network transform the result. This small window is recomputed to show the operations; a real implementation can reuse a cache.",
+      "duration_ms": 9576,
+      "billed_characters": 155,
+      "sample_rate": 32000,
+      "size_bytes": 154932,
+      "generated_at": "2026-09-21T16:36:55.441467+00:00",
+      "file": "llms-en-loop-layers-part4-c7f070e5ee49.mp3",
+      "audio_sha256": "011ff56d05eecec7e1691268143b3fae2ba6970b33ca79ad102c42f7692b463f",
+      "decoded_duration_seconds": 9.576
+    }
+  ],
+  "validation": {
+    "audio_sha256": "2f4a24d50aa9971734e496c81ab9aeed5c6f717a07a039e6b39757108d7f28d7",
+    "text_sha256": "e4485cf3e1ecfbe203e637f4b8028dbc4560e06597bce628f33b035b68664e53",
+    "script_sha256": "57a320bea7b69657552eb5a37faacb933174ff52d7846c447525303e19e80f79",
+    "decoded_duration_seconds": 25.056,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 25.00796875
+  }
+}

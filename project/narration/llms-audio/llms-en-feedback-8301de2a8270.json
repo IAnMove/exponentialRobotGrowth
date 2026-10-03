@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "One piece has now come out. The glowing block returns to the context alongside the question and earlier tokens. The next computation also uses what was just written. We repeat attention, probabilities and selection to produce another piece, and continue that loop. Real systems commonly reuse computations through a cache. Watch the counter: answering is not updating the model weights.",
+  "duration_ms": 26208,
+  "billed_characters": 386,
+  "sample_rate": 32000,
+  "size_bytes": 421044,
+  "generated_at": "2026-09-20T18:04:06.718340+00:00",
+  "validation": {
+    "audio_sha256": "16f66b15859bed62c575ecc831c530dd0dcffb4da6a984a6954ff4279a4efab3",
+    "text_sha256": "0fb8c73422439edaf7fd43a037d9f71204ad730ef8aabe4d0071162617aca0d7",
+    "script_sha256": "3e0dd665e643786a20db0bb4a2043802d240efe1426c5472943e83c5c35863c7",
+    "decoded_duration_seconds": 26.208,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 26.208
+  }
+}

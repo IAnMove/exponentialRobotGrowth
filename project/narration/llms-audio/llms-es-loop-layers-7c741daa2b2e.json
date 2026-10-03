@@ -1,0 +1,119 @@
+{
+  "text": "Otra pieza: la entrada produce nuevas consultas, claves y valores. La consulta se compara con las claves mediante productos escalares. La máscara bloquea el futuro. Softmax normaliza la fila. Los coeficientes mezclan los valores para obtener otro vector. Las conexiones residuales y la red transforman el resultado. Esta pequeña ventana se recalcula para mostrar las operaciones; una implementación real puede reutilizar una caché.",
+  "duration_ms": 28688.312500000004,
+  "cues": [
+    {
+      "start": 0,
+      "end": 5.41025
+    },
+    {
+      "start": 5.41025,
+      "end": 9.16028125
+    },
+    {
+      "start": 9.16028125,
+      "end": 13.5953125
+    },
+    {
+      "start": 13.5953125,
+      "end": 17.80975
+    },
+    {
+      "start": 17.80975,
+      "end": 28.688312500000002
+    }
+  ],
+  "provider": "MiniMax components",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "size_bytes": 460268,
+  "components": [
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+      "language": "Spanish",
+      "text": "Otra pieza: la entrada produce nuevas consultas, claves y valores.",
+      "duration_ms": 5472,
+      "billed_characters": 66,
+      "sample_rate": 32000,
+      "size_bytes": 89268,
+      "generated_at": "2026-09-21T16:36:28.237554+00:00",
+      "file": "llms-es-loop-layers-part0-247e2b09bbdf.mp3",
+      "audio_sha256": "3b99d250db02e1708f2050752803bfb5c7e85317fcddabcf2d7280b70f378fbe",
+      "decoded_duration_seconds": 5.472
+    },
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+      "language": "Spanish",
+      "text": "La consulta se compara con las claves mediante productos escalares.",
+      "duration_ms": 3816,
+      "billed_characters": 67,
+      "sample_rate": 32000,
+      "size_bytes": 62772,
+      "generated_at": "2026-09-21T16:36:30.537523+00:00",
+      "file": "llms-es-loop-layers-part1-7ea33f6a06ea.mp3",
+      "audio_sha256": "029813bedb7501d100f801317abf9e4f99da45fadfbc483e7660ae6109caccf4",
+      "decoded_duration_seconds": 3.816
+    },
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+      "language": "Spanish",
+      "text": "La máscara bloquea el futuro. Softmax normaliza la fila.",
+      "duration_ms": 4500,
+      "billed_characters": 56,
+      "sample_rate": 32000,
+      "size_bytes": 73716,
+      "generated_at": "2026-09-21T16:36:32.861503+00:00",
+      "file": "llms-es-loop-layers-part2-1f0103aac067.mp3",
+      "audio_sha256": "5bb5d6e631b70e14378fb91fcbe228791b80b6965556ba096bf00cf1c54a0a56",
+      "decoded_duration_seconds": 4.5
+    },
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+      "language": "Spanish",
+      "text": "Los coeficientes mezclan los valores para obtener otro vector.",
+      "duration_ms": 4284,
+      "billed_characters": 62,
+      "sample_rate": 32000,
+      "size_bytes": 70260,
+      "generated_at": "2026-09-21T16:36:35.122779+00:00",
+      "file": "llms-es-loop-layers-part3-135d16895dd4.mp3",
+      "audio_sha256": "0cc0e93df43a6393dcc0bff0c98d79c01cf7f07b2926efa8c00b19efcd52fced",
+      "decoded_duration_seconds": 4.284
+    },
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+      "language": "Spanish",
+      "text": "Las conexiones residuales y la red transforman el resultado. Esta pequeña ventana se recalcula para mostrar las operaciones; una implementación real puede reutilizar una caché.",
+      "duration_ms": 10944,
+      "billed_characters": 176,
+      "sample_rate": 32000,
+      "size_bytes": 176820,
+      "generated_at": "2026-09-21T16:36:38.004396+00:00",
+      "file": "llms-es-loop-layers-part4-5eeb6788a822.mp3",
+      "audio_sha256": "b0469e368b4d5f286b94e7e934b6992cfb1b7cc306d266f732e36a31bd5e2115",
+      "decoded_duration_seconds": 10.944
+    }
+  ],
+  "validation": {
+    "audio_sha256": "913f2e83aa7a13425067bbec54bc3814840f80d017134ef7d5fcd66aa7da7415",
+    "text_sha256": "8f6045cf6092491f04da32bc3ba4d8058629b59f86d85de3da257aa412227a80",
+    "script_sha256": "e4301fbcc989666b078942167c057e018c8a22c25c16eb771277657528de6c84",
+    "decoded_duration_seconds": 28.728,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 28.688312500000002
+  }
+}

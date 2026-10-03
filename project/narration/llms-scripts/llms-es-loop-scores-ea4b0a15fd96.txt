@@ -1,0 +1,1 @@
+Calculamos el reparto para la siguiente pieza. En esta demostración la continuación está guionizada. La barra más larga señala el siguiente token previsto; no es una medida de si su contenido es verdadero.

@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "After the layers, the model computes scores for possible next tokens. Softmax turns them into probabilities. The three dimensional columns represent that distribution and add up to one hundred percent. A tall column means more likely text under these scores, not a more truthful statement. Change the temperature to compare. Our scores are prepared to explain the mechanism.",
+  "duration_ms": 22788,
+  "billed_characters": 374,
+  "sample_rate": 32000,
+  "size_bytes": 366324,
+  "generated_at": "2026-09-20T18:04:01.525941+00:00",
+  "validation": {
+    "audio_sha256": "7218a161342b27bc8a6190a7f912046ec390dae5623de2fb377085441d4ee4cd",
+    "text_sha256": "9409195ff32de5cd44c0188b32f4f9ae0f872931f03334f680f70b8491dbfb60",
+    "script_sha256": "fa1fed0e131663f39912fc6c955d622db2eb7fecee5b26daf540ea83bed32b79",
+    "decoded_duration_seconds": 22.788,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 22.788
+  }
+}

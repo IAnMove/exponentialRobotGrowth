@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Now one piece is selected. We can take the most likely option or sample from the distribution. Look at the options around the platform: a complete sentence does not come out at once. When this step finishes, exactly one new token appears in the answer. In this lab, the first choice uses probabilities; the rest follows a scripted continuation so we can study the path.",
+  "duration_ms": 23148,
+  "billed_characters": 369,
+  "sample_rate": 32000,
+  "size_bytes": 372084,
+  "generated_at": "2026-09-20T18:04:05.461126+00:00",
+  "validation": {
+    "audio_sha256": "30d8c45c546739e306bc45f579fa6742dd44091c3d6fbd123b772dc460fe0a97",
+    "text_sha256": "b77ee16087eb648440be00ecae218db48e616976e3cdf4f0057eeff4530a4b09",
+    "script_sha256": "f7ccc6f6f7174c44676d3f88638cda8e41efeff95c2c8e349f7a3a78004468ec",
+    "decoded_duration_seconds": 23.148,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 23.148
+  }
+}

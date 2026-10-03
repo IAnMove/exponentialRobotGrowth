@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Ahora se elige una sola pieza. Podemos tomar la más probable o sortear según la distribución. Mira las opciones alrededor de la plataforma: todavía no sale una frase completa. Cuando terminemos este paso, aparecerá exactamente un token nuevo en la respuesta. En este laboratorio, la primera elección usa probabilidades; después seguimos una continuación guionizada para poder estudiar el recorrido.",
+  "duration_ms": 26280,
+  "billed_characters": 398,
+  "sample_rate": 32000,
+  "size_bytes": 422196,
+  "generated_at": "2026-09-20T18:03:38.214529+00:00",
+  "validation": {
+    "audio_sha256": "cca58edac95e9bcf64a6e3675d6e1b57211554a760ad219edef6644bf9498699",
+    "text_sha256": "c0ff911c8add0891d104dbc63c7b28e0ddaa8be391001cd8978de84cc24f6186",
+    "script_sha256": "d0cfdc198786394a5b500ad8063a255afc83e4762321d949e21bc4d982657cf6",
+    "decoded_duration_seconds": 26.28,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 26.28
+  }
+}

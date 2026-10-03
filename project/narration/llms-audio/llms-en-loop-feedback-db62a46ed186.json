@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "The new piece is now part of both the answer and the context. Watch it return to the next computation. We leave a few seconds to observe it.",
+  "duration_ms": 7920,
+  "billed_characters": 140,
+  "sample_rate": 32000,
+  "size_bytes": 128436,
+  "generated_at": "2026-09-20T18:04:11.767712+00:00",
+  "validation": {
+    "audio_sha256": "50e7f20f36d7afab431ad8b000ad96c392f961715a08f794fbc846c53799326e",
+    "text_sha256": "08668f98e68a1c721b98452081c9166cf50b74ada91653f5f25fa66b2e6d0a52",
+    "script_sha256": "e78c72cb565e1d9079011b32a386eb31df85eca1beec3b8a9711b4b289ed4b37",
+    "decoded_duration_seconds": 7.92,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 7.92
+  }
+}
