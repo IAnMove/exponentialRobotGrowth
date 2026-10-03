@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Entramos en una casa con siete quehaceres. Los ciento cuarenta y cinco minutos son una referencia ilustrativa de trabajo humano activo, no una medición ni toda la jornada doméstica. Primero seguimos dieciocho marcas del suelo. El aspirador se desplaza hasta cada una y la retira cuando su cabezal pasa por ella; adelantar el tiempo no borra suciedad que todavía no ha alcanzado. Los muebles permanecen y la persona sigue en casa. La aspiración autónoma ya existe, aunque necesita un espacio accesible, mantenimiento y resolver incidencias. Puedes comparar el mismo recorrido con una persona. La escena comprime el movimiento: sus diez segundos no son la duración real de limpiar. Al cerrar esta tarea, se contabilizan veinticinco minutos de referencia. Si delegamos sin apoyo, pasan a tiempo liberado; si conservamos veinte por ciento de apoyo, cinco quedan asociados al trabajo humano.",
+  "duration_ms": 55332,
+  "billed_characters": 886,
+  "sample_rate": 32000,
+  "size_bytes": 887028,
+  "generated_at": "2026-10-03T00:23:13.780657+00:00"
+}

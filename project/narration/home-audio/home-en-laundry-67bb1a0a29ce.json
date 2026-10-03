@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Now accompany seven garments. They leave the basket, enter a washing and drying machine, then are placed folded. We follow the same garments rather than replacing dirty objects with new ones that suddenly appear. Picking up and placing belong to the agent. Washing and drying belong to the appliance and are compressed without representing their duration or internal physics. Twenty-five minutes is the reference for active human handling, not the length of a washing program. Flexible cloth is difficult to manipulate: this schematic sequence assumes that the agent can recognize and handle it reliably. When the chore ends, the furniture and appliance remain home. Only one item on our list is resolved. Move the timeline backwards to see where each garment was before entering the machine.",
+  "duration_ms": 48276,
+  "billed_characters": 792,
+  "sample_rate": 32000,
+  "size_bytes": 774132,
+  "generated_at": "2026-10-03T00:24:11.476026+00:00"
+}

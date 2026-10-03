@@ -6,7 +6,7 @@ export const CATALOG={
  robots:{number:'01',kinds:['3d'],voice:true},
  terafab:{number:'02',kinds:['3d'],voice:false},
  dyson:{number:'03',kinds:['3d'],voice:false},
- home:{number:'04',kinds:['3d'],voice:false},
+ home:{number:'04',kinds:['3d','walk'],voice:true},
  starlink:{number:'05',kinds:['3d'],voice:true},
  spacex:{number:'06',kinds:['3d'],voice:false},
  kardashev:{number:'07',kinds:['3d'],voice:true},

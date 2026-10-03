@@ -1,4 +1,4 @@
-"""Record museum, models and mind narrations. Reuse matching clips.
+"""Record shared notebook narrations. Reuse matching clips.
 
 A failed request is not retried: the call may already have been billed.
 """
@@ -18,6 +18,7 @@ JOBS = [
     ('modelos', ROOT / 'narration' / 'modelos.json', ROOT / 'site-src' / 'modelos' / 'voices.js'),
     ('museo', ROOT / 'narration' / 'museo.json', ROOT / 'site-src' / 'museo' / 'voices.js'),
     ('mente', ROOT / 'narration' / 'mente.json', ROOT / 'site-src' / 'mente' / 'voices.js'),
+    ('home', ROOT / 'narration' / 'home.json', ROOT / 'site-src' / 'home' / 'voices.js'),
 ]
 
 

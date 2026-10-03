@@ -111,6 +111,7 @@ for(const lang of ['es','en']){
     events.pagehide();frames(2);
   }
   paintings.find(p=>p.dataset.painting==='mente').onclick();frames(10);assert.equal(element('enter-3d').hidden,false,'the Mente frame opens its implemented walkable world');assert.equal(element('web').href,'../mente/index.html');element('enter-3d').onclick();frames(110);assert.equal(h.url,'../mente/index.html?mode=immersive&entrance=painting','the museum portal opens the actual Mente immersive route');events.pagehide();frames(2);
+  paintings.find(p=>p.dataset.painting==='home').onclick();frames(10);assert.equal(element('enter-3d').hidden,false,'the Home frame opens its implemented seven-chore walkable house');assert.equal(element('web').href,'../home/index.html');element('enter-3d').onclick();frames(110);assert.equal(h.url,'../home/index.html?mode=immersive&entrance=painting','the museum portal opens the dedicated Home immersive route');events.pagehide();frames(2);
 }
 for(const lang of ['es','en']){
  for(const lockMode of ['success','unsupported','reject','throw']){

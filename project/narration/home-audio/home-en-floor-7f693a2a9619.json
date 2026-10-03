@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Enter a home with seven chores. The hundred and forty-five minutes are an illustrative reference for active human work, not a measurement or an entire household day. First, follow eighteen marks on the floor. The vacuum travels to each one and removes it when its head passes over it; advancing time does not erase dirt that it has not reached. Furniture remains and the person stays home. Autonomous vacuuming already exists, but needs accessible space, maintenance and help with exceptions. You can compare the same route with a person. Motion is compressed: the ten presentation seconds are not a real cleaning duration. Completing this chore accounts for twenty-five reference minutes. With no assistance, delegation releases them all; retaining twenty percent for assistance leaves five minutes associated with human work.",
+  "duration_ms": 51588,
+  "billed_characters": 827,
+  "sample_rate": 32000,
+  "size_bytes": 827124,
+  "generated_at": "2026-10-03T00:23:54.819830+00:00"
+}
