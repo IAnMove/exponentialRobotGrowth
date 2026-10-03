@@ -1,4 +1,4 @@
-"""Record the museum and models narrations. Reuse a clip when text, model and voice match.
+"""Record museum, models and mind narrations. Reuse matching clips.
 
 A failed request is not retried: the call may already have been billed.
 """
@@ -17,6 +17,7 @@ FFMPEG = shutil.which('ffmpeg') or str(Path.home() / 'ffmpeg' / 'bin' / 'ffmpeg.
 JOBS = [
     ('modelos', ROOT / 'narration' / 'modelos.json', ROOT / 'site-src' / 'modelos' / 'voices.js'),
     ('museo', ROOT / 'narration' / 'museo.json', ROOT / 'site-src' / 'museo' / 'voices.js'),
+    ('mente', ROOT / 'narration' / 'mente.json', ROOT / 'site-src' / 'mente' / 'voices.js'),
 ]
 
 
@@ -81,5 +82,11 @@ def catalog(notebook, scripts, destination):
 if __name__ == '__main__':
     if not Path(FFMPEG).exists():
         raise SystemExit('ffmpeg is required before any request, so a saved clip can be decoded.')
+    selected = set(sys.argv[1:])
+    unknown = selected - {job[0] for job in JOBS}
+    if unknown:
+        raise SystemExit('Unknown narration: ' + ', '.join(sorted(unknown)))
     for notebook, source, destination in JOBS:
+        if selected and notebook not in selected:
+            continue
         catalog(notebook, json.loads(source.read_text(encoding='utf-8')), destination)

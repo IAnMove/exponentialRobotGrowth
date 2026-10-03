@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "La última estación distingue potencia de energía. Unos veinte vatios es una estimación de orden de magnitud para el cerebro completo, no una medición del coste de esta frase. El cerebro consume energía también cuando no realiza nuestra tarea. Un vatio es un julio por segundo: si mantenemos veinte vatios durante ocho segundos, obtenemos ciento sesenta julios. Cambia el intervalo y recorre su tiempo; la energía acumulada crece con los segundos que realmente hemos mostrado. Esto no mide el gasto de un pensamiento ni incluye todo el organismo. Al otro lado, las cifras de atención y caché cuentan posiciones y operaciones del ejemplo; no son julios, ni el trabajo total de un modelo grande. Para convertirlas en energía necesitaríamos conocer hardware, implementación, carga, refrigeración y mediciones. Por eso dejamos el consumo del servicio como desconocido. La conclusión útil es separar unidades y observar qué cambia con tus controles, sin deducir inteligencia o eficiencia comparando una célula con un parámetro.",
+  "duration_ms": 64620,
+  "billed_characters": 1021,
+  "sample_rate": 32000,
+  "size_bytes": 1035636,
+  "generated_at": "2026-09-30T05:21:46.373368+00:00"
+}

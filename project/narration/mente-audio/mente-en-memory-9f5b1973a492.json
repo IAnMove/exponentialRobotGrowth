@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Follow an answer in a toy transformer. Its matrices, weights and vocabulary are small and synthetic; its calculations are actually performed. The query is compared with the keys. A mask prevents looking at future positions, and softmax converts scores into weights for mixing the values. A router selects two of eight experts; we then compute output scores and choose a token. This is not a bit searching for a stored sentence. The first token comes from the last position of the initial context processing. To produce the next token, we process the one just emitted and add its key and value to the cache. The model weights remain fixed. With a large context, the scene calculates a reduced sample and shows Grok one counts separately. Its published limit is eight thousand one hundred and ninety-two positions: a longer context is rejected here, not secretly cropped. Grouping eight symbols into four pairs is a separate human-memory analogy, not a conversion of tokens into memories.",
+  "duration_ms": 64800,
+  "billed_characters": 986,
+  "sample_rate": 32000,
+  "size_bytes": 1038516,
+  "generated_at": "2026-09-30T05:21:58.908173+00:00"
+}

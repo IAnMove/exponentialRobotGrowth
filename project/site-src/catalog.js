@@ -11,7 +11,7 @@ export const CATALOG={
  spacex:{number:'06',kinds:['3d'],voice:false},
  kardashev:{number:'07',kinds:['3d'],voice:true},
  llms:{number:'08',kinds:['3d','walk'],voice:true},
- mente:{number:'09',kinds:['3d'],voice:false},
+ mente:{number:'09',kinds:['3d','walk'],voice:true},
  modelos:{number:'10',kinds:['3d'],voice:true},
  growth:{number:'11',kinds:['2d'],voice:false},
  internet:{number:'12',kinds:['3d','walk'],voice:true},

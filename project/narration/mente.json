@@ -1,0 +1,46 @@
+{
+  "es": [
+    {
+      "id": "units",
+      "title": "Contamos cosas distintas",
+      "text": "Este laboratorio compara un cerebro con un modelo de lenguaje, pero sus piezas no son equivalentes. La forma del cerebro es una maqueta: los puntos comprimen cantidades enormes y no simulan neuronas disparando. Un censo de cerebros adultos masculinos estimó, en promedio, unos ochenta y seis mil millones de neuronas y ochenta y cinco mil millones de células no neuronales. Son estimaciones de una muestra, no cifras idénticas para todas las personas. El cerebelo reúne una gran parte de las neuronas aunque ocupe menos volumen; contar células no mide inteligencia. Al lado usamos la arquitectura publicada de Grok uno, de marzo de dos mil veinticuatro: trescientos catorce mil millones de parámetros, sesenta y cuatro capas y ocho expertos, con dos seleccionados por cada token. Un parámetro es un número aprendido, no una célula. Las cajas son un diagrama comprimido. No describen versiones actuales de Grok ni una equivalencia entre cerebro y ordenador."
+    },
+    {
+      "id": "memory",
+      "title": "Una respuesta, operación a operación",
+      "text": "Seguimos una respuesta en un transformador de juguete. Sus matrices, pesos y vocabulario son pequeños y sintéticos; sus cálculos sí se realizan. La consulta se compara con las claves. La máscara impide mirar posiciones futuras, y el softmax convierte puntuaciones en pesos para mezclar los valores. Un router elige dos de ocho expertos; después obtenemos puntuaciones de salida y elegimos un token. No es un bit que busca una frase guardada. El primer token sale de la última posición del procesamiento inicial del contexto. Para producir el siguiente, procesamos el token que acabamos de emitir y añadimos su clave y valor a la caché. Los pesos del modelo permanecen fijos. Si eliges un contexto grande, la maqueta calcula una muestra reducida y las cifras de Grok uno se muestran aparte. El límite publicado es de ocho mil ciento noventa y dos posiciones: un contexto más largo se rechaza aquí, no se recorta en secreto. Agrupar ocho símbolos en cuatro parejas es una analogía independiente de memoria humana, no una conversión de tokens en recuerdos."
+    },
+    {
+      "id": "learn",
+      "title": "Responder no es entrenar",
+      "text": "Responder utiliza los pesos existentes. Aprender durante el entrenamiento sí puede modificarlos. Para ver la diferencia cambiamos de experimento: aquí no se generan palabras. Tenemos una sola entrada igual a uno, un peso ajustable y una etiqueta que puedes elegir. Primero una función logística convierte el peso en probabilidad. Después calculamos la pérdida: cuánto se aleja esa predicción de la etiqueta. El gradiente indica cómo cambia la pérdida al cambiar el peso. La tasa de aprendizaje decide el tamaño del paso. Puedes retroceder por estas cuatro fases y comprobar que mostrar una pérdida o un gradiente todavía no modifica el peso. Al completar la explicación se aplica una sola actualización: peso nuevo igual a peso anterior menos tasa por gradiente. Compara entonces la probabilidad y la pérdida antes y después. Es un cálculo verificable de un modelo diminuto. No reproduce el entrenamiento de Grok ni el aprendizaje de un cerebro. Vuelve a responder para comprobar que, en ese modo, el peso no cambia."
+    },
+    {
+      "id": "energy",
+      "title": "Potencia, tiempo y energía",
+      "text": "La última estación distingue potencia de energía. Unos veinte vatios es una estimación de orden de magnitud para el cerebro completo, no una medición del coste de esta frase. El cerebro consume energía también cuando no realiza nuestra tarea. Un vatio es un julio por segundo: si mantenemos veinte vatios durante ocho segundos, obtenemos ciento sesenta julios. Cambia el intervalo y recorre su tiempo; la energía acumulada crece con los segundos que realmente hemos mostrado. Esto no mide el gasto de un pensamiento ni incluye todo el organismo. Al otro lado, las cifras de atención y caché cuentan posiciones y operaciones del ejemplo; no son julios, ni el trabajo total de un modelo grande. Para convertirlas en energía necesitaríamos conocer hardware, implementación, carga, refrigeración y mediciones. Por eso dejamos el consumo del servicio como desconocido. La conclusión útil es separar unidades y observar qué cambia con tus controles, sin deducir inteligencia o eficiencia comparando una célula con un parámetro."
+    }
+  ],
+  "en": [
+    {
+      "id": "units",
+      "title": "We are counting different things",
+      "text": "This laboratory compares a brain with a language model, but their parts are not equivalent. The brain shape is an illustration: the dots compress enormous quantities and do not simulate firing neurons. A census of adult male brains estimated an average of roughly eighty-six billion neurons and eighty-five billion non-neuronal cells. These are sample estimates, not identical counts for every person. The cerebellum contains a large share of the neurons despite occupying less volume; counting cells does not measure intelligence. Beside it we use the published Grok one architecture from March twenty twenty-four: three hundred and fourteen billion parameters, sixty-four layers and eight experts, with two selected per token. A parameter is a learned number, not a cell. The boxes are a compressed diagram. They describe neither current Grok versions nor an equivalence between a brain and a computer."
+    },
+    {
+      "id": "memory",
+      "title": "An answer, operation by operation",
+      "text": "Follow an answer in a toy transformer. Its matrices, weights and vocabulary are small and synthetic; its calculations are actually performed. The query is compared with the keys. A mask prevents looking at future positions, and softmax converts scores into weights for mixing the values. A router selects two of eight experts; we then compute output scores and choose a token. This is not a bit searching for a stored sentence. The first token comes from the last position of the initial context processing. To produce the next token, we process the one just emitted and add its key and value to the cache. The model weights remain fixed. With a large context, the scene calculates a reduced sample and shows Grok one counts separately. Its published limit is eight thousand one hundred and ninety-two positions: a longer context is rejected here, not secretly cropped. Grouping eight symbols into four pairs is a separate human-memory analogy, not a conversion of tokens into memories."
+    },
+      {
+      "id": "learn",
+      "title": "Answering is not training",
+      "text": "Answering uses existing weights. Learning during training can modify them. To see the difference, we switch experiments: no words are generated here. We have one input equal to one, an adjustable weight and a label you can choose. First, a logistic function converts the weight into a probability. Next, we calculate the loss: how far that prediction is from the label. The gradient tells us how the loss changes when the weight changes. The learning rate determines the step size. You can move backwards through these four phases and verify that displaying a loss or a gradient does not yet change the weight. When the explanation finishes, a single update is applied: the new weight equals the old weight minus the rate times the gradient. Then compare probability and loss before and after. This is a verifiable calculation in a tiny model. It reproduces neither Grok training nor learning in a brain. Return to answering to check that, in that mode, the weight remains unchanged."
+    },
+    {
+      "id": "energy",
+      "title": "Power, time and energy",
+      "text": "The final station separates power from energy. About twenty watts is an order-of-magnitude estimate for the whole brain, not a measurement of the cost of this sentence. The brain uses energy even when it is not performing our task. One watt is one joule per second: maintaining twenty watts for eight seconds gives one hundred and sixty joules. Change the interval and move through its time; accumulated energy grows with the seconds we have actually shown. This does not measure the cost of a thought or include the whole body. On the other side, attention and cache counts describe positions and operations in the example; they are neither joules nor the total work of a large model. To convert them into energy, we would need hardware, implementation, workload, cooling and measurements. We therefore leave the service energy consumption unknown. The useful conclusion is to separate units and observe what your controls change, without inferring intelligence or efficiency by comparing a cell with a parameter."
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "The final station separates power from energy. About twenty watts is an order-of-magnitude estimate for the whole brain, not a measurement of the cost of this sentence. The brain uses energy even when it is not performing our task. One watt is one joule per second: maintaining twenty watts for eight seconds gives one hundred and sixty joules. Change the interval and move through its time; accumulated energy grows with the seconds we have actually shown. This does not measure the cost of a thought or include the whole body. On the other side, attention and cache counts describe positions and operations in the example; they are neither joules nor the total work of a large model. To convert them into energy, we would need hardware, implementation, workload, cooling and measurements. We therefore leave the service energy consumption unknown. The useful conclusion is to separate units and observe what your controls change, without inferring intelligence or efficiency by comparing a cell with a parameter.",
+  "duration_ms": 60948,
+  "billed_characters": 1014,
+  "sample_rate": 32000,
+  "size_bytes": 976884,
+  "generated_at": "2026-09-30T05:22:13.270842+00:00"
+}
