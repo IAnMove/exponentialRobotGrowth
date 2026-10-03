@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "The visible context feeds the predictor. In the other branch, the target encoder receives the complete image, and a region of its representation is selected at the output. We compare both vectors component by component. Squared differences produce the example error. This illustrates I JEPA’s objective: predicting representations rather than directly reconstructing pixels. The vectors stay fixed. Animation calculates the error; it is not training the predictor.",
+  "duration_ms": 32868,
+  "billed_characters": 464,
+  "sample_rate": 32000,
+  "size_bytes": 527604,
+  "generated_at": "2026-10-03T03:54:32.895265+00:00"
+}

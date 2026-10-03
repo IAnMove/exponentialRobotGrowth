@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "The query can now use all eight input positions. This is the bidirectional access an encoder such as BERT uses to build representations. Every position is allowed, but their weights can differ: permission and attention are different things. The calculation mixes the values again. This demonstration produces a vector; it does not run a classification task or continue a sentence with a trained model.",
+  "duration_ms": 26388,
+  "billed_characters": 401,
+  "sample_rate": 32000,
+  "size_bytes": 423924,
+  "generated_at": "2026-10-03T03:54:05.362881+00:00"
+}

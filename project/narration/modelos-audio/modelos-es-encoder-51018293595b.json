@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Ahora la consulta puede usar las ocho posiciones de la entrada. Es el acceso bidireccional que usa un codificador como BERT para construir representaciones. Todas están permitidas, pero sus pesos pueden ser distintos: permiso y atención no son lo mismo. El cálculo vuelve a mezclar los valores. Esta demostración produce un vector; no ejecuta una tarea de clasificación ni continúa una frase con un modelo entrenado.",
+  "duration_ms": 25164,
+  "billed_characters": 416,
+  "sample_rate": 32000,
+  "size_bytes": 404340,
+  "generated_at": "2026-10-03T03:52:59.930992+00:00"
+}

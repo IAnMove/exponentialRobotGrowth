@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "El router calcula ocho puntuaciones a partir del vector de entrada. Las dos mayores eligen los expertos que trabajan. Sus pesos se normalizan entre los elegidos y mezclan dos salidas. Elegir dos de ocho no significa usar una cuarta parte de toda la red: también existen otras operaciones. Dos de ocho es la configuración publicada de Grok uno, no una regla para todos los modelos de expertos. Las puntuaciones y transformaciones de este ejemplo son sintéticas.",
+  "duration_ms": 29808,
+  "billed_characters": 460,
+  "sample_rate": 32000,
+  "size_bytes": 478644,
+  "generated_at": "2026-10-03T03:53:10.372552+00:00"
+}

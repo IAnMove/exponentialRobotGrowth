@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Ahora comparamos otra regla, publicada por Anthropic, solo para el prefijo. Escribir una caché de cinco minutos cuesta uno coma veinticinco veces la entrada base; la de una hora cuesta dos veces. La lectura estándar cuesta una décima, y algunos modelos tienen excepciones que puedes seleccionar. La curva incluye el recargo inicial. Con escritura de cinco minutos y lectura estándar, la segunda llamada ya cuesta menos en el acumulado. Aquí usamos un precio base ilustrativo. El sufijo y la salida quedan fuera de esta comparación.",
+  "duration_ms": 32436,
+  "billed_characters": 531,
+  "sample_rate": 32000,
+  "size_bytes": 520692,
+  "generated_at": "2026-10-03T03:53:48.670157+00:00"
+}
