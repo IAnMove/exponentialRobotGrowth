@@ -80,7 +80,7 @@ function frame(now){const dt=Math.min(.1,Math.max(0,(now-last)/1000));last=now;
   }requestAnimationFrame(frame);
 }
 robotUI=createRobotUI({kind:'factory',surface,world,guide:narrator,pause(){playing=false;updateUI();},listen:i=>narrator.explain('robot-factory-'+i)});addRobotSources();narrator.ready();updateUI();requestAnimationFrame(frame);
-window.addEventListener('pagehide',()=>{narrator.save();robotUI.dispose();narrator.dispose();world?.dispose();});
+window.addEventListener('pagehide',event=>{narrator.save();if(event?.persisted){robotUI.suspend();return;}robotUI.dispose();narrator.dispose();world?.dispose();});
 
 function updateFirstLoop(){const first=state.firstReturn;let title,text;
  if(state.firstFinished===null){title='People build the first robot.';text='Watch the end of the line. A finished robot can return and help build the next ones.';}

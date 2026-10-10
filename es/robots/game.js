@@ -133,4 +133,4 @@ function updateProduction(industry=8){
 }
 $('d-production-explain').onclick=()=>narrator.explain('district-productivity-lesson');
 
-window.addEventListener('pagehide',()=>{narrator.save();robotUI.dispose();narrator.dispose();activity.dispose?.();characters.dispose?.();world.dispose?.();renderer.dispose();});
+window.addEventListener('pagehide',event=>{narrator.save();if(event?.persisted){robotUI.suspend();return;}robotUI.dispose();narrator.dispose();activity.dispose?.();characters.dispose?.();world.dispose?.();renderer.dispose();});

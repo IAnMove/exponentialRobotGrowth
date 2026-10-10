@@ -92,4 +92,4 @@ function selectTown(i,narrate=true){selected=-1;townSelected=i;$('r-inspector').
 function inspectTown(){const i=townSelected,t=state.towns[i],n=covered(t),total=t.tasks.reduce((a,b)=>a+b,0);$('r-town-name').textContent=TOWNS[i].name;$('r-town-human').textContent=total-n;$('r-town-robot').textContent=n;$('r-town-travel').textContent=t.travel+' ciclos de traslado · '+t.reserved+' robots de camino';chart($('r-town-chart'),[{values:[[0,0],...reference.urbanHistory.map(h=>[h.time,h.covered[i]])],color:'#839eaf'},{values:[[0,0],...state.urbanHistory.map(h=>[h.time,h.covered[i]])],color:'#70e1c6'}]);}
 document.addEventListener('narration-focus',e=>{if(/^region-city-\d+$/.test(e.detail))selectTown(Number(e.detail.split('-')[2]),false);});
 
-window.addEventListener('pagehide',()=>{narrator.save();robotUI.dispose();narrator.dispose();world?.dispose();referenceWorld?.dispose();});
+window.addEventListener('pagehide',event=>{narrator.save();if(event?.persisted){robotUI.suspend();return;}robotUI.dispose();narrator.dispose();world?.dispose();referenceWorld?.dispose();});
