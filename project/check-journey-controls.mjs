@@ -12,10 +12,11 @@ import vm from 'node:vm';
 import {LESSONS} from './site-src/journeys/catalog.js';
 import {defaults,poseAt,walk} from './site-src/journeys/common.js';
 import {StepGuide} from './site-src/llms/guide.js';
+import {TimelineClock} from './site-src/playback/timeline.js';
 const source=readFileSync('site-src/journeys/app.js','utf8').replace(/^import .*;$/gm,'');
 let activeCases=0,redirectCases=0,nuclearCases=0;
 for(const lang of ['es','en'])for(const mode of ['web','immersive'])for(const [id,lesson] of Object.entries(LESSONS)){
- const elements=new Map(),events={},frames=[],audios=[];let now=0,current,phase,pose,redirect,notebook,sceneTime,inspect,orbitState,savedForReload=null;
+ const elements=new Map(),events={},frames=[],audios=[];let now=0,current,phase,pose,redirect,notebook,sceneTime,inspect,orbitState,savedForReload=null,worldDisposed=false;
  const element=id=>{if(!elements.has(id))elements.set(id,{id,checked:false,dataset:{},style:{},value:'',classList:{toggle(){}},setAttribute(k,v){this[k]=v;},addEventListener(){},setPointerCapture(){},append(){}});return elements.get(id);};
  const stops=lesson.steps.map((s,i)=>({...element('stop-'+i),dataset:{stop:String(i)}})),controls=lesson.controls.map(c=>({...element('control-'+c.id),dataset:{control:c.id},value:c.value,checked:c.value})),moves=['forward','left','right','back'].map(move=>({...element(move),dataset:{move}}));
  const truthRows=Array.from({length:8},(_,i)=>({...element('truth-'+i),dataset:{truth:String(i)}}));
@@ -31,13 +32,14 @@ for(const lang of ['es','en'])for(const mode of ['web','immersive'])for(const [i
   constructor(options){if(savedForReload&&lesson.continuous)options.restore(savedForReload);super(options);}
   pause(){super.pause();if(this.current)this.options.onSync({...this.current,running:false,reason:'pause'});}
   save(){if(lesson.continuous)savedForReload=JSON.parse(JSON.stringify(this.options.capture()));}
+  dispose(){this.disposed=true;this.running=false;}
  }
- const ctx={sampleTCP,sampleNuclear,sampleCell,sampleChip,sampleGrid,lineAtPower,sampleEvolution,sampleCarbon,FLUXES,RESERVOIRS,NotebookPlayer:NotebookFixture,LESSONS,defaults,poseAt,walk,StepGuide:Guide,VOICES,document,window:{addEventListener(n,f){events[n]=f;}},console,URLSearchParams,Intl,performance:{now:()=>now},matchMedia:()=>({matches:false}),location:{search:`?topic=${id}&mode=${mode}`,replace(url){redirect=url;}},requestAnimationFrame:f=>frames.push(f),createWorld:(host,lesson,es,fn)=>(inspect=fn,{canvas:element('canvas'),update(s,i){current=s;phase=i;},render(p,dt,animation,orbit,mode,time){pose={...p};sceneTime=time;orbitState={...orbit};},dispose(){}})};
+ const ctx={sampleTCP,sampleNuclear,sampleCell,sampleChip,sampleGrid,lineAtPower,sampleEvolution,sampleCarbon,FLUXES,RESERVOIRS,NotebookPlayer:NotebookFixture,LESSONS,defaults,poseAt,walk,StepGuide:Guide,VOICES,document,window:{addEventListener(n,f){events[n]=f;},removeEventListener(n,f){if(events[n]===f)delete events[n];}},console,URLSearchParams,Intl,performance:{now:()=>now},matchMedia:()=>({matches:false}),location:{search:`?topic=${id}&mode=${mode}`,replace(url){redirect=url;}},requestAnimationFrame:f=>frames.push(f),cancelAnimationFrame:()=>frames.length=0,createWorld:(host,lesson,es,fn)=>(inspect=fn,{canvas:element('canvas'),update(s,i){current=s;phase=i;},render(p,dt,animation,orbit,mode,time){assert.equal(worldDisposed,false,'disposed worlds do not render');pose={...p};sceneTime=time;orbitState={...orbit};},dispose(){worldDisposed=true;}})};
  vm.runInNewContext(source,ctx);
  if(id==='internet'&&mode==='immersive'){assert.equal(redirect,'./internet-voyage.html');assert.equal(frames.length,0,'legacy gallery must not start behind redirect');redirectCases++;continue;}
  activeCases++;
  const advance=n=>{for(let i=0;i<n;i++){now+=1000/60;frames.shift()(now);}};
- if(lesson.continuous){advance(1);const initialDistance=orbitState.distance;element('zoom-in').onclick();advance(1);assert(orbitState.distance<initialDistance,'zoom button moves the camera closer');element('fit-network').onclick();advance(1);assert.equal(orbitState.distance,initialDistance,'fit restores the overview');}assert.equal(phase,0);assert(element('app').innerHTML.includes(`pieza=${id}`));
+ if(lesson.continuous){advance(1);const initialDistance=orbitState.distance;element('zoom-in').onclick();advance(1);assert(orbitState.distance<initialDistance,'zoom button moves the camera closer');element('fit-network').onclick();advance(1);assert.equal(orbitState.distance,initialDistance,'fit restores the overview');const endedClock=new TimelineClock({clips:notebook.clock.timeline,AudioClass:AudioStub,onSync:s=>notebook.options.onSync(s)});await endedClock.seek(0,false);element('timeline').oninput({target:{value:'10'}});advance(1);endedClock.audio.onended();advance(1);assert.equal(sceneTime,10,'a queued ended event from paused narration cannot overwrite a manual experiment');endedClock.dispose();}assert.equal(phase,0);assert(element('app').innerHTML.includes(`pieza=${id}`));
  element('timeline').oninput({target:{value:String(lesson.horizon)}});assert.equal(+element('timeline').value,lesson.horizon);
  assert.equal(JSON.stringify(current.metrics),JSON.stringify(lesson.evaluate(defaults(lesson),lesson.horizon).metrics));
  if(id==='electricity'){assert.equal(current.completed,24);assert.equal(current.hour,23);assert.equal(current.active,false);assert.equal(current.trace.states.length,25,'the final day contains exactly 24 intervals');assert.equal(current.energyGenerated,current.trace.states[24].energyGenerated);assert(element('electricity-balance').innerHTML.includes('24:00'));assert(element('electricity-balance').innerHTML.includes('23 → 24'),'end-of-day powers are identified as the final hourly mean');}
@@ -201,7 +203,8 @@ for(const lang of ['es','en'])for(const mode of ['web','immersive'])for(const [i
    assert.equal(controls.find(c=>c.dataset.control==='seed').value,17);assert.equal(controls.find(c=>c.dataset.control==='advantage').value,-.25);assert.equal(controls.find(c=>c.dataset.control==='drift').checked,false);
    advance(80);assert.equal(sceneTime,partial,'restored manual experiment stays paused');
   }
-  events.pagehide({persisted:false});continue;}
+  if(lesson.continuous){element('zoom-in').onclick();advance(1);notebook.save();const savedCamera=JSON.parse(JSON.stringify(savedForReload.camera));frames.length=0;elements.clear();now=0;notebook=undefined;current=undefined;vm.runInNewContext(source,{...ctx});advance(1);assert.deepEqual(orbitState,savedCamera.orbit,'reload preserves the current orbit');assert.deepEqual(pose,savedCamera.player,'reload preserves the current first-person pose');const cacheTime=sceneTime;events.pagehide({persisted:true});assert.equal(worldDisposed,false);assert.equal(notebook.running,false);advance(3);assert.equal(sceneTime,cacheTime,'a cacheable departure preserves the paused experiment');}
+  const queuedFrame=frames[0];events.pagehide({persisted:false});assert.equal(worldDisposed,true);assert.equal(notebook.disposed,true);assert.equal(frames.length,0);queuedFrame(now+16);assert.equal(frames.length,0,'final departure and an already queued callback cannot revive RAF');continue;}
  element('instant').checked=true;element('guide').onclick();assert.equal(audios.length,1);advance(210);assert.equal(phase,0,'a long audio never advances on a guessed duration');
  for(let i=0;i<4;i++){assert.equal(phase,i);audios.at(-1).onended();advance(120);assert.equal(phase,i,'observe for three seconds after audio');advance(65);}
  assert.equal(phase,3);assert.match(element('voice-state').textContent,/completo|complete/);
