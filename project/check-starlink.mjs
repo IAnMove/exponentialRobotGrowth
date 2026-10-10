@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
 import {R_EARTH,GEO_ALT,SHELLS,period,lightMs,geoOneWayMs,leoOneWayMs,footprintKm,elevation,geodetic,eci,buildConstellation,positionsAt,routePacket,refreshRoute,coverageGrid,sampleCount,lineOfSight,laserLink,distance,inView} from './site-src/starlink/model.js';
 const near=(a,b,tol=1e-6)=>assert(Math.abs(a-b)<=tol+1e-9*Math.max(1,Math.abs(a),Math.abs(b)),`${a} != ${b}`);
 assert(Math.abs(period(550)/60-95.6)<1.5);
@@ -43,4 +45,9 @@ const hawaii=geodetic(19,-155),cached=routePacket(hawaii,sats,pos,true);
 assert(refreshRoute(cached,hawaii,sats,positionsAt(sats,1)),'A still-valid cached route refreshes metrics');
 assert.equal(refreshRoute(cached,hawaii,sats,positionsAt(sats,19)),null,'Reroute when elevation drops below 25°, before cache timeout');
 const refreshed=refreshRoute(cached,hawaii,sats,positionsAt(sats,1));near(refreshed.ms,lightMs(refreshed.hops.slice(1).reduce((km,h,i)=>km+distance(refreshed.hops[i].p,h.p),0)));
+// Exercise the actual app's frame/pagehide handlers with bounded UI adapters.
+const lifecycleSource=readFileSync('site-src/starlink/app.js','utf8').split('function frame(now)')[1],scheduled=new Map();let nextId=0,pagehide,hideOptions;
+const lifecycle={disposed:false,raf:0,last:0,domAt:0,narrative:false,state:{playing:true,time:12,speed:40,progress:0},document:{hidden:false},performance:{now:()=>100},requestAnimationFrame(fn){const id=++nextId;scheduled.set(id,fn);return id;},cancelAnimationFrame(id){scheduled.delete(id);},window:{addEventListener(name,fn,options){assert.equal(name,'pagehide');pagehide=fn;hideOptions=options;}},player:{paused:0,saved:0,disposed:false,pause(){this.paused++;},save(){this.saved++;},dispose(){this.disposed=true;}},world:{renders:0,disposed:false,render(){assert.equal(this.disposed,false,'a disposed renderer is never reused');this.renders++;},dispose(){this.disposed=true;}},syncControls(){},paint(){}};
+vm.runInNewContext('function frame(now)'+lifecycleSource,lifecycle);assert.notEqual(hideOptions?.once,true,'a cacheable departure must not consume final cleanup');const firstFrame=[...scheduled.values()][0];scheduled.clear();firstFrame(50);const cachedTime=lifecycle.state.time;pagehide({persisted:true});assert.equal(lifecycle.world.disposed,false);assert.equal(lifecycle.player.disposed,false);assert.equal(lifecycle.state.playing,false);assert.equal(lifecycle.player.paused,1);const cachedFrame=[...scheduled.values()][0];scheduled.clear();cachedFrame(100);assert.equal(lifecycle.state.time,cachedTime,'back/forward restores the retained scene paused');const finalFrame=[...scheduled.values()][0];pagehide({persisted:false});assert.equal(lifecycle.world.disposed,true);assert.equal(lifecycle.player.disposed,true);assert.equal(scheduled.size,0);const finalRenderCount=lifecycle.world.renders;finalFrame(150);assert.equal(lifecycle.world.renders,finalRenderCount);assert.equal(scheduled.size,0,'an already queued callback cannot resurrect its frame loop');
 console.log('Starlink: orbital physics, honest routing, Earth occlusion, empty layers and moving-route validation OK');
+console.log('Starlink lifecycle: back/forward retains the scene paused; final departure disposes playback and renderer and stops RAF: OK');
