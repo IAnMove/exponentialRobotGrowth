@@ -117,6 +117,13 @@ for(const lang of ['es','en'])for(const mode of ['notebook','immersive']){
   events.keydown(key('KeyW'));frames(6);h.document.hidden=true;events['document:visibilitychange']();const hidden={...h.lastPose};frames(60);h.document.hidden=false;events['document:visibilitychange']();frames(60);samePose(h.lastPose,hidden,'visibility recovery has no retained walking input');assert.equal(notebook.running,false);
  }
 }
+for(const lang of ['es','en']){
+ scenarios++;const h=harness({lang,voices:VOICES,worldAPI});await h.flush();h.frames(1);const notebook=h.players[0],memory=notebook.clock.timeline[1];
+ notebook.seek(memory.start+memory.duration*.8,true);await h.flush();h.frames(1);assert.equal(notebook.running,true);assert.equal(h.world.getViewState().zoneOverview,true,'followed repeated narration shows the whole station');
+ h.element('follow').checked=false;h.element('follow').onchange();h.element('overview').onclick();const view=h.world.getViewState();h.frames(12);assert.deepEqual(h.world.getViewState(),view,'manual laboratory overview survives narrated ticks with follow disabled');assert.equal(view.whole,true);
+ notebook.seek(memory.start+memory.duration*.85,true);await h.flush();h.frames(1);assert.deepEqual(h.world.getViewState(),view,'free laboratory overview also survives a narrated seek');
+ h.element('follow').checked=true;h.element('follow').onchange();notebook.seek(memory.start+memory.duration*.8,true);await h.flush();h.frames(1);assert.equal(h.world.getViewState().zoneOverview,true,'reenabling follow restores the narrated station view');
+}
 // First entry is a deliberate arrival at whichever station is active. Once
 // visited, walking and camera orientation survive notebook/FPS toggles/reload.
 for(const lang of ['es','en'])for(let chapter=0;chapter<4;chapter++){
