@@ -120,6 +120,17 @@ for(const lang of ['es','en']){
   paintings.find(p=>p.dataset.painting==='terafab').onclick();frames(10);assert.equal(element('enter-3d').hidden,false,'the Terafab frame opens its implemented six-stand factory lesson');assert.equal(element('web').href,'../terafab/index.html');element('enter-3d').onclick();frames(110);assert.equal(h.url,'../terafab/index.html?mode=immersive&entrance=painting','the museum portal opens the dedicated Terafab immersive route');events.pagehide();frames(2);
 }
 for(const lang of ['es','en']){
+ controllerCases++;{
+  const pose={x:2,z:-12.5,yaw:.9,pitch:.2},h=harness({lang,storage:stored(lang,pose,{followNarration:true})});await h.flush();h.frames(1);const notebook=h.players[0],mind=notebook.clock.timeline[1];
+  notebook.seek(mind.start+mind.duration*.37,false);await h.flush();h.frames(1);samePose(h.lastPose,pose,'a seek within the current narrated gallery preserves position and head direction');near(notebook.current.progress,.37);
+  notebook.seek(mind.start,false);await h.flush();h.frames(1);samePose(h.lastPose,pose,'restarting the current gallery preserves the complete visitor pose');
+  notebook.stage(2,false);await h.flush();h.frames(1);assert.equal(model.roomAt(h.lastPose.x,h.lastPose.z).id,'industry','an explicit different chapter still visits its narrated gallery');
+ }
+ controllerCases++;{
+  const h=harness({lang});await h.flush();h.element('start').onclick();await h.flush();h.frames(1);h.element('map-toggle').onclick();const pose={...h.lastPose};
+  h.events.keydown(key('KeyW'));h.frames(30);h.events.keyup(key('KeyW'));assert.equal(h.element('map').hidden,false);samePose(h.lastPose,pose,'the open map blocks keyboard walking behind the menu');
+  h.element('map-close').onclick();h.events.keydown(key('KeyW'));h.frames(12);h.events.keyup(key('KeyW'));assert(h.lastPose.z<pose.z,'closing the map restores ordinary keyboard walking');
+ }
  for(const lockMode of ['success','unsupported','reject','throw']){
   controllerCases++;const h=harness({lang,finePointer:true,lockMode}),{element,events,frames}=h;frames(1);element('start').onclick();await h.flush();frames(1);
   assert.equal(element('mouse')['aria-pressed'],'true','mouse look remains active even if native pointer capture fails');assert.equal(h.document.pointerLockElement===h.world.dom,lockMode==='success');assert.equal(h.lockCalls,1);

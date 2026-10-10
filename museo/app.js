@@ -71,7 +71,7 @@ notebook=new NotebookPlayer({id:'museum',autoplay:false,getClips:language=>VOICE
  capture:()=>({pose:portal?portal.from:{...player},started,instant:$('instant').checked,followNarration:$('follow-narration').checked,entry:entryId()}),
  restore(saved){if(!saved)return;player=restorePose(saved.pose);started=saved.started===true;restored=true;savedEntry=typeof saved.entry==='string'?saved.entry:'';$('instant').checked=typeof saved.instant==='boolean'?saved.instant:reduced;$('follow-narration').checked=saved.followNarration!==false;},
  onLanguage(){changingVoice=notebookReady;},
- onSync(s){if(!s||!notebookReady)return;if(s.reason==='seek'&&!holdPose&&!changingVoice&&$('follow-narration').checked){stopWalk(false);player={...roomPose(s.id)};begin();}changingVoice=false;paint();}
+ onSync(s){if(!s||!notebookReady)return;if(s.reason==='seek'&&!holdPose&&!changingVoice&&$('follow-narration').checked&&roomAt(player.x,player.z)?.id!==s.id){stopWalk(false);player={...roomPose(s.id)};begin();}changingVoice=false;paint();}
 });
 notebookReady=true;
 $('narrate').onclick=()=>{begin();const id=(roomAt(player.x,player.z)||rooms[0]).id;if(notebook.running&&notebook.current?.id===id)notebook.pause();else if(notebook.current?.id===id)notebook.toggle();else narrateRoom(id);paint();};
@@ -89,7 +89,7 @@ const tour=['internet','electricity','kardashev','cell'];
 $('tour').onclick=()=>{tourStep=(tourStep+1)%tour.length;approach(exhibits.find(e=>e.id===tour[tourStep]),true);$('tour').textContent=(tourStep===tour.length-1?t('Repetir visita','Repeat visit'):t('Siguiente sala','Next gallery'))+' →';};
 window.addEventListener('keydown',e=>{
  if(e.code==='Escape'){cancelPortal();stopWalk();mapOpen(false);releaseLook();return;}
- if(!started||controls(e.target)||portal)return;
+ if(!started||!$('map').hidden||controls(e.target)||portal)return;
  if(['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code)){e.preventDefault();if(!keys.has(e.code)){if(path.length)stopWalk();else notebook.pause();keys.add(e.code);}}
  if(e.code==='KeyE'&&!e.repeat){paint();enterPainting(selected);}
  if(e.code==='KeyN'&&!e.repeat&&tourStep>=0)$('tour').click();
