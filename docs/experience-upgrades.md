@@ -1,5 +1,51 @@
 # Atlas — cola de mejoras
 
+## Mantenimiento — 11 de octubre de 2026
+
+La comprobación inicial de GitHub encontró `main` en `8f35920c660cf8e53731f1ee86d057d17a996d55` y el PR [#18](https://github.com/IAnMove/exponentialRobotGrowth/pull/18) abierto, en borrador y sin conflictos de mezcla. Su head remoto era `d0a1c5150063d475215f6a4977f3a05597919395`: las mejoras anteriores estaban subidas, pero no mezcladas en main. El último despliegue de GitHub Pages correspondía a esa main, el 29 de septiembre. Los dos checkouts empezaron limpios. Este mantenimiento continúa en la misma rama del PR; no mezcla, despliega, borra ramas ni reescribe historial.
+
+Los 21 sistemas se han repasado, priorizando errores reproducibles de controles, reproducción y recuperación. Las puntuaciones editoriales de la revisión anterior se conservan como contexto histórico; no significan ausencia de errores.
+
+| Sistema | Resultado de esta pasada |
+| --- | --- |
+| Starlink | Al volver con Atrás se conserva el renderizador; al abandonar definitivamente se liberan audio, escena y RAF. |
+| Ideas | Controlador compartido: cámara recuperable y protección del experimento manual frente a eventos tardíos de audio. |
+| Carbono | Misma corrección; una notificación de una voz ya pausada no devuelve el intervalo manual al capítulo anterior. |
+| Evolución | Misma recuperación de cámara, posición y ciclo de navegación del controlador compartido. |
+| Electricidad | Misma recuperación y separación entre exploración manual y eventos tardíos. |
+| Microchip | Misma recuperación y separación entre exploración manual y eventos tardíos. |
+| Célula | Misma recuperación y separación entre exploración manual y eventos tardíos. |
+| Nuclear | Misma recuperación y separación entre exploración manual y eventos tardíos. |
+| Museo | Mover el audio dentro de la sala conserva la posición; abrir el mapa bloquea caminar con el teclado. Descripciones ES/EN actualizadas. |
+| Mente | Laboratorio conserva la vista general cuando el seguimiento está desactivado, aunque siga sonando la voz. |
+| Hogar | Desmarcar seguimiento cancela inmediatamente el desplazamiento guiado de cámara sin saltar de posición. |
+| SpaceX | Controlador, voz, recuperación y cámara revisados; sin un nuevo fallo confirmado en esta pasada. |
+| Terafab | Cancelación inmediata del desplazamiento al desactivar seguimiento. |
+| Modelos | Cancelación del seguimiento y recuperación de la escena al volver con Atrás. |
+| Crecimiento | Cancelación del seguimiento y recuperación de la escena al volver con Atrás. La vista inicial 2D continúa siendo válida. |
+| Robots | Los enlaces `mode=diagram` abren 2D; se cancela el seguimiento y se conservan las cuatro escenas al volver con Atrás. |
+| Dyson | Volver con Atrás conserva escena y reproductor pausados y utilizables. |
+| Internet | Controladores TCP y viaje óptico revisados; sin un nuevo fallo confirmado. |
+| Luna | Controlador, modelo, recuperación y SFX revisados; sin un nuevo fallo confirmado. |
+| LLMs | Carteles del paseo con frente único: ya no aparece su texto invertido al mirarlos por detrás. |
+| Kardashev | Modelo, controles, separación entre voz y crecimiento y recuperación revisados; sin un nuevo fallo confirmado. |
+
+Además, el portal obtiene los recuentos del catálogo: 21 entradas, 20 cuadros y 16 experiencias transitables; el filtro de paseo contiene 17 tarjetas porque incluye el propio museo. Crecimiento se identifica como 2D/3D. Las descripciones inglesas ya no conservan textos españoles ni cifras antiguas.
+
+En el reloj de audio compartido, una petición `play()` antigua que termina después de una petición nueva ya no puede bloquearla ni pausarla. Las regresiones incluyen rechazos y resoluciones fuera de orden sobre el mismo elemento Audio.
+
+Validación de mantenimiento: 88/88 checks generales pasan sobre la fuente final; build independiente y 13/13 checks afectados pasan en el checkout de publicación. Los 1.028 archivos públicos incluidos por el empaquetador y 313 archivos de código/checks comparados son equivalentes en ambos checkouts, normalizando únicamente CRLF/LF en texto. Los JSON de generación de voz y el package.json auxiliar de Node conservan la exclusión habitual del paquete web.
+
+Chrome instalado: 84 combinaciones de las 21 entradas × ES/EN × escritorio 1440 px/móvil 390 px, sin errores de ejecución, recursos fallidos ni desbordamiento horizontal. El test inicial suponía un canvas visible en todas las páginas: sus cuatro avisos en Crecimiento eran incorrectos porque abre en SVG 2D. Una comprobación específica posterior valida tanto el SVG inicial como el cambio a 3D en los cuatro contextos. El portal pasa otros cuatro contextos con filtros, recuentos y recuperación tras recarga. Se han inspeccionado capturas representativas; esta pasada no vuelve a recorrer todos los capítulos de cada escena.
+
+Nueve rutas pasan navegación real mediante bfcache: Starlink, Crecimiento, Modelos, Dyson, Fábrica, Distrito, Ciudad, Región y Carbono. Conservan escena/reproductor y vuelven utilizables en pausa. Distrito dibuja a demanda: se comprueba que un zoom produce nuevos dibujos sin avanzar el modelo; no se exige dibujar continuamente cuando está quieto. Las regresiones de los controladores cubren cancelación del seguimiento, eventos de audio fuera de orden, cámara/estado, mapa, idioma y liberación definitiva de recursos. Una revisión independiente adicional de audio/Journeys no encontró nuevos fallos reproducibles.
+
+Los PR #14, #15 y #16 siguen conservados y no son enteramente obsoletos. C2 todavía aporta iluminación LED, conos y manchas de luz, polvo, bloom y resolución adaptativa; C3 conserva propuestas de HDR/atmósfera. Parte del reproductor C4 ya tiene equivalente en la versión actual y otra parte cambia la política de seguimiento de voz/caminata. En esta pasada sólo se han recuperado arreglos compatibles y concretos: carteles sin reverso y seek dentro de una sala sin teletransporte. No se han aplicado sus ramas completas ni cerrado sus PR.
+
+La revisión no vuelve a validar todas las afirmaciones científicas contra publicaciones nuevas: conserva los modelos, fuentes y límites documentados abajo. Tampoco añade voces ni modelos gráficos nuevos.
+
+## Historial de la revisión visual anterior
+
 Base GitHub comprobada tras los merges del usuario: `main` en `8f35920c660cf8e53731f1ee86d057d17a996d55` (PR #11), comprobada de nuevo el 3 octubre 2026. El historial de Sites es distinto del repositorio de publicación: los commits GitHub se realizan en el worktree que parte de esta main.
 
 Objetivo: mejorar una experiencia cada vez, empezar por las notas menores y guardar un commit por tarea terminada. Las notas son valoraciones editoriales, no una medida objetiva ni una promesa de fotorealismo.
