@@ -19,7 +19,7 @@ export function createGallery(es){
  function text(g,str,x,y,z,width=5,color='#dbe5ff',height=.3){
   const c=document.createElement('canvas'),ctx=c.getContext('2d');ctx.font='500 52px system-ui';c.width=Math.max(64,Math.ceil(ctx.measureText(str).width+36));c.height=84;ctx.font='500 52px system-ui';ctx.fillStyle=color;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(str,c.width/2,42);
   const tx=own(new THREE.CanvasTexture(c));tx.colorSpace=THREE.SRGBColorSpace;const h=Math.min(height*1.4,width*c.height/c.width);
-  const mesh=new THREE.Mesh(own(new THREE.PlaneGeometry(h*c.width/c.height,h)),own(new THREE.MeshBasicMaterial({map:tx,transparent:true,depthWrite:false,toneMapped:false,side:THREE.DoubleSide})));mesh.position.set(x,y,z);g.add(mesh);return mesh;
+  const mesh=new THREE.Mesh(own(new THREE.PlaneGeometry(h*c.width/c.height,h)),own(new THREE.MeshBasicMaterial({map:tx,transparent:true,depthWrite:false,toneMapped:false,side:THREE.FrontSide})));mesh.position.set(x,y,z);g.add(mesh);return mesh;
  }
  function glow(g,x,y,z,color,size=.8){const c=document.createElement('canvas');c.width=c.height=64;const ctx=c.getContext('2d'),grad=ctx.createRadialGradient(32,32,0,32,32,32);grad.addColorStop(0,'#ffffff');grad.addColorStop(.15,'#ffffffaa');grad.addColorStop(1,'#ffffff00');ctx.fillStyle=grad;ctx.fillRect(0,0,64,64);const tx=own(new THREE.CanvasTexture(c));const sprite=new THREE.Sprite(own(new THREE.SpriteMaterial({map:tx,color,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending})));sprite.position.set(x,y,z);sprite.scale.setScalar(size);g.add(sprite);return sprite;}
  function chip(g,str,x,y,z,w=1.05,color=blue,info){
