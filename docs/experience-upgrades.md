@@ -1,5 +1,21 @@
 # Atlas — cola de mejoras
 
+## Pasadas pequeñas — 14 de octubre de 2026
+
+Tres mejoras concretas, con un commit por mejora:
+
+| Pasada | Problema observado | Resultado |
+| --- | --- | --- |
+| Acceso a la escena | El botón del footer elegía un contenedor amplio o podía apuntar a una vista oculta. Los márgenes fijos podían quedar cortos al envolver textos ingleses. | Busca el dibujo/canvas visible y reserva la altura real de los indicadores fijos. Conserva el instante del audio. |
+| Explicación de Crecimiento | El diagrama etiquetaba la salida como «presupuesto diario», aunque la línea con reinversión mostraba sólo los bienes disponibles. | Las tres salidas dicen «Bienes / día». Al terminar, la etiqueta dice «potencial», para no atribuir producción futura al acumulado. El texto más corto permite ver completo el esquema inicial en el móvil comprobado. |
+| Colores de Crecimiento | Los tres números de salida eran verdes, mientras las curvas y los indicadores distinguían los casos. | Humano en salmón, flota fija en azul y reinversión en verde, coherentes con las curvas. |
+
+Con los supuestos iniciales del ejemplo, la capacidad diaria de la flota creciente es 210: 63 bienes y 147 horas de trabajo para construir robots. Sin reinversión, sus bienes diarios son 210 y la flota no crece. No se cambian fórmulas, valores ni guiones de voz.
+
+Validación: pasan los checks existentes de reproducción, modelo/escena/control de Crecimiento y controles de Hogar, Journeys, LLMs, Luna, Modelos y Terafab, además de imports, recursos y sintaxis del sitio. Chrome verifica 16 casos móviles ES/EN en seis experiencias, incluidos 2D/3D y las dos escenas de Terafab: la escena queda entre indicadores y footer y el audio conserva su instante. Otros cuatro contextos ES/EN de móvil/escritorio comprueban cifras, colores, ausencia de reinversión y la etiqueta potencial final. Build independiente y reproductor pasan en el checkout del PR; 1.028 archivos públicos y 313 archivos de código/checks coinciden, normalizando sólo CRLF/LF. Las capturas se han inspeccionado. El encuadre comprobado es 390×844; no se afirma que todo el diagrama quepa en cualquier pantalla ni en cada estado posterior.
+
+El PR #18 continúa en borrador contra main. Estas pasadas se guardan en su rama; las otras ramas y los PR pendientes se conservan.
+
 ## Mantenimiento — 11 de octubre de 2026
 
 La comprobación inicial de GitHub encontró `main` en `8f35920c660cf8e53731f1ee86d057d17a996d55` y el PR [#18](https://github.com/IAnMove/exponentialRobotGrowth/pull/18) abierto, en borrador y sin conflictos de mezcla. Su head remoto era `d0a1c5150063d475215f6a4977f3a05597919395`: las mejoras anteriores estaban subidas, pero no mezcladas en main. El último despliegue de GitHub Pages correspondía a esa main, el 29 de septiembre. Los dos checkouts empezaron limpios. Este mantenimiento continúa en la misma rama del PR; no mezcla, despliega, borra ramas ni reescribe historial.
