@@ -16,6 +16,7 @@ aside{font-size:13px;line-height:1.65}aside h2{font-size:23px;line-height:1.2;ma
 #chart svg{cursor:crosshair}
 
 .dashboard article:first-child strong{color:#efb38e}.dashboard article:nth-child(2) strong{color:#9cbeef}.dashboard article:nth-child(3) strong{color:#83cdb9}
+.diagram-line.human .output-stock b{color:#efb38e}.diagram-line.fixed .output-stock b{color:#9cbeef}
 
 .modebar,.chapters,.plot{scroll-margin-top:calc(var(--metrics-height) + 14px)}button,input,select{scroll-margin-top:calc(var(--metrics-height) + 14px);scroll-margin-bottom:calc(var(--atlas-player-height,120px) + 14px)}
 @media(max-width:650px){.diagram{padding:70px 10px 24px;min-height:0}.diagram-lines{gap:12px}.diagram-line{padding:8px}.line-work{margin-top:6px}.operators svg{height:30px}.reinvestment-path{gap:6px;margin-top:8px}.diagram>p{margin:8px 0 0;font-size:9px}}
