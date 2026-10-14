@@ -1,5 +1,12 @@
 import {TimelineClock,restoredPosition} from './timeline.js';
 const format=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
+function notebookSceneTarget(doc=document){
+ const visible=e=>e.getClientRects().length>0&&e.getBoundingClientRect().width>0&&e.getBoundingClientRect().height>0;
+ for(const selector of ['[data-notebook-scene]','#diagram,.stage canvas,.visual canvas,#machine canvas,#world canvas','canvas','.visual,.stage,#machine,.lab']){
+  const target=[...doc.querySelectorAll(selector)].find(visible);if(target)return target;
+ }
+ return null;
+}
 export class NotebookPlayer {
  constructor({id,language=document.documentElement.lang==='es'?'es':'en',getClips,onSync=()=>{},capture=()=>null,restore=()=>{},onLanguage=()=>{},autoplay=true,AudioClass=globalThis.Audio}){
   Object.assign(this,{id,language,getClips,onSync,capture,restore,onLanguage,AudioClass});this.key='atlas-notebook-v2:'+id;this.wanted=autoplay;this.suspended=false;this.lastSave=0;
@@ -14,7 +21,14 @@ export class NotebookPlayer {
   this.el('play').onclick=()=>this.toggle();this.el('back').onclick=()=>this.seek(this.clock.position-10);this.el('restart').onclick=()=>this.seek(0);
   this.el('seek').oninput=e=>this.seek(+e.target.value);
   this.el('text').onclick=()=>{const p=this.root.querySelector('.ap-transcript');p.hidden=!p.hidden;this.el('text').setAttribute('aria-expanded',String(!p.hidden));};this.el('close').onclick=()=>{this.root.querySelector('.ap-transcript').hidden=true;this.el('text').setAttribute('aria-expanded','false');};
-  this.el('scene').onclick=()=>document.querySelector('.lab,.visual,.stage,#machine,canvas')?.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+  this.el('scene').onclick=()=>{
+   const target=notebookSceneTarget();if(!target)return;
+   const region=target.closest('.stage,.visual,#machine'),margin=parseFloat(getComputedStyle(region||target).scrollMarginTop)||0;
+   const headers=[...document.querySelectorAll('.dashboard,.metrics')].filter(e=>!e.contains(target)&&e.getClientRects().length&&['sticky','fixed'].includes(getComputedStyle(e).position));
+   const clearance=Math.max(0,...headers.map(e=>e.getBoundingClientRect().height+(parseFloat(getComputedStyle(e).top)||0)));
+   target.style.scrollMarginTop=Math.max(margin,clearance?clearance+10:0)+'px';
+   target.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+  };
   this.el('language').onchange=e=>this.changeLanguage(e.target.value);
   this.resize=new ResizeObserver(()=>{document.documentElement.style.setProperty('--atlas-player-height',this.root.offsetHeight+'px');});this.resize.observe(this.root);
   this.onVisibility=()=>{if(this.disposed)return;if(document.hidden){this.save();this.suspended=true;this.clock.pause();}else{this.suspended=false;if(this.wanted)this.clock.play();}};
