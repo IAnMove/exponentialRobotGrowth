@@ -80,7 +80,7 @@ else{
  let nuclearPaint='',nuclearLedger='';
  function paintNuclear(){
   const s=sampleNuclear(model.trace,sceneTime),f=n=>new Intl.NumberFormat(lang,{maximumFractionDigits:2,minimumFractionDigits:2}).format(n),power=t('u. potencia','power units'),energy=t('u. energía','energy units'),state=s.stopped?t('Reacción parada · refrigeración','Chain reaction stopped · cooling'):t('En operación · decaimiento activo','Operating · decay already active');
-  const status=`<b>${state}</b><span>${t('Paso','Step')} ${s.time.toFixed(1)} / 24${s.active?'':t(' · fin del recorrido, estado congelado',' · tour ended, state frozen')}</span><span>${f(s.fission)} + ${f(s.decay)} = ${f(s.heat)} ${power}</span>`;
+  const status=`<b>${state}</b><span>${t('Paso','Step')} ${s.time.toFixed(1)} / 24${s.active?'':t(' · fin del recorrido, estado congelado',' · tour ended, state frozen')}</span><span>${t('Calor inmediato','Prompt heat')} ${f(s.fission)} + ${t('decaimiento','decay')} ${f(s.decay)} = ${t('calor total','total heat')} ${f(s.heat)} ${power}</span>`;
   if(status!==nuclearPaint){$('nuclear-status').innerHTML=status;nuclearPaint=status;}
   const nodes=document.querySelectorAll('#metrics b');[s.heat,s.electric,s.rejected,s.decay].forEach((v,i)=>{if(!nodes[i])return;const value=f(v);if(nodes[i].firstChild?.nodeType===3)nodes[i].firstChild.nodeValue=value;else nodes[i].textContent=value+' '+power;});
   $('nuclear-fission').textContent=f(s.fission)+' '+power;$('nuclear-route').textContent=s.stopped?t('Bypass → condensador','Bypass → condenser'):t('Turbina → condensador','Turbine → condenser');$('nuclear-thermal-split').textContent=f(s.electric)+' + '+f(s.rejected);$('nuclear-pending').textContent=f(s.cumulative.pending)+' '+energy;
