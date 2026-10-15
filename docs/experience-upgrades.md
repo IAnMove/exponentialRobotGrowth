@@ -2,7 +2,7 @@
 
 ## Pasada una a una — iniciada el 15 de octubre de 2026
 
-Objetivo activo: repasar las 21 entradas del catálogo y aportar una mejora concreta en cada experiencia, sin añadir complejidad de uso. Cada mejora se guarda por separado y se comprueba antes de continuar. Esta pasada sigue abierta: **13 de 21 experiencias**, con Electricidad como siguiente.
+Objetivo activo: repasar las 21 entradas del catálogo y aportar una mejora concreta en cada experiencia, sin añadir complejidad de uso. Cada mejora se guarda por separado y se comprueba antes de continuar. Esta pasada sigue abierta: **16 de 21 experiencias**, con Ideas como siguiente.
 
 | ID | Experiencia | Estado de esta pasada | Mejora |
 | --- | --- | --- | --- |
@@ -19,9 +19,9 @@ Objetivo activo: repasar las 21 entradas del catálogo y aportar una mejora conc
 | `modelos` | Modelos | Hecha | La caché KV se compara en GiB, manteniendo el recuento exacto y los 2 B/valor del escenario. La explicación define GiB y limita la estimación a la caché. |
 | `growth` | Crecimiento | Hecha | Registra todas las duplicaciones alcanzadas, superando el corte anterior en ×64. Círculos dorados las sitúan en la curva seleccionada; el texto indica ×2, ×4… y su día real de incorporación. |
 | `internet` | Internet | Hecha | Al volver, la referencia submarina pasa de un sentido —6.600 km, 33 ms— a ida y vuelta —13.200 km, 66 ms—, excluyendo tierra, colas y aplicación. Corregida la petición 404 del favicon. |
-| `electricity` | Electricidad | Pendiente | — |
-| `microchip` | Microchip | Pendiente | — |
-| `cell` | Célula | Pendiente | — |
+| `electricity` | Electricidad | Hecha | Barra pasiva con el porcentaje de demanda cubierta, calculado con la potencia entregada. El resto muestra el déficit y la descripción accesible incluye los MW sin atender. Se corrige también el favicon ausente del notebook compartido. |
+| `microchip` | Microchip | Hecha | Los valores de señal y el rótulo del inversor se dibujan por encima de cables y piezas. La explicación «Demostración independiente» ya no queda cortada por la geometría. |
+| `cell` | Célula | Hecha | Las letras del codón activo se resaltan en dorado, igual que su marcador. Siguen la lectura real de la simulación y recuperan su color al avanzar o retroceder. |
 | `ideas` | Ideas | Pendiente | — |
 | `nuclear` | Nuclear | Pendiente | — |
 | `carbon` | Carbono | Pendiente | — |
@@ -37,6 +37,8 @@ Pasos 7–9: pasan controles de SpaceX, Kardashev y LLMs, presentación calculad
 Paso 10: pasan los tres checks de Mente —modelo, escena y controles— y también la escena fuente antes del build. La geometría comprueba dirección, anclaje en cero, color y visibilidad con puntuaciones calculadas de ambos signos, dentro de 462 estados reversibles ES/EN. Se conservan cálculos, ventanas causales y tiempos. Chrome verifica ocho contextos ES/EN y móvil/escritorio en notebook e inmersivo; retroceder de 5,8 a 2,4 devuelve los mismos valores. Capturas inspeccionadas con puntuaciones ya calculadas, sin errores de página ni de consola. No se añaden controles.
 
 Pasos 11–13: pasan siete checks afectados de modelo/control/escena y el check de recursos, imports y sintaxis del sitio. Modelos se verifica en 72 combinaciones de cantidad y avance, en ES/EN, móvil/escritorio y notebook/inmersivo: 32.000 tokens equivalen a 117,19 GiB frente a 2,06 GiB con 2 B/valor. Una regresión que fallaba antes detecta las duplicaciones posteriores a ×64; el escenario rápido llega a 17 hitos, en vez de los seis registrados antes. Crecimiento comprueba además 144 estados de curva/día/escenario en cuatro contextos reales: los marcadores se sitúan en los valores de la serie elegida, desaparecen al retroceder y no aparecen sin reinversión. Internet verifica las nueve etapas en cuatro contextos —36 estados—, incluyendo el avance submarino parcial. Tras corregir el favicon, no hay errores de página ni consola. Capturas representativas inspeccionadas. Se conservan la producción simulada, los costes, los guiones de voz y los controles.
+
+Pasos 14–16: pasan cinco checks afectados —Electricidad, Microchip, Célula, controles compartidos y escenas compartidas— y recursos/imports/sintaxis del sitio. Se mantienen los balances de 53.136 combinaciones eléctricas, las ocho filas del sumador y los 64 codones del código estándar. Chrome verifica 24 contextos ES/EN, móvil/escritorio y notebook/inmersivo: 96 estados de cobertura, 24 estados de anotaciones del circuito y 72 estados de variantes/lectura del ARN. El porcentaje visible, el ancho de la barra y su valor accesible corresponden al mismo suministro. Capturas representativas comparadas con las anteriores: rótulo del inversor completo y codón GCU activo en dorado. El favicon 404 observado al abrir el notebook compartido queda corregido; la comprobación final no tiene errores de página ni consola. No se alteran los modelos, las voces ni los controles.
 
 Los cambios siguen en el PR #18 en borrador; esta tabla no afirma que estén mezclados en main ni publicados. Las revisiones anteriores quedan debajo como historial, no como prueba de que esta nueva pasada esté terminada.
 
