@@ -1,0 +1,1 @@
+Quemar combustibles fósiles traslada carbono de una reserva geológica al ciclo activo. Activa la parada después del intervalo diez. Las emisiones cesan, pero los depósitos siguen intercambiando carbono y la atmósfera tarda en ajustarse. El modelo conserva cien unidades de carbono: ninguna se crea ni se destruye.

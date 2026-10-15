@@ -5,6 +5,7 @@ import {createElectricityScene,createElectricityWorld} from './electricity-world
 import {createEvolutionScene,createEvolutionWorld} from './evolution-world.js';
 import {createCarbonScene,createCarbonWorld} from './carbon-world.js';
 import {createIdeasScene,createIdeasWorld} from './ideas-world.js';
+import {tuneRenderer} from '../fx/perf.js';
 import * as THREE from '../../vendor/three.module.js';
 import {poseAt} from './common.js';
 export function createLessonScene(lesson,es){
@@ -40,7 +41,7 @@ export function createWorld(host,lesson,es,onInspect){
  if(lesson.id==='ideas')return createIdeasWorld(host,lesson,es,onInspect);
  if(lesson.id==='carbon')return createCarbonWorld(host,lesson,es,onInspect);
  if(lesson.id==='evolution')return createEvolutionWorld(host,lesson,es,onInspect);
- const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setClearColor(0x10202d);renderer.toneMapping=THREE.ACESFilmicToneMapping;host.append(renderer.domElement);renderer.domElement.tabIndex=0;
+ const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setClearColor(0x10202d);renderer.toneMapping=THREE.ACESFilmicToneMapping;host.append(renderer.domElement);tuneRenderer(renderer);renderer.domElement.tabIndex=0;
  const {scene,resources,targets,outlines,update}=createLessonScene(lesson,es);
  const camera=new THREE.PerspectiveCamera(60,1,.08,150);camera.rotation.order='YXZ';const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();let state,elapsed=0,phase=0,mode='web';
  function resize(){renderer.setSize(host.clientWidth,host.clientHeight,false);camera.aspect=host.clientWidth/Math.max(1,host.clientHeight);camera.fov=lesson.id==='internet'?50:Math.min(108,2*Math.atan(Math.tan(31*Math.PI/180)/Math.min(1,camera.aspect/1.2))*180/Math.PI);camera.updateProjectionMatrix();}const observer=new ResizeObserver(resize);observer.observe(host);resize();

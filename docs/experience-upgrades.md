@@ -1,5 +1,20 @@
 # Atlas — cola de mejoras
 
+## Integración de ramas y nuevas mejoras — 16 de octubre de 2026
+
+El PR #18 ya está mezclado en `main`. Los PR #14, #15 y #16 se mezclaron en `development` después de superar juntos sus 40 comprobaciones. El [PR #19](https://github.com/IAnMove/exponentialRobotGrowth/pull/19) reúne después ambos historiales e incorpora también el trabajo previo de los PR #12, #13 y #17.
+
+- Se adaptan la iluminación de cuadros, las tiras de luz y el HDR al museo actual. La galería LLM recupera la atmósfera y el HDR manteniendo sus matrices calculadas, las cinco operaciones, los controles y las etiquetas frontales.
+- Se conserva el reproductor actual del museo, sus correcciones de navegación y el trabajo previo de rendimiento móvil e información de Atlas. El módulo espacial compartido mantiene los 33 motores, las aletas y las variantes HLS/tanker del modelo lunar actual; el hardware nuevo de SpaceX sigue intacto.
+- Primera mejora nueva: el HDR libera los recursos de sus pases, el entorno temporal y el material de filtro que omite esta versión de Three. Se puede cerrar dos veces sin liberar dos veces ni sustituir un entorno que pertenezca a otro componente.
+- Segunda mejora nueva: el pie LLM dice «Cerca de la estación» / «Near station», diferenciando la posición física de la explicación activa. El denominador procede de la lista de estaciones.
+
+Chrome comprueba veinte visitas al museo y 36 selecciones de estaciones LLM, con retroceso y apertura/cierre de la información de Atlas, en ES/EN y escritorio/móvil. Las capturas representativas se han inspeccionado. Seis ciclos WebGL de creación, render y cierre mantienen estables las texturas y devuelven las geometrías al valor inicial; cada recurso del efecto se libera una sola vez. Antes, esos seis ciclos dejaban 67 texturas y siete geometrías frente a una geometría inicial.
+
+La batería general supera 88 de 89 comprobaciones. La restante, de escenas de Kardashev, se repite después de completar la interfaz del renderizador simulado para la reducción de resolución: Kardashev y rendimiento superan 2/2. En conjunto quedan verificadas las **89 comprobaciones**; no se reduce ninguna aserción de geometría, conservación, control o voz.
+
+Los 1.036 archivos públicos coinciden con la compilación local y la compilación independiente del proyecto preparado para GitHub, normalizando únicamente los finales de línea. Los guiones de las ocho voces de Carbono se conservan también en la copia portable y se comprueban contra sus textos exactos. No se elimina ningún archivo. Esta integración actualiza GitHub; el despliegue de Sites es un paso separado.
+
 ## Pasada una a una — iniciada el 15 de octubre de 2026
 
 Pasada completada: **21 de 21 experiencias** del catálogo tienen una mejora concreta comprobada y guardada por separado. Se mantienen los controles existentes. La tabla recoge esta pasada; las revisiones anteriores se conservan debajo como historial.
@@ -46,7 +61,7 @@ Pasos 20–21: la regresión de Evolución fallaba antes de la corrección y aho
 
 Cierre de esta pasada: **88/88 comprobaciones del repositorio pasan**. Se auditan las 21 entradas contra el código actual, sus commits de producto en ambas ramas y las pruebas de navegador; no se usa solo el estado de esta tabla como evidencia. La comparación de archivos y el build independiente comprueban que la copia preparada para GitHub coincide con la fuente. No se eliminan archivos durante la pasada. Las simplificaciones científicas y los supuestos editables de cada cuaderno siguen indicados en su explicación.
 
-Los cambios siguen en el PR #18 en borrador; esta tabla no afirma que estén mezclados en main ni publicados. Las revisiones anteriores quedan debajo como historial, no como prueba de que esta nueva pasada esté terminada.
+Esta pasada de 21 experiencias se mezcló en main mediante el PR #18 el 15 de octubre de 2026. Las revisiones anteriores quedan debajo como historial. La mezcla en GitHub no equivale a un despliegue nuevo de la web.
 
 ## Pasadas pequeñas — 14 de octubre de 2026
 

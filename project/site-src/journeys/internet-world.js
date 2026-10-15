@@ -1,3 +1,4 @@
+import {tuneRenderer} from '../fx/perf.js';
 import * as THREE from '../vendor/three.module.js';
 import {STAGES,PLACES,geoPoint,greatCircle} from './internet-route.js';
 import {internetFrameAt} from './internet-model.js';
@@ -235,7 +236,7 @@ export function voyageCameraAt(index,aspect=1){
 export function createVoyageWorld(host,es){
  const world=createVoyageScene(es),renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
  renderer.domElement.tabIndex=0;renderer.domElement.setAttribute('aria-label',es?'Escena de Internet. Explora con el teclado y el ratón.':'Internet scene. Explore with keyboard and mouse.');
- renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio||1,1.7));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;host.append(renderer.domElement);
+ renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio||1,1.7));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;host.append(renderer.domElement);tuneRenderer(renderer);
  const camera=new THREE.PerspectiveCamera(47,1,.05,240),savedViews=new Map();
  let index=0,elapsed=2,free=false,yaw=0,pitch=0,orbit=orbitFromPosition(STAGES[0].camera),currentFrame=internetFrameAt(0,0),disposed=false;
  const initial=voyageCameraAt(0,1),target=V(initial.target),fromPos=V(initial.position),fromTarget=target.clone();camera.position.copy(fromPos);camera.lookAt(target);

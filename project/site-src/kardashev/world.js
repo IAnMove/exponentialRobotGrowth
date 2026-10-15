@@ -1,3 +1,4 @@
+import {tuneRenderer} from '../fx/perf.js';
 import * as THREE from '../vendor/three.module.js';
 import {GLTFLoader} from '../vendor/GLTFLoader.js';
 import {RoomEnvironment} from '../vendor/RoomEnvironment.js';
@@ -21,7 +22,7 @@ export function createWorld(host,{onAsset=()=>{},onViewChange=()=>{},language=gl
   const renderer=rendererFactory();let disposed=false,ready=false,frame=kardashevFrameAt(createState(),{source:'manual'}),view=frame.view,pose=null;
   const resources=new Set(),assets={earth:null,satellite:null},views=Object.fromEntries(VIEWS.map(v=>[v,defaults(v)]));let satelliteRadius=2.8;
   renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio||1,1.75));renderer.setClearColor(0x040810);
-  renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.1;host.append(renderer.domElement);
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.1;host.append(renderer.domElement);tuneRenderer(renderer);
   const canvas=renderer.domElement;canvas.tabIndex=0;canvas.style.touchAction='none';canvas.setAttribute('aria-label',language==='es'?'Kardashev 3D. Arrastra o usa las flechas para orbitar. Rueda, pellizca o usa más y menos para acercar; Inicio centra esta vista.':'Kardashev 3D. Drag or use arrow keys to orbit. Scroll, pinch, plus or minus to zoom; Home centers this view.');
   const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(38,1,.05,240);
   let env;if(environment){const room=new RoomEnvironment(),pmrem=new THREE.PMREMGenerator(renderer);env=pmrem.fromScene(room,.04);scene.environment=env.texture;scene.environmentIntensity=.45;room.dispose();pmrem.dispose();resources.add(env);}

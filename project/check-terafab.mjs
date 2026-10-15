@@ -3,7 +3,7 @@ import * as THREE from './node_modules/three/build/three.module.js';
 import {readFileSync} from 'node:fs';
 import * as factory from './site-src/terafab/factory-model.js';
 const sourceCheck=process.argv.includes('--source');
-const campusModule=sourceCheck?await import('data:text/javascript,'+encodeURIComponent(readFileSync('site-src/terafab/world.js','utf8').replace("'../vendor/three.module.js'",JSON.stringify(new URL('./node_modules/three/build/three.module.js',import.meta.url).href)))):await import('./dist/terafab/world.js');
+const campusModule=sourceCheck?await import('data:text/javascript,'+encodeURIComponent(readFileSync('site-src/terafab/world.js','utf8').replace("'../fx/perf.js'",JSON.stringify(new URL('./dist/fx/perf.js',import.meta.url).href)).replace("'../vendor/three.module.js'",JSON.stringify(new URL('./node_modules/three/build/three.module.js',import.meta.url).href)))):await import('./dist/terafab/world.js');
 const {buildCampus,carrierPosition,HALLS}=campusModule,spanishWorld=sourceCheck?campusModule:await import('./dist/es/terafab/world.js');
 const world=buildCampus();
 assert.equal(HALLS.length,4);assert.equal(world.hallGroups.length,4);
