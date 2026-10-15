@@ -97,7 +97,16 @@ for(const es of [true,false])for(const lesson of Object.values(LESSONS)){
   }
   assertImmutableCaptions();built.update(model,24,3);
  }
- if(lesson.id==='ideas'){assert.equal(built.people.length,64);assert.equal(built.stands.length,4);assert.equal(new Set(built.people.map(p=>p.g.uuid)).size,64);const s=lesson.evaluate(defaults(lesson),0);built.update(s,.5,0);assert.equal(built.state.known.size,1);assert.equal(built.packets.filter(p=>p.visible).length,4);assert.equal(built.links.filter(l=>l.m.visible).length,s.edges.length);built.update(s,1,0);assert.equal(built.state.known.size,5);assert.equal(built.people.filter(p=>p.halo.visible).length,4);}
+ if(lesson.id==='ideas'){
+  assert.equal(built.people.length,64);assert.equal(built.stands.length,4);assert.equal(new Set(built.people.map(p=>p.g.uuid)).size,64);const s=lesson.evaluate(defaults(lesson),0);built.update(s,.5,0);assert.equal(built.state.known.size,1);assert.equal(built.packets.filter(p=>p.visible).length,4);assert.equal(built.links.filter(l=>l.m.visible).length,s.edges.length);built.update(s,1,0);assert.equal(built.state.known.size,5);assert.equal(built.people.filter(p=>p.halo.visible).length,4);
+  for(const probability of [0,100]){
+   const model=lesson.evaluate({...defaults(lesson),probability},0);
+   built.update(model,.8,0);const travelling=built.packets.filter(p=>p.visible),positions=travelling.map(p=>p.position.toArray());
+   assert.equal(travelling.length,4);assert(travelling.every(p=>p.material.color.getHex()===0xffd47a),'a message in flight cannot reveal its success or failure before arriving');assert.equal(built.state.known.size,1);
+   built.update(model,.95,0);const arrived=built.packets.filter(p=>p.visible);assert(arrived.every(p=>p.material.color.getHex()===(probability?0x89e7be:0xff8a88)),'arrival shows the actual contact outcome');
+   built.update(model,.8,0);assert.deepEqual(travelling.map(p=>p.position.toArray()),positions);assert(travelling.every(p=>p.material.color.getHex()===0xffd47a),'rewind restores an unresolved message in flight');
+  }
+ }
  if(lesson.id==='carbon'){
   const params=defaults(lesson),model=lesson.evaluate(params,0);assert.equal(built.routes.length,5);assert.equal(built.stands.length,4);assert.equal(Object.keys(built.reservoirs).length,4);
   built.update(model,9.5,3);assert(built.routes.find(r=>r.id==='emitted').packets.some(m=>m.visible));assert(Math.abs(built.state.total-100)<1e-8);
