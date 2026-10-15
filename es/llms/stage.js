@@ -307,12 +307,13 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
     const {tokens}=F.window,d=F.trace,q=F.queryIndex,N=tokens.length,info=c=>({kind:'cell',text:c.text});
     const names=[t('Q · K · V: proyectar','Q · K · V: project'),t('Q · K: comparar','Q · K: compare'),t('Máscara → softmax','Mask → softmax'),t('A · V: mezclar','A · V: mix'),t('Residual → red → salida','Residual → network → output')];
     label(names[op],0,6.2,0,{size:.29,weight:800});label(`${piece(tokens[q])} · ${t('consulta','query')} ${F.queryAbsolute+1}`,0,5.72,0,{size:.24,color:CSS.gold,mono:true});
-    const row=(name,values,y,{color=C.blue,reveal=null}={})=>{const m=tensor([values],{x:0,y,w:5.3,h:.68,title:name,color,selected:0,rowInfo:info,reveal});appear(m.group,.05,{dy:-.2,s0:.9});return m;};
-    if(op===0){row('Xᵢ · 1 × 6',d.X[q],4.65);[['Qᵢ = XᵢW_Q',d.Q[q],C.gold],['Kᵢ = XᵢW_K',d.K[q],C.violet],['Vᵢ = XᵢW_V',d.V[q],C.mint]].forEach(([name,values,color],i)=>{row(name,values,2.95-i*1.6,{color,reveal:(_a,_b,{R})=>R(.08+i*.2,.3+i*.2)});route([[2.8,4.65,.4],[3.05,3.7-i*.7,.4],[2.8,2.95-i*1.6,.4]],{color,span:[.05+i*.2,.3+i*.2],radius:.012});});}
-    else if(op===1){row('qᵢ · 1 × 3',d.Q[q],4.55,{color:C.gold});const K=tensor(d.K[0].map((_,j)=>d.K.map(r=>r[j])),{x:0,y:2.5,w:5.3,h:1.45,title:'Kᵀ · 3 × '+N,color:C.violet,rowInfo:info});appear(K.group,.1,{dy:-.2,s0:.9});row('Sᵢ = qᵢKᵀ / √3',d.scores[q],.15,{reveal:(_i,j,{R})=>ease((R(.2,.8)-j/N*.5)/.5)});route([[2.8,4.55,.4],[3,2.5,.4],[2.8,.15,.4]],{span:[.1,.75]});}
-    else if(op===2){row('Sᵢ + Mᵢ',d.masked[q],3.9,{color:C.coral});const A=tensor([d.A[q]],{x:0,y:1.35,w:5.3,h:.78,title:'Aᵢ = softmax(Sᵢ + Mᵢ)',color:C.mint,probability:true,future:true,causalQuery:q,selected:0,reveal:(_a,_b,{R})=>R(.25,.7),rowInfo:info});appear(A.group,.1,{dy:-.2,s0:.9});route([[0,3.3,.4],[0,2.4,.4],[0,1.95,.4]],{span:[.15,.55]});label(t('Futuro: −∞ → 0 · Σ Aᵢⱼ = 1','Future: −∞ → 0 · Σ Aᵢⱼ = 1'),0,-.1,.4,{size:.22,color:CSS.mint});}
-    else if(op===3){const A=tensor(d.A[q].map(w=>[w]),{x:-2.1,y:2.6,w:.8,h:3.5,title:'Aᵢ',probability:true,color:C.mint,rowInfo:info}),Vv=tensor(d.V,{x:.55,y:2.6,w:2.65,h:3.5,title:'V · '+N+' × 3',color:C.mint,rowInfo:info});row('Zᵢ = Σⱼ AᵢⱼVⱼ',d.mixed[q],-.55,{reveal:(_a,_b,{R})=>R(.55,.85)});[A,Vv].forEach(m=>appear(m.group,.05,{dy:-.2,s0:.9}));d.A[q].forEach((weight,j)=>{if(weight>0){route([[A.right,A.rowY(j),.4],[Vv.left,Vv.rowY(j),.4]],{weight,span:[.05,.45],arrow:false,radius:.012});route([[Vv.right,Vv.rowY(j),.4],[2.5,.15,.4],[2.6,-.55,.4]],{weight,color:C.mint,span:[.45,.85],arrow:false,radius:.012});}});}
-    else{row('Hᵢ = LN(Xᵢ + ZᵢW_O)',d.H[q],4.3,{reveal:(_a,_b,{R})=>R(0,1/3)});row('ReLU(HᵢW₁) · 1 × 12',d.hidden[q],2,{color:C.violet,reveal:(_a,_b,{R})=>R(1/3,2/3)});row('Yᵢ = LN(Hᵢ + FFNᵢ)',d.Y[q],-.3,{color:C.mint,reveal:(_a,_b,{R})=>R(2/3,1)});route([[2.85,4.3,.4],[3.1,3.1,.4],[2.85,2,.4]],{span:[1/3,2/3]});route([[2.85,2,.4],[3.1,.8,.4],[2.85,-.3,.4]],{span:[2/3,1]});route([[-2.85,4.3,.4],[-3.1,2,.4],[-2.85,-.3,.4]],{color:C.teal,span:[0,1],radius:.012});}
+    // Cue zero is also the paused inspection state: inputs must already be visible.
+    const row=(name,values,y,{color=C.blue,reveal=null,input=false}={})=>{const m=tensor([values],{x:0,y,w:5.3,h:.68,title:name,color,selected:0,rowInfo:info,reveal});if(!input)appear(m.group,.05,{dy:-.2,s0:.9});return m;};
+    if(op===0){row('Xᵢ · 1 × 6',d.X[q],4.65,{input:true});[['Qᵢ = XᵢW_Q',d.Q[q],C.gold],['Kᵢ = XᵢW_K',d.K[q],C.violet],['Vᵢ = XᵢW_V',d.V[q],C.mint]].forEach(([name,values,color],i)=>{row(name,values,2.95-i*1.6,{color,reveal:(_a,_b,{R})=>R(.08+i*.2,.3+i*.2)});route([[2.8,4.65,.4],[3.05,3.7-i*.7,.4],[2.8,2.95-i*1.6,.4]],{color,span:[.05+i*.2,.3+i*.2],radius:.012});});}
+    else if(op===1){row('qᵢ · 1 × 3',d.Q[q],4.55,{color:C.gold,input:true});tensor(d.K[0].map((_,j)=>d.K.map(r=>r[j])),{x:0,y:2.5,w:5.3,h:1.45,title:'Kᵀ · 3 × '+N,color:C.violet,rowInfo:info});row('Sᵢ = qᵢKᵀ / √3',d.scores[q],.15,{reveal:(_i,j,{R})=>ease((R(.2,.8)-j/N*.5)/.5)});route([[2.8,4.55,.4],[3,2.5,.4],[2.8,.15,.4]],{span:[.1,.75]});}
+    else if(op===2){row('Sᵢ + Mᵢ',d.masked[q],3.9,{color:C.coral,input:true});const A=tensor([d.A[q]],{x:0,y:1.35,w:5.3,h:.78,title:'Aᵢ = softmax(Sᵢ + Mᵢ)',color:C.mint,probability:true,future:true,causalQuery:q,selected:0,reveal:(_a,_b,{R})=>R(.25,.7),rowInfo:info});appear(A.group,.1,{dy:-.2,s0:.9});route([[0,3.3,.4],[0,2.4,.4],[0,1.95,.4]],{span:[.15,.55]});label(t('Futuro: −∞ → 0 · Σ Aᵢⱼ = 1','Future: −∞ → 0 · Σ Aᵢⱼ = 1'),0,-.1,.4,{size:.22,color:CSS.mint});}
+    else if(op===3){const A=tensor(d.A[q].map(w=>[w]),{x:-2.1,y:2.6,w:.8,h:3.5,title:'Aᵢ',probability:true,color:C.mint,rowInfo:info}),Vv=tensor(d.V,{x:.55,y:2.6,w:2.65,h:3.5,title:'V · '+N+' × 3',color:C.mint,rowInfo:info});row('Zᵢ = Σⱼ AᵢⱼVⱼ',d.mixed[q],-.55,{reveal:(_a,_b,{R})=>R(.55,.85)});d.A[q].forEach((weight,j)=>{if(weight>0){route([[A.right,A.rowY(j),.4],[Vv.left,Vv.rowY(j),.4]],{weight,span:[.05,.45],arrow:false,radius:.012});route([[Vv.right,Vv.rowY(j),.4],[2.5,.15,.4],[2.6,-.55,.4]],{weight,color:C.mint,span:[.45,.85],arrow:false,radius:.012});}});}
+    else{row('Xᵢ · 1 × 6',d.X[q],4.65,{input:true});row('Hᵢ = LN(Xᵢ + ZᵢW_O)',d.H[q],2.95,{reveal:(_a,_b,{R})=>R(0,1/3)});row('ReLU(HᵢW₁) · 1 × 12',d.hidden[q],1.25,{color:C.violet,reveal:(_a,_b,{R})=>R(1/3,2/3)});row('Yᵢ = LN(Hᵢ + FFNᵢ)',d.Y[q],-.45,{color:C.mint,reveal:(_a,_b,{R})=>R(2/3,1)});route([[2.85,4.65,.4],[3.1,3.8,.4],[2.85,2.95,.4]],{span:[0,1/3]});route([[2.85,2.95,.4],[3.1,2.1,.4],[2.85,1.25,.4]],{span:[1/3,2/3]});route([[2.85,1.25,.4],[3.1,.4,.4],[2.85,-.45,.4]],{span:[2/3,1]});route([[-2.85,4.65,.4],[-3.1,3.8,.4],[-2.85,2.95,.4]],{color:C.teal,span:[0,1/3],radius:.012});route([[-2.85,2.95,.4],[-3.1,1.25,.4],[-2.85,-.45,.4]],{color:C.teal,span:[2/3,1],radius:.012});}
     label(t('Fila activa · 1 cabeza · 1 bloque calculados','Active row · 1 head · 1 calculated block'),0,-1.25,.4,{size:.19,color:CSS.dim});label(t('Paquete de vector conceptual · pesos sintéticos','Conceptual vector packet · synthetic weights'),0,-1.65,.4,{size:.17,color:CSS.dim});
   }
   function sceneLayers(run,queryIndex){
@@ -325,7 +326,6 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
     if(op===0){
       const X=tensor(d.X,{x:-4.7,w:2.2,title:'X · N × 6',selected:q,rowInfo});rowLabels(tokens,X,{selected:q});
       const specs=[[d.Q,-1.35,C.blue,'Q = XW_Q'],[d.K,1.55,C.violet,'K = XW_K'],[d.V,4.45,C.mint,'V = XW_V']];
-      appear(X.group,.05,{dy:-.4,s0:.85});
       specs.forEach(([m,x,color,name],k)=>{
         const T=tensor(m,{x,w:1.7,title:name,color,selected:q,rowInfo,reveal:(i,j,ctx)=>ease((ctx.R(.04,.6,.35,1.8)-k*.18-i/N*.35)/.2)});appear(T.group,.2+k*.15,{dy:-.4,s0:.85});
         const yy=-.2-k*.28;route([[X.x,X.bottom-.05,.4],[X.x,yy,.4],[x,yy,.4],[x,T.bottom-.05,.4]],{color,span:[k*.12,.25+k*.12],delay:k,radius:.016});
@@ -335,7 +335,7 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
       const qv=tensor([d.Q[q]],{x:-4.5,y:1.8,w:2,h:.62,title:'qᵢ · 1 × 3',selected:0,rowInfo:c=>({kind:'cell',text:c.text})});
       const K=tensor(d.K[0].map((_,j)=>d.K.map(r=>r[j])),{x:-.2,w:3,h:1.9,title:'Kᵀ · 3 × N',color:C.violet,rowInfo:c=>({kind:'cell',text:c.text})});
       const Sx=tensor(d.scores,{x:4.2,w:2.9,title:'S = QKᵀ / √3',selected:q,rowInfo,dimOthers:true,reveal:(i,j,{R})=>i!==q?1:ease((R(.1,.6,.35,1.8)-j/N*.75)/.18)});
-      [qv,K,Sx].forEach((m,k)=>appear(m.group,.05+k*.16,{dy:-.4,s0:.85}));
+      appear(Sx.group,.37,{dy:-.4,s0:.85});
       route([[qv.right,1.8,.4],[K.left,1.8,.4]],{span:[.02,.2]});route([[K.right,1.8,.4],[Sx.left,Sx.rowY(q),.4]],{span:[.2,.45],delay:1});
       label('÷ √3',2.25,2.35,.4,{size:.22,color:CSS.gold,mono:true});
       label(t('Cada celda: qᵢ · kⱼ — un producto escalar, aún no es probabilidad','Each cell: qᵢ · kⱼ — a dot product, not a probability yet'),0,-.85,.4,{size:.17,color:CSS.dim,weight:500});
@@ -343,21 +343,21 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
       const M=tensor(d.masked,{x:-3.1,w:3.6,title:'S + M',selected:q,rowInfo});
       const A=tensor(d.A,{x:3.1,w:3.6,title:'A = softmax(S + M)',color:C.mint,probability:true,future:true,selected:q,rowInfo,reveal:(i,j,{R})=>ease((R(.1,.6,.35,1.8)-i/N*.7)/.22)});
       rowLabels(tokens,M,{selected:q});
-      appear(M.group,.05,{dy:-.4,s0:.85});appear(A.group,.25,{dy:-.4,s0:.85});
+      appear(A.group,.25,{dy:-.4,s0:.85});
       route([[M.right,1.8,.4],[A.left,1.8,.4]],{span:[.03,.3]});label('softmax',0,2.35,.4,{size:.22,color:CSS.gold,mono:true});
       label(t('Futuro = −∞ → peso 0','Future = −∞ → weight 0'),-3.1,-.85,.4,{size:.17,color:CSS.coral,weight:600});label('Σⱼ Aᵢⱼ = 1',3.1,-.85,.4,{size:.2,color:CSS.mint,mono:true,weight:600});
     }else if(op===3){
       const A=tensor(d.A,{x:-4.3,w:2.7,title:'A · N × N',color:C.mint,probability:true,future:true,selected:q,rowInfo});
       const Vv=tensor(d.V,{x:0,w:1.9,title:'V · N × 3',color:C.mint,rowInfo});
       const Z=tensor(d.mixed,{x:4.3,w:2.2,title:'Z = AV',selected:q,rowInfo,reveal:(i,j,{R})=>i!==q?1:ease((R(.3,.7,.9,1)))});
-      [A,Vv,Z].forEach((m,k)=>appear(m.group,.05+k*.16,{dy:-.4,s0:.85}));
+      appear(Z.group,.37,{dy:-.4,s0:.85});
       d.A[q].forEach((w,j)=>{if(w<=0)return;const a=V(A.right,A.rowY(q),.4),b=V(Vv.left,Vv.rowY(j),.4),c=V(Vv.right,Vv.rowY(j),.4),e=V(Z.left,Z.rowY(q),.4);
         route([],{curve:arc(a,b,.25,.2),weight:w,span:[.05,.35],delay:j,arrow:false});route([],{curve:arc(c,e,.25,.2),weight:w,span:[.3,.6],delay:j+.5,arrow:false});
         if(w>.12)label(`${Math.round(w*100)} %`,(A.right+Vv.left)/2,(A.rowY(q)+Vv.rowY(j))/2+.12,.5,{size:.15,mono:true,color:CSS.gold,weight:600});});
       label(t('Pulso más grueso = mayor coeficiente Aᵢⱼ','Thicker pulse = larger coefficient Aᵢⱼ'),0,-.85,.4,{size:.17,color:CSS.dim,weight:500});
     }else{
       const specs=[[d.X,-5,'X',C.blue],[d.projected,-2.5,'ZW_O',C.violet],[d.H,0,'H · Add & Norm',C.blue],[d.hidden,2.5,'ReLU(HW₁)',C.violet],[d.Y,5,'Y · Add & Norm',C.mint]];
-      const T=specs.map(([m,x,name,color],k)=>{const box=tensor(m,{x,w:1.75,title:name,color,selected:q,rowInfo,depth:.4,reveal:k?seq(k*.15,.2):null});appear(box.group,.05+k*.12,{dy:-.4,s0:.85});return box;});
+      const T=specs.map(([m,x,name,color],k)=>{const box=tensor(m,{x,w:1.75,title:name,color,selected:q,rowInfo,depth:.4,reveal:k?seq(k*.15,.2):null});if(k)appear(box.group,.05+k*.12,{dy:-.4,s0:.85});return box;});
       rowLabels(tokens,T[0],{selected:q});
       for(let k=0;k<4;k++)route([[T[k].right,1.8,.4],[T[k+1].left,1.8,.4]],{span:[k*.12,k*.12+.18],delay:k,radius:.014});
       route([[T[0].x,T[0].top+.6,.1],[T[0].x,4.1,.1],[T[2].x,4.1,.1],[T[2].x,T[2].top+.6,.1]],{color:C.teal,span:[.05,.3],radius:.014});
