@@ -2,16 +2,16 @@
 
 ## Pasada una a una — iniciada el 15 de octubre de 2026
 
-Objetivo activo: repasar las 21 entradas del catálogo y aportar una mejora concreta en cada experiencia, sin añadir complejidad de uso. Cada mejora se guarda por separado y se comprueba antes de continuar. Esta pasada sigue abierta: **3 de 21 experiencias**, con Dyson como siguiente.
+Objetivo activo: repasar las 21 entradas del catálogo y aportar una mejora concreta en cada experiencia, sin añadir complejidad de uso. Cada mejora se guarda por separado y se comprueba antes de continuar. Esta pasada sigue abierta: **6 de 21 experiencias**, con SpaceX como siguiente.
 
 | ID | Experiencia | Estado de esta pasada | Mejora |
 | --- | --- | --- | --- |
 | `museo` | Museo | Hecha | Distingue mundos transitables de notebooks con escena 3D en el plano, la tarjeta y la placa del cuadro. Disponibilidad leída del catálogo. |
 | `robots` | Robots | Hecha | Las barras 2D de operaciones y tareas tienen nombre accesible y ayuda al pasar el ratón: indican qué operación, sector o ciudad miden. |
 | `terafab` | Terafab | Hecha | El título sobre la sala indica «Operación 04/13», por ejemplo, para distinguir las trece operaciones de los seis capítulos de voz. |
-| `dyson` | Dyson | Pendiente | — |
-| `home` | Hogar | Pendiente | — |
-| `starlink` | Starlink | Pendiente | — |
+| `dyson` | Dyson | Hecha | El campo que muestra kelvin se identifica como temperatura de la placa eléctrica, distinguiéndolo del calor y de la temperatura pasiva de referencia. |
+| `home` | Hogar | Hecha | La leyenda de la barra dice «trabajo de referencia pendiente»: sus segmentos reparten minutos, no un número de tareas. |
+| `starlink` | Starlink | Hecha | La ayuda visible y la descripción accesible se adaptan a Tierra, satélite o vista terrestre. Las vistas de hardware/servidor ya no piden pulsar la Tierra. |
 | `spacex` | SpaceX | Pendiente | — |
 | `kardashev` | Kardashev | Pendiente | — |
 | `llms` | LLMs | Pendiente | — |
@@ -29,6 +29,8 @@ Objetivo activo: repasar las 21 entradas del catálogo y aportar una mejora conc
 | `lunar` | Luna | Pendiente | — |
 
 Validación de estos tres pasos: pasan los tres checks existentes del museo, el de controles de Robots y los tres de Terafab. Navegador Chrome: veinte visitas a cuadros del museo —cuatro notebooks 3D y LLMs transitable—, doce vistas de barras en Fábrica/Ciudad/Región y las trece selecciones de operación de Terafab en cuatro contextos; todo en ES/EN y escritorio/móvil. Se comprueban etiquetas, destinos, nombres accesibles, valores de barras y posición del modelo, además del ancho de página y errores de ejecución. Las capturas del museo y Terafab se han inspeccionado. No se modifican modelos, datos, voces, recorridos ni controles.
+
+Pasos 4–6: pasan los checks de control/escena/modelo de Dyson, control/modelo de Hogar y modelo/lifecycle de Starlink. Chrome verifica doce contextos ES/EN y escritorio/móvil: unidades de temperatura; barra de Hogar después de una tarea, al terminar con 20 % de apoyo y en referencia humana; ayuda visible y accesible al alternar cuatro veces las vistas de Starlink. Se mantienen 120 minutos pendientes tras la primera tarea, 29 de apoyo y 116 liberados al completar con 20 %, y 145 de trabajo humano al completar la referencia. Los cambios de texto no alteran estos cálculos ni añaden controles. Capturas representativas inspeccionadas.
 
 Los cambios siguen en el PR #18 en borrador; esta tabla no afirma que estén mezclados en main ni publicados. Las revisiones anteriores quedan debajo como historial, no como prueba de que esta nueva pasada esté terminada.
 
