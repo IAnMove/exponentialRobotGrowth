@@ -34,3 +34,5 @@
  .mission-caption.expanded p{-webkit-line-clamp:unset;display:block}
 }
 #lesson{display:block;font-size:13px;line-height:1.85;color:#bccbd8}
+
+#power-use{display:inline-block;padding:3px 8px;border:1px solid #b69c654d;border-radius:5px;color:#eedeb8;white-space:nowrap;font-variant-numeric:tabular-nums}
