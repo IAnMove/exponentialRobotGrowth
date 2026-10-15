@@ -111,12 +111,13 @@ for(const [lang,duration,ceased] of [['es',19.296,8.23],['en',19.332,8.59]]){
 const voiceSource=readFileSync('site-src/journeys/voices-carbon.js','utf8');
 const voices=JSON.parse(voiceSource.match(/export const VOICES = ([\s\S]*?);\r?\nconst base/)[1]);
 const scripts=JSON.parse(readFileSync('narration/journey-carbon.json','utf8'));
+const scriptDirectory=existsSync('narration/carbon-scripts')?'narration/carbon-scripts':'narration/scripts';
 for(const [language,index] of [['es',0],['en',1]]){
  assert.equal(voices[language].length,4);
  voices[language].forEach((clip,i)=>{
   assert.equal(clip.id,`step-${i}`);assert.equal(clip.text,carbon.steps[i].text[index]);assert.equal(clip.title,carbon.steps[i].title[index]);
   assert.deepEqual({id:clip.id,title:clip.title,text:clip.text},scripts[language][i]);
-  assert.equal(readFileSync(`narration/scripts/${clip.file}.txt`,'utf8').trim(),clip.text);
+  assert.equal(readFileSync(`${scriptDirectory}/${clip.file}.txt`,'utf8').trim(),clip.text);
   assert(clip.duration>3&&existsSync(`dist/audio/${clip.file}`),'reused audio is present');
  });
 }

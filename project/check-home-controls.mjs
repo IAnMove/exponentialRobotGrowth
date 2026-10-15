@@ -64,7 +64,7 @@ const key=code=>({code,repeat:false,target:{closest:()=>false},preventDefault(){
 
 const voiceSource=readFileSync('site-src/home/voices.js','utf8'),VOICES=JSON.parse(voiceSource.split('export const VOICES = ')[1].split(/;\r?\n/)[0]);
 for(const clips of Object.values(VOICES))for(const clip of clips)clip.src='fixture://audio/'+clip.file;
-const worldAPI=await import('data:text/javascript,'+encodeURIComponent(readFileSync('site-src/home/world.js','utf8').replace("'../vendor/three.module.js'",JSON.stringify(new URL('./node_modules/three/build/three.module.js',import.meta.url).href)).replace("'./model.js'",JSON.stringify(new URL('./site-src/home/model.js',import.meta.url).href))));
+const worldAPI=await import('data:text/javascript,'+encodeURIComponent(readFileSync('site-src/home/world.js','utf8').replace("'../fx/perf.js'",JSON.stringify(new URL('./dist/fx/perf.js',import.meta.url).href)).replace("'../vendor/three.module.js'",JSON.stringify(new URL('./node_modules/three/build/three.module.js',import.meta.url).href)).replace("'./model.js'",JSON.stringify(new URL('./site-src/home/model.js',import.meta.url).href))));
 const at37={es:[2.75,19.5,29.5,39.5,49.5,59.5,69.54545454545455],en:[2.775862068965517,19.5,29.5,39.5,49.20454545454545,59.5,69.52380952380952]};
 for(const lang of ['es','en'])for(let chapter=0;chapter<7;chapter++){
  near(narrationTime(chapter,.37,lang),at37[lang][chapter],'independent phrase pause/operation oracle');near(narrationTime(chapter,-1,lang),chapter*10);near(narrationTime(chapter,NaN,lang),chapter*10);near(narrationTime(chapter,1,lang),(chapter+1)*10);near(narrationTime(chapter,2,lang),(chapter+1)*10);

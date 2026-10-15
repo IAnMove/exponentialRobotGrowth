@@ -1,0 +1,1 @@
+Burning fossil fuels transfers carbon from a geological reserve into the active cycle. Enable the stop after interval ten. Emissions cease, but reservoirs keep exchanging carbon and the atmosphere takes time to adjust. The model conserves one hundred carbon units: none are created or destroyed.
