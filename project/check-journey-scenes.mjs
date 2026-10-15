@@ -104,6 +104,8 @@ for(const es of [true,false])for(const lesson of Object.values(LESSONS)){
    built.update(model,.8,0);const travelling=built.packets.filter(p=>p.visible),positions=travelling.map(p=>p.position.toArray());
    assert.equal(travelling.length,4);assert(travelling.every(p=>p.material.color.getHex()===0xffd47a),'a message in flight cannot reveal its success or failure before arriving');assert.equal(built.state.known.size,1);
    built.update(model,.95,0);const arrived=built.packets.filter(p=>p.visible);assert(arrived.every(p=>p.material.color.getHex()===(probability?0x89e7be:0xff8a88)),'arrival shows the actual contact outcome');
+   const headTop=Math.max(...built.people.map(person=>person.head.getWorldPosition(new THREE.Vector3()).y+person.head.geometry.parameters.radius));
+   assert(arrived.every(packet=>packet.position.y-packet.geometry.parameters.radius>headTop),'an arrival message stays above recipients instead of being hidden inside a head');
    built.update(model,.8,0);assert.deepEqual(travelling.map(p=>p.position.toArray()),positions);assert(travelling.every(p=>p.material.color.getHex()===0xffd47a),'rewind restores an unresolved message in flight');
   }
  }
