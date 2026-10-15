@@ -2,7 +2,7 @@
 
 ## Pasada una a una — iniciada el 15 de octubre de 2026
 
-Objetivo activo: repasar las 21 entradas del catálogo y aportar una mejora concreta en cada experiencia, sin añadir complejidad de uso. Cada mejora se guarda por separado y se comprueba antes de continuar. Esta pasada sigue abierta: **19 de 21 experiencias**, con Evolución como siguiente.
+Pasada completada: **21 de 21 experiencias** del catálogo tienen una mejora concreta comprobada y guardada por separado. Se mantienen los controles existentes. La tabla recoge esta pasada; las revisiones anteriores se conservan debajo como historial.
 
 | ID | Experiencia | Estado de esta pasada | Mejora |
 | --- | --- | --- | --- |
@@ -25,8 +25,8 @@ Objetivo activo: repasar las 21 entradas del catálogo y aportar una mejora conc
 | `ideas` | Ideas | Hecha | Los mensajes mantienen el dorado durante el vuelo y muestran éxito/fallo al llegar. La trayectoria pasa por encima de las cabezas, donde el resultado ya no queda parcialmente oculto. |
 | `nuclear` | Nuclear | Hecha | La ecuación del header identifica sus tres términos: calor inmediato + decaimiento = calor total. Permite leer qué desaparece y qué permanece al parar, con las mismas unidades de potencia. |
 | `carbon` | Carbono | Hecha | Cada segmento de la barra identifica su depósito y cantidad de carbono al pasar el ratón. La descripción accesible incluye los cuatro stocks actuales y se actualiza con el experimento. |
-| `evolution` | Evolución | Pendiente | — |
-| `lunar` | Luna | Pendiente | — |
+| `evolution` | Evolución | Hecha | Inspeccionar una conexión ya no revela el resultado de mutación antes de su etapa. Al avanzar se muestra el evento registrado; al retroceder vuelve a ocultarse. |
+| `lunar` | Luna | Hecha | El consumo frente al techo de potencia tiene nombre y relleno proporcional. El indicador pasivo muestra los MW utilizados y disponibles, también como valor accesible. |
 
 Validación de estos tres pasos: pasan los tres checks existentes del museo, el de controles de Robots y los tres de Terafab. Navegador Chrome: veinte visitas a cuadros del museo —cuatro notebooks 3D y LLMs transitable—, doce vistas de barras en Fábrica/Ciudad/Región y las trece selecciones de operación de Terafab en cuatro contextos; todo en ES/EN y escritorio/móvil. Se comprueban etiquetas, destinos, nombres accesibles, valores de barras y posición del modelo, además del ancho de página y errores de ejecución. Las capturas del museo y Terafab se han inspeccionado. No se modifican modelos, datos, voces, recorridos ni controles.
 
@@ -41,6 +41,10 @@ Pasos 11–13: pasan siete checks afectados de modelo/control/escena y el check 
 Pasos 14–16: pasan cinco checks afectados —Electricidad, Microchip, Célula, controles compartidos y escenas compartidas— y recursos/imports/sintaxis del sitio. Se mantienen los balances de 53.136 combinaciones eléctricas, las ocho filas del sumador y los 64 codones del código estándar. Chrome verifica 24 contextos ES/EN, móvil/escritorio y notebook/inmersivo: 96 estados de cobertura, 24 estados de anotaciones del circuito y 72 estados de variantes/lectura del ARN. El porcentaje visible, el ancho de la barra y su valor accesible corresponden al mismo suministro. Capturas representativas comparadas con las anteriores: rótulo del inversor completo y codón GCU activo en dorado. El favicon 404 observado al abrir el notebook compartido queda corregido; la comprobación final no tiene errores de página ni consola. No se alteran los modelos, las voces ni los controles.
 
 Pasos 17–19: pasan cinco checks afectados —Ideas, Nuclear, Carbono, controles y escenas compartidas— y recursos/imports/sintaxis del sitio. Dos regresiones de escena que fallaban antes comprueban que ningún mensaje anticipa su resultado durante el vuelo y que el mensaje llegado queda por encima de la cabeza; se verifica también el retroceso. Los modelos mantienen sus oportunidades de transmisión, balances térmicos y conservación de carbono. Chrome verifica 24 contextos ES/EN, móvil/escritorio y notebook/inmersivo: 64 estados pausados/recargados de Ideas, 64 ecuaciones de Nuclear y 160 repartos de Carbono. Ocho contextos adicionales —32 estados— comprueban las escenas de mensajes elevados. Los estados pausados se vuelven a guardar desde la página en ejecución. Capturas representativas inspeccionadas: resultados visibles sobre las personas y ecuación legible en móvil. Los títulos, cantidades y descripción accesible de Carbono coinciden con cada depósito y suman 100 unidades. Sin errores de página ni consola. No se cambian modelos, voces ni controles.
+
+Pasos 20–21: la regresión de Evolución fallaba antes de la corrección y ahora comprueba las 50 conexiones antes/después de la mutación y al retroceder. Chrome pulsa conexiones reales en 24 estados ES/EN, escritorio/móvil y notebook/inmersivo; verifica el texto que ve el visitante. Luna se comprueba en 64 combinaciones de las cuatro vistas, dos techos de potencia y principio/final del escenario, en ES/EN y escritorio/móvil. El texto, el relleno y el valor accesible coinciden con los MW del modelo. Capturas representativas inspeccionadas.
+
+Cierre de esta pasada: **88/88 comprobaciones del repositorio pasan**. Se auditan las 21 entradas contra el código actual, sus commits de producto en ambas ramas y las pruebas de navegador; no se usa solo el estado de esta tabla como evidencia. La comparación de archivos y el build independiente comprueban que la copia preparada para GitHub coincide con la fuente. No se eliminan archivos durante la pasada. Las simplificaciones científicas y los supuestos editables de cada cuaderno siguen indicados en su explicación.
 
 Los cambios siguen en el PR #18 en borrador; esta tabla no afirma que estén mezclados en main ni publicados. Las revisiones anteriores quedan debajo como historial, no como prueba de que esta nueva pasada esté terminada.
 
