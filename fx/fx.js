@@ -9,12 +9,23 @@ import {RoomEnvironment} from '../vendor/RoomEnvironment.js';
 // Bloom on HDR highlights only (> 1), then ACES tone mapping and sRGB output.
 export function createPost(renderer,scene,camera,{strength=.78,radius=.62,threshold=.9}={}){
   renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
-  const pmrem=new THREE.PMREMGenerator(renderer),environment=pmrem.fromScene(new RoomEnvironment(),.04);pmrem.dispose();
+  const previousEnvironment=scene.environment,previousIntensity=scene.environmentIntensity;
+  const pmrem=new THREE.PMREMGenerator(renderer),room=new RoomEnvironment();let environment;
+  try{environment=pmrem.fromScene(room,.04);}finally{room.dispose();pmrem.dispose();}
   scene.environment=environment.texture;scene.environmentIntensity=.3;
   const target=new THREE.WebGLRenderTarget(1,1,{type:THREE.HalfFloatType,samples:4});
   const composer=new EffectComposer(renderer,target);composer.addPass(new RenderPass(scene,camera));
   const bloom=new UnrealBloomPass(new THREE.Vector2(1,1),strength,radius,threshold);composer.addPass(bloom);composer.addPass(new OutputPass());
-  return {composer,bloom,setSize(w,h,dpr){composer.setPixelRatio(dpr);composer.setSize(w,h);},render(dt){composer.render(dt);},dispose(){environment.dispose();target.dispose();composer.dispose?.();}};
+  let disposed=false;
+  return {composer,bloom,setSize(w,h,dpr){composer.setPixelRatio(dpr);composer.setSize(w,h);},render(dt){composer.render(dt);},dispose(){
+    if(disposed)return;disposed=true;
+    if(scene.environment===environment.texture){scene.environment=previousEnvironment;scene.environmentIntensity=previousIntensity;}
+    // Composer owns its targets, but each pass owns separate GPU allocations.
+    for(const pass of composer.passes)pass.dispose?.();
+    // This bundled Three version omits the high-pass material in bloom.dispose().
+    bloom.materialHighPassFilter.dispose();
+    composer.dispose();environment.dispose();
+  }};
 }
 // Lowers the render scale when frames stay slow, so weak GPUs keep a fluid image.
 export function adaptiveScale(initial,{min=.6,apply}){
