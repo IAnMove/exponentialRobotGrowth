@@ -1,4 +1,5 @@
 import {LESSONS} from './site-src/journeys/catalog.js';
+import {CATALOG} from './site-src/catalog.js';
 import assert from 'node:assert/strict';
 import {existsSync,readFileSync,statSync} from 'node:fs';
 import vm from 'node:vm';
@@ -65,7 +66,7 @@ function harness({lang='es',finePointer=false,reduced=false,lockMode='success',a
  const world={dom:element('canvas'),render(p,nearId,dt,portal,destination){lastPose={...p};lastRender={pose:lastPose,nearId,dt,portal:portal?{...portal}:null,destination:destination?{...destination}:null};},pick:(x,y)=>{pickCalls.push({x,y});return pickResult;},dispose(){},
   lookLock(){lockCalls++;if(lockMode==='throw')throw Error('Pointer Lock unsupported');if(lockMode==='reject')return Promise.reject(Error('Pointer Lock denied'));if(lockMode==='unsupported')return undefined;document.pointerLockElement=world.dom;events['document:pointerlockchange']?.();return Promise.resolve();}
  };
- const ctx={...model,model,LESSONS,document,window,console,URLSearchParams,URL,TimelineClock:Clock,restoredPosition,immersiveHref,VOICES,ResizeObserver:class{observe(){}disconnect(){}},
+ const ctx={...model,model,LESSONS,CATALOG,document,window,console,URLSearchParams,URL,TimelineClock:Clock,restoredPosition,immersiveHref,VOICES,ResizeObserver:class{observe(){}disconnect(){}},
   matchMedia:query=>({matches:query==='(pointer: fine)'?finePointer:query==='(prefers-reduced-motion: reduce)'?reduced:false}),performance:{now:()=>clock},
   localStorage:{getItem:key=>storage.get(key)||null,setItem:(key,value)=>storage.set(key,value),removeItem:key=>storage.delete(key)},location:{search,hash:'',assign:value=>{url=value;navigations.push(value);}},requestAnimationFrame:fn=>queued.push(fn),createMuseum:()=>world
  };
