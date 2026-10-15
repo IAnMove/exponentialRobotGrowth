@@ -1,9 +1,9 @@
-import * as THREE from '../vendor/three.module.js';
-import {EffectComposer} from '../vendor/EffectComposer.js';
-import {RenderPass} from '../vendor/RenderPass.js';
-import {UnrealBloomPass} from '../vendor/UnrealBloomPass.js';
-import {OutputPass} from '../vendor/OutputPass.js';
-import {RoomEnvironment} from '../vendor/RoomEnvironment.js';
+import * as THREE from '../../vendor/three.module.js';
+import {EffectComposer} from '../../vendor/EffectComposer.js';
+import {RenderPass} from '../../vendor/RenderPass.js';
+import {UnrealBloomPass} from '../../vendor/UnrealBloomPass.js';
+import {OutputPass} from '../../vendor/OutputPass.js';
+import {RoomEnvironment} from '../../vendor/RoomEnvironment.js';
 
 // Shared rendering pipeline for the Atlas 3D scenes.
 // Bloom on HDR highlights only (> 1), then ACES tone mapping and sRGB output.
