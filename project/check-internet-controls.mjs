@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
-import {STAGES,SOURCES,stageFact} from './site-src/journeys/internet-route.js';
+import {STAGES,SOURCES,stageFact,CABLE_KM} from './site-src/journeys/internet-route.js';
 import {internetFrameAt,internetStatus} from './site-src/journeys/internet-model.js';
 import {TimelineClock,restoredPosition} from './site-src/playback/timeline.js';
 import {StepGuide} from './site-src/llms/guide.js';
@@ -48,7 +48,7 @@ function harness({lang='es',storage=new Map(),audioMode='success',lockMode='succ
  if(lockMode!=='absent')world.canvas.requestPointerLock=()=>{lockCalls++;if(lockMode==='throw')throw Error('Lock rejection');if(lockMode==='reject')return Promise.reject(Error('Lock rejection'));document.pointerLockElement=world.canvas;document.dispatch('pointerlockchange');return Promise.resolve();};
  const requestAnimationFrame=fn=>{const id=++rafId;queued.set(id,fn);return id;};
  const media=q=>({matches:q.includes('prefers-reduced-motion')?reduced:q.includes('pointer: coarse')?coarse:!coarse});
- const context={STAGES,SOURCES,stageFact,internetFrameAt,internetStatus,VOICES,document,window,bindFirstPerson,TimelineClock:Clock,restoredPosition,URL,Intl,console:gpu?console:{error(){}},queueMicrotask,__INTERNET_CONTROLLER_TEST__:true,
+ const context={STAGES,SOURCES,stageFact,CABLE_KM,internetFrameAt,internetStatus,VOICES,document,window,bindFirstPerson,TimelineClock:Clock,restoredPosition,URL,Intl,console:gpu?console:{error(){}},queueMicrotask,__INTERNET_CONTROLLER_TEST__:true,
   ResizeObserver:class{observe(){}disconnect(){}},matchMedia:media,performance:{now:()=>now},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},requestAnimationFrame,cancelAnimationFrame:id=>queued.delete(id),
   createVoyageWorld(){if(!gpu)throw Error('WebGL unavailable');return world;}
  };
@@ -82,6 +82,7 @@ for(const lang of ['es','en']){
  for(let chapter=0;chapter<9;chapter++){
   p.root.querySelector('.ap-marks').children[chapter].onclick();assert.equal(h.state.chapter,chapter);assert.equal(p.clock.audio.muted,true,'mute follows new native audio instances');
   assert.equal(h.element('ocean-caption').hidden,chapter!==4,'the optical explanation is visible throughout the ocean chapter');assert.equal(h.element('scene-area').classList.contains('has-ocean-caption'),chapter===4);
+  if(chapter!==4){const trips=chapter>=7?2:1;assert.equal(h.element('metric-value').textContent,`${(CABLE_KM*trips).toLocaleString(lang==='es'?'es-ES':'en-US')} km · ${33*trips} ms`,'the reference changes from one-way to round-trip propagation during the return journey');assert(h.element('metric-label').textContent.includes(chapter>=7?(lang==='es'?'ida y vuelta':'round trip'):(lang==='es'?'un sentido':'one way')));}
   if(chapter===4){for(const copy of lang==='es'?[/infrarroja invisible/,/colores simbólicos/,/cubierta transparente/,/amplificación óptica ilustrativa/]:[/infrared light/,/symbolic colours/,/transparent jacket/,/illustrative optical amplification/])assert.match(h.element('ocean-caption').textContent,copy);}
   const clip=p.clock.timeline[chapter];p.el('seek').oninput({target:{value:clip.start+clip.duration*.377}});await h.flush();footerAligned(h);near(h.frame.progress,.377);
   scrub(h,.731);await h.flush();const held=JSON.stringify(h.frame);h.frames(90);assert.equal(JSON.stringify(h.frame),held,'late metadata and paused ticks cannot overwrite a manual fraction');chapterChecks++;

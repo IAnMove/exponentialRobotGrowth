@@ -1,5 +1,5 @@
 import {NotebookPlayer} from '../playback/player.js';
-import {STAGES,SOURCES,stageFact} from './internet-route.js';
+import {STAGES,SOURCES,stageFact,CABLE_KM} from './internet-route.js';
 import {internetFrameAt,internetStatus} from './internet-model.js';
 import {createVoyageWorld} from './internet-world.js';
 import {VOICES} from './voices-internet-voyage.js';
@@ -50,9 +50,9 @@ export function createInternetController({document:doc=document,window:win=windo
   $('phase').value=String(progress);$('phase-value').value=$('phase-value').textContent=Math.round(progress*100)+'%';$('phase').setAttribute('aria-valuetext',`${Math.round(progress*100)}% · ${txt(s.title)}`);
   $('phase-source').textContent=source==='manual'?t('Momento fijado','Moment held'):t('Sigue la narración','Follows narration');
   $('signal-status').textContent=internetStatus(frame,es);$('scene-chapter').textContent=`${String(chapter+1).padStart(2,'0')} / 09`;$('signal-dot').className=frame.signal.kind;
-  const underwater=Number.isFinite(frame.signal.distanceKm)&&Number.isFinite(frame.signal.travelMs);
-  $('metric-label').textContent=underwater?t('Avance por MAREA · modelo','Progress through MAREA · model'):t('Referencia submarina · un sentido','Submarine reference · one way');
-  $('metric-value').textContent=underwater?`${Math.round(frame.signal.distanceKm).toLocaleString(es?'es-ES':'en-US')} km · ${frame.signal.travelMs.toFixed(1)} ms`:`${(6600).toLocaleString(es?'es-ES':'en-US')} km · ${frame.signal.submarineOneWayMs} ms`;
+  const underwater=Number.isFinite(frame.signal.distanceKm)&&Number.isFinite(frame.signal.travelMs),roundTrip=chapter>=7;
+  $('metric-label').textContent=underwater?t('Avance por MAREA · modelo','Progress through MAREA · model'):roundTrip?t('Referencia submarina · ida y vuelta','Submarine reference · round trip'):t('Referencia submarina · un sentido','Submarine reference · one way');
+  $('metric-value').textContent=underwater?`${Math.round(frame.signal.distanceKm).toLocaleString(es?'es-ES':'en-US')} km · ${frame.signal.travelMs.toFixed(1)} ms`:`${(CABLE_KM*(roundTrip?2:1)).toLocaleString(es?'es-ES':'en-US')} km · ${roundTrip?frame.signal.submarineRoundTripMs:frame.signal.submarineOneWayMs} ms`;
   $('motion').checked=motion;$('explore').textContent=exploring?t('Volver a cámara guiada','Return to guided camera'):t('Explorar la escena','Explore the scene');$('explore').setAttribute('aria-pressed',String(exploring));$('capture').hidden=!exploring||coarse;$('capture').textContent=lookActive?t('Ratón activo · Esc','Mouse active · Esc'):t('Activar ratón','Enable mouse look');
   $('look-help').hidden=!exploring;$('look-help').textContent=t('Ratón: mirar · WASD: moverte · Esc: soltar ratón','Mouse: look · WASD: move · Esc: release mouse');
   const nav=world?.getNavigationMode?.()||world?.inspect?.()?.navigation?.mode||'observe';$('navigation').hidden=!exploring;$('navigation').textContent=nav==='walk'?t('Paseo de ejemplo · altura y colisiones limitadas','Example walk · constrained height and collisions'):nav==='orbit'?t('Observación orbital · no es un paseo sobre la Tierra','Orbital observation · not a walk on Earth'):t('Observación libre de una sección ampliada · Q/E: bajar/subir','Free observation of an enlarged cutaway · Q/E: down/up');
