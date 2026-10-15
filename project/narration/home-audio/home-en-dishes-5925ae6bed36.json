@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "The next chore collects five dishes. Watch each dish keep its identity: it starts on the table, moves into a hand, then reaches the dishwasher rack. None vanishes simply because a chapter changes. The door and rack explain the appliance; we do not simulate water, detergent or a complete washing cycle. Picking up, carrying and placing are manipulation operations, different from turning on a machine. Research robots have demonstrated similar tasks, but this home assumes reliable execution with these objects and this layout. It is neither a commercial robot policy nor a general success test. Completion divides fifteen illustrative handling minutes between human assistance and released time. Switch to human work to see the same operations and verify that this scenario releases none of that time.",
+  "duration_ms": 50184,
+  "billed_characters": 802,
+  "sample_rate": 32000,
+  "size_bytes": 804660,
+  "generated_at": "2026-10-03T00:24:00.404706+00:00"
+}

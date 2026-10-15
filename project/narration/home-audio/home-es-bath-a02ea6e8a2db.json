@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "En el baño seguimos un paño y seis marcas en superficies accesibles. Cada marca se retira después de que el paño la visite. El suelo y el lavabo permanecen. Alcanzar una superficie, mantener contacto y tratarla son acciones distintas de mostrar un brazo oscilando. Aquí hacemos visibles esos contactos, pero no modelamos desinfección, productos, agua, fuerzas ni seguridad eléctrica. El robot doméstico fiable de esta escena es una hipótesis; no afirmamos que una máquina de consumo pueda completar hoy todo este baño sin ayuda. El escenario humano usa la misma lista de acciones para que la comparación sea comprensible. Los veinte minutos son trabajo activo ilustrativo. Los contadores cambian al cerrar la tarea, y no porque el robot se mueva más deprisa. Puedes pausar y acercarte para comprobar qué marca ha sido tratada y cuál todavía espera.",
+  "duration_ms": 54468,
+  "billed_characters": 848,
+  "sample_rate": 32000,
+  "size_bytes": 873204,
+  "generated_at": "2026-10-03T00:23:43.413685+00:00"
+}

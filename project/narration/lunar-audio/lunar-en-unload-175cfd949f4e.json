@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "An elevator lowers equipment; a rover takes it toward the base. Unloading represents a delivery, not a complete factory. The elevator is a feature planned for HLS. Unloading, installation and testing are separate steps. In our model a delivery supplies twenty-five tonnes: a teaching assumption, not a capability promised by SpaceX.",
+  "duration_ms": 22212,
+  "billed_characters": 332,
+  "sample_rate": 32000,
+  "size_bytes": 357108,
+  "generated_at": "2026-09-27T00:28:33.122389+00:00",
+  "validation": {
+    "audio_sha256": "bd626ace682d7e3d4d9fa96fc898270f9c6fe0811ee725fd64360a70f17db076",
+    "text_sha256": "8a9a34a53aad0cb5d46dd098c092a07c4051fefce939efd52371c80df90c8ee0",
+    "script_sha256": "1f8f5b1907411b1c724822eab96cd24a678e767baa8215702ed49ce819046449",
+    "decoded_duration_seconds": 22.212,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

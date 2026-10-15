@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "A new distribution describes the next piece. The continuation here is scripted. The tallest column shows the next token planned for this demonstration.",
+  "duration_ms": 9684,
+  "billed_characters": 151,
+  "sample_rate": 32000,
+  "size_bytes": 156660,
+  "generated_at": "2026-09-20T18:04:09.341571+00:00",
+  "validation": {
+    "audio_sha256": "9b7e3d454704435c74f9193971ea4589c0281529801529901b40626f1c3f9f6a",
+    "text_sha256": "1eb3a6977beb50467e3c72e6d68ba7918b514aa0536e68897d77b66cbc525c75",
+    "script_sha256": "de7831b50c1be2475d7b54d4c15791e73f4d5c09f31376508bdd19ad93cbe5df",
+    "decoded_duration_seconds": 9.684,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 9.684
+  }
+}

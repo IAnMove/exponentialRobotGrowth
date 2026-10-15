@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Now compare a different rule, published by Anthropic, for the prefix only. Writing a five-minute cache costs one point two five times base input; a one-hour cache costs twice base input. Standard reads cost one tenth, with selectable exceptions for some models. The curve includes the initial premium. With a five-minute write and standard reads, the second request is already cheaper in accumulated cost. We use an illustrative base price here. Suffix and output are excluded from this comparison.",
+  "duration_ms": 35280,
+  "billed_characters": 498,
+  "sample_rate": 32000,
+  "size_bytes": 566196,
+  "generated_at": "2026-10-03T03:54:54.352664+00:00"
+}

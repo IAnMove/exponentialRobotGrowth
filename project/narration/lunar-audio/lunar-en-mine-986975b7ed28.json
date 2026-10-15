@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "The raw material is already on the Moon, but it is not yet a machine. Regolith must be excavated, separated and processed. Researchers are investigating how to obtain oxygen and useful materials and manufacture structures. Earth-based experiments with simulants do not amount to an autonomous lunar industry. The lab's local percentage represents how much of each expansion's mass we assume can already be manufactured there. This is a demanding assumption: ninety percent local mass does not mean ninety percent technological self-sufficiency.",
+  "duration_ms": 35172,
+  "billed_characters": 544,
+  "sample_rate": 32000,
+  "size_bytes": 564468,
+  "generated_at": "2026-09-26T22:49:29.270468+00:00",
+  "validation": {
+    "audio_sha256": "38afa24dad4634cc8a12c627a386d14d08d7d14893a5cb1d3b56046ed396d5c7",
+    "text_sha256": "a4dcc0d750f1766411ece128ef468d4009c1b589616469c94740ba162b95d9a5",
+    "script_sha256": "f95aa3b2a0a68798ea95aab394ee4ee72c841a5190a7dd340484226904803818",
+    "decoded_duration_seconds": 35.172,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

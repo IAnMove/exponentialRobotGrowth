@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Super Heavy inicia el ascenso con sus treinta y tres motores. La nave y su carga de ejemplo siguen unidas al booster. Ahora observamos la separación en caliente. Los motores de la nave se encienden mientras el booster aún conserva empuje con un subconjunto de motores. El anillo entre ambos permite ventilar ese escape. Después se separan físicamente las dos etapas. La nave continúa su ascenso; el booster gira y utiliza un encendido de retorno para dirigir su trayectoria hacia la torre. Son dos trabajos simultáneos que puedes seguir por separado con los botones de cámara. Cuando termina el encendido de retorno, el booster sigue moviéndose con los motores apagados. Las trayectorias son curvas de explicación, no una integración de fuerzas ni una predicción de altitud o velocidad. La posición cien de la barra tampoco equivale a cien segundos reales.",
+  "duration_ms": 52596,
+  "billed_characters": 856,
+  "sample_rate": 32000,
+  "size_bytes": 843252,
+  "generated_at": "2026-10-03T01:17:26.147158+00:00"
+}

@@ -3,7 +3,7 @@
     {
       "id": "hall",
       "title": "Un museo de mundos",
-      "text": "Estás en el atrio. Ahora se abren cuatro salas: inteligencia, industria y vida cotidiana, cosmos, y vida y naturaleza. Hay diecinueve cuadros. Nueve permiten entrar en un mundo transitable: modelos de lenguaje y las ocho experiencias nuevas. Camina con las teclas W, A, S y D, o utiliza el joystick. Arrastra para mirar. El plano te lleva hasta cualquier cuadro. Elige entrar en tres dimensiones o abrir su notebook web."
+      "text": "Estás en el atrio de Atlas. Cuatro salas conectan inteligencia, industria y vida cotidiana, cosmos, y vida y naturaleza. Hay veinte cuadros. Los marcos iluminados indican mundos que puedes recorrer en primera persona; todos tienen un notebook web. Camina con W, A, S y D, o con el joystick. Activa el ratón para mirar libremente y pulsa Escape para soltarlo. El plano te guía a cualquier cuadro. En la barra inferior puedes reproducir la voz, leer el texto y saltar a cada sala. La visita guiada te lleva caminando; tú puedes seguir mirando alrededor."
     },
     {
       "id": "mind",
@@ -18,7 +18,7 @@
     {
       "id": "cosmos",
       "title": "Cosmos",
-      "text": "En la sala del cosmos viajamos desde la órbita terrestre hasta la escala de una civilización. Los cuadros presentan Starlink, los vehículos espaciales, un enjambre de Dyson y la escala de Kardashev. Puedes abrir sus notebooks para explorar las escenas y sus explicaciones. Estos cuatro interiores todavía no son mundos transitables. El museo distingue lo disponible en web de lo que ya puedes recorrer en primera persona."
+      "text": "En la sala del cosmos viajamos desde la Tierra hasta la escala de una civilización. Sus cinco cuadros presentan Starlink, los vehículos espaciales, un enjambre de Dyson, la escala de Kardashev y el crecimiento de una industria en la Luna. Compara viajes, energía y crecimiento en sus notebooks. Una animación tridimensional no siempre permite caminar dentro: la etiqueta de cada cuadro te indica si abre un mundo transitable o una experiencia web. Las escenas distinguen los mecanismos conocidos de los escenarios hipotéticos."
     },
     {
       "id": "life",
@@ -30,7 +30,7 @@
     {
       "id": "hall",
       "title": "A museum of worlds",
-      "text": "You are in the atrium. Four galleries now open from here: intelligence, industry and everyday life, cosmos, and life and nature. There are nineteen paintings. Nine let you enter walkable worlds: language models and the eight new experiences. Walk with W, A, S and D, or use the joystick. Drag to look around. The map takes you to any painting. Choose to enter its three dimensional world or open its web notebook."
+      "text": "You are in the Atlas atrium. Four galleries connect intelligence, industry and everyday life, cosmos, and life and nature. There are twenty paintings. Illuminated frames mark worlds you can explore in first person; every painting has a web notebook. Walk with W, A, S and D, or use the joystick. Enable mouse look to look freely, and press Escape to release it. The map guides you to any painting. The bottom bar lets you play the narration, read the transcript and jump to each gallery. The guided visit walks you there while you keep looking around."
     },
     {
       "id": "mind",
@@ -45,7 +45,7 @@
     {
       "id": "cosmos",
       "title": "Cosmos",
-      "text": "In the cosmos gallery, we travel from Earth orbit to the scale of a civilization. The paintings present Starlink, spacecraft, a Dyson swarm and the Kardashev scale. Open their notebooks to explore the scenes and explanations. These four interiors are not yet walkable worlds. The museum distinguishes web experiences from places you can already explore in first person."
+      "text": "In the cosmos gallery, we travel from Earth to the scale of a civilization. Its five paintings present Starlink, spacecraft, a Dyson swarm, the Kardashev scale and the growth of industry on the Moon. Compare journeys, energy and growth in their notebooks. A three dimensional animation does not always let you walk inside: each painting tells you whether it opens a walkable world or a web experience. The scenes distinguish known mechanisms from hypothetical scenarios."
     },
     {
       "id": "life",

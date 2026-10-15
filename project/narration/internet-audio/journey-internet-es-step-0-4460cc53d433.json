@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Tu navegador necesita localizar un servicio y comunicarse con él. El equipo entrega datos a su red local. El router permite continuar hacia otras redes; una antena Wi-Fi no contiene Internet. Aquí el mensaje de ejemplo se divide en piezas numeradas.",
+  "duration_ms": 16056,
+  "billed_characters": 249,
+  "sample_rate": 32000,
+  "size_bytes": 258612,
+  "generated_at": "2026-09-26T02:50:01.106100+00:00",
+  "validation": {
+    "audio_sha256": "368f267eb6e356f7acb71806a32e07c1430929ee26e7e83a442a91014244b594",
+    "text_sha256": "cc633aecaa17fac1e66a64595bf13578b5f907d8912444cef6af4fbe6715fe6c",
+    "script_sha256": "cc88c8a62412de244378ff294ac4f90e6ac887b7189c1dd4147ac2c1e31e6138",
+    "decoded_duration_seconds": 16.056,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

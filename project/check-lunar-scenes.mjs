@@ -1,0 +1,75 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import * as THREE from 'three';
+import {simulate,STAGES} from './site-src/lunar/model.js';
+import {missionPose} from './site-src/lunar/mission.js';
+import {lunarFrameAt} from './site-src/lunar/presentation.js';
+
+// Browser imports are mapped to the installed identical Three library. The
+// source scene, geometries, matrices, cameras and input handlers remain real.
+const three=new URL('node_modules/three/build/three.module.js',import.meta.url).href;
+const env=new URL('node_modules/three/examples/jsm/environments/RoomEnvironment.js',import.meta.url).href;
+const data=source=>'data:text/javascript;base64,'+Buffer.from(source).toString('base64');
+const local=name=>new URL('site-src/lunar/'+name,import.meta.url).href;
+const map=(name,deps={})=>{
+ let source=readFileSync(new URL('site-src/lunar/'+name,import.meta.url),'utf8');
+ source=source.replaceAll("'../vendor/three.module.js'",JSON.stringify(three)).replaceAll("'../vendor/RoomEnvironment.js'",JSON.stringify(env));
+ for(const [file,url] of Object.entries(deps))source=source.replaceAll("'./"+file+"'",JSON.stringify(url));
+ return data(source);
+};
+const visuals=map('visuals.js'),mission=map('mission-world.js',{'visuals.js':visuals,'mission.js':local('mission.js')});
+const {buildLunarScene,lunarCameraAt,createWorld}=await import(map('world.js',{'visuals.js':visuals,'mission-world.js':mission,'mission.js':local('mission.js')}));
+const close=(a,b,tolerance=1e-6)=>assert(Math.abs(a-b)<tolerance,`${a} must equal ${b}`);
+const vec=a=>new THREE.Vector3(...a),corners=box=>[0,1].flatMap(x=>[0,1].flatMap(y=>[0,1].map(z=>vec([x?box.max.x:box.min.x,y?box.max.y:box.min.y,z?box.max.z:box.min.z]))));
+const fitted=(world,frame,aspect)=>{
+ world.updateFrame(frame);world.scene.updateMatrixWorld(true);const bounds=world.subjectBounds(),view=frame.view,pose=lunarCameraAt(bounds,{aspect,view,pose:frame.mission,yaw:view==='base'||view==='growth'?.6:0,pitch:view==='mission'?0:view==='route'?.25:.72});
+ assert(pose.position.every(Number.isFinite));const camera=new THREE.PerspectiveCamera(pose.fov,aspect,pose.near,pose.far);camera.position.set(...pose.position);camera.lookAt(vec(pose.target));camera.updateMatrixWorld(true);
+ for(const point of corners(bounds)){point.project(camera);assert(Math.abs(point.x)<.81&&Math.abs(point.y)<.74&&point.z>-1&&point.z<1,`full ${frame.stage}/${view} subject fits aspect ${aspect}`);}
+};
+const run=simulate(),large=simulate({power:100000,flights:120,flightGrowth:.5,doubling:3,local:.98});let frames=0,frusta=0;
+for(const es of [true,false]){
+ const world=buildLunarScene(es,{textures:false}),parts=world.parts.mission,identity=parts.vehicles.lunarShip.group.uuid,cargoIdentity=parts.payload.mesh.uuid;
+ assert.equal(parts.vehicles.booster.engines.length,33);assert.equal(parts.vehicles.booster.gridFins.length,3);assert.equal(parts.vehicles.lunarShip.group.userData.flaps,0);assert.equal(parts.vehicles.lunarShip.group.userData.heatShield,false);assert.equal(parts.vehicles.tanker.variant,'tanker');
+ for(let index=0;index<7;index++)for(let sample=0;sample<=100;sample++){
+  const frame=lunarFrameAt(run,index,sample/100);world.updateFrame(frame);world.scene.updateMatrixWorld(true);frames++;
+  assert.equal(parts.vehicles.lunarShip.group.uuid,identity);assert.equal(parts.payload.mesh.uuid,cargoIdentity);let payloadCount=0;world.groups.mission.traverse(o=>{if(o.userData.payloadId===parts.payload.id)payloadCount++;assert(o.matrixWorld.elements.every(Number.isFinite));});assert.equal(payloadCount,1,'one persistent industrial pallet throughout the voyage');
+  assert.equal(world.groups.mission.children.filter(g=>g.visible).length,1,'only the current mission environment is shown');
+  if(index===1&&sample===100){assert(parts.pose.captured);assert(!parts.vehicles.booster.burn.visible);assert(!parts.vehicles.lunarShip.burn.visible);}
+  if(index===2){const r=frame.mission.refuel;close(r.shipLevel+r.depotLevel,1);close(parts.refuel.shipLevel.scale.x,4*r.shipLevel);close(parts.refuel.depotLevel.scale.x,4*r.depotLevel);assert.equal(parts.refuel.docking.visible,r.connected);for(const m of parts.refuel.markers)if(m.visible){assert(r.connected&&r.phase==='transfer','transfer requires connected ports');close(m.position.y,5);close(m.position.z,0);assert(m.position.x>=-1.5&&m.position.x<=1.9);}if(sample===100)assert(parts.refuel.markers.every(m=>!m.visible));}
+  if(index===4&&sample===100){close(new THREE.Box3().setFromObject(parts.vehicles.lunarShip.legs).min.y,parts.unload.ground);for(const engine of parts.vehicles.lunarShip.engines)assert(new THREE.Box3().setFromObject(engine).min.y>parts.unload.ground,'landing feet keep all engine bells clear of the ground');}
+  if(index===5){const location=frame.mission.cargoLocation,ground=parts.unload.ground;assert(frame.mission.arrived);if(location==='elevator'){const deck=new THREE.Box3().setFromObject(parts.unload.elevatorDeck);close(parts.payload.worldBottom,deck.max.y);}if(location==='handoff'||location==='rover')close(parts.payload.worldBottom,ground+parts.unload.bedHeight);if(location==='deposit'){const fork=new THREE.Box3().setFromObject(parts.unload.roverLift);close(parts.payload.worldBottom,fork.max.y);if(parts.payload.worldBottom<ground+.91)assert(new THREE.Box3().setFromObject(parts.payload.mesh).min.x>parts.unload.rover.position.x+1.2,'cargo clears the rover bed before lowering');}if(location==='surface')close(parts.payload.worldBottom,ground);}
+  if(index===6){close(parts.payload.worldBottom,parts.unload.ground);close(parts.payload.mesh.getWorldPosition(new THREE.Vector3()).x,17.05);if(sample===100)assert(!parts.vehicles.lunarShip.burn.visible);}
+ }
+ // Parent changes preserve position at every platform and ground contact.
+ for(const boundary of [.08,.5,.56,.92,1]){world.updateFrame(lunarFrameAt(run,5,boundary-1e-8));const before=parts.payload.mesh.getWorldPosition(new THREE.Vector3());world.updateFrame(lunarFrameAt(run,5,boundary));const after=parts.payload.mesh.getWorldPosition(new THREE.Vector3());assert(before.distanceTo(after)<1e-5,`continuous unload handoff at ${boundary}`);}
+ world.updateFrame(lunarFrameAt(run,0,1));const upperEnd=parts.vehicles.lunarShip.group.position.clone();world.updateFrame(lunarFrameAt(run,1,0));assert(upperEnd.distanceTo(parts.vehicles.lunarShip.group.position)<1e-8,'liftoff and separation share one upper vehicle endpoint');
+ const installed=new Map(),dimensions=new Map();
+ for(const capital of [100,101,400,401,900,901,5000,20000,25600,25601,large.rows.at(-1).capital]){
+  const frame={...lunarFrameAt(run,13,0,{month:120,view:'growth'}),row:{...run.rows[120],capital}};world.updateFrame(frame);const campus=world.parts.campus;assert(campus.displayedCount<=256);close(campus.samples.reduce((n,s)=>n+s.toTonnes-s.fromTonnes,0),capital);assert.equal(campus.aggregate,capital>25600);assert.equal(campus.logicalCount,Math.ceil(capital/100));
+  campus.samples.forEach((s,i)=>{const matrix=new THREE.Matrix4();world.instances[0].getMatrixAt(i,matrix);const position=new THREE.Vector3(),q=new THREE.Quaternion(),scale=new THREE.Vector3();matrix.decompose(position,q,scale);if(installed.has(s.id))assert(position.distanceTo(installed.get(s.id))<1e-6,'installed samples never relocate as the campus grows');if(dimensions.has(s.id))assert(scale.distanceTo(dimensions.get(s.id))<1e-6,'sample dimensions remain fixed');installed.set(s.id,position);dimensions.set(s.id,scale);});
+  for(const aspect of [1.8,1.25,.8,.52])for(const view of ['base','growth']){fitted(world,{...frame,view},aspect);frusta++;}world.setView('base');const processBounds=world.subjectBounds();for(const point of [[-21,0,15],[-22,0,-15],[-10,0,-20],[6.9,2,1.6]])assert(processBounds.containsPoint(vec(point)),'base detail preserves all four process stations');for(const s of campus.samples.slice(0,16))assert(processBounds.containsPoint(vec(s.position)),'base preserves the first 16 installed samples');world.setView('growth');assert(world.subjectBounds().containsBox(campus.bounds),'growth preserves the complete campus');if(capital>20000)assert(world.subjectBounds().getSize(new THREE.Vector3()).x>processBounds.getSize(new THREE.Vector3()).x,'growth and mechanism detail use distinct guided framing');
+ }
+ // Future stock cannot animate construction after power halts building.
+ const stopped=run.rows.find(r=>r.month>0&&r.build===0&&r.stock>0);assert(stopped);world.updateFrame(lunarFrameAt(run,13,.3,{month:stopped.month+.6,view:'base'}));assert(!world.parts.operation.active);assert([...world.parts.operation.cargo,...world.parts.operation.ore].every(m=>!m.visible));
+ const active=run.rows.find(r=>r.localMade>0&&r.build>r.localMade);const activeFrame=lunarFrameAt(run,12,.5,{month:active.month+.5,view:'base'});world.updateFrame(activeFrame);assert(world.parts.operation.active);assert(world.parts.operation.cargo.some(m=>m.visible)&&world.parts.operation.ore.some(m=>m.visible));const flowPose=world.parts.operation.cargo.map(m=>m.position.toArray());world.update({...active,exactMonth:active.month+.5},4,'factory');assert.deepEqual(world.parts.operation.cargo.map(m=>m.position.toArray()),flowPose);world.update({...active,exactMonth:active.month+.5},900,'factory');assert.deepEqual(world.parts.operation.cargo.map(m=>m.position.toArray()),flowPose,'legacy narration duration cannot change the same causal example');
+ for(const index of [0,1,2,3,4,5,6,7])for(const fraction of [0,.08,.25,.5,.8,.92,1])for(const aspect of [1.8,1.25,.8,.52]){fitted(world,lunarFrameAt(run,index,fraction),aspect);frusta++;}
+ // Guided process closeups retain complete equipment, while the overview and
+ // growth views still retain their original guaranteed capacity samples.
+ const processSpecs=[{index:9,scope:'power-detail',equipment:['power'],samples:0},{index:10,scope:'extraction-processing-detail',equipment:['mine','processor'],samples:0},{index:11,scope:'assembly-detail',equipment:['assembly'],samples:16}];
+ for(const spec of processSpecs)for(const fraction of [0,.5,1]){
+  const frame=lunarFrameAt(run,spec.index,fraction,{view:'base'});world.updateFrame(frame);world.scene.updateMatrixWorld(true);const bounds=world.subjectBounds(),scope=world.capacityScope();assert.equal(scope.viewScope,spec.scope);assert.equal(scope.focusCount,Math.min(spec.samples,world.parts.campus.displayedCount));for(const name of spec.equipment)assert(bounds.containsBox(new THREE.Box3().setFromObject(world.parts.process[name])),`${spec.scope} contains all actual ${name} geometry`);if(spec.samples)for(const sample of world.parts.campus.samples.slice(0,spec.samples)){const [x,,z]=sample.position;assert(bounds.containsBox(new THREE.Box3(vec([x-1.5,0,z-1.5]),vec([x+2.1,2.1,z+2.65]))),'assembly closeup keeps complete first samples');}
+  for(const aspect of [1.8,1.25,.8,.52]){fitted(world,frame,aspect);frusta++;const detail=lunarCameraAt(bounds,{aspect,view:'base',yaw:.6,pitch:.72});world.updateFrame({...frame,stage:'limits'});const overview=lunarCameraAt(world.subjectBounds(),{aspect,view:'base',yaw:.6,pitch:.72});assert(detail.distance<overview.distance*.8,'guided process closeup is materially closer than the campus mechanism overview');}
+ }
+ for(const month of [6.5,120.5,239.5]){const frame=lunarFrameAt(large,13,.5,{month,view:'route'});world.updateFrame(frame);assert.equal(world.parts.deliveries.inFlightCount,frame.inFlightCount);assert.equal(world.parts.deliveries.ships.filter(s=>s.visible).length,frame.deliveries.length);frame.deliveries.forEach((batch,i)=>assert.deepEqual(world.parts.deliveries.ships[i].userData.delivery,batch));}
+ world.scene.traverse(o=>{if(o.geometry?.attributes.position)assert(o.geometry.attributes.position.array.every(Number.isFinite));});world.dispose();
+}
+
+// Only the GPU and DOM event boundary are substituted. Navigation and camera
+// code are the actual exported world implementation, including cleanup.
+class Canvas{constructor(){this.events=new Map();this.captured=new Set();}setAttribute(k,v){this[k]=v;}addEventListener(k,v){this.events.set(k,v);}removeEventListener(k,v){assert.equal(this.events.get(k),v);this.events.delete(k);}focus(){this.focused=true;}setPointerCapture(id){this.captured.add(id);}hasPointerCapture(id){return this.captured.has(id);}releasePointerCapture(id){this.captured.delete(id);}remove(){this.removed=true;}emit(k,event){this.events.get(k)({...event,preventDefault(){}});}}
+class GPU{constructor(){this.domElement=new Canvas();this.shadowMap={};}setPixelRatio(){}setSize(){}render(scene,camera){this.camera=camera;camera.updateMatrixWorld(true);}dispose(){this.disposed=true;}}
+class Observer{observe(){}disconnect(){this.disconnected=true;}}
+const gpu=new GPU(),host={clientWidth:400,clientHeight:700,append(){}},world=createWorld(host,true,{textures:false,environment:false,rendererFactory:()=>gpu,ResizeObserverClass:Observer,onViewChange:()=>changes++});let changes=0;
+world.updateFrame(lunarFrameAt(run,5,.4));assert.equal(world.canvas.tabIndex,0);assert.match(world.canvas['aria-label'],/orbitar/);world.canvas.emit('pointerdown',{pointerId:1,clientX:30,clientY:40,button:0});world.canvas.emit('pointermove',{pointerId:1,clientX:130,clientY:75});assert(world.canvas.focused);assert(changes>0);world.canvas.emit('pointerup',{pointerId:1});const saved=world.getViewState();world.updateFrame(lunarFrameAt(run,5,.8));assert.equal(world.getViewState().yaw,saved.yaw);assert.equal(world.getViewState().pitch,saved.pitch,'same-stage seek retains orbit pose');world.setView('growth');world.updateFrame({...lunarFrameAt(large,13,.8),view:'growth'});world.canvas.emit('wheel',{deltaY:2000});assert(world.getViewState().zoom<=2.5);world.setView('mission');assert.equal(world.getViewState().yaw,saved.yaw,'returning to a view preserves its independent orbit');assert(world.restoreViewState(saved));assert.deepEqual(world.getViewState().views,saved.views);
+world.canvas.emit('pointerdown',{pointerId:1,clientX:20,clientY:20});world.canvas.emit('pointerdown',{pointerId:2,clientX:40,clientY:20});world.canvas.emit('pointermove',{pointerId:2,clientX:140,clientY:20});assert(world.getViewState().zoom>=.55);world.canvas.emit('pointerup',{pointerId:1});world.canvas.emit('pointerup',{pointerId:2});world.canvas.emit('keydown',{code:'Home'});assert.equal(world.getViewState().yaw,0);assert.equal(world.getViewState().zoom,1);world.updateFrame(lunarFrameAt(run,5,1));const inspection=world.inspect();assert.equal(inspection.navigation.walking,false);assert.equal(inspection.navigation.mode,'follow-orbit');close(inspection.mission.payload.worldBottom,-.25);assert(inspection.capacity.displayedCount>0);assert.doesNotThrow(()=>JSON.stringify(inspection),'inspection contains stable scalar state, without circular Three objects');world.dispose();assert.equal(world.canvas.events.size,0);assert(world.canvas.removed&&gpu.disposed);
+console.log(`Lunar Three scenes: ${frames} mission frames, ${frusta} responsive frusta, persistent cargo contacts, fixed 256 samples, causal flows and orbit restoration passed.`);

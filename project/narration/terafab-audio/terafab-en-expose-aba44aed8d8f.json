@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "The wafer enters the exposure scanner. A mask carries the pattern and the optics project it onto the resist. This model does not reproduce a commercial scanner or its full optical system. Look at the three highlighted regions: light changes their state, while the film underneath remains intact. The wafer then returns to the developing tool. In this positive-resist example, exposed regions disappear and leave three windows. We have not etched the film yet. Rewind to compare exposure and development: they are separate changes, rather than light directly cutting silicon.",
+  "duration_ms": 36936,
+  "billed_characters": 574,
+  "sample_rate": 32000,
+  "size_bytes": 592692,
+  "generated_at": "2026-10-03T02:17:43.558483+00:00"
+}

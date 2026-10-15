@@ -1,0 +1,119 @@
+{
+  "text": "Seguimos el token seleccionado en el control inferior. Su vector X tiene seis dimensiones. Tres multiplicaciones con pesos diferentes producen la consulta Q, la clave K y el valor V, aquí de tres dimensiones. Las curvas muestran esas tres ramas. Los pesos están fijos: no estamos entrenando al modelo. Ahora la consulta dorada se compara con las claves de los ocho tokens visibles. Bajo cada token aparece el producto escalar dividido por la raíz de tres. Estas puntuaciones pueden ser positivas o negativas. Aún no son probabilidades. Las curvas conectan la consulta con las posiciones que está comparando. La máscara causal bloquea posiciones posteriores a la consulta. Sus puntuaciones se sustituyen por menos infinito. Después, softmax produce los porcentajes de las barras: suman cien por cien, y el futuro tiene exactamente cero. Para verlo, pausa y selecciona un token anterior. Atención no significa verdad ni es una explicación completa de la respuesta. Los pesos de atención multiplican los vectores V. Las curvas más gruesas representan contribuciones con más peso. Todas convergen en la mezcla Z, cuyo vector aparece arriba a la izquierda. Estamos sumando vectores ponderados, no recuperando palabras de una biblioteca. Proyectamos la mezcla, sumamos la entrada y normalizamos para obtener H. La red transforma cada posición: de seis dimensiones a doce y de vuelta a seis. La curva superior representa la conexión residual. Y es el resultado tras otra normalización. Este bloque usa una cabeza y pesos sintéticos. Los modelos reales combinan cabezas y repiten bloques. La luz representa activaciones, no un bit físico ni un pensamiento.",
+  "duration_ms": 108986.40625,
+  "cues": [
+    {
+      "start": 0,
+      "end": 19.81946875
+    },
+    {
+      "start": 19.81946875,
+      "end": 38.0189375
+    },
+    {
+      "start": 38.0189375,
+      "end": 61.83440625
+    },
+    {
+      "start": 61.83440625,
+      "end": 78.7269375
+    },
+    {
+      "start": 78.7269375,
+      "end": 108.98640625
+    }
+  ],
+  "provider": "MiniMax components",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "size_bytes": 1745324,
+  "components": [
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+      "language": "Spanish",
+      "text": "Seguimos el token seleccionado en el control inferior. Su vector X tiene seis dimensiones. Tres multiplicaciones con pesos diferentes producen la consulta Q, la clave K y el valor V, aquí de tres dimensiones. Las curvas muestran esas tres ramas. Los pesos están fijos: no estamos entrenando al modelo.",
+      "duration_ms": 19836,
+      "billed_characters": 301,
+      "sample_rate": 32000,
+      "size_bytes": 319092,
+      "generated_at": "2026-09-26T18:57:42.602552+00:00",
+      "file": "llms-es-layers-part0-1fddaf18fbe3.mp3",
+      "audio_sha256": "1aa8a37c62c1b5e36829f26579a75f26539c8b7a78cb9820f021835f058c736f",
+      "decoded_duration_seconds": 19.836
+    },
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+      "language": "Spanish",
+      "text": "Ahora la consulta dorada se compara con las claves de los ocho tokens visibles. Bajo cada token aparece el producto escalar dividido por la raíz de tres. Estas puntuaciones pueden ser positivas o negativas. Aún no son probabilidades. Las curvas conectan la consulta con las posiciones que está comparando.",
+      "duration_ms": 18216,
+      "billed_characters": 305,
+      "sample_rate": 32000,
+      "size_bytes": 293172,
+      "generated_at": "2026-09-26T18:57:46.790024+00:00",
+      "file": "llms-es-layers-part1-abeb8305cbae.mp3",
+      "audio_sha256": "14b45fd99a4662e85206b2feeca18b302794f9d3cf64478f07aa024ec4e0eac9",
+      "decoded_duration_seconds": 18.216
+    },
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+      "language": "Spanish",
+      "text": "La máscara causal bloquea posiciones posteriores a la consulta. Sus puntuaciones se sustituyen por menos infinito. Después, softmax produce los porcentajes de las barras: suman cien por cien, y el futuro tiene exactamente cero. Para verlo, pausa y selecciona un token anterior. Atención no significa verdad ni es una explicación completa de la respuesta.",
+      "duration_ms": 23832,
+      "billed_characters": 354,
+      "sample_rate": 32000,
+      "size_bytes": 383028,
+      "generated_at": "2026-09-26T18:57:52.040744+00:00",
+      "file": "llms-es-layers-part2-feae0b6fab8f.mp3",
+      "audio_sha256": "2eb30ab9d750cc3acbc33c473c07e3df2e414ad415d0a6064d631b2096651476",
+      "decoded_duration_seconds": 23.832
+    },
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+      "language": "Spanish",
+      "text": "Los pesos de atención multiplican los vectores V. Las curvas más gruesas representan contribuciones con más peso. Todas convergen en la mezcla Z, cuyo vector aparece arriba a la izquierda. Estamos sumando vectores ponderados, no recuperando palabras de una biblioteca.",
+      "duration_ms": 16956,
+      "billed_characters": 268,
+      "sample_rate": 32000,
+      "size_bytes": 273012,
+      "generated_at": "2026-09-26T18:57:55.096721+00:00",
+      "file": "llms-es-layers-part3-e33f1c2f5f7f.mp3",
+      "audio_sha256": "584630e0dc2c7bc1de04b61d5e2d0e9791108c8cb7a7df7315aceb7c86fc8def",
+      "decoded_duration_seconds": 16.956
+    },
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+      "language": "Spanish",
+      "text": "Proyectamos la mezcla, sumamos la entrada y normalizamos para obtener H. La red transforma cada posición: de seis dimensiones a doce y de vuelta a seis. La curva superior representa la conexión residual. Y es el resultado tras otra normalización. Este bloque usa una cabeza y pesos sintéticos. Los modelos reales combinan cabezas y repiten bloques. La luz representa activaciones, no un bit físico ni un pensamiento.",
+      "duration_ms": 30276,
+      "billed_characters": 416,
+      "sample_rate": 32000,
+      "size_bytes": 486132,
+      "generated_at": "2026-09-26T18:57:59.345090+00:00",
+      "file": "llms-es-layers-part4-c417b1367b10.mp3",
+      "audio_sha256": "42ddc389a46c2e5242f5f456ae56fdab955ee8923257717b60d93c5f5ccafcc8",
+      "decoded_duration_seconds": 30.276
+    }
+  ],
+  "validation": {
+    "audio_sha256": "48351f370eca0738fa1affa5984b111b536baf91fda19b5cd13f186b204e3fea",
+    "text_sha256": "3fab69112304fee164e1d0d4490bf4a7baeb50ea76669ebe32ed5024dfdd170c",
+    "script_sha256": "4d9c521e0d207c3ae4e91977e185c61b76334bf0e3b96df68be210cdd9f615b1",
+    "decoded_duration_seconds": 109.044,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 108.98640625
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "A trained model transforms the final vector into logits for vocabulary tokens. Here we use curated scores, independent of the small block you just saw. Softmax converts them into probabilities. Each bar’s length shows one continuation’s percentage. Together they sum to one hundred percent. More probable does not mean more truthful. Change temperature in the route menu to compare the distribution.",
+  "duration_ms": 25380,
+  "billed_characters": 399,
+  "sample_rate": 32000,
+  "size_bytes": 407796,
+  "generated_at": "2026-09-26T18:58:04.828732+00:00",
+  "validation": {
+    "audio_sha256": "47e3d38a7ec71e1b83611a866ced80194f33fc1c0be960051beb6f0330372daa",
+    "text_sha256": "98d56aa8181d282aedd1f6809eee6ffa8f104894bae16636cba2ea2f0c6e7e0e",
+    "script_sha256": "a9bcea28e2f35f5e81e66401b5a0a080c8f49ec7b6ca1383ae12e68c4c552e97",
+    "decoded_duration_seconds": 25.38,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 25.38
+  }
+}

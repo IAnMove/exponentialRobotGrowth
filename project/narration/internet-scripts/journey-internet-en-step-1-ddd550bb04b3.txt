@@ -1,0 +1,1 @@
+DNS maps names to records, including IP addresses. A resolver can use cached information or query other servers. This lookup is separate from downloading the page. The DNS cabinet represents this distributed service, not a single central machine.

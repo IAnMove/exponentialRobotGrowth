@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Ahora cambiamos de escala. Este ejemplo empieza en Madrid y lleva los datos hacia la costa de Bizkaia. Dentro de un operador hay varios saltos posibles. Entre operadores, BGP intercambia información de rutas y aplica políticas: no busca simplemente la línea más corta del mapa. La línea dorada es un corredor ilustrativo; no hemos medido tu conexión ni conocemos por dónde pasan todos sus cables. Incluso una web estadounidense puede responder desde una caché cercana.",
+  "duration_ms": 30528,
+  "billed_characters": 468,
+  "sample_rate": 32000,
+  "size_bytes": 490164,
+  "generated_at": "2026-09-26T19:16:26.828271+00:00",
+  "validation": {
+    "audio_sha256": "bf791114b5c52a7cd68992ae13c9115988dc495bfd5094a58513397a340e6007",
+    "text_sha256": "b0807b50efe04335223558fcb43e9cacf47586f06a00528ee60623f4e6b8f380",
+    "script_sha256": "570467390f3da97e53e3c0ff7bef81c63019eb50801a90fa5d3e26351bd6355a",
+    "decoded_duration_seconds": 30.528,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

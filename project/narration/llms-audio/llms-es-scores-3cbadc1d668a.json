@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Un modelo entrenado transforma el vector final en logits para los tokens del vocabulario. Aquí usamos puntuaciones preparadas, independientes del pequeño bloque anterior. Softmax las convierte en probabilidades. La longitud de cada barra muestra el porcentaje de una continuación. Entre todas suman cien por cien. Más probable no significa más verdadero. Cambia la temperatura en el recorrido para comparar el reparto.",
+  "duration_ms": 26136,
+  "billed_characters": 418,
+  "sample_rate": 32000,
+  "size_bytes": 419892,
+  "generated_at": "2026-09-26T18:57:46.719688+00:00",
+  "validation": {
+    "audio_sha256": "9556e03f92ac0c38daef7786ab328d75d7d00b5a556f547a4a0fcd83e6500806",
+    "text_sha256": "b3bfc64e0113bd3538a49c034ee6ae9cb3f549af2f5214f55b9e4466a89a74bb",
+    "script_sha256": "54ec963fb9cea82dd91620754d5fcdf29e0ab435aedb8cd7264d89af856be3fc",
+    "decoded_duration_seconds": 26.136,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 26.136
+  }
+}

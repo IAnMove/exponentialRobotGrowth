@@ -163,9 +163,9 @@ export const NARRATIONS = {
   },
   "region-3": {
     "title": "Factories producing robots",
-    "text": "This is the center of the loop. Kits become robots, and every finished robot joins the regional fleet. A new facility creates more workstations and machinery for robots to use. But building capacity does not automatically mean producing at that capacity. Kits, electricity, transport and available workers are required. Compare your region's curve with the reference. The reference also reinvests all its new robots, but keeps its six facilities. Eventually it accumulates robots its machinery cannot use. Your region can invest some resources in building more capacity. The difference appears after construction is completed, and depends on the entire chain being able to supply the new facilities.",
-    "src": "./audio/region-3-506b838dab6f.mp3",
-    "duration": 43.128
+    "text": "Here kits become finished robots. The delivery control divides new robots between two destinations: remaining in industry or leaving for cities. A dispatched robot leaves the industrial workforce. The total fleet counts both destinations, including robots in transit or waiting at the depot, but that does not mean they are all manufacturing. Both maps use the same delivery percentage and delays: the reference supplies cities too. The difference is that it keeps its six facilities, while your region can build new ones. Each facility adds workstations and machinery, but needs kits, electricity, transport and available workers. Compare robots manufactured per cycle as well as the accumulated fleet. Added capacity becomes useful after construction finishes, and only when the entire chain can supply it.",
+    "src": "./audio/region-3-676e515e101d.mp3",
+    "duration": 50.508
   },
   "region-4": {
     "title": "Energy must grow too",
@@ -205,9 +205,9 @@ export const NARRATIONS = {
   },
   "region-city-2": {
     "title": "Valley city: distance matters too",
-    "text": "This city has one hundred and eighty equivalent tasks and receives each delivery after five cycles. It can have robots reserved while its coverage bar is still low, because those robots are in transit. This separates manufacturing, dispatching and using robots. As the scenario advances, coverage can approach that of the other cities, but each sector retains its automation limits. If all feasible coverage is already reserved or filled, additional robots wait at the depot. A larger industrial network can offer more capacity; that does not mean every city can use it without limits.",
-    "src": "./audio/region-city-2-b718dc6c5aeb.mp3",
-    "duration": 36.18
+    "text": "This city has one hundred and eighty equivalent tasks and receives each delivery after five cycles. Robots can be reserved while its bar remains low because they are still in transit. Coverage rises when robots arrive, not when they are manufactured or dispatched. The intermediate scope retains sector limits and human tasks. The Full hypothesis allows all one hundred and eighty tasks in this city, and all six hundred across the three cities, to be covered. This is an assumed future delegation, not a demonstrated capability or a forecast about professions. If eligible tasks are already covered or reserved, additional robots wait at the depot. A larger industrial network can deliver more robots, but distance delays arrival and the chosen scope determines where they can work.",
+    "src": "./audio/region-city-2-170c4ec17b00.mp3",
+    "duration": 47.052
   },
   "guide-factory": {
     "title": "First scale: robots making robots",
@@ -229,9 +229,9 @@ export const NARRATIONS = {
   },
   "robot-factory-1": {
     "title": "Assemble the structure",
-    "text": "People or robots assemble the torso, limbs and supporting structure. Watch the bodies moving along the conveyor. They are not operational robots yet: movement systems, calibration and testing are still needed. Automating this station while another is slower can fill a queue without producing many additional robots. Automatic mode reinforces stations with lower daily capacity. You can turn it off to decide where to send a robot the line itself has already finished.",
-    "src": "./audio/robot-factory-1-9712d4a2394a.mp3",
-    "duration": 30.852
+    "text": "At this station, people or robots assemble the frame supporting the torso and limbs. Observe the product sample, its identifier and work progress. The same identifier connects a part to its steps through the line. Figures at each station are samples of the process; queues and counters show the actual model quantities. An assembled frame is not an operational robot yet: actuators, a battery, calibration and testing are still needed. Automating this station while another is slower can fill a queue without finishing many additional robots. Automatic mode reinforces stations with lower daily capacity. You can turn it off to decide where to send a robot the line itself has already finished.",
+    "src": "./audio/robot-factory-1-b9dccc53f428.mp3",
+    "duration": 43.488
   },
   "robot-factory-2": {
     "title": "Actuators, battery and motion",
@@ -316,6 +316,12 @@ export const NARRATIONS = {
     "text": "This comparison starts with the same seventy-four people, stocks and equipment. In the human reference, finished robots leave the district: they do not return to work and no new facilities are built. Your strategy can deploy robots and expand facilities. The counters and chart sum output over the previous twenty-four hours, or elapsed hours at the start. Select an industry to compare its output too. In this district, a person and a robot have the same pace per active working hour. The initial difference is availability: eight human hours versus twenty-one robot hours, allowing for charging and maintenance. Parts, equipment and expansion then matter as well. The percentage therefore describes the change in output across the supply chain, not how productive an individual robot is. If the reference has not produced anything yet, we do not show a percentage.",
     "src": "./audio/district-productivity-lesson-e9edaac3c2d0.mp3",
     "duration": 55.08
+  },
+  "factory-limits": {
+    "title": "Ten handovers, then supply",
+    "text": "With automatic handover and the current assumptions, robots built by this line can cover its ten tasks: two per station. Check the counter as several simulated days pass. If you disable automatic handover, the outcome depends on your chosen deployments and human positions may remain. Once all ten tasks are covered, additional robots stay in output stock; they do not add workstations or also work in another factory. The number manufactured can keep rising, but this line's workforce no longer grows. We start with one hundred and sixty kits, with up to one hundred and sixty new kits arriving each day and limited storage space. Machinery and those supplies constrain output. Cumulative production can rise while the daily rate levels off: that is not sustained exponential growth. Accelerating again would require more capacity and a supply chain able to support it.",
+    "src": "./audio/factory-limits-e1548a8f9156.mp3",
+    "duration": 55.404
   }
 };
 for (const item of Object.values(NARRATIONS)) item.src = new URL(item.src, import.meta.url).href;

@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Everything starts here, at your computer. You have requested a page that, in this example, is hosted in the United States. Before sending this request, the browser obtained an IP address through DNS and prepared an HTTPS connection. That preparation also requires exchanges across the network. Now we follow the request data. The content travels encrypted; routers need routing information, but they cannot read the page inside that encryption. The golden point represents data, not an object moving through a cable.",
+  "duration_ms": 33732,
+  "billed_characters": 516,
+  "sample_rate": 32000,
+  "size_bytes": 541428,
+  "generated_at": "2026-09-26T19:16:42.178784+00:00",
+  "validation": {
+    "audio_sha256": "38e884be224473e7ccacd7a331fccc1d007f720436b342cc4d0ca7f012764d2b",
+    "text_sha256": "e7f4495cd10f20083af64a4105ee1601ace75b70e493373976a812c3c4fa2c18",
+    "script_sha256": "a63fd3050889460def91725374f1c08e20044322ae3385a1720d403fc94c5221",
+    "decoded_duration_seconds": 33.732,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

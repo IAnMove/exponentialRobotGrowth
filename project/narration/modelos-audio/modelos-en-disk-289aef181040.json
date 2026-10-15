@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Both bars share a scale and grow with token count. In the DeepSeek V2 comparison, full attention stores thirty-two thousand seven hundred sixty-eight values per token and layer. Latent attention stores five hundred seventy-six. The ratio is about fifty-seven times. The magnified small bar is marked. This counts values from a historical reference, not all GPU memory or the architecture of today’s billed V4 models.",
+  "duration_ms": 27756,
+  "billed_characters": 416,
+  "sample_rate": 32000,
+  "size_bytes": 445812,
+  "generated_at": "2026-10-03T03:54:48.597412+00:00"
+}

@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "La nave abandona la órbita terrestre, viaja durante días y realiza maniobras para llegar a la Luna. Curva y tiempos comprimidos. Ni los tamaños ni la velocidad de la nave están a escala. Lo que importa es seguir la misma carga desde la órbita terrestre hasta preparar su llegada a la Luna.",
+  "duration_ms": 18108,
+  "billed_characters": 289,
+  "sample_rate": 32000,
+  "size_bytes": 291444,
+  "generated_at": "2026-09-27T00:28:11.937594+00:00",
+  "validation": {
+    "audio_sha256": "aff4a02e308a0890289b92efe39e00eca874ff14b8294503eb67de93c3b43004",
+    "text_sha256": "7e79fab08b11c13dc63fbce9a6f8e1c6a1049b75f8a0ccbd70848df734e87eea",
+    "script_sha256": "2dab20d87955e3e149f713c71edfeb3e88386ee267b9c80966d647771105b3cc",
+    "decoded_duration_seconds": 18.108,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

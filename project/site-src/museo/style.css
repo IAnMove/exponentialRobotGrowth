@@ -2,8 +2,57 @@
 @media(max-width:900px){.top{padding:14px;gap:12px}.top #where{position:absolute;top:70px;left:15px}.top #mouse{display:none}.brand{font-size:18px}.brand span{font-size:7px}.top nav button{padding:10px;font-size:10px}.card{right:12px;bottom:92px;width:min(350px,calc(100% - 24px));padding:16px}.card h1{font-size:23px}.bottom{left:14px;right:14px;bottom:14px;max-width:none}.bottom p{font-size:10px;max-width:390px}.map{top:72px;right:10px;bottom:10px;width:min(355px,calc(100% - 20px))}.welcome article{padding:27px}.welcome h1{font-size:42px}#route-status{top:76px;left:auto;right:15px;transform:none;max-width:60%;font-size:10px}}
 @media(pointer:coarse){.stick{display:block}.card{bottom:214px}.bottom p{display:none}.bottom{max-width:360px}.bottom button{min-height:44px}.map-toggle{min-height:44px}}
 @media(max-height:590px){.welcome article{padding:18px;max-height:95vh;overflow:auto}.welcome h1{font-size:30px;margin:12px 0}.card{bottom:12px;max-height:65vh;overflow:auto}.map{top:65px}.bottom p{display:none}}
-.museum-audio{position:fixed;left:24px;top:100px;z-index:2;max-width:260px;font-size:10px}.museum-audio>div{display:flex;gap:5px}.museum-audio button,.museum-audio select{font-size:10px;background:#172637cc;color:#e6edf4;border:1px solid #72869b55;border-radius:7px;padding:8px 10px}.museum-audio #voice-state{display:block;margin:5px 0;color:#d0dbe5}.museum-audio details{color:#d0dbe5;text-shadow:0 1px 4px #000}.museum-audio details p{font-size:12px;line-height:1.6;background:#152132ef;padding:14px;border-radius:9px;max-height:220px;overflow:auto}.crossing .museum-audio{opacity:0;pointer-events:none}
-@media(max-width:900px){.museum-audio{left:15px;top:103px;max-width:210px}}@media(max-height:590px){.museum-audio{top:78px}}
-
 /* Captured mouse: a clearer aim point, since clicks act on what sits under it. */
 .looking .cross{width:9px;height:9px;margin:-4.5px 0 0 -4.5px;background:none;border:1.5px solid #fff;box-shadow:0 0 0 1px #0007,0 0 10px #0009}
+
+/* Gallery UI shares the notebook timeline and leaves the room visible. */
+:root{--museum-bottom:calc(var(--atlas-player-height,112px) + 18px)}
+.museum-awaiting .atlas-player{visibility:hidden}
+.top{padding:18px 24px;background:linear-gradient(#101923f5,#101923a0,transparent)}
+#where{font-size:11px;color:#aebfcb;letter-spacing:.03em}
+.room-context{position:fixed;left:24px;top:94px;z-index:2;max-width:285px;pointer-events:none;text-shadow:0 2px 12px #0009}
+.room-context h1{font-size:27px;letter-spacing:-.035em;margin:8px 0 5px;font-weight:550}
+.room-context p{font-size:11px;line-height:1.5;color:#d0d9df;margin:0 0 10px}
+.room-context button{pointer-events:auto;font-size:10px;padding:8px 11px;background:#142535c9;backdrop-filter:blur(12px)}
+#route-status{top:86px;max-width:440px;background:#142535b0;border-radius:20px;padding:7px 14px;backdrop-filter:blur(8px)}
+#route-status:empty{display:none}
+.bottom{bottom:var(--museum-bottom);max-width:355px;background:#14202cc2;border:1px solid #71889840;padding:13px;border-radius:12px;backdrop-filter:blur(12px)}
+.bottom p{font-size:10px;line-height:1.6;max-width:330px}
+.bottom label{font-size:9px;margin-top:2px}.bottom input{margin:0}
+.card{bottom:var(--museum-bottom);width:340px;padding:19px;border-color:#a3b9c455;background:#142332ed}
+.card h1{font-size:24px;margin:12px 0 8px}.card p{font-size:11px;line-height:1.65;margin-bottom:13px}.card p.availability{font-size:9px;margin-bottom:0}
+.card .actions{gap:10px}.card .actions button,.card .actions a{font-size:11px}
+.badge{background:#1b4238;color:#c6f7df;font-size:8px;letter-spacing:.08em}
+.map{bottom:var(--museum-bottom);top:76px;width:365px;background:#142334f5}
+.map-intro{color:#a8bdcb;font-size:11px;line-height:1.55;margin:7px 0}
+.painting-list small{font-size:8px;text-align:right;max-width:68px;color:#abd3c2}
+.room-link>span>small{display:inline;font-size:9px;float:right;margin:3px 0 0}
+.welcome-counts{display:flex;gap:8px;flex-wrap:wrap;margin:-2px 0 16px}
+.welcome-counts span{border:1px solid #7994a24d;background:#28435555;padding:7px 9px;border-radius:7px;color:#d0dde1;font-size:11px}
+.welcome article{background:#142334ed;backdrop-filter:blur(14px)}
+.welcome h1{font-size:50px;line-height:1.05;margin:21px 0}
+.cross{z-index:1;width:6px;height:6px;margin:-3px 0 0 -3px;background:#ffffffbd;box-shadow:0 0 6px #000b}
+.crossing .room-context,.crossing .atlas-player{opacity:0;pointer-events:none}
+.stick{bottom:calc(var(--atlas-player-height,112px) + 90px)}
+@media(max-width:900px){
+ .top{padding:13px 15px}.top #where{top:65px;font-size:9px}.top #mouse{display:block;font-size:9px;padding:8px}
+ .room-context{top:97px;left:15px;max-width:225px}.room-context h1{font-size:23px}.room-context p{font-size:10px}.room-context button{font-size:9px}
+ .bottom{bottom:var(--museum-bottom);left:14px;right:auto;max-width:330px}.bottom p{font-size:9px}.card{bottom:var(--museum-bottom);width:310px;max-height:40vh;overflow:auto}
+ .map{top:73px;bottom:var(--museum-bottom);width:min(365px,calc(100% - 20px))}
+ #route-status{top:80px;left:auto;right:15px;max-width:52%;font-size:10px}
+}
+@media(max-width:650px){
+ .brand{font-size:16px}.brand span{font-size:6px}.top nav{gap:3px}.top nav a{padding:6px}.top nav button{font-size:9px;padding:9px 8px}
+ .room-context{top:84px;max-width:205px}.room-context h1{font-size:21px;margin:6px 0 3px}.room-context p{font-size:9px;margin-bottom:7px}
+ .top #where{display:none}.bottom{left:12px;right:12px;max-width:none;padding:10px 12px;gap:6px}.bottom p{display:none}.bottom button{font-size:10px;padding:9px 11px}.bottom label{font-size:9px}
+ .card{left:auto;right:12px;bottom:calc(var(--atlas-player-height,141px) + 110px);width:min(330px,calc(100% - 24px));padding:14px;max-height:35vh}.card h1{font-size:20px;margin:9px 0 6px}.card p{font-size:10px;line-height:1.5;margin-bottom:9px}.card p.availability{font-size:8px}
+ .card .actions button{padding:10px 12px}.stick{left:18px;bottom:calc(var(--atlas-player-height,141px) + 112px);width:88px;height:88px}
+ .welcome article{padding:25px}.welcome h1{font-size:40px}.welcome p{font-size:12px;margin-bottom:18px}.welcome small{font-size:10px;margin-top:17px}.welcome-counts{gap:5px}.welcome-counts span{font-size:9px;padding:6px}
+ #route-status{top:78px;max-width:44%;padding:7px 9px;font-size:9px}
+}
+@media(max-height:590px){
+ .room-context{top:72px;max-width:200px}.room-context h1{font-size:19px}.room-context p{display:none}.room-context button{font-size:9px;padding:6px}
+ .bottom{padding:9px;max-width:310px}.bottom p{display:none}.card{bottom:var(--museum-bottom);max-height:46vh;width:300px;padding:12px}.card p{font-size:10px}.card h1{font-size:20px}
+ .welcome article{max-height:94vh;overflow:auto}.welcome h1{font-size:30px}.map{top:63px}.stick{width:74px;height:74px;bottom:calc(var(--atlas-player-height,112px) + 75px)}
+}
+@media(prefers-reduced-motion:reduce){.crossing *{transition:none!important}}

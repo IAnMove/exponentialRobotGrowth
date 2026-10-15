@@ -1,0 +1,22 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Aquí los kits se convierten en robots terminados. El control de entregas reparte los nuevos robots entre dos destinos: permanecer en la industria o salir hacia las ciudades. Un robot enviado deja de formar parte de la fuerza de trabajo industrial. La flota total cuenta ambos destinos, incluidos los robots en tránsito o esperando en el depósito, pero eso no significa que todos estén fabricando. Los dos mapas aplican el mismo porcentaje de entregas y las mismas demoras: la referencia también abastece a las ciudades. La diferencia es que conserva sus seis instalaciones, mientras tu región puede construir nuevas. Cada instalación añade puestos y maquinaria, pero necesita kits, electricidad, transporte y trabajadores disponibles. Compara los robots fabricados por ciclo además de la flota acumulada. El aumento de capacidad se aprovecha después de terminar las obras y solo si toda la cadena puede abastecerlas.",
+  "duration_ms": 56808,
+  "billed_characters": 916,
+  "sample_rate": 32000,
+  "size_bytes": 910644,
+  "generated_at": "2026-10-03T06:31:54.504643+00:00",
+  "validation": {
+    "ffmpeg_decode": "passed",
+    "decoded_duration_seconds": 56.808,
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "audio_sha256": "f3c5c3eedfd36081823182544b90b9b3deb43dedae256e48cc68da377949b1a7",
+    "text_sha256": "0f0e81584665afa86e11a888ea8a7cd7d6e3ba751c62247df988880ea43b7fc8",
+    "script_sha256": "2e2785724b3401a91087c6fe84d7cc45adbe812146ce158a9f55e685019d7cde"
+  }
+}

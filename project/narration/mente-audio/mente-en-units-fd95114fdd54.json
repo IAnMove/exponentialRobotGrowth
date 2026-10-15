@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This laboratory compares a brain with a language model, but their parts are not equivalent. The brain shape is an illustration: the dots compress enormous quantities and do not simulate firing neurons. A census of adult male brains estimated an average of roughly eighty-six billion neurons and eighty-five billion non-neuronal cells. These are sample estimates, not identical counts for every person. The cerebellum contains a large share of the neurons despite occupying less volume; counting cells does not measure intelligence. Beside it we use the published Grok one architecture from March twenty twenty-four: three hundred and fourteen billion parameters, sixty-four layers and eight experts, with two selected per token. A parameter is a learned number, not a cell. The boxes are a compressed diagram. They describe neither current Grok versions nor an equivalence between a brain and a computer.",
+  "duration_ms": 57420,
+  "billed_characters": 904,
+  "sample_rate": 32000,
+  "size_bytes": 920436,
+  "generated_at": "2026-09-30T05:21:52.067846+00:00"
+}

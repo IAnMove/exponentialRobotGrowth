@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "DNS maps names to records, including IP addresses. A resolver can use cached information or query other servers. This lookup is separate from downloading the page. The DNS cabinet represents this distributed service, not a single central machine.",
+  "duration_ms": 16200,
+  "billed_characters": 246,
+  "sample_rate": 32000,
+  "size_bytes": 260916,
+  "generated_at": "2026-09-26T02:50:17.804076+00:00",
+  "validation": {
+    "audio_sha256": "f3bcfa5e5aba8bd53ce02d8f303ef2e5984cfbf56b611368857ccf2b2ae9c2ca",
+    "text_sha256": "063a1b9071456e5b4ea2c220b82e7de02e88b0f488eb4f1744191526104d9631",
+    "script_sha256": "b11546b4d07ac0b1ea8c48f4af00cd4daaf79d09d0596fd370f72e5d2dcdedf8",
+    "decoded_duration_seconds": 16.2,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

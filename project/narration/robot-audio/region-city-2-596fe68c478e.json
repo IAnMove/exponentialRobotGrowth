@@ -1,0 +1,22 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Esta ciudad tiene ciento ochenta tareas equivalentes y recibe cada entrega después de cinco ciclos. Puede tener robots reservados mientras su barra sigue baja, porque aún están en tránsito. La cobertura aumenta al llegar los robots, no al fabricarlos ni al enviarlos. En el alcance intermedio se conservan límites por sector y tareas humanas. La hipótesis Total permite cubrir las ciento ochenta tareas de esta ciudad y las seiscientas de las tres ciudades juntas. Es una delegación futura supuesta, no una capacidad demostrada ni una predicción sobre profesiones. Si las tareas admitidas ya están cubiertas o reservadas, los robots adicionales esperan en el depósito. Una red industrial mayor puede entregar más robots, pero la distancia retrasa su llegada y el alcance elegido determina dónde pueden trabajar.",
+  "duration_ms": 50148,
+  "billed_characters": 811,
+  "sample_rate": 32000,
+  "size_bytes": 804084,
+  "generated_at": "2026-10-03T06:32:00.141892+00:00",
+  "validation": {
+    "ffmpeg_decode": "passed",
+    "decoded_duration_seconds": 50.148,
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "audio_sha256": "aa87994cfe46bf45bd767270c0b21c9e81478f0dc3102291bc0626d13d0ef655",
+    "text_sha256": "3fd69531d0d1221f8bbb9c2c072e691af66c067fed78f4f6135f91e809794108",
+    "script_sha256": "fbc0841964afd377cdca76baeb134ff3dc125356df42a32fed61c417ee550111"
+  }
+}

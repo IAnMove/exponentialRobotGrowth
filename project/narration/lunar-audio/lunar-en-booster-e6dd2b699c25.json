@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "The booster returns to Earth. The upper vehicle continues toward orbit: these vehicles have different destinations. The camera now follows Super Heavy back toward the tower. This recovery is schematic. Reusing the booster enables new launches, but does not remove costs or the need for inspections.",
+  "duration_ms": 19332,
+  "billed_characters": 298,
+  "sample_rate": 32000,
+  "size_bytes": 311028,
+  "generated_at": "2026-09-27T00:28:25.388378+00:00",
+  "validation": {
+    "audio_sha256": "7f216c944e78c93a2949ef3d2fbeec7f21ca468047ff62af961595a1abfd1eb1",
+    "text_sha256": "1614c0fcdda7af5446f31c32eac990e4b0c99d3cb7c7654a97110425155708ac",
+    "script_sha256": "61d76871875242d770c23d14d3c0fa77e76375fbccd77104a91949a595e43e6a",
+    "decoded_duration_seconds": 19.332,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

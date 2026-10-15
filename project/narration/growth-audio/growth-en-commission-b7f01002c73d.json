@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "A built robot does not produce immediately. Its batch completes at the close of its manufacturing day, spends two full days commissioning and joins the fleet at the start of manufacturing day plus three. Follow its identifier through assembly, testing and an active workstation. Rewind to check that it appears first built, then pending and finally working. The delay is a teaching assumption. With no reinvestment or no room, a new producer does not appear.",
+  "duration_ms": 27216,
+  "billed_characters": 458,
+  "sample_rate": 32000,
+  "size_bytes": 437172,
+  "generated_at": "2026-10-03T04:32:24.845414+00:00"
+}

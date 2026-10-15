@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "We have reached the end of sequence token. The answer is complete. Every piece was generated using the preceding context. The weights did not change. You can replay the journey or compare another context and source.",
+  "duration_ms": 13932,
+  "billed_characters": 215,
+  "sample_rate": 32000,
+  "size_bytes": 224628,
+  "generated_at": "2026-09-20T18:04:14.203335+00:00",
+  "validation": {
+    "audio_sha256": "09e46e1f20180d2425b38f3532f671a25c318d182c30db1be74f59f471ed350a",
+    "text_sha256": "f3036b3aa82fc3f70b65f4f99e03e7cb6e523742ba626a329345487e7045f5a3",
+    "script_sha256": "f021ab9026bc00d470bc062297c6e26311560db678ea500968104f71055b06a4",
+    "decoded_duration_seconds": 13.932,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 13.932
+  }
+}

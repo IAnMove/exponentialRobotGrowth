@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "La primera llamada calcula toda la entrada. Después recuperamos la fracción elegida del prefijo. Solo esa parte recibe la tarifa de acierto; la entrada restante conserva la tarifa de fallo. Toda la salida se calcula y cobra en cada llamada. Las curvas suman únicamente llamadas completadas. Con la tarifa Flash fuera de punta contrastada el tres de octubre de dos mil veintiséis, el token recuperado cuesta cincuenta veces menos que el nuevo. Eso no hace cincuenta veces más barata toda la llamada.",
+  "duration_ms": 29844,
+  "billed_characters": 498,
+  "sample_rate": 32000,
+  "size_bytes": 479220,
+  "generated_at": "2026-10-03T03:53:37.433591+00:00"
+}

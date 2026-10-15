@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Each token selects a vector from the embedding table. Here, each vertical column belongs to the token written underneath it. Its six cells represent six dimensions. We add an illustrative position encoding to obtain X. Blue means positive numbers and coral means negative numbers. Select a cell to read its value. These synthetic dimensions are not human qualities such as intelligence or truth. This position sum is a teaching simplification: other models use rotary positions in queries and keys.",
+  "duration_ms": 32148,
+  "billed_characters": 498,
+  "sample_rate": 32000,
+  "size_bytes": 516084,
+  "generated_at": "2026-09-26T18:57:54.749408+00:00",
+  "validation": {
+    "audio_sha256": "05934b6090a0cfa3aa94b0a34f3f0feea97275b549d2339b6ee1b1f23dfb9c9c",
+    "text_sha256": "4fc9eb55136b255f0ba1e302be18eb15a04624ae4774afeff44698def929c6ed",
+    "script_sha256": "6af08dca2249c181023ae173bd0481a0ac12d6fbe3b9b5fde8a775a4e88f0657",
+    "decoded_duration_seconds": 32.148,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 32.148
+  }
+}

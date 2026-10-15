@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Ya ha salido una pieza. El bloque luminoso vuelve al contexto junto a la pregunta y los tokens anteriores. El siguiente cálculo utiliza también lo que acaba de escribir. Repetiremos atención, probabilidades y elección para producir otra pieza, y así sucesivamente. Los sistemas reales suelen reutilizar cálculos mediante una caché. Observa el contador: responder no está actualizando los pesos del modelo.",
+  "duration_ms": 26748,
+  "billed_characters": 405,
+  "sample_rate": 32000,
+  "size_bytes": 429684,
+  "generated_at": "2026-09-20T18:03:39.778759+00:00",
+  "validation": {
+    "audio_sha256": "06d35d55874713669bb383b1ff32bad912ebc1ae1edfbfc42add75ce9ebf9221",
+    "text_sha256": "dbd16c0c0345a746b1354b1e24dbad0d8ed383536c9d502f4c9c62464f41e285",
+    "script_sha256": "32ef8ef4d03ed27aa340b4162f6ad127124817a1ee62fa4d44dd5a7fb37338c2",
+    "decoded_duration_seconds": 26.748,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 26.748
+  }
+}

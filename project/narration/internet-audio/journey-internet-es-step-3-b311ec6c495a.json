@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "TCP ofrece un flujo ordenado de bytes. Si faltan datos, puede retransmitirlos; recibir un duplicado no duplica el mensaje. El servidor procesa la petición y devuelve datos. La barra cuenta piezas únicas recibidas, mientras que los intentos incluyen la repetición del paquete perdido.",
+  "duration_ms": 18972,
+  "billed_characters": 283,
+  "sample_rate": 32000,
+  "size_bytes": 305268,
+  "generated_at": "2026-09-26T02:50:12.476109+00:00",
+  "validation": {
+    "audio_sha256": "83969eede6e93f38b9df02394f94d36f7bcf02a13056e73a47be20e7ad1882f0",
+    "text_sha256": "825f24fd8668c3cbf73fced370064e8b6e3b734411fa8573cc1bcf8661f319e6",
+    "script_sha256": "e3fecae6f52a06d97e4283036e68ad379aa460b9dbb6ed20515a64006f8c44d7",
+    "decoded_duration_seconds": 18.972,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

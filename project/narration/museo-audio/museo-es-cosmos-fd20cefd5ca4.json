@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "En la sala del cosmos viajamos desde la Tierra hasta la escala de una civilización. Sus cinco cuadros presentan Starlink, los vehículos espaciales, un enjambre de Dyson, la escala de Kardashev y el crecimiento de una industria en la Luna. Compara viajes, energía y crecimiento en sus notebooks. Una animación tridimensional no siempre permite caminar dentro: la etiqueta de cada cuadro te indica si abre un mundo transitable o una experiencia web. Las escenas distinguen los mecanismos conocidos de los escenarios hipotéticos.",
+  "duration_ms": 32544,
+  "billed_characters": 526,
+  "sample_rate": 32000,
+  "size_bytes": 522420,
+  "generated_at": "2026-09-30T03:46:11.922324+00:00"
+}

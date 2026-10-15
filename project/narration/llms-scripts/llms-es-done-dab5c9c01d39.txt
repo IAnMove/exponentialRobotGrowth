@@ -1,0 +1,1 @@
+Hemos llegado al token de final de secuencia. La respuesta está terminada. Cada pieza se generó usando el contexto anterior. Los pesos no cambiaron. Puedes repetir el recorrido o comparar otro contexto y otra fuente.

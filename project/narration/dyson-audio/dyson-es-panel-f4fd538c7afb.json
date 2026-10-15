@@ -1,0 +1,22 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Ahora entramos en una placa de referencia de un metro cuadrado. No es un producto real ni un satélite que acabemos de construir. La cara orientada al Sol absorbe luz, una parte se convierte en electricidad y el resto produce calor directamente. Sigue la conexión hasta la carga: suponemos que toda esa electricidad se consume aquí, sin almacenarla ni enviarla fuera. Al final también se transforma en calor. Por eso no podemos sumar la electricidad y el calor final como dos ganancias independientes: estaríamos contando la misma energía dos veces. El rendimiento editable cambia el reparto intermedio. La placa aislada de este ejemplo emite radiación térmica por las dos caras. El frente, las conexiones y los radiadores están separados para comprender el mecanismo. Sus tamaños y el ritmo de los marcadores son didácticos; no describen una máquina comercial.",
+  "duration_ms": 52308,
+  "billed_characters": 860,
+  "sample_rate": 32000,
+  "size_bytes": 838644,
+  "generated_at": "2026-10-03T07:23:27.941866+00:00",
+  "validation": {
+    "ffmpeg_decode": "passed",
+    "decoded_duration_seconds": 52.308,
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "audio_sha256": "50ea1e66d9b50e28e18a36f12836a41995a295346662daf19f13f0c3a11e1895",
+    "text_sha256": "bd9d1781608813fc4ca63e66f2238cafc936afa69e23f3310495e75a68499087",
+    "script_sha256": "684d0263ee3f75a922c3471deae624f502ae0ea590b7bb576cd2baa0696bd95d"
+  }
+}

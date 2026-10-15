@@ -3,6 +3,7 @@ import {pointMaterial} from '../fx/fx.js';
 export {createPost,adaptiveScale,pointScaleFor} from '../fx/fx.js';
 import {RoundedBoxGeometry} from '../../vendor/RoundedBoxGeometry.js';
 import {tokenize,embedding,positionEncoding,vector,transformerTrace,contextWindow,softmax,nextCandidates,pendingToken,randomStep,sample} from './model.js';
+import {llmFrameAt} from './presentation.js';
 
 // Shared stage kit for notebook 08: the notebook scene and the walkable world build the same
 // eight stages from model.js. Every value shown is computed; weights are synthetic.
@@ -66,10 +67,10 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
   const t=(a,b)=>es?a:b;
   const format=(v,d=2)=>new Intl.NumberFormat(es?'es-ES':'en-US',{maximumFractionDigits:d,minimumFractionDigits:Math.min(d,1)}).format(v);
   const cellGeometry=new RoundedBoxGeometry(1,1,1,2,.12),blockGeometry=new RoundedBoxGeometry(1,1,1,3,.16),sphereGeometry=new THREE.SphereGeometry(1,24,16);
-  const memory=new Map();let S=null,time=0,op=0;
+  let S=null,time=0,op=0,F=null,portrait=false;
   const kit={hovered:null};
   // ——— Building blocks. Every resource is owned by the set being built and disposed with it. ———
-  function newSet(){const g=new THREE.Group();g.userData={res:new Set(),anims:[],ticks:[],hits:[],clock:0};return g;}
+  function newSet(){const g=new THREE.Group();g.userData={res:new Set(),anims:[],ticks:[],hits:[],paths:[],tensors:[],clock:0};return g;}
   const own=x=>{S.userData.res.add(x);return x;};
   const add=(o,parent=S)=>{parent.add(o);return o;};
   function collect(obj){const out=[];obj.traverse(o=>{for(const m of [o.material].flat())if(m&&!out.some(x=>x.m===m))out.push({m,o:m.uniforms?.uOpacity?m.uniforms.uOpacity.value:m.opacity,t:m.transparent});});return out;}
@@ -114,22 +115,22 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
     geometry.setAttribute('aAlpha',new THREE.BufferAttribute(new Float32Array(count),1));
     const points=new THREE.Points(geometry,own(pointMaterial(pointScale,color,intensity)));points.frustumCulled=false;points.renderOrder=25;return points;
   }
-  // A glowing conduit with a comet (synchronised with narration) and a slow ambient stream.
-  function route(points,{color=C.gold,weight=1,span=[0,1],radius=.018,curve=null,trail=14,stream=5,opacity=.5,arrow=true,delay=0}={}){
+  // A representative vector packet: the cue determines its complete journey.
+  function route(points,{color=C.gold,weight=1,span=[0,1],radius=.018,curve=null,trail=14,stream=0,opacity=.5,arrow=true,delay=0}={}){
     const path=curve??roundedPath(points),length=path.getLength();
     const tube=new THREE.Mesh(own(new THREE.TubeGeometry(path,Math.max(24,Math.round(length*16)),radius*(.55+.6*weight),8,false)),own(new THREE.MeshBasicMaterial({color:new THREE.Color(color).multiplyScalar(1.3),transparent:true,opacity:opacity*(.35+.65*weight),depthWrite:false,blending:THREE.AdditiveBlending})));
     add(tube);
     if(arrow){const cone=new THREE.Mesh(own(new THREE.ConeGeometry(.075+.05*weight,.2,12)),own(new THREE.MeshBasicMaterial({color:new THREE.Color(color).multiplyScalar(1.6)})));cone.position.copy(path.getPointAt(1));cone.quaternion.setFromUnitVectors(V(0,1,0),path.getTangentAt(.999).normalize());add(cone);}
     const count=trail+stream,dots=add(glowPoints(count,color,2.6+weight*1.4)),pos=dots.geometry.attributes.position,size=dots.geometry.attributes.aSize,alpha=dots.geometry.attributes.aAlpha,p=V(0,0,0);
-    const step=.11/Math.max(.5,length),seed=(delay*7.31)%1;
-    S.userData.ticks.push(({sig,live})=>{
-      const head=live?clamp01((sig-span[0])/Math.max(.001,span[1]-span[0])):reduce?1:((time*.42+seed)%1.35)/1.1;
+    const step=.11/Math.max(.5,length),signal={path,tube,dots,span,weight,head:0,arrived:false};S.userData.paths.push(signal);
+    S.userData.ticks.push(({sig})=>{
+      const head=clamp01((sig-span[0])/Math.max(.001,span[1]-span[0]));signal.head=head;signal.arrived=head===1;
       for(let i=0;i<trail;i++){
         const u=head-i*step,visible=head>.001&&u>=0&&u<=1&&head<=1.02;
         if(visible){path.getPointAt(Math.min(1,u),p);pos.setXYZ(i,p.x,p.y,p.z);}
         size.setX(i,visible?(.5-i*.028)*(.55+.45*weight)*(i===0?1+.15*Math.sin(time*9):1):0);alpha.setX(i,visible?(1-i/trail)*(.3+.7*weight):0);
       }
-      for(let k=0;k<stream;k++){const u=((time*1.1)/length+k/stream+seed)%1;path.getPointAt(u,p);pos.setXYZ(trail+k,p.x,p.y,p.z);size.setX(trail+k,.12+.05*weight);alpha.setX(trail+k,reduce?0:.18+.3*weight*Math.sin(u*Math.PI));}
+      for(let k=0;k<stream;k++){size.setX(trail+k,0);alpha.setX(trail+k,0);}
       pos.needsUpdate=size.needsUpdate=alpha.needsUpdate=true;
     });
     return {path,tube};
@@ -143,7 +144,7 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
     };
     m.customProgramCacheKey=()=>'llm-cell-glow';return m;
   }
-  function tensor(data,{x=0,y=1.8,z=0,w=2.4,h=3,title='',color=C.blue,selected=-1,probability=false,future=false,depth=.5,reveal=null,rowInfo=null,dimOthers=false,showDims=true,titleColor=CSS.ink}={}){
+  function tensor(data,{x=0,y=1.8,z=0,w=2.4,h=3,title='',color=C.blue,selected=-1,probability=false,future=false,causalQuery=null,depth=.5,reveal=null,rowInfo=null,dimOthers=false,showDims=true,titleColor=CSS.ink}={}){
     const rows=data.length,cols=data[0].length,cw=w/cols,ch=h/rows,n=rows*cols,group=add(new THREE.Group());group.position.set(x,y,z);
     const plate=new THREE.Mesh(blockGeometry,material(0x0a1424,{roughness:.55,metalness:.35}));plate.scale.set(w+.26,h+.26,.08);plate.position.z=-.06;group.add(plate);
     const edge=new THREE.Mesh(blockGeometry,own(new THREE.MeshBasicMaterial({color:new THREE.Color(color).multiplyScalar(.35),transparent:true,opacity:.35,depthWrite:false,blending:THREE.AdditiveBlending})));edge.scale.set(w+.34,h+.34,.04);edge.position.z=-.1;group.add(edge);
@@ -155,12 +156,12 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
     mesh.geometry=own(cellGeometry.clone());mesh.geometry.setAttribute('glow',glow);
     const cells=[],color3=new THREE.Color(),dark=new THREE.Color(0x0e192b),hot=new THREE.Color(color),neg=new THREE.Color(C.coral),mint=new THREE.Color(C.mint),blocked=new THREE.Color(0x221325);
     data.forEach((row,i)=>row.forEach((value,j)=>{
-      const off=!Number.isFinite(value)||(future&&j>i),magnitude=probability?clamp01(value):Math.min(1,Math.abs(value));
+      const off=!Number.isFinite(value)||(future&&j>(causalQuery??i)),magnitude=probability?clamp01(value):Math.min(1,Math.abs(value));
       if(off)color3.copy(blocked);else color3.copy(dark).lerp(probability?mint:value<0?neg:hot,.28+.72*magnitude);
       mesh.setColorAt(i*cols+j,color3);
       cells.push({i,j,off,value,magnitude,cx:-w/2+(j+.5)*cw,cy:h/2-(i+.5)*ch,text:`${title||'T'} [${i+1}, ${j+1}] = ${off?(probability?'0':'−∞'):format(value,4)}`});
     }));
-    mesh.userData.infos=cells.map(c=>rowInfo?rowInfo(c):{kind:'cell',text:c.text});S.userData.hits.push(mesh);
+    mesh.userData.infos=cells.map(c=>rowInfo?rowInfo(c):{kind:'cell',text:c.text});mesh.userData.tensor={name:title,data,shape:[rows,cols],cells};S.userData.tensors.push(mesh);S.userData.hits.push(mesh);
     let frame=null;
     if(selected>=0&&selected<rows){
       const yy=h/2-(selected+.5)*ch,pad=.1;
@@ -245,11 +246,11 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
     appear(archive,.05,{dy:-.3,s0:.9});
     if(source){
       const ring=new THREE.Mesh(own(new THREE.TorusGeometry(1.35,.02,8,64)),own(new THREE.MeshBasicMaterial({color:new THREE.Color(C.mint).multiplyScalar(2.2),transparent:true,opacity:.8,blending:THREE.AdditiveBlending,depthWrite:false})));
-      ring.rotation.y=-.35;archive.add(ring);S.userData.ticks.push(()=>{const u=(time*.45)%1;ring.position.set(0,1.45,-1.3+u*2.7);ring.scale.setScalar(.85+.15*Math.sin(u*Math.PI));ring.material.opacity=.8*Math.sin(u*Math.PI);});
+      ring.rotation.y=-.35;archive.add(ring);S.userData.ticks.push(({sig})=>{const u=clamp01(sig/.25);ring.position.set(0,1.45,-1.3+u*2.7);ring.scale.setScalar(.85+.15*Math.sin(u*Math.PI));ring.material.opacity=.8*Math.sin(u*Math.PI);});
     }
     const doc=panel(4.8,2.25,source?{kicker:'↳ '+source.title,title:source.text,body:t('Texto que se añade al contexto, no a los pesos.','Text added to the context, not to the weights.'),accent:CSS.mint,titleSize:.24}:{kicker:t('Búsqueda desactivada','Retrieval off'),title:t('El modelo continúa sin evidencia externa.','The model continues without external evidence.'),body:t('Activa «Consultar un documento» para añadir una fuente al contexto.','Turn on “Retrieve a document” to add a source to the context.'),accent:CSS.dim,dim:true,titleSize:.24});
     doc.position.set(-.2,2.85,.5);add(doc);appear(doc,source?.35:.15,{from:source?V(-4.4,1.6,-.4):null,dy:-.3,s0:.4,dur:1.1});
-    const grid=contextGrid(run,{x:4.5,y:2.2,cols:7,size:.3,highlight:source?2:null});
+    const sourceOwner=run.data.history?2:1,grid=contextGrid(run,{x:4.5,y:2.2,cols:7,size:.3,highlight:source?sourceOwner:null});
     label(t('CONTEXTO','CONTEXT'),4.5,grid.top+.45,0,{size:.26,weight:800});
     appear(grid.group,.2,{dy:0,s0:.9});
     // Weights sit apart and never change during inference.
@@ -259,7 +260,7 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
     appear(weights,.3,{dy:-.2,s0:.9});
     if(source){
       route([],{curve:new THREE.CubicBezierCurve3(V(-3.4,2.3,-.2),V(-2.6,2.5,.6),V(-3.2,2.9,.6),V(-2.65,2.9,.55)),color:C.mint,span:[.03,.25]});
-      const end=grid.world(grid.firstRow[2]??0);end.x-=.3;
+      const end=grid.world(grid.firstRow[sourceOwner]??0);end.x-=.3;
       route([],{curve:new THREE.CubicBezierCurve3(V(2.25,2.85,.55),V(3,2.85,.6),V(2.9,end.y,.5),end),color:C.mint,span:[.25,.45],delay:1});
     }else label(t('Sin búsqueda: la pregunta sigue sola','No retrieval: the question goes on alone'),4.5,grid.bottom-.36,0,{size:.18,color:CSS.dim,weight:500});
   }
@@ -287,6 +288,7 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
     if(centers.length>1)route([],{curve:new THREE.CatmullRomCurve3(centers,false,'centripetal'),span:[.03,.6],radius:.014,opacity:.45,arrow:false});
   }
   function sceneVectors(run,selectedToken){
+    if(portrait){const token=run.tokens[selectedToken],values=[embedding(token),positionEncoding(selectedToken),F.selectedVector],names=['E[token ID]','P('+selectedToken+')','X = E + P'];values.forEach((row,i)=>{const m=tensor([row],{x:0,y:4.5-i*2,w:5.3,h:.72,title:names[i],selected:0,reveal:i===2?(_a,_b,{R})=>R(.2,.7):null});appear(m.group,i*.12,{dy:-.2,s0:.9});});label(piece(token)+' · ID '+run.tokenIds[selectedToken],0,5.8,0,{size:.28,color:CSS.gold});route([[2.8,4.5,.4],[3,3.5,.4],[2.8,.5,.4]],{span:[.1,.6]});route([[-2.8,2.5,.4],[-3,1.5,.4],[-2.8,.5,.4]],{span:[.25,.7],color:C.violet});label(t('6 dimensiones · valores sintéticos','6 dimensions · synthetic values'),0,-.6,.4,{size:.2,color:CSS.dim});return;}
     const start=Math.max(0,Math.min(selectedToken-2,run.tokens.length-6)),tokens=run.tokens.slice(start,start+6),row=selectedToken-start;
     const info=(c)=>({kind:'token',index:start+c.i,text:c.text});
     const E=tensor(tokens.map(embedding),{x:-4.15,w:2.6,h:3,title:'E[token ID]',color:C.blue,selected:row,rowInfo:info});
@@ -301,8 +303,21 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
     label(`${piece(run.tokens[selectedToken])} · ID ${run.tokenIds[selectedToken]} · ${t('fila activa','active row')}`,0,-.35,.4,{size:.24,color:CSS.gold,weight:650});
     label(t('6 dimensiones · valores sintéticos · filas = tokens · columnas = dimensiones','6 dimensions · synthetic values · rows = tokens · columns = dimensions'),0,-.8,.4,{size:.17,color:CSS.dim,weight:500});
   }
+  function sceneLayersMobile(run,queryIndex){
+    const {tokens}=F.window,d=F.trace,q=F.queryIndex,N=tokens.length,info=c=>({kind:'cell',text:c.text});
+    const names=[t('Q · K · V: proyectar','Q · K · V: project'),t('Q · K: comparar','Q · K: compare'),t('Máscara → softmax','Mask → softmax'),t('A · V: mezclar','A · V: mix'),t('Residual → red → salida','Residual → network → output')];
+    label(names[op],0,6.2,0,{size:.29,weight:800});label(`${piece(tokens[q])} · ${t('consulta','query')} ${F.queryAbsolute+1}`,0,5.72,0,{size:.24,color:CSS.gold,mono:true});
+    // Cue zero is also the paused inspection state: inputs must already be visible.
+    const row=(name,values,y,{color=C.blue,reveal=null,input=false}={})=>{const m=tensor([values],{x:0,y,w:5.3,h:.68,title:name,color,selected:0,rowInfo:info,reveal});if(!input)appear(m.group,.05,{dy:-.2,s0:.9});return m;};
+    if(op===0){row('Xᵢ · 1 × 6',d.X[q],4.65,{input:true});[['Qᵢ = XᵢW_Q',d.Q[q],C.gold],['Kᵢ = XᵢW_K',d.K[q],C.violet],['Vᵢ = XᵢW_V',d.V[q],C.mint]].forEach(([name,values,color],i)=>{row(name,values,2.95-i*1.6,{color,reveal:(_a,_b,{R})=>R(.08+i*.2,.3+i*.2)});route([[2.8,4.65,.4],[3.05,3.7-i*.7,.4],[2.8,2.95-i*1.6,.4]],{color,span:[.05+i*.2,.3+i*.2],radius:.012});});}
+    else if(op===1){row('qᵢ · 1 × 3',d.Q[q],4.55,{color:C.gold,input:true});tensor(d.K[0].map((_,j)=>d.K.map(r=>r[j])),{x:0,y:2.5,w:5.3,h:1.45,title:'Kᵀ · 3 × '+N,color:C.violet,rowInfo:info});row('Sᵢ = qᵢKᵀ / √3',d.scores[q],.15,{reveal:(_i,j,{R})=>ease((R(.2,.8)-j/N*.5)/.5)});route([[2.8,4.55,.4],[3,2.5,.4],[2.8,.15,.4]],{span:[.1,.75]});}
+    else if(op===2){row('Sᵢ + Mᵢ',d.masked[q],3.9,{color:C.coral,input:true});const A=tensor([d.A[q]],{x:0,y:1.35,w:5.3,h:.78,title:'Aᵢ = softmax(Sᵢ + Mᵢ)',color:C.mint,probability:true,future:true,causalQuery:q,selected:0,reveal:(_a,_b,{R})=>R(.25,.7),rowInfo:info});appear(A.group,.1,{dy:-.2,s0:.9});route([[0,3.3,.4],[0,2.4,.4],[0,1.95,.4]],{span:[.15,.55]});label(t('Futuro: −∞ → 0 · Σ Aᵢⱼ = 1','Future: −∞ → 0 · Σ Aᵢⱼ = 1'),0,-.1,.4,{size:.22,color:CSS.mint});}
+    else if(op===3){const A=tensor(d.A[q].map(w=>[w]),{x:-2.1,y:2.6,w:.8,h:3.5,title:'Aᵢ',probability:true,color:C.mint,rowInfo:info}),Vv=tensor(d.V,{x:.55,y:2.6,w:2.65,h:3.5,title:'V · '+N+' × 3',color:C.mint,rowInfo:info});row('Zᵢ = Σⱼ AᵢⱼVⱼ',d.mixed[q],-.55,{reveal:(_a,_b,{R})=>R(.55,.85)});d.A[q].forEach((weight,j)=>{if(weight>0){route([[A.right,A.rowY(j),.4],[Vv.left,Vv.rowY(j),.4]],{weight,span:[.05,.45],arrow:false,radius:.012});route([[Vv.right,Vv.rowY(j),.4],[2.5,.15,.4],[2.6,-.55,.4]],{weight,color:C.mint,span:[.45,.85],arrow:false,radius:.012});}});}
+    else{row('Xᵢ · 1 × 6',d.X[q],4.65,{input:true});row('Hᵢ = LN(Xᵢ + ZᵢW_O)',d.H[q],2.95,{reveal:(_a,_b,{R})=>R(0,1/3)});row('ReLU(HᵢW₁) · 1 × 12',d.hidden[q],1.25,{color:C.violet,reveal:(_a,_b,{R})=>R(1/3,2/3)});row('Yᵢ = LN(Hᵢ + FFNᵢ)',d.Y[q],-.45,{color:C.mint,reveal:(_a,_b,{R})=>R(2/3,1)});route([[2.85,4.65,.4],[3.1,3.8,.4],[2.85,2.95,.4]],{span:[0,1/3]});route([[2.85,2.95,.4],[3.1,2.1,.4],[2.85,1.25,.4]],{span:[1/3,2/3]});route([[2.85,1.25,.4],[3.1,.4,.4],[2.85,-.45,.4]],{span:[2/3,1]});route([[-2.85,4.65,.4],[-3.1,3.8,.4],[-2.85,2.95,.4]],{color:C.teal,span:[0,1/3],radius:.012});route([[-2.85,2.95,.4],[-3.1,1.25,.4],[-2.85,-.45,.4]],{color:C.teal,span:[2/3,1],radius:.012});}
+    label(t('Fila activa · 1 cabeza · 1 bloque calculados','Active row · 1 head · 1 calculated block'),0,-1.25,.4,{size:.19,color:CSS.dim});label(t('Paquete de vector conceptual · pesos sintéticos','Conceptual vector packet · synthetic weights'),0,-1.65,.4,{size:.17,color:CSS.dim});
+  }
   function sceneLayers(run,queryIndex){
-    const {tokens,offset}=contextWindow(run),N=tokens.length,q=Math.min(queryIndex,N-1),d=transformerTrace(tokens,offset);
+    if(portrait){sceneLayersMobile(run,queryIndex);return;}const {tokens,offset}=F?.window??contextWindow(run),N=tokens.length,q=F?.queryIndex??Math.min(queryIndex,N-1),d=F?.trace??transformerTrace(tokens,offset);
     const rowInfo=c=>({kind:'attention',index:c.i,text:`${c.text} · ${t('consulta','query')} → ${piece(tokens[c.i])}`});
     const opNames=[t('PROYECTAR Q · K · V','PROJECT Q · K · V'),t('COMPARAR Q CON K','COMPARE Q WITH K'),t('MÁSCARA + SOFTMAX','MASK + SOFTMAX'),t('MEZCLAR LOS VALORES','MIX THE VALUES'),t('RESIDUAL + RED','RESIDUAL + FEED-FORWARD')];
     label(`${t('UNA CABEZA DE ATENCIÓN','ONE ATTENTION HEAD')} · ${op+1}/5 · ${opNames[op]}`,0,4.75,-.2,{size:.24,weight:800,color:CSS.ink});
@@ -311,7 +326,6 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
     if(op===0){
       const X=tensor(d.X,{x:-4.7,w:2.2,title:'X · N × 6',selected:q,rowInfo});rowLabels(tokens,X,{selected:q});
       const specs=[[d.Q,-1.35,C.blue,'Q = XW_Q'],[d.K,1.55,C.violet,'K = XW_K'],[d.V,4.45,C.mint,'V = XW_V']];
-      appear(X.group,.05,{dy:-.4,s0:.85});
       specs.forEach(([m,x,color,name],k)=>{
         const T=tensor(m,{x,w:1.7,title:name,color,selected:q,rowInfo,reveal:(i,j,ctx)=>ease((ctx.R(.04,.6,.35,1.8)-k*.18-i/N*.35)/.2)});appear(T.group,.2+k*.15,{dy:-.4,s0:.85});
         const yy=-.2-k*.28;route([[X.x,X.bottom-.05,.4],[X.x,yy,.4],[x,yy,.4],[x,T.bottom-.05,.4]],{color,span:[k*.12,.25+k*.12],delay:k,radius:.016});
@@ -321,7 +335,7 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
       const qv=tensor([d.Q[q]],{x:-4.5,y:1.8,w:2,h:.62,title:'qᵢ · 1 × 3',selected:0,rowInfo:c=>({kind:'cell',text:c.text})});
       const K=tensor(d.K[0].map((_,j)=>d.K.map(r=>r[j])),{x:-.2,w:3,h:1.9,title:'Kᵀ · 3 × N',color:C.violet,rowInfo:c=>({kind:'cell',text:c.text})});
       const Sx=tensor(d.scores,{x:4.2,w:2.9,title:'S = QKᵀ / √3',selected:q,rowInfo,dimOthers:true,reveal:(i,j,{R})=>i!==q?1:ease((R(.1,.6,.35,1.8)-j/N*.75)/.18)});
-      [qv,K,Sx].forEach((m,k)=>appear(m.group,.05+k*.16,{dy:-.4,s0:.85}));
+      appear(Sx.group,.37,{dy:-.4,s0:.85});
       route([[qv.right,1.8,.4],[K.left,1.8,.4]],{span:[.02,.2]});route([[K.right,1.8,.4],[Sx.left,Sx.rowY(q),.4]],{span:[.2,.45],delay:1});
       label('÷ √3',2.25,2.35,.4,{size:.22,color:CSS.gold,mono:true});
       label(t('Cada celda: qᵢ · kⱼ — un producto escalar, aún no es probabilidad','Each cell: qᵢ · kⱼ — a dot product, not a probability yet'),0,-.85,.4,{size:.17,color:CSS.dim,weight:500});
@@ -329,21 +343,21 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
       const M=tensor(d.masked,{x:-3.1,w:3.6,title:'S + M',selected:q,rowInfo});
       const A=tensor(d.A,{x:3.1,w:3.6,title:'A = softmax(S + M)',color:C.mint,probability:true,future:true,selected:q,rowInfo,reveal:(i,j,{R})=>ease((R(.1,.6,.35,1.8)-i/N*.7)/.22)});
       rowLabels(tokens,M,{selected:q});
-      appear(M.group,.05,{dy:-.4,s0:.85});appear(A.group,.25,{dy:-.4,s0:.85});
+      appear(A.group,.25,{dy:-.4,s0:.85});
       route([[M.right,1.8,.4],[A.left,1.8,.4]],{span:[.03,.3]});label('softmax',0,2.35,.4,{size:.22,color:CSS.gold,mono:true});
       label(t('Futuro = −∞ → peso 0','Future = −∞ → weight 0'),-3.1,-.85,.4,{size:.17,color:CSS.coral,weight:600});label('Σⱼ Aᵢⱼ = 1',3.1,-.85,.4,{size:.2,color:CSS.mint,mono:true,weight:600});
     }else if(op===3){
       const A=tensor(d.A,{x:-4.3,w:2.7,title:'A · N × N',color:C.mint,probability:true,future:true,selected:q,rowInfo});
       const Vv=tensor(d.V,{x:0,w:1.9,title:'V · N × 3',color:C.mint,rowInfo});
       const Z=tensor(d.mixed,{x:4.3,w:2.2,title:'Z = AV',selected:q,rowInfo,reveal:(i,j,{R})=>i!==q?1:ease((R(.3,.7,.9,1)))});
-      [A,Vv,Z].forEach((m,k)=>appear(m.group,.05+k*.16,{dy:-.4,s0:.85}));
+      appear(Z.group,.37,{dy:-.4,s0:.85});
       d.A[q].forEach((w,j)=>{if(w<=0)return;const a=V(A.right,A.rowY(q),.4),b=V(Vv.left,Vv.rowY(j),.4),c=V(Vv.right,Vv.rowY(j),.4),e=V(Z.left,Z.rowY(q),.4);
         route([],{curve:arc(a,b,.25,.2),weight:w,span:[.05,.35],delay:j,arrow:false});route([],{curve:arc(c,e,.25,.2),weight:w,span:[.3,.6],delay:j+.5,arrow:false});
         if(w>.12)label(`${Math.round(w*100)} %`,(A.right+Vv.left)/2,(A.rowY(q)+Vv.rowY(j))/2+.12,.5,{size:.15,mono:true,color:CSS.gold,weight:600});});
       label(t('Pulso más grueso = mayor coeficiente Aᵢⱼ','Thicker pulse = larger coefficient Aᵢⱼ'),0,-.85,.4,{size:.17,color:CSS.dim,weight:500});
     }else{
       const specs=[[d.X,-5,'X',C.blue],[d.projected,-2.5,'ZW_O',C.violet],[d.H,0,'H · Add & Norm',C.blue],[d.hidden,2.5,'ReLU(HW₁)',C.violet],[d.Y,5,'Y · Add & Norm',C.mint]];
-      const T=specs.map(([m,x,name,color],k)=>{const box=tensor(m,{x,w:1.75,title:name,color,selected:q,rowInfo,depth:.4,reveal:k?seq(k*.15,.2):null});appear(box.group,.05+k*.12,{dy:-.4,s0:.85});return box;});
+      const T=specs.map(([m,x,name,color],k)=>{const box=tensor(m,{x,w:1.75,title:name,color,selected:q,rowInfo,depth:.4,reveal:k?seq(k*.15,.2):null});if(k)appear(box.group,.05+k*.12,{dy:-.4,s0:.85});return box;});
       rowLabels(tokens,T[0],{selected:q});
       for(let k=0;k<4;k++)route([[T[k].right,1.8,.4],[T[k+1].left,1.8,.4]],{span:[k*.12,k*.12+.18],delay:k,radius:.014});
       route([[T[0].x,T[0].top+.6,.1],[T[0].x,4.1,.1],[T[2].x,4.1,.1],[T[2].x,T[2].top+.6,.1]],{color:C.teal,span:[.05,.3],radius:.014});
@@ -352,15 +366,15 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
     }
   }
   function sceneProbabilities(run){
-    const c=nextCandidates(run),ps=softmax(c.logits,run.options.temperature),best=ps.indexOf(Math.max(...ps));
-    const {tokens,offset}=contextWindow(run),Y=transformerTrace(tokens,offset).Y.at(-1);
+    const c=F?{pieces:F.decoder.pieces,logits:F.decoder.logits}:nextCandidates(run),ps=F?.decoder.probabilities??softmax(c.logits,run.options.temperature),best=ps.indexOf(Math.max(...ps));
+    const {tokens,offset}=F?.window??contextWindow(run),Y=(F?.trace??transformerTrace(tokens,offset)).Y.at(-1);
     const h=tensor(Y.map(v=>[v]),{x:-4.9,y:2,w:.55,h:3,title:'h',color:C.blue,showDims:false,depth:.35});
     label(t('vector final','final vector'),-4.9,.2,.3,{size:.17,color:CSS.dim,weight:500});
     appear(h.group,.05,{dy:-.4,s0:.8});
     label(`softmax(logits / T)  ·  T = ${format(run.options.temperature,2)}`,.6,5,-.3,{size:.22,mono:true,color:CSS.gold,weight:600});
     const spacing=Math.min(2.7,8/ps.length),maxH=3.9;
     ps.forEach((p,i)=>{
-      const x=.9+(i-(ps.length-1)/2)*spacing,win=i===best,key=`p5:${run.data.question}:${i}`,from=memory.get(key)??0,to=p;memory.set(key,to);
+      const x=.9+(i-(ps.length-1)/2)*spacing,win=i===best,to=p;
       const g=add(new THREE.Group());g.position.set(x,0,0);
       const shell=new THREE.LineSegments(own(new THREE.EdgesGeometry(own(new THREE.BoxGeometry(1.2,maxH,1.2)))),own(new THREE.LineBasicMaterial({color:win?C.mint:C.blue,transparent:true,opacity:.18})));shell.position.y=maxH/2;g.add(shell);
       const bar=new THREE.Mesh(blockGeometry,material(win?C.mint:C.blue,{emissive:win?C.mint:C.blue,emissiveIntensity:win?.42:.2,roughness:.2,metalness:.1,transparent:true,opacity:.92}));g.add(bar);
@@ -368,24 +382,25 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
       const pct=text(`${format(p*100,1)} %`,{size:.4,weight:800,color:win?'#dffcf4':CSS.ink});g.add(pct);
       const logit=text(`logit ${format(c.logits[i],1)}`,{size:.16,mono:true,color:CSS.dim,weight:500});g.add(logit);
       const tag=text(piece(c.pieces[i]),{size:.3,weight:700,mono:true,color:win?'#062019':CSS.ink,pill:win?CSS.mint:'#122540',stroke:win?null:'#2c4670'});tag.position.set(0,-.02,.95);g.add(tag);
-      const inPlace=S.userData.clock>=100,born=time;
-      S.userData.ticks.push(({R})=>{const k=inPlace?clamp01((time-born)/.6):R(.04,.3,.5,1.1),v=from+(to-from)*ease(k),hh=.06+v*maxH;bar.scale.set(1.05,hh,1.05);bar.position.y=hh/2;pct.position.set(0,hh+.45,0);logit.position.set(0,hh+.16,0);});
+      S.userData.ticks.push(({R})=>{const k=R(.04,.3),v=to*ease(k),hh=.06+v*maxH;bar.scale.set(1.05,hh,1.05);bar.position.y=hh/2;pct.position.set(0,hh+.45,0);logit.position.set(0,hh+.16,0);});
       appear(g,.15+i*.12,{dy:0,s0:.9});
       route([],{curve:new THREE.CubicBezierCurve3(V(h.right,2,.3),V(-2.6,2,.4),V(x-1.6,.6,.6),V(x-.1,.35,.65)),weight:p,span:[.02,.25],delay:i,arrow:false,color:win?C.mint:C.gold});
     });
     label(t('Probable no significa verdadero','Probable does not mean true'),.9,-.62,.9,{size:.19,color:CSS.dim,weight:600});
+    label(t('Logits preparados · no salen del bloque de arriba','Curated logits · independent of the block above'),.9,-1.02,.9,{size:.17,color:CSS.dim,weight:500});
   }
   function sceneChoose(run){
-    const c=nextCandidates(run),ps=softmax(c.logits,run.options.temperature),token=pendingToken(run);
-    const greedy=run.options.decoding==='greedy',scripted=!!run.outputTokens;
-    let chosen=c.pieces.indexOf(token),u;
-    if(!scripted&&!greedy){u=randomStep(run.seed).value;chosen=sample(ps,u);}
+    const c=F?{pieces:F.decoder.pieces,logits:F.decoder.logits}:nextCandidates(run),ps=F?.decoder.probabilities??softmax(c.logits,run.options.temperature),token=F?.decoder.choice??pendingToken(run);
+    const greedy=run.options.decoding==='greedy',scripted=F?.decoder.scripted??!!run.outputTokens;
+    let chosen=F?.decoder.chosenIndex??c.pieces.indexOf(token),u=F?.decoder.randomValue??undefined;
+    if(!F&&!scripted&&!greedy){u=randomStep(run.seed).value;chosen=sample(ps,u);}
     if(chosen<0)chosen=ps.indexOf(Math.max(...ps));
     const W=10,left=-W/2;let acc=0;const colors=[C.mint,C.blue,C.violet,C.coral];
     const segs=ps.map((p,i)=>{const s={x0:left+acc*W,x1:left+(acc+p)*W,p,i};acc+=p;return s;});
     if(u===undefined)u=(segs[chosen].x0+segs[chosen].x1)/2/W+.5;
     const dropX=left+u*W;
-    label(greedy||scripted?t('ELECCIÓN MÁXIMA · argmax','GREEDY · argmax'):`${t('MUESTREO · semilla','SAMPLING · seed')} ${run.seed}`,0,4.95,-.3,{size:.24,weight:800,mono:true,color:CSS.ink});
+    label(scripted?t('CONTINUACIÓN PREPARADA · una pieza','CURATED CONTINUATION · one piece'):greedy?t('ELECCIÓN MÁXIMA · argmax','GREEDY · argmax'):`${t('MUESTREO · semilla','SAMPLING · seed')} ${run.seed}`,0,4.95,-.3,{size:.24,weight:800,mono:true,color:CSS.ink});
+    S.userData.decoder={mode:scripted?'scripted':greedy?'greedy':'sample',u,chosen,dropX};label(scripted?t('No es otro sorteo','No additional random draw'):greedy?'argmax':`u = ${format(u,5)}`,0,.05,.3,{size:.18,mono:true,color:CSS.gold});
     label(t('Cada segmento mide lo que su probabilidad','Each segment is as wide as its probability'),0,4.55,-.3,{size:.18,color:CSS.dim,weight:500});
     segs.forEach(s=>{const w=Math.max(.02,s.x1-s.x0-.05),win=s.i===chosen,cx=(s.x0+s.x1)/2;
       const seg=block(cx,.95,0,w,.42,.9,colors[s.i%4],{kind:'probability',text:`${piece(c.pieces[s.i])} · ${format(s.p*100,1)} %`},{emissive:colors[s.i%4],emissiveIntensity:.15});add(seg);appear(seg,.08+s.i*.1,{dy:0,s0:.2});
@@ -404,12 +419,12 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
       ball.position.set(dropX,landed?1.2+.04*Math.sin(time*6):y,0);halo.position.copy(ball.position);
       halo.geometry.attributes.position.setXYZ(0,0,0,0);halo.geometry.attributes.aSize.setX(0,1.4);halo.geometry.attributes.aAlpha.setX(0,1);halo.geometry.attributes.aSize.needsUpdate=halo.geometry.attributes.aAlpha.needsUpdate=true;
       const k=R(.18,.28,1.05,.6);wave.scale.setScalar(.2+k*2.4);wave.material.opacity=landed?(1-k)*.9:0;
-      const rise=R(.22,.4,1.3,.9);out.position.set(dropX*(1-ease(rise)),1.2+ease(rise)*2.15,-.2*ease(rise));out.scale.setScalar(Math.max(.001,back(rise)));setOpacity(outMats,clamp01(rise*3));
+      const rise=R(.72,1);out.visible=R(.999,1)===1;out.position.set(dropX*(1-ease(rise)),1.2+ease(rise)*2.15,-.2*ease(rise));out.scale.setScalar(Math.max(.001,back(rise)));setOpacity(outMats,clamp01(rise*3));
       if(light){light.intensity=landed?1.2:0;light.position.set(out.position.x,out.position.y+.5,out.position.z+1);}
     });
   }
   function sceneLoop(run){
-    const {tokens,offset}=contextWindow(run),N=tokens.length,generatedStart=run.tokens.length,radius=7.5,arcSpan=.95;
+    const {tokens,offset}=F?.window??contextWindow(run),N=tokens.length,generatedStart=run.tokens.length,radius=7.5,arcSpan=.95;
     const slots=tokens.map((_,i)=>{const a=(i/(Math.max(1,N-1))-.5)*arcSpan;return V(Math.sin(a)*radius,1.1,-Math.cos(a)*radius+radius-1.8);});
     const newest=run.generated.length?N-1:-1;
     tokens.forEach((tok,i)=>{const absolute=offset+i,generated=absolute>=generatedStart,g=add(new THREE.Group());g.position.copy(slots[i]);g.lookAt(0,1.1,8);
@@ -432,17 +447,17 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
 
 
   function collectMaterials(obj){return collect(obj);}
-  function build(phase,run,{selectedToken=0,queryIndex=7,operation=0,inPlace=false}={}){
-    S=newSet();const set=S;op=operation;if(inPlace)set.userData.clock=100;set.userData.phase=phase;
+  function build(phase,run,{selectedToken=0,queryIndex=7,operation=0,inPlace=false,frame=null,aspect=1.5,width=Infinity}={}){
+    F=frame??llmFrameAt({...run,phase},{progress:0,operationIndex:operation,queryIndex,selectedToken});portrait=aspect<.9||width<560;S=newSet();const set=S;op=operation;set.userData.phase=phase;set.userData.frame=F;set.userData.portrait=portrait;
     if(phase===0)sceneContext(run);else if(phase===1)sceneRetrieval(run);else if(phase===2)sceneTokens(run,selectedToken);else if(phase===3)sceneVectors(run,selectedToken);
     else if(phase===4)sceneLayers(run,queryIndex);else if(phase===5)sceneProbabilities(run);else if(phase===6)sceneChoose(run);else sceneLoop(run);
-    S=null;return set;
+    S=null;F=null;return set;
   }
-  // Entrances run on the set's own clock; narration-driven reveals use sig when live.
+  // Every entrance and causal signal is reversible at the same normalized cue.
   function tick(set,{dt=0,sig=1,live=false}={}){
-    const u=set.userData;u.clock+=dt;const clock=u.clock;
-    const R=(s0,s1,c0=.4,cd=1.4)=>live?clamp01((sig-s0)/Math.max(.001,s1-s0)):clamp01((clock-c0)/cd);
-    for(const a of u.anims){if(a.done)continue;const e=ease((clock-a.delay)/a.dur);
+    sig=clamp01(sig);const u=set.userData,clock=sig*4;u.clock=clock;time=sig*20;
+    const R=(s0,s1)=>clamp01((sig-s0)/Math.max(.001,s1-s0));
+    for(const a of u.anims){const e=ease((clock-a.delay)/a.dur);a.done=e>=1;a.obj.visible=e>0;
       if(a.from)a.obj.position.lerpVectors(a.from,a.pos,e);else a.obj.position.set(a.pos.x,a.pos.y+a.dy*(1-e),a.pos.z);
       a.obj.scale.copy(a.scale).multiplyScalar(a.s0+(1-a.s0)*back(e));setOpacity(a.mats,clamp01(e*1.6));if(e>=1){a.done=true;a.obj.scale.copy(a.scale);a.obj.position.copy(a.pos);setOpacity(a.mats,1);}}
     const ctx={sig,live,clock,R,dt};for(const f of u.ticks)f(ctx);
@@ -452,5 +467,5 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
   function fade(set,dt){set.userData.leaving+=dt;const f=1-ease(set.userData.leaving/(reduce?.01:.45));setOpacity(set.userData.leaveMats,f);set.position.y=(set.userData.baseY??0)-(1-f)*.6;return f<=0;}
   function destroy(set){set.parent?.remove(set);for(const x of set.userData.res)x.dispose?.();set.userData.res.clear();}
   function pickInfo(hit){return hit.instanceId!==undefined?hit.object.userData.infos?.[hit.instanceId]:hit.object.userData.info;}
-  return Object.assign(kit,{build,tick,replay,leave,fade,destroy,pickInfo,advance(dt){time+=dt;},get time(){return time;},dispose(){cellGeometry.dispose();blockGeometry.dispose();sphereGeometry.dispose();}});
+  return Object.assign(kit,{build,buildFrame(frame,{aspect=1.5,width=Infinity}={}){return build(frame.phase,frame.run,{frame,selectedToken:frame.selectedToken,queryIndex:frame.queryIndex,operation:frame.flow.index,aspect,width});},tick,replay,leave,fade,destroy,pickInfo,advance(){},get time(){return time;},dispose(){cellGeometry.dispose();blockGeometry.dispose();sphereGeometry.dispose();}});
 }

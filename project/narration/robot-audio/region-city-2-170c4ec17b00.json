@@ -1,0 +1,22 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This city has one hundred and eighty equivalent tasks and receives each delivery after five cycles. Robots can be reserved while its bar remains low because they are still in transit. Coverage rises when robots arrive, not when they are manufactured or dispatched. The intermediate scope retains sector limits and human tasks. The Full hypothesis allows all one hundred and eighty tasks in this city, and all six hundred across the three cities, to be covered. This is an assumed future delegation, not a demonstrated capability or a forecast about professions. If eligible tasks are already covered or reserved, additional robots wait at the depot. A larger industrial network can deliver more robots, but distance delays arrival and the chosen scope determines where they can work.",
+  "duration_ms": 47052,
+  "billed_characters": 783,
+  "sample_rate": 32000,
+  "size_bytes": 754548,
+  "generated_at": "2026-10-03T06:32:05.990873+00:00",
+  "validation": {
+    "ffmpeg_decode": "passed",
+    "decoded_duration_seconds": 47.052,
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "audio_sha256": "9ba141ab60a91f4589099971b93afcac185e78c5e2480a66be2571c64f422b91",
+    "text_sha256": "8c1ddf00157834facb8d9c4137fe41e1df9089af3df31d174a3f879707aaf485",
+    "script_sha256": "adf7df44a85efafd4e8b0dae924b58a75154c4e752574f0eb3840a2bdb2bb7c3"
+  }
+}

@@ -1,0 +1,1 @@
+We calculate the distribution for the next piece. The continuation in this demonstration is scripted. The longest bar indicates the next expected token; it does not measure whether its content is true.

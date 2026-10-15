@@ -1,33 +1,33 @@
 import assert from 'node:assert/strict';
-import {readFileSync,statSync} from 'node:fs';
 import {simulate,sample,crossingYear,STAGES,DEFAULTS,POWER_PER_TONNE} from './site-src/lunar/model.js';
-import {StepGuide} from './site-src/llms/guide.js';
-import vm from 'node:vm';
+import {missionPose,deliveryEvents,deliveriesAt,MISSION_STAGES} from './site-src/lunar/mission.js';
+import {lunarFrameAt} from './site-src/lunar/presentation.js';
 const close=(a,b)=>assert(Math.abs(a-b)<1e-7*Math.max(1,Math.abs(a),Math.abs(b)),`${a} != ${b}`);
+let states=0,batches=0,frames=0;
 for(const local of [0,.5,.9,.98])for(const flights of [0,2,24])for(const flightGrowth of [0,.2,.5])for(const power of [5,250,1000]){
- const run=simulate({local,flights,flightGrowth,power});let last=100;
- for(const r of run.rows){
-  assert(Object.values(r).filter(v=>typeof v==='number').every(Number.isFinite));assert(r.capital>=last-1e-8);assert(r.stock>=0);assert(r.capital<=run.powerLimit+1e-6);assert(r.earthOnly<=run.powerLimit+1e-6);
-  close(r.capital,DEFAULTS.seed+r.localTotal+r.usedImports);close(r.delivered,DEFAULTS.seed+r.stock+r.usedImports);close(r.localMade,r.build*local);close(r.power,r.capital*POWER_PER_TONNE);assert(r.flights===Math.floor(r.flights));last=r.capital;
+ const run=simulate({local,flights,flightGrowth,power});let last=DEFAULTS.seed;
+ assert(Object.isFrozen(run)&&Object.isFrozen(run.rows)&&Object.isFrozen(run.params));
+ for(const r of run.rows){states++;assert(Object.isFrozen(r));assert(Object.values(r).filter(v=>typeof v==='number').every(Number.isFinite));assert(r.capital>=last-1e-8);assert(r.stock>=0);assert(r.capital<=run.powerLimit+1e-6);assert(r.earthOnly<=run.powerLimit+1e-6);
+  close(r.capital,run.params.seed+r.localTotal+r.usedImports);close(r.delivered,run.params.seed+r.stock+r.usedImports);close(r.capital+r.stock,r.delivered+r.localTotal);close(r.localMade,r.build*local);close(r.power,r.capital*POWER_PER_TONNE);assert(Number.isInteger(r.flights));close(r.localIncorporated,r.localTotal);close(r.annualIncorporated,r.localTotal-run.rows[Math.max(0,r.month-12)].localTotal);last=r.capital;
  }
+ const events=deliveryEvents(run);assert(Object.isFrozen(events));assert(events.length<=240);assert.equal(events.reduce((n,e)=>n+e.count,0),run.rows.at(-1).flights-run.rows[0].seedFlights);
+ for(const e of events){batches++;assert(Object.isFrozen(e));assert.equal(e.last-e.first+1,e.count);assert.equal(e.number,e.last);const before=lunarFrameAt(run,8,.5,{month:e.arrival-1e-5}),arrival=lunarFrameAt(run,8,.5,{month:e.arrival});assert(before.deliveries.some(d=>d.last===e.last));assert(!arrival.deliveries.some(d=>d.last===e.last));close(before.row.delivered,run.rows[e.arrival-1].delivered);close(arrival.row.delivered-before.row.delivered,e.count*run.params.payload);}
  if(flights===0)close(run.rows.at(-1).capital,100);
  if(local===0)assert(run.rows.every(r=>r.capital<=r.earthOnly+1e-6));
 }
-assert.equal(simulate().rows.at(-1).flights,44);assert.equal(simulate().rows[5].flights,4);assert.equal(simulate().rows[6].flights,5);
-assert(simulate({flightGrowth:.2}).rows.at(-1).delivered>simulate().rows.at(-1).delivered);
-for(const key of ['reinvest','uptime'])close(simulate({[key]:0}).rows.at(-1).capital,100);
+const run=simulate();assert.equal(run.rows.at(-1).flights,44);assert.equal(run.rows[5].flights,4);assert.equal(run.rows[6].flights,5);
+assert(simulate({flightGrowth:.2}).rows.at(-1).delivered>run.rows.at(-1).delivered);
+for(const key of ['reinvest','uptime']){const stopped=simulate({[key]:0});close(stopped.rows.at(-1).capital,100);close(stopped.rows.at(-1).localIncorporated,0);}
 const ideal=simulate({flights:120,payload:1000,uptime:1,power:100000});close(ideal.rows[12].capital,200);close(ideal.rows[24].capital,400);close(sample(ideal,-2).month,0);close(sample(ideal,999).month,240);
 const seed=1e16/2**34;close(crossingYear(seed,1e16,12),2064);close(crossingYear(seed,1e16,24),2098);close(crossingYear(seed,1e26,24)-2030,2*(crossingYear(seed,1e26,12)-2030));
-assert.throws(()=>simulate({local:1}));assert.throws(()=>simulate({flights:NaN}));assert.throws(()=>crossingYear(0,1e16,12));
-const clips=JSON.parse(readFileSync('site-src/lunar/voices.js','utf8').split('export const VOICES = ')[1].split(/;\r?\n/)[0]),scripts=JSON.parse(readFileSync('narration/lunar.json','utf8'));
-class AudioStub{play(){this.onplaying?.();return Promise.resolve();}pause(){}removeAttribute(){}load(){}}
-for(const lang of ['es','en']){let i=0;const guide=new StepGuide({AudioClass:AudioStub,getClip:()=>clips[lang][i],onAdvance:()=>i===STAGES.length-1?false:!!(++i)});guide.resume();for(let j=0;j<STAGES.length;j++){assert.equal(clips[lang][j].id,STAGES[j].id);assert.equal(clips[lang][j].text,scripts[lang][j].text);assert(statSync('dist/audio/'+clips[lang][j].file).size>100000);assert(clips[lang][j].duration>10);for(let k=0;k<200;k++)guide.tick(.1);assert.equal(i,j);guide.audio.onended();for(let k=0;k<20;k++)guide.tick(.1);assert.equal(i,j);guide.pause();guide.tick(100);guide.resume();for(let k=0;k<11;k++)guide.tick(.1);}assert.equal(guide.state,'finished');}
-const {buildLunarScene}=await import('./dist/lunar/world.js');
-for(const lang of [true,false]){const world=buildLunarScene(lang,{textures:false});for(const row of [simulate().rows[0],simulate().rows[120],simulate({power:1000,flights:24,flightGrowth:.2}).rows.at(-1)]){for(const view of ['mission','route','base','growth']){world.setView(view);world.update(row,17,'replicate');world.scene.updateMatrixWorld(true);assert(world.instances.every(i=>i.count>0&&i.count<=256));world.scene.traverse(o=>{assert([...o.matrixWorld.elements].every(Number.isFinite));if(o.isMesh)assert([...o.geometry.attributes.position.array].every(Number.isFinite));if(o.isInstancedMesh)assert([...o.instanceMatrix.array].every(Number.isFinite));});}}world.dispose();}
-console.log('Lunar: 108 resource scenarios, monthly mass conservation, real flight counts, power constraints, doubling/date arithmetic, 28 narration clips, complete audio tours and finite 3D geometry: OK');
-
-const {missionPose,deliveryEvents,deliveriesAt,MISSION_STAGES}=await import('./site-src/lunar/mission.js');
-const {buildMission}=await import('./dist/lunar/mission-world.js');
-for(const es of [true,false]){const mission=buildMission(es,{textures:false});for(const st of MISSION_STAGES)for(const progress of [0,.25,.6,1]){const pose=missionPose(st.id,progress);assert(pose.camera.every(Number.isFinite));mission.update(st.id,progress);mission.group.updateMatrixWorld(true);mission.group.traverse(o=>assert(o.matrixWorld.elements.every(Number.isFinite)));}mission.dispose();}
-const schedule=deliveryEvents(simulate());assert.equal(schedule.length,40);assert.equal(deliveriesAt(schedule,5.5).length,1);assert.equal(deliveriesAt(schedule,6).length,0);assert.equal(deliveriesAt(schedule,0).length,0);assert.equal(schedule.at(-1).number,44);assert.equal(deliveryEvents(simulate({flights:0})).length,0);
-console.log('Lunar mission: seven deterministic camera/vehicle phases, finite meshes and individual deliveries aligned with the mass model: OK');
+for(const scenario of [run,simulate({flights:0}),simulate({power:5}),simulate({local:0}),simulate({reinvest:0}),simulate({uptime:0}),simulate({flights:24,flightGrowth:.5,power:1000}),ideal])for(let index=0;index<STAGES.length;index++)for(let j=0;j<=50;j++){
+ const f=lunarFrameAt(scenario,index,j/50);frames++;assert(Object.isFrozen(f)&&Object.isFrozen(f.operation)&&Object.isFrozen(f.deliveries));assert.equal(f.stage,STAGES[index].id);assert.equal(f.row,sample(scenario,f.month));close(f.visualTime,(index+j/50)*20);assert.equal(f.inFlightCount,f.deliveries.reduce((n,e)=>n+e.count,0));assert.equal(f.operation.month,f.row.month);assert.equal(f.operation.active,f.row.month>0&&f.row.build>0);close(f.operation.build,f.operation.local+f.operation.imported);assert.equal(f.operation.kind,'completed-month-example');assert.deepEqual(f,lunarFrameAt(scenario,index,j/50));if(index<7){assert(f.mission.camera.every(Number.isFinite)&&f.mission.target.every(Number.isFinite));}else assert.equal(f.mission,null);
+}
+const manual=lunarFrameAt(run,5,.63,{month:123.271,source:'manual',view:'mission'});assert.equal(manual.month,123.271);assert.equal(manual.row.month,123);assert.equal(manual.progress,.63);assert.equal(manual.view,'mission');assert.equal(manual.mission.cargoLocation,'rover');assert.equal(manual.source,'manual');
+const early=lunarFrameAt(run,8,.5,{month:4.5});assert.equal(early.row.month,4);assert.equal(early.row.capital,100);assert.equal(early.row.earthOnly,100);
+for(let i=0;i<=1000;i++){const u=i/1000,f=missionPose('refuel',u),cargo=missionPose('unload',u);close(f.refuel.depotLevel+f.refuel.shipLevel,1);if(u>.3&&u<.7)assert(f.refuel.connected);assert(f.refuel.transferProgress>=0&&f.refuel.transferProgress<=1);for(const key of ['lift','loadProgress','handoffProgress','cargo','depositProgress'])assert(cargo[key]>=0&&cargo[key]<=1);if(u<.5)assert.equal(cargo.handoffProgress,0);if(u<.65)assert.equal(cargo.cargo,0);if(u<.92)assert.equal(cargo.depositProgress,0);if(u<1)assert.notEqual(cargo.cargoLocation,'surface');}
+const fueled=missionPose('refuel',1);assert(fueled.refuel.departed);assert.equal(fueled.refuel.shipLevel,1);assert(!fueled.refuel.connected);assert.equal(missionPose('unload',1).cargoLocation,'surface');assert(missionPose('return',1).lunarOrbit);assert.equal(missionPose('return',1).flame,0);assert.equal(missionPose('booster',1).flame,0);assert(!missionPose('booster',1).upperIgnited);assert(missionPose('booster',1).captured);close(missionPose('liftoff',1).height+15.7,missionPose('booster',0).upper);
+assert.equal(MISSION_STAGES.length,7);assert.equal(STAGES.length,14);const events=deliveryEvents(run);assert.equal(events.length,40);assert.equal(deliveriesAt(events,5.5).length,1);assert.equal(deliveriesAt(events,6).length,0);assert.equal(events.at(-1).number,44);
+for(const bad of [NaN,Infinity,-Infinity,'12',null]){assert.throws(()=>simulate({flights:bad}));assert.throws(()=>sample(run,bad));assert.throws(()=>crossingYear(bad,1e16,12));assert.throws(()=>lunarFrameAt(run,0,bad));assert.throws(()=>lunarFrameAt(run,0,.5,{month:bad}));assert.throws(()=>deliveriesAt(events,bad));assert.throws(()=>missionPose('refuel',bad));}
+assert.throws(()=>simulate({local:1}));assert.throws(()=>simulate({seed:1000,power:5}));assert.throws(()=>crossingYear(0,1e16,12));assert.throws(()=>lunarFrameAt(run,14,0));assert.throws(()=>lunarFrameAt(run,0,.5,{view:'wrong'}));assert.throws(()=>missionPose('wrong',0));
+console.log(`Lunar: ${states} monthly states, ${batches} delivery batches, ${frames} reversible frames; mass balance, completed-month ledger, power, incorporation labels, docking/transfer/unloading endpoints: OK`);

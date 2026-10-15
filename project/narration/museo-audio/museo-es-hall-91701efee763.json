@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Estás en el atrio de Atlas. Cuatro salas conectan inteligencia, industria y vida cotidiana, cosmos, y vida y naturaleza. Hay veinte cuadros. Los marcos iluminados indican mundos que puedes recorrer en primera persona; todos tienen un notebook web. Camina con W, A, S y D, o con el joystick. Activa el ratón para mirar libremente y pulsa Escape para soltarlo. El plano te guía a cualquier cuadro. En la barra inferior puedes reproducir la voz, leer el texto y saltar a cada sala. La visita guiada te lleva caminando; tú puedes seguir mirando alrededor.",
+  "duration_ms": 36288,
+  "billed_characters": 551,
+  "sample_rate": 32000,
+  "size_bytes": 582324,
+  "generated_at": "2026-09-30T03:46:05.637823+00:00"
+}

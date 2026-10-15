@@ -1,16 +1,47 @@
 import assert from 'node:assert/strict';
-import {FALCON_STEPS,STARSHIP_STEPS,stepAt,progress,payloadMass,lightPayloadPenalty,tickFlight,createFlight,boosterBack,landed,PAYLOAD,F9_HEIGHT,STARSHIP_HEIGHT} from './site-src/spacex/model.js';
-assert.equal(F9_HEIGHT,70);assert.equal(STARSHIP_HEIGHT,121);
-assert(PAYLOAD.leoExpend>PAYLOAD.leoReuse);assert.equal(lightPayloadPenalty(),PAYLOAD.leoExpend-PAYLOAD.leoReuse);
-assert.equal(payloadMass(true),PAYLOAD.leoReuse);assert.equal(payloadMass(false),PAYLOAD.leoExpend);
-for(const steps of [FALCON_STEPS,STARSHIP_STEPS]){
- for(let i=1;i<steps.length;i++)assert(steps[i].t>steps[i-1].t);
- steps.forEach(s=>assert(s.es&&s.en&&s.body[0]&&s.body[1]));
+import * as model from './site-src/spacex/model.js';
+const near=(a,b,message,epsilon=1e-8)=>assert(Number.isFinite(a)&&Number.isFinite(b)&&Math.abs(a-b)<=epsilon,message||`${a} != ${b}`);
+const IDS=['booster','upper','payload','fairingLeft','fairingRight'];
+const vectorNear=(a,b,message,epsilon=1e-8)=>{assert.equal(a.length,b.length);a.forEach((v,i)=>near(v,b[i],message,epsilon));};
+// Keep compatibility assertions about API behaviour, without turning an old
+// reusable-payload estimate or a dated launch record into a published fact.
+for(const vehicle of ['falcon','starship']){
+ const state=model.createFlight(vehicle);assert.equal(state.playing,false);assert(state.steps.every((step,i)=>i===0||step.t>state.steps[i-1].t));assert(state.steps.every(step=>step.es&&step.en&&step.body?.[0]&&step.body?.[1]));assert.equal(model.stepAt(state.steps,0).id,state.steps[0].id);near(model.progress(state.steps,0),0);near(model.progress(state.steps,state.duration),1);
+ model.tickFlight(state,10);near(state.time,0);state.playing=true;state.speed=1;for(const dt of [-1,NaN,Infinity]){model.tickFlight(state,dt);near(state.time,0);}model.tickFlight(state,10);near(state.time,10);state.loop=false;model.tickFlight(state,state.duration);near(state.time,state.duration);assert.equal(state.playing,false);
 }
-const f=createFlight('falcon');assert.equal(stepAt(f.steps,0).id,'pad');assert.equal(stepAt(f.steps,150).id,'meco');assert.equal(stepAt(f.steps,480).id,'landing');
-assert.equal(progress(f.steps,0),0);assert.equal(progress(f.steps,f.duration),1);
-f.playing=true;f.speed=1;tickFlight(f,10);assert.equal(f.time,10);
-const g=createFlight('falcon');g.time=300;g.reuse=true;assert(boosterBack(g));g.time=500;assert(landed(g));
-const x=createFlight('falcon');x.reuse=false;x.time=500;assert.equal(landed(x),false);
-const s=createFlight('starship');assert.equal(s.steps,STARSHIP_STEPS);s.time=430;s.reuse=true;assert(landed(s));
-console.log('SpaceX timeline order, payload penalty, reuse landing and bilingual steps: OK');
+assert.equal(model.PAYLOAD.leoReuse,null);assert.equal(model.payloadMass(true),null);assert.equal(model.lightPayloadPenalty(),null,'mission-specific recovery performance is unknown');for(const field of ['falconFlights2025','falconFlights2026pace','boosterRecord','boosterId','successRate','starshipTests'])assert.equal(model.SNAPSHOT[field],null,'dated records are not silently asserted by this simulation');
+assert.equal(typeof model.makeFlightTrace,'function');assert.equal(typeof model.flightFrameAt,'function');
+assert.equal(model.F9_HEIGHT,70);assert.equal(model.STARSHIP_HEIGHT,124,'this teaching configuration explicitly uses the declared 124m Starship stack');
+const cases=[{vehicle:'falcon',recovery:'droneship'},{vehicle:'falcon',recovery:'rtls'},{vehicle:'falcon',recovery:'expendable'},{vehicle:'starship',recovery:'droneship'}];
+const inside=(t,a,b)=>t>=a&&t<b;
+function expectedBurn(params,time){
+ if(params.vehicle==='starship')return {booster:inside(time,7.5,30)||inside(time,32,43)||inside(time,74,82),upper:inside(time,27,55)||inside(time,93,99)};
+ return {booster:inside(time,7.5,28)||(params.recovery!=='expendable'&&(params.recovery==='rtls'&&inside(time,34,44)||inside(time,58,65)||inside(time,78,84))),upper:inside(time,32,72)};
+}
+const TIMES=[0,7.49,7.5,7.999,8,27,27.999,28,29.999,30,31.99,32,34,37.35,38,43,44,49.95,50,55,58,64.99,65,71.99,72,74,77.99,78,81.99,82,83.99,84,85,91.99,92,93,95.99,96,98,98.99,99,100];
+let frames=0,continuousBoundaries=0,contactOracles=0;
+for(const params of cases){
+ const trace=model.makeFlightTrace(params),traceBefore=JSON.stringify(trace);assert(Object.isFrozen(trace),'the trajectory is an immutable scenario, not an integration history');assert.equal(trace.horizon,100);const initial=model.flightFrameAt(trace,0);vectorNear(initial.parts.booster.position,params.vehicle==='falcon'?[0,.2,0]:[0,.9,0],'independently declared launch root');
+ for(const time of TIMES){
+  const frame=model.flightFrameAt(trace,time),burn=expectedBurn(params,time);frames++;near(frame.time,time);assert.equal(frame.chapter,time<8?0:time<50?1:time<85?2:3,'four explicit presentation buckets');assert(Object.isFrozen(frame));assert.deepEqual(Object.keys(frame.parts).sort(),IDS.slice().sort());
+  for(const id of IDS){const part=frame.parts[id];assert.equal(part.position.length,3);assert.equal(part.rotation.length,3);assert.equal(part.quaternion.length,4);assert([...part.position,...part.rotation,...part.quaternion].every(Number.isFinite));near(part.quaternion.reduce((sum,value)=>sum+value*value,0),1,'every world rotation is a unit quaternion',1e-7);}
+  for(const id of ['booster','upper']){
+   const engine=frame.engines[id],installed=params.vehicle==='falcon'?(id==='booster'?9:1):(id==='booster'?33:6);assert.equal(engine.installedCount,installed);assert.equal(engine.firing,burn[id],`${params.vehicle}/${params.recovery} ${id} at ${time} follows an independent burn-range oracle`);assert.equal(new Set(engine.representativeIndices).size,engine.representativeIndices.length);assert(engine.representativeIndices.every(index=>Number.isInteger(index)&&index>=0&&index<installed));if(!engine.firing){assert.equal(engine.activeCount,0);assert.equal(engine.representativeIndices.length,0);}else if(id==='booster'&&(params.vehicle==='falcon'?time<28:time<27)||id==='upper'&&(params.vehicle==='falcon'?time<72:time<55)){assert.equal(engine.activeCount,installed);}else assert.equal(engine.activeCount,null,'return engine selection is representative, not invented telemetry');
+  }
+  const recovered=params.vehicle==='starship'?time>=82:params.recovery!=='expendable'&&time>=84;assert.equal(frame.result.recoveredStages,recovered?1:0,'recovery is credited only on the physical contact boundary');assert.equal(frame.result.upperRecovered,false);assert.equal(frame.result.payloadDeployed,params.vehicle==='falcon'&&time>=98);assert.equal(frame.result.upperSplashdown,params.vehicle==='starship'&&time>=99);assert.equal(frame.recoveryState.fairingRecoveryModeled,false);if(time<30)assert.equal(frame.parts.upper.attachedTo,'booster');else assert.equal(frame.parts.upper.attachedTo,null);for(const sample of frame.effects.smokeSamples){assert(sample.emitted<time);assert(expectedBurn(params,sample.emitted)[sample.partId],'each exhaust sample comes from an independently known past burn');near(sample.age,time-sample.emitted);assert(sample.position.every(Number.isFinite));assert(sample.power>=0&&sample.power<=1);}
+  assert(frame.events.every(event=>event.time<=time),'no event can be credited before its physical presentation time');assert(frame.events.every((event,i)=>i===0||event.time>=frame.events[i-1].time));assert.equal(new Set(frame.events.map(event=>event.id)).size,frame.events.length);
+  assert.equal(JSON.stringify(model.flightFrameAt(trace,time)),JSON.stringify(frame),'frames are deterministic at a fractional presentation time');
+ }
+ const boundaries=params.vehicle==='falcon'?[7.5,8,28,30,32,34,38,43,44,50,58,65,72,78,84,85,92,98]:[7.5,8,27,30,32,43,50,55,74,82,85,93,96,99];
+ for(const time of boundaries){const a=model.flightFrameAt(trace,time-1e-6),b=model.flightFrameAt(trace,time+1e-6);for(const id of IDS){const p=a.parts[id],q=b.parts[id];assert(Math.hypot(...p.position.map((value,i)=>value-q.position[i]))<.001,`${params.vehicle} ${id} does not teleport across ${time}`);const dot=Math.abs(p.quaternion.reduce((sum,value,i)=>sum+value*q.quaternion[i],0));assert(2*Math.acos(Math.min(1,dot))<.001,`${params.vehicle} ${id} rotation remains continuous at ${time}`);}continuousBoundaries++;}
+ if(params.vehicle==='falcon')for(const [time,expected] of [[91.99,0],[92,0],[95,.5],[98,1],[100,1]])near(model.flightFrameAt(trace,time).payloadDeploy,expected,'payload unfolds only after SECO and on its explicit deployment interval');
+ const paused=model.flightFrameAt(trace,37.35),pausedJSON=JSON.stringify(paused);model.flightFrameAt(trace,100);assert.equal(JSON.stringify(model.flightFrameAt(trace,37.35)),pausedJSON,'rewind is exact and does not accumulate flight state');assert.equal(JSON.stringify(trace),traceBefore,'seeking and ending cannot mutate the trace');
+ const final=model.flightFrameAt(trace,100);assert.equal(final.result.totalStages,2);assert.equal(final.result.recoveredStages,params.vehicle==='starship'||params.recovery!=='expendable'?1:0,'a booster recovery is never a recovered upper stage');
+ if(params.vehicle==='falcon'&&params.recovery!=='expendable'){
+  const before=model.flightFrameAt(trace,84-1e-6),contact=model.flightFrameAt(trace,84),target=params.recovery==='rtls'?[-6.5,.15,0]:[16,.25,0];assert(!before.events.some(event=>event.id==='booster-landed'));const event=contact.events.find(event=>event.id==='booster-landed');assert(event);vectorNear(event.point,target,'four deployed feet contact the declared pad/deck, not merely a timer');vectorNear(contact.parts.booster.position,[target[0],target[1]+.1,target[2]]);assert.equal(contact.engines.booster.firing,false);contactOracles++;
+ }else if(params.vehicle==='falcon')assert(!final.events.some(event=>event.id==='booster-landed'),'an expendable trajectory cannot credit a landing');
+ if(params.vehicle==='starship'){
+  const before=model.flightFrameAt(trace,82-1e-6),caught=model.flightFrameAt(trace,82);assert(!before.events.some(event=>event.id==='booster-caught'));assert(caught.events.some(event=>event.id==='booster-caught'));near(caught.parts.booster.position[1]+7.1,11,'catch pins meet the raised support height');assert.equal(caught.engines.booster.firing,false);const splash=model.flightFrameAt(trace,99);assert(!model.flightFrameAt(trace,99-1e-6).events.some(event=>event.id==='ship-splashdown'));const event=splash.events.find(event=>event.id==='ship-splashdown');assert(event);vectorNear(event.point,[34,0,0]);vectorNear(splash.parts.upper.position,[34,.10,0]);near(splash.parts.upper.position[1]-.10,0,'the first nozzle contact meets the water plane');assert.equal(splash.engines.upper.firing,false);assert(!final.events.some(event=>/payload-deploy/.test(event.id)),'this Starship demonstration does not invent a payload deployment');contactOracles+=2;
+ }
+}
+console.log(`SpaceX model: compatibility clock/bilingual metadata, ${frames} immutable fractional four-bucket states, independent installed-engine/burn/coast oracles, ${continuousBoundaries} trajectory/quaternion boundaries, ${contactOracles} literal pad/deck/pin/water contacts, no future events, no invented recovery telemetry, exact rewind and recovered-stage accounting: OK`);

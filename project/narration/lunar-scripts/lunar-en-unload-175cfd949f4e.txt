@@ -1,0 +1,1 @@
+An elevator lowers equipment; a rover takes it toward the base. Unloading represents a delivery, not a complete factory. The elevator is a feature planned for HLS. Unloading, installation and testing are separate steps. In our model a delivery supplies twenty-five tonnes: a teaching assumption, not a capability promised by SpaceX.

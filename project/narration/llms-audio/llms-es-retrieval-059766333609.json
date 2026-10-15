@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Aquí la aplicación puede recuperar una fuente. En el experimento del museo, activar la consulta añade una ficha al contexto. Si no hay documento, seguimos sin esa evidencia. El texto recuperado no modifica los pesos del modelo. Una fuente antigua puede inducir una respuesta equivocada. La búsqueda es una herramienta adicional, no algo que todos los modelos hagan automáticamente.",
+  "duration_ms": 24912,
+  "billed_characters": 381,
+  "sample_rate": 32000,
+  "size_bytes": 400308,
+  "generated_at": "2026-09-20T18:03:23.902214+00:00",
+  "validation": {
+    "audio_sha256": "7e0fe9d7abe04614b6fc6d257879b6d24c29cf097296d3e624bda8bf206077ba",
+    "text_sha256": "2b1c951f62d3ba2b09a000117e41d46254a29b0db211c8d5d11557cb9e509ad8",
+    "script_sha256": "59e0208903889c4282e08cddcc17b9cbc161626d0713e649e73b224fe62d2670",
+    "decoded_duration_seconds": 24.912,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 24.912
+  }
+}

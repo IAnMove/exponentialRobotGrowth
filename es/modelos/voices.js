@@ -3,173 +3,173 @@ export const VOICES = {
   "es": [
     {
       "id": "intro",
-      "title": "Tres precios",
-      "text": "Un token no tiene un solo precio. Hay tres precios distintos. La entrada nueva. El prefijo que ya se repitió. Y la salida. Solo el prefijo repetido puede abaratarse. Primero recorremos las familias de modelos. Después miramos la factura.",
-      "file": "modelos-es-intro-6dd4f6573815.mp3",
-      "duration": 16.02
+      "title": "Un laboratorio de modelos",
+      "text": "Hay distintas formas de procesar información. Unas consultan tokens anteriores. Otras leen la entrada completa, actualizan un estado o rellenan posiciones en varias rondas. Aquí calculamos ejemplos pequeños para ver sus operaciones. Los colores identifican entrada, cálculo y resultado. Puedes detener cada paso. En la sala hay un botón para escuchar cada parada. Los objetos representan operaciones, no máquinas físicas ni modelos entrenados.",
+      "file": "modelos-es-intro-f3a570ed6259.mp3",
+      "duration": 28.188
     },
     {
       "id": "causal",
-      "title": "Decodificador",
-      "text": "Esta es la familia del notebook de modelos de lenguaje, y también la de Grok. Escribe una pieza detrás de otra. Mira la primera esfera. Solo se une a sí misma. El futuro pesa cero. Esa es la máscara causal, y aquí sí se calcula. Las frases de aquel otro notebook, en cambio, están escritas de antemano.",
-      "file": "modelos-es-causal-89a9007edf97.mp3",
-      "duration": 18.504
+      "title": "Atención causal",
+      "text": "Sigue la consulta con borde claro. Comparamos su vector Q con cada clave K. La máscara permite su posición y las anteriores; bloquea el futuro. Después, softmax convierte las puntuaciones permitidas en pesos que suman uno. No son todos iguales. Multiplicamos cada valor V por su peso y sumamos. El resultado es un vector, todavía no una palabra. Cambia la posición de la consulta para comprobar cómo cambia lo que puede ver.",
+      "file": "modelos-es-causal-ffc68e213203.mp3",
+      "duration": 29.844
     },
     {
       "id": "encoder",
-      "title": "Codificador",
-      "text": "El codificador lee hacia atrás y hacia delante. Por eso todas las esferas quedan unidas a la primera. Un modelo como BERT hace esto. Devuelve una etiqueta o un vector. No continúa una frase.",
-      "file": "modelos-es-encoder-1e4640e4e1e6.mp3",
-      "duration": 14.976
+      "title": "Atención bidireccional",
+      "text": "Ahora la consulta puede usar las ocho posiciones de la entrada. Es el acceso bidireccional que usa un codificador como BERT para construir representaciones. Todas están permitidas, pero sus pesos pueden ser distintos: permiso y atención no son lo mismo. El cálculo vuelve a mezclar los valores. Esta demostración produce un vector; no ejecuta una tarea de clasificación ni continúa una frase con un modelo entrenado.",
+      "file": "modelos-es-encoder-51018293595b.mp3",
+      "duration": 25.164
     },
     {
       "id": "encdec",
-      "title": "Las dos mitades",
-      "text": "Aquí el trabajo se reparte. Una mitad lee la fuente entera, sin tapar el futuro. La otra escribe en serie y, en cada paso, puede mirar toda esa fuente. Es el dibujo de Vaswani, de dos mil diecisiete. También es la forma de T5.",
-      "file": "modelos-es-encdec-0942be473f5c.mp3",
-      "duration": 16.091
+      "title": "Leer y generar",
+      "text": "Aquí hay dos operaciones de atención. El codificador representa la fuente completa. El decodificador solo usa su propio pasado, y además consulta esa fuente mediante atención cruzada. Su consulta Q se compara con claves de los estados del codificador; los pesos mezclan sus valores. El acceso a toda la fuente no desbloquea el futuro del decodificador. Esta separación aparece en el Transformer original y en T5.",
+      "file": "modelos-es-encdec-f58d743c3a36.mp3",
+      "duration": 26.028
     },
     {
       "id": "moe",
-      "title": "Expertos",
-      "text": "Los expertos siguen siendo un decodificador. En algunas capas, cada token enciende dos de las ocho cajas. Grok uno y DeepSeek están en esta familia. Esos dos de ocho no son una cuarta parte de todos los pesos. La atención sigue usando los suyos en cada paso.",
-      "file": "modelos-es-moe-bb666ca5cc3e.mp3",
-      "duration": 15.876
+      "title": "El router y los expertos",
+      "text": "El router calcula ocho puntuaciones a partir del vector de entrada. Las dos mayores eligen los expertos que trabajan. Sus pesos se normalizan entre los elegidos y mezclan dos salidas. Elegir dos de ocho no significa usar una cuarta parte de toda la red: también existen otras operaciones. Dos de ocho es la configuración publicada de Grok uno, no una regla para todos los modelos de expertos. Las puntuaciones y transformaciones de este ejemplo son sintéticas.",
+      "file": "modelos-es-moe-d69651579c2a.mp3",
+      "duration": 29.808
     },
     {
       "id": "ssm",
-      "title": "Estado fijo",
-      "text": "Mira la esfera. No crece aunque alargues el contexto. Es un estado de ancho fijo. Las barras sí crecen, porque guardan una clave por cada token. Jamba mezcla las dos ideas. Pone una capa de atención cada siete de Mamba. La caché de claves vive solo en un octavo de las capas.",
-      "file": "modelos-es-ssm-766d29116d44.mp3",
-      "duration": 20.304
+      "title": "Memoria que se actualiza",
+      "text": "Cada entrada modifica los tres valores del estado. Una puerta depende de la entrada y decide cuánto conservar y cuánto incorporar. Cambian los valores, pero siguen siendo tres. Esta recurrencia ilustra la memoria de ancho fijo; no reproduce el algoritmo completo de Mamba ni calcula su memoria real, que tiene dimensiones por canal y capa. Jamba original combina las ideas: siete capas de Mamba por cada capa de atención. Esa proporción cuenta capas, no bytes.",
+      "file": "modelos-es-ssm-a40193cc006f.mp3",
+      "duration": 29.34
     },
     {
       "id": "diffusion",
-      "title": "Difusión",
-      "text": "La difusión no espera turno. Todas las posiciones se proponen a la vez y se corrigen durante varias rondas. No hay una pieza número cuarenta esperando a la treinta y nueve. El trabajo se parece a rondas por longitud, no a una sola pasada de izquierda a derecha.",
-      "file": "modelos-es-diffusion-47e9cb7a1afd.mp3",
-      "duration": 15.696
+      "title": "Completar varias posiciones",
+      "text": "Compara dos filas de ocho posiciones. La autoregresiva añade una posición por ronda. La otra empieza enmascarada y revela posiciones siguiendo un calendario de varias rondas. Una ronda puede trabajar sobre varias posiciones. Cambia el número de rondas y observa el mismo recorrido desde el principio. Es un esquema inspirado en difusión discreta, sin un modelo que prediga palabras ni la estrategia exacta de LLaDA. Posiciones por rondas no mide velocidad ni coste real.",
+      "file": "modelos-es-diffusion-d6ab597350ac.mp3",
+      "duration": 30.6
     },
     {
       "id": "jepa",
-      "title": "JEPA",
-      "text": "JEPA compara dos vectores. Uno es la predicción. El otro es el objetivo. El error es la distancia entre ellos. No reparte probabilidad sobre una lista de palabras, así que no escribe la frase. Es la familia de Yann LeCun.",
-      "file": "modelos-es-jepa-28afd66a7b52.mp3",
-      "duration": 14.688
+      "title": "Predecir una representación",
+      "text": "El contexto visible alimenta al predictor. En la otra rama, el codificador objetivo recibe la imagen completa y seleccionamos una región de su representación a la salida. Comparamos los dos vectores, componente a componente. Las diferencias al cuadrado producen el error del ejemplo. Esto ilustra el objetivo de I JEPA: predecir representaciones, en lugar de reconstruir directamente píxeles. Los vectores permanecen fijos. La animación calcula el error; no está entrenando el predictor.",
+      "file": "modelos-es-jepa-f76b3d11dc68.mp3",
+      "duration": 31.968
     },
     {
       "id": "jev",
-      "title": "Jev",
-      "text": "De Jev no está publicada la arquitectura. Sí está publicado el contrato. Una sola pasada. Una opción de las que tú declaraste. Una opción permitida puede ser, aun así, la decisión falsa. Dos preguntas pueden salir empatadas sin compartir una sola distribución. Jev no escribe.",
-      "file": "modelos-es-jev-f33597316767.mp3",
-      "duration": 18.972
-    },
-    {
-      "id": "cache",
-      "title": "La factura",
-      "text": "Ahora la factura. Usamos la tarifa que DeepSeek publicó el diecinueve de septiembre de dos mil veintiséis. En Flash, fuera de la hora punta, un millón de tokens acertados cuesta tres milésimas de dólar. Un millón de entrada nueva cuesta quince centavos. Un millón de salida cuesta sesenta centavos. El acierto es cincuenta veces más barato que el fallo. La salida no hereda ese descuento. Se calcula siempre.",
-      "file": "modelos-es-cache-41dbbdd9057c.mp3",
-      "duration": 25.74
-    },
-    {
-      "id": "disk",
-      "title": "Por qué cabe en disco",
-      "text": "Ese acierto cabe en disco, y por eso pueden cobrarlo así. DeepSeek V2 comprime la clave y el valor. Guarda quinientos setenta y seis números por cada token y por cada capa. Una atención completa, con las mismas ciento veintiocho cabezas, guardaría treinta y dos mil setecientos sesenta y ocho números. Unas cincuenta y siete veces más. El anuncio de dos mil veinticuatro ya ponía el acierto a una décima del fallo. Esa cifra es el anuncio viejo, no la tarifa de ahora.",
-      "file": "modelos-es-disk-3a46288df39b.mp3",
+      "title": "Decisiones dentro de un esquema",
+      "text": "Dos preguntas declaran las opciones yes y no. Cada pregunta tiene su propia distribución, que suma cien por cien. En la primera hay empate; la regla de este ejemplo elige la primera opción. En la segunda hay una preferida. Los valores salen dentro del esquema, pero eso no demuestra que sean decisiones verdaderas. Esta parada ilustra la interfaz publicada de Jev. Sus probabilidades son nuestras: no llamamos a su API ni afirmamos conocer sus operaciones internas.",
+      "file": "modelos-es-jev-e1060ebcfdb8.mp3",
       "duration": 30.168
     },
     {
+      "id": "cache",
+      "title": "Tres partes de la factura",
+      "text": "La primera llamada calcula toda la entrada. Después recuperamos la fracción elegida del prefijo. Solo esa parte recibe la tarifa de acierto; la entrada restante conserva la tarifa de fallo. Toda la salida se calcula y cobra en cada llamada. Las curvas suman únicamente llamadas completadas. Con la tarifa Flash fuera de punta contrastada el tres de octubre de dos mil veintiséis, el token recuperado cuesta cincuenta veces menos que el nuevo. Eso no hace cincuenta veces más barata toda la llamada.",
+      "file": "modelos-es-cache-f28fc40e3a09.mp3",
+      "duration": 29.844
+    },
+    {
+      "id": "disk",
+      "title": "Conservar menos valores",
+      "text": "Las dos barras usan la misma escala y crecen con los tokens. En la comparación de DeepSeek V2, la atención completa conserva treinta y dos mil setecientos sesenta y ocho valores por token y capa. La atención latente conserva quinientos setenta y seis. La relación es unas cincuenta y siete veces. La ampliación de la barra pequeña está marcada. Esto cuenta valores de una referencia histórica, no toda la memoria de una GPU ni la arquitectura de los modelos V4 facturados hoy.",
+      "file": "modelos-es-disk-b0c489cd0ddc.mp3",
+      "duration": 29.7
+    },
+    {
       "id": "rule",
-      "title": "La otra regla",
-      "text": "DeepSeek no cobra un recargo por guardar el prefijo. La primera visita paga la entrada nueva. La siguiente, si el prefijo coincide entero, paga el acierto. No hay garantía. Es un sistema de mejor esfuerzo. Anthropic usa otra regla. Guardar cinco minutos cuesta un veinticinco por ciento más que la entrada normal. Leer esa copia cuesta una décima. Con esa regla, la segunda visita ya compensa. La salida, en los dos casos, se paga entera.",
-      "file": "modelos-es-rule-d5bf51101f5b.mp3",
-      "duration": 28.62
+      "title": "Compensar la primera escritura",
+      "text": "Ahora comparamos otra regla, publicada por Anthropic, solo para el prefijo. Escribir una caché de cinco minutos cuesta uno coma veinticinco veces la entrada base; la de una hora cuesta dos veces. La lectura estándar cuesta una décima, y algunos modelos tienen excepciones que puedes seleccionar. La curva incluye el recargo inicial. Con escritura de cinco minutos y lectura estándar, la segunda llamada ya cuesta menos en el acumulado. Aquí usamos un precio base ilustrativo. El sufijo y la salida quedan fuera de esta comparación.",
+      "file": "modelos-es-rule-0f33ba5e0cee.mp3",
+      "duration": 32.436
     }
   ],
   "en": [
     {
       "id": "intro",
-      "title": "Three prices",
-      "text": "A token does not have one price. It has three. Fresh input. A prefix you have already sent. And the output. Only the repeated prefix can get cheaper. We will walk the model families first. Then we will look at the bill.",
-      "file": "modelos-en-intro-1fcb9ca8194b.mp3",
-      "duration": 15.192
+      "title": "A model laboratory",
+      "text": "There are different ways to process information. Some query earlier tokens. Others read the whole input, update a state or fill positions over several rounds. Here we calculate small examples so their operations become visible. Colors identify input, calculation and result. You can pause every step. In the room, each stop has a button to play its explanation. The objects represent operations, not physical machines or trained models.",
+      "file": "modelos-en-intro-ba8db1c9aa39.mp3",
+      "duration": 29.448
     },
     {
       "id": "causal",
-      "title": "Decoder",
-      "text": "This is the family from the language-model notebook, and Grok’s family too. It writes one piece after another. Look at the first sphere. It connects only to itself. The future weighs zero. That is the causal mask, and this page really does compute it. The sentences in that other notebook, by contrast, were written in advance.",
-      "file": "modelos-en-causal-515d7e3a3562.mp3",
-      "duration": 21.6
+      "title": "Causal attention",
+      "text": "Follow the query with the light border. We compare its Q vector with each K key. The mask allows its own position and earlier positions; it blocks the future. Then softmax converts allowed scores into weights that sum to one. They are not all equal. Each V value is multiplied by its weight, and the results are added. The output is a vector, not yet a word. Change the query position to see how its available context changes.",
+      "file": "modelos-en-causal-f46ea5a7f59e.mp3",
+      "duration": 27.072
     },
     {
       "id": "encoder",
-      "title": "Encoder",
-      "text": "An encoder reads backward and forward. That is why every sphere is tied to the first one. A model like BERT does this. It returns a label or a vector. It does not continue a sentence.",
-      "file": "modelos-en-encoder-242348cb309e.mp3",
-      "duration": 12.78
+      "title": "Bidirectional attention",
+      "text": "The query can now use all eight input positions. This is the bidirectional access an encoder such as BERT uses to build representations. Every position is allowed, but their weights can differ: permission and attention are different things. The calculation mixes the values again. This demonstration produces a vector; it does not run a classification task or continue a sentence with a trained model.",
+      "file": "modelos-en-encoder-6c9d4b3b6134.mp3",
+      "duration": 26.388
     },
     {
       "id": "encdec",
-      "title": "Both halves",
-      "text": "Here the work is split. One half reads the whole source, without hiding the future. The other half writes one piece at a time, and at every step it may look at that whole source. This is Vaswani’s diagram, from twenty seventeen. It is also the shape of T5.",
-      "file": "modelos-en-encdec-28aef0fdbfbd.mp3",
-      "duration": 17.892
+      "title": "Reading and generating",
+      "text": "There are two attention operations here. The encoder represents the complete source. The decoder can use only its own past, and also queries that source through cross-attention. Its Q query is compared with keys from encoder states; the weights mix their values. Access to the full source does not unlock future decoder positions. This separation appears in the original Transformer and in T5.",
+      "file": "modelos-en-encdec-e4d50b92356a.mp3",
+      "duration": 25.344
     },
     {
       "id": "moe",
-      "title": "Experts",
-      "text": "Experts are still a decoder. In some layers, each token lights two of the eight boxes. Grok one and DeepSeek belong to this family. Those two of eight are not a quarter of every weight. Attention still uses its own weights on every step.",
-      "file": "modelos-en-moe-e56db175abd8.mp3",
-      "duration": 16.596
+      "title": "The router and experts",
+      "text": "The router calculates eight scores from the input vector. The two highest scores select the working experts. Weights are normalized among those experts and mix their two outputs. Selecting two out of eight does not mean using one quarter of the entire network: other operations also exist. Two out of eight is Grok one’s published configuration, not a rule for every expert model. Scores and transformations in this example are synthetic.",
+      "file": "modelos-en-moe-70164f0ed47f.mp3",
+      "duration": 27.072
     },
     {
       "id": "ssm",
-      "title": "Fixed state",
-      "text": "Watch the sphere. It does not grow when you lengthen the context. It is a state of fixed width. The bars do grow, because they store a key for every token. Jamba mixes the two ideas. It places one attention layer for every seven Mamba layers. The key cache lives in only one eighth of the layers.",
-      "file": "modelos-en-ssm-548140f29ef3.mp3",
-      "duration": 19.008
+      "title": "Memory that updates",
+      "text": "Each input changes the three state values. An input-dependent gate determines how much to retain and how much to incorporate. Values change, but there are still three. This recurrence illustrates fixed-width memory; it does not reproduce the complete Mamba algorithm or calculate its actual memory, which has dimensions per channel and layer. Original Jamba combines the ideas: seven Mamba layers for each attention layer. That ratio counts layers, not bytes.",
+      "file": "modelos-en-ssm-b0bc85e462de.mp3",
+      "duration": 32.472
     },
     {
       "id": "diffusion",
-      "title": "Diffusion",
-      "text": "Diffusion does not wait its turn. Every position is proposed at once, then corrected over several rounds. Piece forty does not wait for piece thirty-nine. The work looks like rounds times length, not one left-to-right pass.",
-      "file": "modelos-en-diffusion-e51b022b7ee2.mp3",
-      "duration": 13.752
+      "title": "Completing several positions",
+      "text": "Compare two rows of eight positions. The autoregressive row adds one position per round. The other begins masked and reveals positions following a multi-round schedule. A round can work on several positions. Change the round count and inspect the same journey from the start. This is a schematic inspired by discrete diffusion, without a word-predicting model or LLaDA’s exact strategy. Positions times rounds does not measure actual speed or cost.",
+      "file": "modelos-en-diffusion-0553f9df308c.mp3",
+      "duration": 29.772
     },
     {
       "id": "jepa",
-      "title": "JEPA",
-      "text": "JEPA compares two vectors. One is the prediction. The other is the target. The error is the distance between them. It does not spread probability over a word list, so it does not write the sentence. This is Yann LeCun’s family.",
-      "file": "modelos-en-jepa-052cfbc34c33.mp3",
-      "duration": 16.379
+      "title": "Predicting a representation",
+      "text": "The visible context feeds the predictor. In the other branch, the target encoder receives the complete image, and a region of its representation is selected at the output. We compare both vectors component by component. Squared differences produce the example error. This illustrates I JEPA’s objective: predicting representations rather than directly reconstructing pixels. The vectors stay fixed. Animation calculates the error; it is not training the predictor.",
+      "file": "modelos-en-jepa-5c0b6bd04551.mp3",
+      "duration": 32.868
     },
     {
       "id": "jev",
-      "title": "Jev",
-      "text": "Jev’s architecture has not been published. The contract has. One pass. One of the options you declared. A permitted option can still be the wrong decision. Two questions can tie without sharing a single distribution. Jev does not write.",
-      "file": "modelos-en-jev-d355d1805b1c.mp3",
-      "duration": 17.856
+      "title": "Decisions within a schema",
+      "text": "Two questions declare yes and no options. Each question has its own distribution, summing to one hundred percent. The first is tied; this example’s rule selects the first option. The second has a preferred option. The returned values fit the schema, but that does not establish true decisions. This stop illustrates Jev’s published interface. The probabilities are ours: we do not call its API or claim to know its internal operations.",
+      "file": "modelos-en-jev-495d9e753ef3.mp3",
+      "duration": 28.62
     },
     {
       "id": "cache",
-      "title": "The bill",
-      "text": "Now the bill. We use the tariff DeepSeek published on the nineteenth of September, twenty twenty-six. On Flash, off peak, a million cache hits cost three thousandths of a dollar. A million fresh input tokens cost fifteen cents. A million output tokens cost sixty cents. A hit is fifty times cheaper than a miss. The output does not inherit that discount. It is computed every time.",
-      "file": "modelos-en-cache-4d5ab82bc7e9.mp3",
-      "duration": 28.152
+      "title": "Three parts of the bill",
+      "text": "The first request calculates all input. Later requests retrieve the selected prefix fraction. Only that part gets the hit rate; remaining input keeps the miss rate. All output is calculated and charged on every request. Curves add completed requests only. With Flash off-peak pricing checked on October third, twenty twenty-six, a retrieved token costs fifty times less than a fresh one. This does not make the entire request fifty times cheaper.",
+      "file": "modelos-en-cache-d0410b415a1e.mp3",
+      "duration": 28.728
     },
     {
       "id": "disk",
-      "title": "Why it fits on disk",
-      "text": "Those hits fit on disk, which is why they can be priced this way. DeepSeek V2 compresses the key and the value. It stores five hundred seventy-six numbers for each token and each layer. Full attention, with the same one hundred twenty-eight heads, would store thirty-two thousand seven hundred sixty-eight numbers. About fifty-seven times more. The twenty twenty-four announcement already priced a hit at one tenth of a miss. That figure is the old announcement, not today’s tariff.",
-      "file": "modelos-en-disk-da990b008343.mp3",
-      "duration": 32.76
+      "title": "Storing fewer values",
+      "text": "Both bars share a scale and grow with token count. In the DeepSeek V2 comparison, full attention stores thirty-two thousand seven hundred sixty-eight values per token and layer. Latent attention stores five hundred seventy-six. The ratio is about fifty-seven times. The magnified small bar is marked. This counts values from a historical reference, not all GPU memory or the architecture of today’s billed V4 models.",
+      "file": "modelos-en-disk-289aef181040.mp3",
+      "duration": 27.756
     },
     {
       "id": "rule",
-      "title": "The other rule",
-      "text": "DeepSeek does not charge extra to store the prefix. The first visit pays for fresh input. The next visit, if the prefix matches completely, pays the hit price. There is no guarantee. It is a best-effort system. Anthropic uses a different rule. Storing a five-minute copy costs twenty-five percent more than ordinary input. Reading that copy costs one tenth. Under that rule, the second visit already pays it back. In both systems, the output is paid in full.",
-      "file": "modelos-en-rule-bf33851f13bb.mp3",
-      "duration": 33.12
+      "title": "Repaying the first write",
+      "text": "Now compare a different rule, published by Anthropic, for the prefix only. Writing a five-minute cache costs one point two five times base input; a one-hour cache costs twice base input. Standard reads cost one tenth, with selectable exceptions for some models. The curve includes the initial premium. With a five-minute write and standard reads, the second request is already cheaper in accumulated cost. We use an illustrative base price here. Suffix and output are excluded from this comparison.",
+      "file": "modelos-en-rule-a95500cbe487.mp3",
+      "duration": 35.28
     }
   ]
 };

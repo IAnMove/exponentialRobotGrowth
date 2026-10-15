@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "We calculate the distribution for the next piece. The continuation in this demonstration is scripted. The longest bar indicates the next expected token; it does not measure whether its content is true.",
+  "duration_ms": 11952,
+  "billed_characters": 201,
+  "sample_rate": 32000,
+  "size_bytes": 192948,
+  "generated_at": "2026-09-26T18:58:07.197575+00:00",
+  "validation": {
+    "audio_sha256": "6d7c6e5a767d9db4727cbd19d2807f6ccd249ae9f072b8799ac3bcf0908fcc4a",
+    "text_sha256": "44907025d58e29a6eb2e75a7a8fc35988b87f2c1f7b13428184b738f81db1c51",
+    "script_sha256": "0713a2784cd571dafbd990ac6c97ad1741cf8dd40dd6e61dfdbc2589a7188844",
+    "decoded_duration_seconds": 11.952,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 11.952
+  }
+}

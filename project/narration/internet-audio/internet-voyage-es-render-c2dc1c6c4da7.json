@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "De vuelta en casa, el navegador recibe y descifra la respuesta. Después interpreta el documento y dibuja la página. Las piezas que ves son una metáfora de la recepción progresiva, no una división real en cuatro paquetes. Una página normalmente necesita más peticiones para imágenes, estilos y scripts, y puede ir mostrando contenido antes de que llegue todo. Tu clic ha conectado equipos locales, operadores, luz bajo el océano y servidores. La distancia importa, pero la rapidez final depende de mucho más que los kilómetros.",
+  "duration_ms": 33228,
+  "billed_characters": 526,
+  "sample_rate": 32000,
+  "size_bytes": 533364,
+  "generated_at": "2026-09-26T19:16:40.022854+00:00",
+  "validation": {
+    "audio_sha256": "1448995dbc6377950a1c587d949ef7d873b3d8fec7373edd0b5f61b8b2cc4788",
+    "text_sha256": "80d789af00dfc380d013ceb4c69c842c9bdbd23f79e80464cb69fefc745e1a1f",
+    "script_sha256": "e0e28f77bbb961a24b27b974875d8d60d223461417948b11e181788a4950c0f6",
+    "decoded_duration_seconds": 33.228,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

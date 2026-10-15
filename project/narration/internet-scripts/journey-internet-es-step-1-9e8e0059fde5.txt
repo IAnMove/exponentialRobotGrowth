@@ -1,0 +1,1 @@
+DNS relaciona nombres con registros, entre ellos direcciones IP. Un resolvedor puede utilizar su caché o consultar otros servidores. Esta consulta es distinta de descargar la página. El armario DNS representa ese servicio distribuido, no una única máquina central.

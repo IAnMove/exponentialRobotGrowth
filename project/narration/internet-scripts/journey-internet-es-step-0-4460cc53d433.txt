@@ -1,0 +1,1 @@
+Tu navegador necesita localizar un servicio y comunicarse con él. El equipo entrega datos a su red local. El router permite continuar hacia otras redes; una antena Wi-Fi no contiene Internet. Aquí el mensaje de ejemplo se divide en piezas numeradas.

@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "The first phase begins on Earth. The idea is not to transport an entire civilization, but to send an industrial seed: equipment for power, excavation, processing, manufacturing and repair. In this lab, we start with one hundred tonnes of equipment already installed in twenty thirty. These are illustrative values, not a mission plan. The question is what happens next: keep importing everything, or use lunar resources to build part of the next generation of equipment.",
+  "duration_ms": 31284,
+  "billed_characters": 470,
+  "sample_rate": 32000,
+  "size_bytes": 502260,
+  "generated_at": "2026-09-26T22:49:21.081456+00:00",
+  "validation": {
+    "audio_sha256": "d67ca74f09f553f643c7747362380a700afcfa2fa80418a0adc17f6cfae97694",
+    "text_sha256": "ae6d5a6b17fe3591ec99c62898d0aec232f6183f64e8fe3be56efe9022cc1be2",
+    "script_sha256": "cab21f18a423cc4eb4f0d1434bcd6d9a194533f55d81c97d555eff9d9f657a71",
+    "decoded_duration_seconds": 31.284,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "HLS regresa a órbita lunar en la arquitectura tripulada. No lleva el escudo ni las aletas de la versión que reentra en la Tierra. El ciclo de carga futuro puede ser diferente. Por eso no mostramos a esta misma nave aterrizando después en la Tierra. Ahora abrimos el plano. Cada nave del mapa representa una entrega lunar como la que acabamos de seguir; los vuelos de apoyo no se suman al contador de entregas.",
+  "duration_ms": 24192,
+  "billed_characters": 409,
+  "sample_rate": 32000,
+  "size_bytes": 388788,
+  "generated_at": "2026-09-27T00:28:20.880016+00:00",
+  "validation": {
+    "audio_sha256": "65fe5f98612257918913f8abf2bf647703a86f14db54220a6739c9f9bcaf5dc7",
+    "text_sha256": "3fe636467b01d7c102d9272204587995a6d7339b9c151994e3b90da0ee28e1d1",
+    "script_sha256": "e364ad0fa4d130e5aa16a8747e443b2f9866192e2dc0b3505840792b57e2d524",
+    "decoded_duration_seconds": 24.192,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

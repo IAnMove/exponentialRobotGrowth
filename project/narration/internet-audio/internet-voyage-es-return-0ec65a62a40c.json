@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Ahora la respuesta recorre Internet hacia tu ordenador. Cambiamos el dorado por verde para distinguir la vuelta. La respuesta suele ser mayor que la petición y se transporta en muchos segmentos y paquetes. En este ejemplo usamos HTTPS sobre TCP: TCP permite entregar un flujo de bytes ordenado y recuperar pérdidas mediante retransmisiones. La vuelta puede seguir una ruta diferente; usamos el mismo corredor solo para que puedas comparar. Un sitio real también puede usar HTTP tres sobre QUIC.",
+  "duration_ms": 31752,
+  "billed_characters": 494,
+  "sample_rate": 32000,
+  "size_bytes": 509748,
+  "generated_at": "2026-09-26T19:16:36.780946+00:00",
+  "validation": {
+    "audio_sha256": "1d72f9438a0f06baf5c0462ed7cc9fb8763359a152c5275c680738b72a551af9",
+    "text_sha256": "d3f542b54fa1d689365492170b89a1f8bda1e2c789aa072606626447fd1be3a3",
+    "script_sha256": "8fa5d320d51ecbdf727dc1368a0387bddf005bc8bf2397aa869b9c1ecfec3564",
+    "decoded_duration_seconds": 31.752,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "El contexto visible alimenta al predictor. En la otra rama, el codificador objetivo recibe la imagen completa y seleccionamos una región de su representación a la salida. Comparamos los dos vectores, componente a componente. Las diferencias al cuadrado producen el error del ejemplo. Esto ilustra el objetivo de I JEPA: predecir representaciones, en lugar de reconstruir directamente píxeles. Los vectores permanecen fijos. La animación calcula el error; no está entrenando el predictor.",
+  "duration_ms": 31968,
+  "billed_characters": 487,
+  "sample_rate": 32000,
+  "size_bytes": 513204,
+  "generated_at": "2026-10-03T03:53:26.591774+00:00"
+}

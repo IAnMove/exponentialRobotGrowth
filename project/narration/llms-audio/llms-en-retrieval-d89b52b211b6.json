@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Here the application can retrieve a source. In the museum experiment, enabling retrieval adds a record to the context. Without a document, we continue without that evidence. Retrieved text does not change the model weights. An outdated source can lead to a wrong answer. Search is an additional tool, not something every model performs automatically.",
+  "duration_ms": 22500,
+  "billed_characters": 350,
+  "sample_rate": 32000,
+  "size_bytes": 361716,
+  "generated_at": "2026-09-20T18:03:51.478514+00:00",
+  "validation": {
+    "audio_sha256": "9a51cfc787e79edbae4e1965296f93b6376b9d470ad4216c24a8936d9b24b693",
+    "text_sha256": "9f3297e8b3f8897737213246177c4e962623e4ecb7ca41ea0451be29a3dfad13",
+    "script_sha256": "26012b697d0c0b8ed90d1dd6438c14c2d94f28a8d0356929f60f96bf99374faf",
+    "decoded_duration_seconds": 22.5,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 22.5
+  }
+}

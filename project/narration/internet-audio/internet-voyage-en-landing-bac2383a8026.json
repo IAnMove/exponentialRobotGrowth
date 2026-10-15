@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "We reach the Spanish end of the MAREA cable, in Sopelana, near Bilbao. Here, transmission equipment prepares optical signals for the submarine link. Multiple wavelengths can share a fiber, acting as separate channels of light. This building and enlarged cutaway are illustrations, not installation blueprints. The cable endpoints are real: Sopelana and Virginia Beach. Around six thousand six hundred kilometers of cable connect them.",
+  "duration_ms": 27612,
+  "billed_characters": 434,
+  "sample_rate": 32000,
+  "size_bytes": 443508,
+  "generated_at": "2026-09-26T19:16:48.441031+00:00",
+  "validation": {
+    "audio_sha256": "01deb85f3b0b6801c7e60c3298d418457f432bc60dbabf42651f629b3cef9b8a",
+    "text_sha256": "bc6bd3afb8a1d66952c5c3bc9d0aab0a0a6d4d679e79314e68a38f7602e33565",
+    "script_sha256": "36f226b0cbf0432f86591d8152ee05e6e7ea7c2f224ad2ab05b0597726e77f2c",
+    "decoded_duration_seconds": 27.612,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

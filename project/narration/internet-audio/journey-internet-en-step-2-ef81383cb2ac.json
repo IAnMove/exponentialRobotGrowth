@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Each router forwards according to its routing information. Cut the direct link and watch the alternate route. The diagram compresses distances and equipment: data travels as physical signals, and real routing changes can take time.",
+  "duration_ms": 14760,
+  "billed_characters": 231,
+  "sample_rate": 32000,
+  "size_bytes": 237876,
+  "generated_at": "2026-09-26T02:50:20.854492+00:00",
+  "validation": {
+    "audio_sha256": "db22272715726e8f40283ddfc7083f9b4221291252359993c15a427e698d4b14",
+    "text_sha256": "f51d9a7cdaac05491f479dc4f5f71da81ab3406ad821730e36b5b680fe7e8535",
+    "script_sha256": "4a6d077e9a294e2e3f2a110a92db6eacc51223d536b4f8cf1674daf11f97f043",
+    "decoded_duration_seconds": 14.76,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

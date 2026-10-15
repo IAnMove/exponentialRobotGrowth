@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Depósito, vuelos cisterna y nave lunar: una entrega requiere una campaña de apoyo. No fijamos un número de vuelos cisterna. Los puntos verdes muestran el combustible y el oxidante que se transfieren. La nave lunar no viaja con solo la energía que le dio el despegue. Una entrega puede necesitar varios lanzamientos de apoyo.",
+  "duration_ms": 19476,
+  "billed_characters": 324,
+  "sample_rate": 32000,
+  "size_bytes": 313332,
+  "generated_at": "2026-09-27T00:28:13.190319+00:00",
+  "validation": {
+    "audio_sha256": "28c857d21842765de428d101b313513a2b6db729dd179fb73f907effe9cf4c87",
+    "text_sha256": "e4e1cef2fbeb76e7d37d9e6bcfad5e891fbe949044e33b14fc7e78e977d6f140",
+    "script_sha256": "1fc024c8ec2b81790ddcdbdf9651d6c7876034a2fff2613acbc1241a3c2d605b",
+    "decoded_duration_seconds": 19.476,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Un robot construido todavía no produce. El lote termina al cerrar su día de fabricación, pasa dos días completos en puesta en marcha y entra en la flota al comienzo del día de fabricación más tres. Sigue su identificador entre montaje, pruebas y puesto activo. Puedes retroceder para comprobar que aparece primero construido, después pendiente y finalmente trabajando. La espera es un supuesto del ejemplo. Si no se reinvierte o no hay espacio, no aparece un productor nuevo.",
+  "duration_ms": 30744,
+  "billed_characters": 475,
+  "sample_rate": 32000,
+  "size_bytes": 493620,
+  "generated_at": "2026-10-03T04:31:52.310741+00:00"
+}

@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Entramos en un centro de datos ilustrativo de Ashburn. Los routers y switches encaminan el tráfico hacia el servicio de destino. Puede haber un balanceador y muchas máquinas trabajando detrás de una sola web. Aquí iluminamos una para seguir la historia. En el extremo que termina la conexión segura se descifra la petición; la aplicación prepara la respuesta y vuelve a cifrarla para enviarla. Estos racks representan hardware realista, pero no el plano de un centro de datos concreto.",
+  "duration_ms": 28620,
+  "billed_characters": 485,
+  "sample_rate": 32000,
+  "size_bytes": 459636,
+  "generated_at": "2026-09-26T19:16:35.622539+00:00",
+  "validation": {
+    "audio_sha256": "2c5b28009f1fc3f7ff92a6ae196828c9eb4a27eb8f2e2d603080def2e42ace6b",
+    "text_sha256": "da0e1a35ac40eb8544150c5394e64c069a139cbd996b719afa6a65cfb9324072",
+    "script_sha256": "bdf14bf7fe1d6eb74326d19a0bdc6743f3c26f7b41376f73f7a4d252cfb109d7",
+    "decoded_duration_seconds": 28.62,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

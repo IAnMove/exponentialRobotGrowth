@@ -1,0 +1,22 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "At this station, people or robots assemble the frame supporting the torso and limbs. Observe the product sample, its identifier and work progress. The same identifier connects a part to its steps through the line. Figures at each station are samples of the process; queues and counters show the actual model quantities. An assembled frame is not an operational robot yet: actuators, a battery, calibration and testing are still needed. Automating this station while another is slower can fill a queue without finishing many additional robots. Automatic mode reinforces stations with lower daily capacity. You can turn it off to decide where to send a robot the line itself has already finished.",
+  "duration_ms": 43488,
+  "billed_characters": 694,
+  "sample_rate": 32000,
+  "size_bytes": 697524,
+  "generated_at": "2026-10-03T06:32:00.177028+00:00",
+  "validation": {
+    "ffmpeg_decode": "passed",
+    "decoded_duration_seconds": 43.488,
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "audio_sha256": "0f96f48adfca41a1dbea1dd62d7a3d48bc673a6b2523384af69c2b0ae9b1124b",
+    "text_sha256": "f03a3a884026ac40746969cc27beb5be3eb524a207090b63544a37848dd3029d",
+    "script_sha256": "8b8bed5f6975c80d7855dbb01e8d2a1a73e9d61c0c4c5b6369248f0a9ddbeb19"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Este es el modelo tridimensional oficial de MarCO, de la NASA. Puedes girarlo y acercarte a sus componentes. El cuerpo central contiene los equipos del vehículo. Los dos conjuntos de paneles solares generan electricidad. La gran antena plana y desplegable es un reflector de comunicaciones, no otro panel solar. MarCO fue una pareja de pequeños vehículos que demostró el uso de CubeSats en el espacio profundo. Aquí sirve para reconocer tecnología espacial real; no es un colector de Dyson. Selecciona paneles, antena o cuerpo para resaltar cada parte, y vuelve después al recorrido de las escalas.",
+  "duration_ms": 38484,
+  "billed_characters": 598,
+  "sample_rate": 32000,
+  "size_bytes": 617460,
+  "generated_at": "2026-09-20T05:30:48.509651+00:00",
+  "validation": {
+    "audio_sha256": "1d5bac913c0b4a00a9d1f82604e180004460d4da88fceb0bae00565b10640b1e",
+    "text_sha256": "e8afa77c627ccbcaab7257a5a2a76d6e9cdccc0b90b5327d400a6bfec24dde76",
+    "script_sha256": "9b91b51c2fd6022bd444ed2fe7156edace8e1f40399abf4133aa285b0800330d",
+    "decoded_duration_seconds": 38.484,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

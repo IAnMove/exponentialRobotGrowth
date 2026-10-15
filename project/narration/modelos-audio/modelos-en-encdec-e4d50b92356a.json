@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "There are two attention operations here. The encoder represents the complete source. The decoder can use only its own past, and also queries that source through cross-attention. Its Q query is compared with keys from encoder states; the weights mix their values. Access to the full source does not unlock future decoder positions. This separation appears in the original Transformer and in T5.",
+  "duration_ms": 25344,
+  "billed_characters": 393,
+  "sample_rate": 32000,
+  "size_bytes": 407220,
+  "generated_at": "2026-10-03T03:54:10.814165+00:00"
+}

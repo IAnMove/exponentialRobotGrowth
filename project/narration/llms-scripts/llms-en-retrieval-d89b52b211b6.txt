@@ -1,0 +1,1 @@
+Here the application can retrieve a source. In the museum experiment, enabling retrieval adds a record to the context. Without a document, we continue without that evidence. Retrieved text does not change the model weights. An outdated source can lead to a wrong answer. Search is an additional tool, not something every model performs automatically.

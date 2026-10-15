@@ -1,0 +1,1 @@
+Another piece: the input produces queries, keys and values. The query is compared with the keys using dot products. The mask blocks the future. Softmax normalizes the row. The coefficients mix the values into another vector. Residual connections and the network transform the result. This small window is recomputed to show the operations; a real implementation can reuse a cache.

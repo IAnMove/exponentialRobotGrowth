@@ -1,5 +1,5 @@
 import * as THREE from './vendor/three.module.js';
-import {WORLD,roadRoute,routePoint} from './world.js';
+import {WORLD,roadRoute,routePoint,districtWorkPoint,districtContactTargets} from './world.js';
 
 // Every figure represents one person or one robot in the simulation.
 export function createCharacters(scene,industries){
@@ -12,31 +12,26 @@ export function createCharacters(scene,industries){
   const cube=new THREE.BoxGeometry(1,1,1),sphere=new THREE.SphereGeometry(1,8,6);
   const capsule=new THREE.CapsuleGeometry(.08,.25,3,6);
   const meshes={},capacity=620;
-  function instances(name,geometry,material,n){const m=new THREE.InstancedMesh(geometry,material,n);m.instanceMatrix.setUsage(THREE.DynamicDrawUsage);m.castShadow=true;m.frustumCulled=false;group.add(m);meshes[name]=m;return m;}
+  function instances(name,geometry,material,n){const m=new THREE.InstancedMesh(geometry,material,n);m.instanceMatrix.setUsage(THREE.DynamicDrawUsage);m.castShadow=true;m.frustumCulled=false;m.count=0;m.instanceMatrix.array.fill(0);if(/Body|Head|Arms/.test(name)){m.setColorAt(0,new THREE.Color(0));m.instanceColor.array.fill(0);}group.add(m);meshes[name]=m;return m;}
   for(const type of ['h','r']){
     const n=type==='h'?74:capacity;
     instances(type+'Body',cube,shell,n);instances(type+'Head',sphere,type==='h'?skin:shell,n);
     instances(type+'Face',cube,visor,n);instances(type+'Hips',cube,joint,n);
     instances(type+'Arms',capsule,type==='h'?shell:shell,n*2);instances(type+'Legs',capsule,joint,n*2);instances(type+'Feet',cube,joint,n*2);
+    instances(type+'Hands',sphere,joint,n*2);
     instances(type+'Cargo',cube,new THREE.MeshStandardMaterial({color:0xe7b36a,roughness:.8}),n);
   }
   instances('hHat',sphere,helmet,74);instances('hBrim',cube,helmet,74);
   const dummy=new THREE.Object3D(),base=new THREE.Matrix4(),matrix=new THREE.Matrix4(),q=new THREE.Quaternion(),pos=new THREE.Vector3(),scale=new THREE.Vector3(1.35,1.35,1.35),axis=new THREE.Vector3(0,1,0),color=new THREE.Color();
   const skins=[0xd0a078,0x946448,0xe5be97,0xb07a58,0x704c37],jackets=[0x71a8bd,0x588bad,0x8fbdb0,0x718cba];
-  let run,humans=[],exports=[],chargeSlots=new Map(),builderSlots=new Map(),liveRates=[];
-  function workPoint(site,slot){const s=industries[site];let x,z;if(slot<18){x=-5.7+(slot%9)*1.42;z=4.1+Math.floor(slot/9)*1.8;}else if(slot<30){const n=slot-18;x=n%2?-7.15:7.15;z=-5+Math.floor(n/2)*2;}else{const n=slot-30;x=-5.7+(n%9)*1.42;z=[-5.8,-.1,2.7][Math.min(2,Math.floor(n/9))];}let facing=Math.PI;if(site===7&&slot<10){x=-4.8+(slot%5)*2.4;z=slot<5?1.4:-2;facing=slot<5?Math.PI:0;}else if(site===2&&slot<6){x=-4+(slot%3)*4;z=slot<3?3.2:-.4;facing=slot<3?Math.PI:0;}else if(site===3&&slot<8){x=-4.8+(slot%4)*3.1;z=slot<4?3.4:-.4;facing=slot<4?Math.PI:0;}else if(site===5&&slot<8){x=-4+(slot%4)*2.5;z=slot<4?3.5:-.2;facing=slot<4?Math.PI:0;}const r=Math.hypot(x+1.4,z+1.2),ground=site===0&&r>=1.4&&r<7.4?.05+Math.floor((r-1.4)/1.2)*.28:0;return {x:s.x+x,z:s.z+z,ground,angle:facing};}
+  let run,humans=[],exports=[],chargeSlots=new Map(),builderSlots=new Map(),liveRates=[],records=[],summary=null,disposed=false;
+  const workPoint=(site,slot)=>districtWorkPoint(industries,site,slot);
   function homePoint(id){return {x:WORLD.home.x-5+(id%2)*10+(id%5-2)*.6,z:WORLD.home.z-3+(Math.floor(id/2)%2)*6+2.6};}
   function mealPoint(id){const table=Math.floor(id/4),seat=id%4;return {x:WORLD.canteen.x-5.5+(table%4)*3.6+(seat%2?.55:-.55),z:WORLD.canteen.z+2+Math.floor(table/4)*3+(seat<2?-1.1:1.1),angle:seat<2?0:Math.PI,seated:true};}
   function leisurePoint(id,t){const angle=id*2.39996,radius=1.2+Math.sqrt(id/74)*5.9;return {x:WORLD.park.x+Math.cos(angle)*radius+Math.sin(t*.18+id)*.18,z:WORLD.park.z+Math.sin(angle)*radius*.82,angle:angle+.7,walking:id%5===0};}
   function walk(a,b,t){return {...routePoint(roadRoute(a,b),t),walking:true};}
-  function taskPose(a,p,motion){
-    if(!liveRates[a.site])return {...p,angle:(p.angle??Math.PI)+(a.id%3-1)*.25,working:false};
-    // Short return trips connect a workstation to its material pick-up point.
-    const carrier=a.id%3===0&&a.slot<18&&p.angle!==0,t=(motion*.13+a.id*.618)%1;
-    if(!carrier||t<.42)return {...p,angle:(p.angle??Math.PI)+(a.id%3-1)*.15,working:true};
-    const progress=t<.64?(t-.42)/.22:t<.78?1:1-(t-.78)/.22;
-    return {...p,x:p.x+progress*.45,z:p.z+progress*1.4,angle:t<.78?.31:Math.PI+.31,walking:t<.64||t>=.78,carrying:t>=.64,working:false};
-  }
+  function taskPose(a,p,motion){if(!liveRates[a.site])return {...p,working:false};return {...p,working:true,controller:a.site===7||a.slot>=industries[a.site].humans};}
+
   function rebuild(next){run=next;humans=[];let id=0;industries.forEach((site,i)=>{for(let slot=0;slot<site.humans;slot++){const replaced=run.frames.find(f=>f.robots[i]>slot);humans.push({id:id++,site:i,slot,replacedAt:replaced?.absHour??Infinity});}});exports=run.productionEvents.filter(e=>e.outgoing>0);}
   function humanPosition(a,time,motion){const hour=((time%24)+24)%24,work=workPoint(a.site,a.slot),home=homePoint(a.id),meal=mealPoint(a.id),rest=leisurePoint(a.id,motion);
     if(time>=a.replacedAt){
@@ -67,7 +62,7 @@ export function createCharacters(scene,industries){
     if(duty<.35)return {...walk(dest,charger,duty/.35),color:0x80d1d4};
     if(duty<2.7)return {...charger,color:0x80d1d4,service:duty>=2};
     if(duty<3)return {...walk(charger,dest,(duty-2.7)/.3),color:0x80d1d4};
-    if(builderSlots.has(a.id)){const s=industries[a.site];return {x:s.x+5.4,z:s.z-4.7+builderSlots.get(a.id)*1.4,angle:Math.PI*.5,working:true,color:0xffb976};}
+    if(builderSlots.has(a.id)){const s=industries[a.site];return {x:s.x+5.4,z:s.z-4.7+builderSlots.get(a.id)*1.4,angle:Math.PI*.5,working:true,controller:true,builder:true,color:0xffb976};}
     return {...taskPose(a,dest,motion),color:0xe9f1ed};
   }
   function part(name,id,x,y,z,sx,sy,sz,rx=0,rz=0){dummy.position.set(x,y,z);dummy.rotation.set(rx,0,rz);dummy.scale.set(sx,sy,sz);dummy.updateMatrix();matrix.multiplyMatrices(base,dummy.matrix);meshes[name].setMatrixAt(id,matrix);}
@@ -78,24 +73,29 @@ export function createCharacters(scene,industries){
     part(type+'Body',id,0,.79,0,human?.36:.32,.42,.24);
     part(type+'Head',id,0,1.14,0,human?.2:.24,human?.23:.21,.2);
     part(type+'Face',id,0,1.16,.19,human?.12:.34,human?.035:.12,.06);
-    part(type+'Cargo',id,0,.65,.43,p.carrying?.45:0,p.carrying?.4:0,p.carrying?.35:0);
+    const controller=Boolean(p.working&&p.controller);part(type+'Cargo',id,0,controller?.95:.65,.43,controller||p.carrying?.45:0,controller?.18:p.carrying?.4:0,controller?.25:p.carrying?.35:0);
     tint(type+'Body',id,human?jackets[a.id%jackets.length]:p.color);
     tint(type+'Head',id,human?skins[a.id%skins.length]:p.color);
     if(human){const hat=p.working||p.walking;part('hHat',id,0,1.32,0,hat?.23:0,hat?.12:0,hat?.23:0);part('hBrim',id,0,1.28,.025,hat?.49:0,.04,hat?.47:0);}
-    for(let side=0;side<2;side++){const sign=side?1:-1,leg=sit?-1.25:gait*sign,arm=p.carrying?-1.1:p.walking?-leg:sit?-.9:p.working?-.6+Math.sin(motion*3+a.id)*.23:.05;
-      part(type+'Legs',id*2+side,sign*.105,.48-Math.cos(leg)*.2,-Math.sin(leg)*.2,1,1,1,leg);
-      part(type+'Feet',id*2+side,sign*.105,.48-Math.cos(leg)*.4,-Math.sin(leg)*.4+.06,.14,.1,.24,leg*.25);
-      part(type+'Arms',id*2+side,sign*.26,.92-Math.cos(arm)*.19,-Math.sin(arm)*.19,1,1,1,arm,sign*.06);
+    const contactPoints=[];for(let side=0;side<2;side++){const sign=side?1:-1,leg=sit?-1.25:gait*sign,arm=p.carrying?-1.1:p.walking?-leg:sit?-.9:.05;
+      part(type+'Legs',id*2+side,sign*.105,.48-Math.cos(leg)*.2,-Math.sin(leg)*.2,1,1,1,leg);part(type+'Feet',id*2+side,sign*.105,.48-Math.cos(leg)*.4,-Math.sin(leg)*.4+.06,.14,.1,.24,leg*.25);
+      if(p.working){const shoulder=new THREE.Vector3(sign*.26,.92,0).applyMatrix4(base),target=controller?new THREE.Vector3(sign*.17,1.04,.43).applyMatrix4(base):new THREE.Vector3(...districtContactTargets(industries,a.site,a.slot).targets[side]),delta=target.clone().sub(shoulder),length=delta.length();dummy.position.copy(shoulder).add(target).multiplyScalar(.5);dummy.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),delta.normalize());dummy.scale.set(1.35,length/.41,1.35);dummy.updateMatrix();meshes[type+'Arms'].setMatrixAt(id*2+side,dummy.matrix);dummy.position.copy(target);dummy.quaternion.identity();dummy.scale.set(.10,.10,.10);dummy.updateMatrix();meshes[type+'Hands'].setMatrixAt(id*2+side,dummy.matrix);contactPoints.push({side,point:target.toArray(),shoulder:shoulder.toArray(),reach:length,kind:controller?'handheld-controller':'representative-task-material',countsAsObject:false});
+      }else{part(type+'Arms',id*2+side,sign*.26,.92-Math.cos(arm)*.19,-Math.sin(arm)*.19,1,1,1,arm,sign*.06);part(type+'Hands',id*2+side,sign*.26,.92-Math.cos(arm)*.38,-Math.sin(arm)*.38,.08,.08,.08);}
       tint(type+'Arms',id*2+side,human?jackets[a.id%jackets.length]:p.color);
     }
+    records.push({id:type+'-'+a.id,type:human?'human':'robot',site:a.site??null,slot:a.slot??null,instance:id,position:[p.x,.35+(p.ground??0)+bodyY,p.z],working:!!p.working,walking:!!p.walking,controller,contactPoints,representedCount:a.representedCount||1,aggregate:!!a.aggregate,identityRanges:a.identityRanges||null,role:p.builder?'construction':p.service?'maintenance':p.color===0x80d1d4?'charge-or-service':p.working?'task':p.walking?'travel':human?'off-shift':'idle'});
   }
-  function update(frame,phase,motion,rates=frame.flow){liveRates=rates;const time=frame.absHour+phase;let hi=0,ri=0;chargeSlots=new Map();builderSlots=new Map();const crews=Array(9).fill(0);run.deployments.forEach(a=>{if(time<a.ready)return;if(((time+a.id*7)%24)<3)chargeSlots.set(a.id,chargeSlots.size);else if(frame.projects[a.site]&&crews[a.site]<2)builderSlots.set(a.id,crews[a.site]++);});humans.forEach(a=>{const p=humanPosition(a,time,motion);if(p)draw('h',hi++,a,p,motion);});
-    run.deployments.forEach(a=>{const p=robotPosition(a,time,motion);if(p)draw('r',ri++,a,p,motion);});
-    // Finished robots destined for other uses leave the district, rather than accumulating forever.
-    const event=exports.find(e=>e.hour===frame.absHour);if(event)for(let j=0;j<event.outgoing&&ri<capacity;j++){const p=walk({x:WORLD.hub.x+(j%6-2.5)*1.5,z:WORLD.hub.z+2},{x:48,z:44},phase);draw('r',ri++,{id:900+j},{...p,color:0xe9f1ed},motion);}
-    Object.entries(meshes).forEach(([key,m])=>{m.count=(key[0]==='h'?hi:ri)*(/Arms|Legs|Feet/.test(key)?2:1);m.instanceMatrix.needsUpdate=true;if(m.instanceColor)m.instanceColor.needsUpdate=true;});
-    return {visibleHumans:hi,visibleRobots:ri};
-  }
-  return {rebuild,update};
-}
 
+  function update(frame,phase,motion,rates=frame.flow){if(disposed||!run)return {visibleHumans:0,visibleRobots:0};const fraction=Number.isFinite(phase)?THREE.MathUtils.clamp(phase,0,.999999):0,time=Number(frame.absHour)+fraction;motion=time;liveRates=frame.flow.map((rate,i)=>Number(frame.capacity[i])>0?rate:0);let hi=0,ri=0;records=[];for(const mesh of Object.values(meshes)){mesh.instanceMatrix.array.fill(0);mesh.instanceColor?.array.fill(0);}chargeSlots=new Map();builderSlots=new Map();const crews=Array(9).fill(0);
+    run.deployments.forEach(a=>{if(time<a.ready)return;if(((time+a.id*7)%24)<3)chargeSlots.set(a.id,chargeSlots.size);else if(frame.projects[a.site]&&crews[a.site]<2)builderSlots.set(a.id,crews[a.site]++);});
+    humans.forEach(a=>{const p=humanPosition(a,time,motion);if(p){if(hi>=74)throw new RangeError('Human district figure capacity exceeded');draw('h',hi++,a,p,motion);}});
+    const robotFigures=[];run.deployments.forEach(a=>{const p=robotPosition(a,time,motion);if(p)robotFigures.push({a,p});});
+    const event=exports.find(e=>e.hour===frame.absHour);if(event){const first=exports.filter(e=>e.hour<event.hour).reduce((n,e)=>n+e.outgoing,0);for(let j=0;j<event.outgoing;j++){const p=walk({x:WORLD.hub.x+(j%6-2.5)*1.5,z:WORLD.hub.z+2},{x:48,z:44},fraction);robotFigures.push({a:{id:900+first+j,representedCount:1,identityRanges:[{prefix:'export-',idStart:first+j,idEnd:first+j+1}]},p:{...p,color:0xe9f1ed}});}}
+    if(robotFigures.length>capacity){const tail=robotFigures.splice(capacity-1),ranges=tail.map(({a})=>a.identityRanges||[{prefix:'deployment-',idStart:a.id,idEnd:a.id+1}]).flat();robotFigures.push({a:{id:999999,aggregate:true,representedCount:tail.reduce((n,{a})=>n+(a.representedCount||1),0),identityRanges:ranges},p:{x:WORLD.hub.x,z:WORLD.hub.z+2,angle:0,color:0xe9f1ed}});}
+    for(const {a,p}of robotFigures)draw('r',ri++,a,p,motion);
+    Object.entries(meshes).forEach(([key,mesh])=>{mesh.count=(key[0]==='h'?hi:ri)*(/Arms|Legs|Feet|Hands/.test(key)?2:1);mesh.instanceMatrix.needsUpdate=true;if(mesh.instanceColor)mesh.instanceColor.needsUpdate=true;mesh.boundingSphere=null;mesh.boundingBox=null;});group.updateMatrixWorld(true);
+    summary={time,visibleHumans:hi,visibleRobots:ri,representedHumans:records.filter(r=>r.type==='human').reduce((n,r)=>n+r.representedCount,0),representedRobots:records.filter(r=>r.type==='robot').reduce((n,r)=>n+r.representedCount,0),contacts:records.flatMap(r=>r.contactPoints),scope:'One figure per visible person or robot; overflow is an explicit aggregate with identity ranges. Handheld devices and task samples are illustrative equipment.'};return summary;
+  }
+  const resources=[],owned=new Set();group.traverse(o=>{for(const resource of[o.isInstancedMesh?o:null,o.geometry,...(Array.isArray(o.material)?o.material:[o.material])])if(resource&&!owned.has(resource)){owned.add(resource);resources.push(resource);}});
+  return {group,parts:{meshes,get records(){return records;}},resources,rebuild,update,getSummary:()=>summary,dispose(){if(disposed)return;disposed=true;for(const resource of resources)resource.dispose?.();group.removeFromParent();}};
+}

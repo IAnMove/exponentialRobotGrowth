@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "In the bedroom, observe a blanket and two pillows. The chore requires reaching the cloth, spreading it and arranging the pillows through visible contacts. The bed keeps its location and parts. A made bed differs from merely hiding a mark or rotating the entire blanket without an action. Our cloth representation is geometric: it does not calculate folds, tension or a real grasping strategy. Research robots have already been shown making beds; transferring that capability to many homes and handling failures without assistance requires more than this animation. Making the bed represents ten active reference minutes. The person performs the same operations in the human scenario, while delegation can release those minutes under the capabilities and assistance you selected.",
+  "duration_ms": 47160,
+  "billed_characters": 778,
+  "sample_rate": 32000,
+  "size_bytes": 756276,
+  "generated_at": "2026-10-03T00:24:16.804368+00:00"
+}

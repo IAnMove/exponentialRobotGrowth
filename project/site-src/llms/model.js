@@ -17,12 +17,16 @@ export function softmax(logits,temperature=1){
 }
 // Fixed, untrained weights: real tensor operations, not a pretrained model.
 const matrix=(rows,cols,seed)=>Array.from({length:rows},(_,i)=>Array.from({length:cols},(_,j)=>Math.sin((i+1)*13+(j+1)*7+seed)*.45));
-export const TOY_WEIGHTS={Q:matrix(6,3,1),K:matrix(6,3,8),V:matrix(6,3,17),O:matrix(3,6,21),F1:matrix(6,12,29),F2:matrix(12,6,35)};
-export function matmul(a,b){return a.map(row=>b[0].map((_,j)=>row.reduce((sum,x,k)=>sum+x*b[k][j],0)));}
+export const TOY_WEIGHTS=Object.freeze(Object.fromEntries(Object.entries({Q:matrix(6,3,1),K:matrix(6,3,8),V:matrix(6,3,17),O:matrix(3,6,21),F1:matrix(6,12,29),F2:matrix(12,6,35)}).map(([name,rows])=>[name,Object.freeze(rows.map(row=>Object.freeze(row)))])));
+export function matmul(a,b){
+  const valid=m=>Array.isArray(m)&&m.length>0&&Array.isArray(m[0])&&m[0].length>0&&m.every(row=>Array.isArray(row)&&row.length===m[0].length&&row.every(Number.isFinite));
+  if(!valid(a)||!valid(b)||a[0].length!==b.length)throw new RangeError('Compatible finite rectangular matrices required');
+  return a.map(row=>b[0].map((_,j)=>row.reduce((sum,x,k)=>sum+x*b[k][j],0)));
+}
 const norm=row=>{const mean=row.reduce((a,b)=>a+b,0)/row.length,variance=row.reduce((a,b)=>a+(b-mean)**2,0)/row.length;return row.map(x=>(x-mean)/Math.sqrt(variance+1e-5));};
 const add=(a,b)=>a.map((row,i)=>row.map((v,j)=>v+b[i][j]));
 export function transformerTrace(tokens,offset=0){
-  if(!tokens.length)throw new RangeError('At least one token required');
+  if(!Array.isArray(tokens)||!tokens.length||tokens.some(t=>typeof t!=='string')||!Number.isInteger(offset)||offset<0)throw new RangeError('Nonempty string tokens and a nonnegative integer offset required');
   const X=tokens.map((token,i)=>vector(token,i+offset)),Q=matmul(X,TOY_WEIGHTS.Q),K=matmul(X,TOY_WEIGHTS.K),V=matmul(X,TOY_WEIGHTS.V);
   const scores=Q.map(q=>K.map(k=>q.reduce((s,x,i)=>s+x*k[i],0)/Math.sqrt(3)));
   const masked=scores.map((row,i)=>row.map((x,j)=>j>i?-Infinity:x));

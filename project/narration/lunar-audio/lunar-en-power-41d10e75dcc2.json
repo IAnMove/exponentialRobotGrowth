@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Before multiplying factories, we must keep them running. The base needs electrical generation, storage or complementary sources, distribution and thermal control. Many lunar regions have nights lasting roughly two weeks; the specific location matters. In the simulation, effective uptime reduces manufacturing speed. Each tonne of industrial capacity also requires an assumed amount of power. Once we reach the available power ceiling, we cannot activate more equipment even if components remain in storage.",
+  "duration_ms": 33768,
+  "billed_characters": 507,
+  "sample_rate": 32000,
+  "size_bytes": 542004,
+  "generated_at": "2026-09-26T22:49:25.944499+00:00",
+  "validation": {
+    "audio_sha256": "dc1c864fd95fbfe629d277458bc3de7e2a9da0f25f314799ba93dad9f8e307ae",
+    "text_sha256": "2af3b7a3573b6058569c2a8abab0db3be677e01c948d95f372a7e90a023d38ef",
+    "script_sha256": "52f3cf0e684b72c110dc80410162b3282016a8e90a90d0d9cbcdefd251edefd6",
+    "decoded_duration_seconds": 33.768,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

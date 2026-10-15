@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Each input changes the three state values. An input-dependent gate determines how much to retain and how much to incorporate. Values change, but there are still three. This recurrence illustrates fixed-width memory; it does not reproduce the complete Mamba algorithm or calculate its actual memory, which has dimensions per channel and layer. Original Jamba combines the ideas: seven Mamba layers for each attention layer. That ratio counts layers, not bytes.",
+  "duration_ms": 32472,
+  "billed_characters": 459,
+  "sample_rate": 32000,
+  "size_bytes": 521268,
+  "generated_at": "2026-10-03T03:54:21.763142+00:00"
+}

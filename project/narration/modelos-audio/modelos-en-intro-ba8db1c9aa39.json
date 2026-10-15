@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "There are different ways to process information. Some query earlier tokens. Others read the whole input, update a state or fill positions over several rounds. Here we calculate small examples so their operations become visible. Colors identify input, calculation and result. You can pause every step. In the room, each stop has a button to play its explanation. The objects represent operations, not physical machines or trained models.",
+  "duration_ms": 29448,
+  "billed_characters": 436,
+  "sample_rate": 32000,
+  "size_bytes": 472884,
+  "generated_at": "2026-10-03T03:53:54.276889+00:00"
+}

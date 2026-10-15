@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "The ship has shut down its engines for coast and now enters the atmosphere. Its protected surface takes heating, and flaps help control orientation and descent. Do not confuse that glow with a firing engine. Near the end it changes orientation and performs a descent burn. This scheme finishes at the sea, inspired by a test splashdown sequence: the ship does not count as recovered for another flight. Payload remains inside; this journey does not demonstrate orbital delivery or a lunar mission. Recovering Super Heavy is only part of the goal of reusing the entire system. Repeated flights must also solve the ship heat protection, return, inspection and preparation. We therefore distinguish the visible mechanisms in this scene, capabilities demonstrated in tests and the goal of full reuse. Rewind freely to compare the two vehicles and their unpowered phases.",
+  "duration_ms": 55620,
+  "billed_characters": 866,
+  "sample_rate": 32000,
+  "size_bytes": 891636,
+  "generated_at": "2026-10-03T01:18:23.448472+00:00"
+}

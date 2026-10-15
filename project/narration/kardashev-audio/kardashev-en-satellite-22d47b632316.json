@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "This is NASA's official three dimensional model of MarCO. Rotate it and zoom in to explore its components. The central body contains the spacecraft's equipment. Two solar array assemblies generate electricity. The large, flat, deployable antenna is a communications reflector, not another solar panel. MarCO was a pair of small spacecraft that demonstrated CubeSats in deep space. Here it helps you recognize real space technology; it is not a Dyson collector. Select the arrays, antenna or body to highlight each part, then return to the journey through the scales.",
+  "duration_ms": 37620,
+  "billed_characters": 566,
+  "sample_rate": 32000,
+  "size_bytes": 603636,
+  "generated_at": "2026-09-20T05:30:58.988804+00:00",
+  "validation": {
+    "audio_sha256": "f9fb54c1b92809b1da66468940674c9edb7726627fce1377448aadcf87b7ac13",
+    "text_sha256": "7371b322af3dc60954d0077da527523f6b76aa7da5f3096ca6d4f95dd161af66",
+    "script_sha256": "fc991d1fad445aa7949a187471e5d0acbb6367726e8d780eb43c82bed6f9a9f8",
+    "decoded_duration_seconds": 37.62,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

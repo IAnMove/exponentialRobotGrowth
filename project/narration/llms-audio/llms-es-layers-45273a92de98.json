@@ -1,0 +1,119 @@
+{
+  "text": "Seguimos una fila de la entrada, marcada en dorado. Primero multiplicamos la matriz X por tres matrices de pesos diferentes. Así obtenemos Q, consultas; K, claves; y V, valores. Esas ramas pueden calcularse en paralelo. Los pesos permanecen fijos. Ahora comparamos la consulta activa con las claves. Cada producto escalar da una puntuación. Dividimos por la raíz de la dimensión, aquí tres. La fila dorada de la matriz muestra esas comparaciones. Aún no son probabilidades. Aplicamos la máscara causal. Las posiciones futuras reciben menos infinito, representado con una cruz. Después, softmax convierte la fila en coeficientes que suman uno. El futuro tiene exactamente cero. Esto no mide si una afirmación es verdadera. Esos coeficientes ponderan los vectores de valores. Sigue los pulsos desde la fila activa hacia V y hasta el resultado Z. Un pulso mayor indica mayor peso en la mezcla. El resultado es un vector de números, no una palabra sacada de una biblioteca. Finalmente proyectamos la mezcla y sumamos la entrada por la conexión residual. Normalizamos y aplicamos una red a cada posición, seguida de otra suma y normalización. Aquí usamos una cabeza, seis dimensiones y pesos sintéticos. Los modelos reales combinan cabezas y repiten bloques; la luz ilustra el flujo de activaciones, no un bit físico ni un pensamiento.",
+  "duration_ms": 86807.09375,
+  "cues": [
+    {
+      "start": 0,
+      "end": 16.79546875
+    },
+    {
+      "start": 16.79546875,
+      "end": 30.739062500000003
+    },
+    {
+      "start": 30.739062500000003,
+      "end": 46.86534375000001
+    },
+    {
+      "start": 46.86534375000001,
+      "end": 62.99162500000001
+    },
+    {
+      "start": 62.99162500000001,
+      "end": 86.80709375
+    }
+  ],
+  "provider": "MiniMax components",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "size_bytes": 1390508,
+  "components": [
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+      "language": "Spanish",
+      "text": "Seguimos una fila de la entrada, marcada en dorado. Primero multiplicamos la matriz X por tres matrices de pesos diferentes. Así obtenemos Q, consultas; K, claves; y V, valores. Esas ramas pueden calcularse en paralelo. Los pesos permanecen fijos.",
+      "duration_ms": 16812,
+      "billed_characters": 247,
+      "sample_rate": 32000,
+      "size_bytes": 270708,
+      "generated_at": "2026-09-21T16:36:25.110566+00:00",
+      "file": "llms-es-layers-part0-99c8d5444cc6.mp3",
+      "audio_sha256": "6ebd53a9b95c9f42eddda6460df402f2b75675091d69dda603f0c6a5b6758cbb",
+      "decoded_duration_seconds": 16.812
+    },
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+      "language": "Spanish",
+      "text": "Ahora comparamos la consulta activa con las claves. Cada producto escalar da una puntuación. Dividimos por la raíz de la dimensión, aquí tres. La fila dorada de la matriz muestra esas comparaciones. Aún no son probabilidades.",
+      "duration_ms": 14004,
+      "billed_characters": 225,
+      "sample_rate": 32000,
+      "size_bytes": 225780,
+      "generated_at": "2026-09-21T16:36:28.164003+00:00",
+      "file": "llms-es-layers-part1-2e04a4534384.mp3",
+      "audio_sha256": "2cd4a872d7d18601a5968f0cc4fba658788160a3f95ffd1644195cd06b417d2c",
+      "decoded_duration_seconds": 14.004
+    },
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+      "language": "Spanish",
+      "text": "Aplicamos la máscara causal. Las posiciones futuras reciben menos infinito, representado con una cruz. Después, softmax convierte la fila en coeficientes que suman uno. El futuro tiene exactamente cero. Esto no mide si una afirmación es verdadera.",
+      "duration_ms": 16164,
+      "billed_characters": 247,
+      "sample_rate": 32000,
+      "size_bytes": 260340,
+      "generated_at": "2026-09-21T16:36:31.645408+00:00",
+      "file": "llms-es-layers-part2-17cb0b80151c.mp3",
+      "audio_sha256": "86bb0638ebb6fb0831cfc0b884c4d71546eb120f1795b5472ba83a1cbd154ff7",
+      "decoded_duration_seconds": 16.164
+    },
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+      "language": "Spanish",
+      "text": "Esos coeficientes ponderan los vectores de valores. Sigue los pulsos desde la fila activa hacia V y hasta el resultado Z. Un pulso mayor indica mayor peso en la mezcla. El resultado es un vector de números, no una palabra sacada de una biblioteca.",
+      "duration_ms": 16164,
+      "billed_characters": 247,
+      "sample_rate": 32000,
+      "size_bytes": 260340,
+      "generated_at": "2026-09-21T16:36:35.224765+00:00",
+      "file": "llms-es-layers-part3-13b2ce1a72b9.mp3",
+      "audio_sha256": "13ad8851c0cc6b5547176ebe64b0d069b6d76a41d3dfd562c3b1213d4c4f42d4",
+      "decoded_duration_seconds": 16.164
+    },
+    {
+      "provider": "MiniMax",
+      "model": "speech-2.8-hd",
+      "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+      "language": "Spanish",
+      "text": "Finalmente proyectamos la mezcla y sumamos la entrada por la conexión residual. Normalizamos y aplicamos una red a cada posición, seguida de otra suma y normalización. Aquí usamos una cabeza, seis dimensiones y pesos sintéticos. Los modelos reales combinan cabezas y repiten bloques; la luz ilustra el flujo de activaciones, no un bit físico ni un pensamiento.",
+      "duration_ms": 23832,
+      "billed_characters": 360,
+      "sample_rate": 32000,
+      "size_bytes": 383028,
+      "generated_at": "2026-09-21T16:36:40.228689+00:00",
+      "file": "llms-es-layers-part4-4a8c97e0ee96.mp3",
+      "audio_sha256": "12aef2ee0c92c3da1e6a4a548940f54fea26eb5a647877a75e51d6f7adfbcfe4",
+      "decoded_duration_seconds": 23.832
+    }
+  ],
+  "validation": {
+    "audio_sha256": "0e0d079f5f03dd90ac539a5ee7e9de5ad68a2a37365a2b50dd45b5d038a0dfde",
+    "text_sha256": "17d8d94d0206d5821ce2ae5daff95c366ab19f7867e05a99773e68cadeec4661",
+    "script_sha256": "36915c14ef743107aef3beb503696ebf0824597852ac1b780353b939e50f6132",
+    "decoded_duration_seconds": 86.868,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 86.80709375
+  }
+}

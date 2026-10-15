@@ -8,13 +8,14 @@ export class StepGuide {
     Object.assign(this,{getClip,onAdvance,onChange,AudioClass,gap,loadBlob,objectUrls});
     this.audio=null;this.clip=null;this.state='idle';this.remaining=0;
     this.enabled=true;this.automatic=true;this.running=false;this.resumeState='idle';
-    this.seekRevision=0;this.seekPending=false;this.blobUrl=null;this.seekTarget=0;
+    this.seekRevision=0;this.playRevision=0;this.seekPending=false;this.blobUrl=null;this.seekTarget=0;this.closed=false;
   }
-  notify(){this.onChange(this);}
-  dispose(){this.seekRevision++;this.seekPending=false;const a=this.audio;this.audio=null;if(a){a.onended=a.onerror=a.onplaying=a.onpause=a.onloadedmetadata=null;a.pause();a.removeAttribute('src');a.load();}if(this.blobUrl)this.objectUrls.revokeObjectURL(this.blobUrl);this.blobUrl=null;}
+  notify(){if(!this.closed)this.onChange(this);}
+  release(){this.seekRevision++;this.playRevision++;this.seekPending=false;const a=this.audio;this.audio=null;if(a){a.onended=a.onerror=a.onplaying=a.onpause=a.onloadedmetadata=null;a.pause();a.removeAttribute('src');a.load();}if(this.blobUrl)this.objectUrls.revokeObjectURL(this.blobUrl);this.blobUrl=null;}
+  dispose(){if(this.closed)return;this.closed=true;this.running=false;this.state='paused';this.release();}
   async seek(seconds){
-    this.pause();const a=this.audio;if(!a)return;
-    this.seekTarget=seconds;this.resumeState='speaking';this.state='paused';
+    if(this.closed)return;this.pause();const a=this.audio;if(!a)return;
+    this.seekTarget=Math.max(0,Math.min(this.clip.duration||Infinity,Number.isFinite(seconds)?seconds:0));this.resumeState='speaking';this.state='paused';
     const revision=++this.seekRevision;
     const finish=()=>{
       if(this.audio!==a||revision!==this.seekRevision)return;
@@ -32,23 +33,25 @@ export class StepGuide {
       a.src=this.blobUrl;a.load();
     }catch{if(this.audio!==a||revision!==this.seekRevision)return;this.seekPending=false;this.running=false;this.state='error';this.notify();}
   }
-  stop(){this.dispose();this.running=false;this.state='idle';this.clip=null;this.remaining=0;this.notify();}
-  enter(){
-    this.dispose();this.clip=this.getClip();this.running=true;this.remaining=this.gap;
-    if(!this.enabled){this.remaining=this.gap+Math.max(6,Math.min(14,this.clip.text.length/32));this.state='reading';this.notify();return;}
+  stop(){if(this.closed)return;this.release();this.running=false;this.state='idle';this.clip=null;this.remaining=0;this.notify();}
+  enter({offset=0,play=true}={}){
+    if(this.closed)return;this.release();this.clip=this.getClip();this.running=play;this.remaining=this.gap;
+    const progress=Math.max(0,Math.min(1,offset/this.clip.duration||0));
+    if(!this.enabled){this.remaining=this.gap+Math.max(6,Math.min(14,this.clip.text.length/32))*(1-progress);this.resumeState='reading';this.state=play?'reading':'paused';this.notify();return;}
     const a=new this.AudioClass(this.clip.src);this.audio=a;a.preload='auto';
     a.onplaying=()=>{if(this.audio!==a||!this.running||this.seekPending)return;this.state='speaking';this.notify();};
     a.onended=()=>{if(this.audio!==a)return;this.remaining=this.gap;if(this.running)this.state='waiting';else this.resumeState='waiting';this.notify();};
     a.onerror=()=>{if(this.audio!==a)return;this.seekPending=false;this.seekRevision++;this.running=false;this.state='error';this.notify();};
-    this.playAudio();
+    if(offset>0){const waiting=this.seek(offset);if(play){this.running=true;this.state='loading';this.notify();}return waiting;}
+    this.resumeState='speaking';if(play)this.playAudio();else {this.state='paused';this.notify();}
   }
-  playAudio(){const a=this.audio;if(!a)return;this.state='loading';this.notify();
-    try{Promise.resolve(a.play()).catch(()=>{if(this.audio!==a||!this.running)return;this.running=false;this.state='blocked';this.notify();});}
-    catch{this.running=false;this.state='blocked';this.notify();}
+  playAudio(){const a=this.audio;if(this.closed||!a||!this.running)return;const revision=++this.playRevision;this.state='loading';this.notify();
+    try{return Promise.resolve(a.play()).then(()=>{if(this.closed||this.audio!==a||!this.running)a.pause();},()=>{if(this.closed||this.audio!==a||revision!==this.playRevision||!this.running)return;this.running=false;this.state='blocked';this.notify();});}
+    catch{if(this.audio===a&&revision===this.playRevision&&this.running){this.running=false;this.state='blocked';this.notify();}}
   }
-  pause(){if(!this.running)return;this.resumeState=this.state;this.running=false;this.state='paused';this.audio?.pause();this.notify();}
+  pause(){if(this.closed)return;this.playRevision++;if(!this.running){this.audio?.pause();return;}this.resumeState=this.state;this.running=false;this.state='paused';this.audio?.pause();this.notify();}
   resume(){
-    if(this.running)return;
+    if(this.closed||this.running)return;
     if(this.seekPending){this.running=true;this.state='loading';this.notify();return;}
     if(!this.clip||['idle','finished','error'].includes(this.state)){this.enter();return;}
     if(this.state==='ready'){this.next();return;}
@@ -56,14 +59,14 @@ export class StepGuide {
     if(this.state==='paused'&&['waiting','reading'].includes(this.resumeState)){this.state=this.resumeState;this.notify();}
     else this.playAudio();
   }
-  next(){this.dispose();this.running=false;
+  next(){if(this.closed)return;this.release();this.running=false;
     if(this.onAdvance()===false){this.state='finished';this.notify();return;}
     this.enter();
   }
-  replay(){this.enter();}
-  setEnabled(enabled){const active=this.running;this.enabled=enabled;if(active)this.enter();else this.stop();}
+  replay(){if(!this.closed)this.enter();}
+  setEnabled(enabled){if(this.closed)return;const active=this.running,progress=this.enabled?(this.audio?.currentTime||0)/(this.clip?.duration||1):this.clip?Math.max(0,Math.min(1,1-(this.remaining-this.gap)/Math.max(6,Math.min(14,this.clip.text.length/32)))):0;this.enabled=enabled;if(this.clip)this.enter({offset:progress*this.clip.duration,play:active});else this.stop();}
   tick(dt){
-    if(!this.running||!['waiting','reading'].includes(this.state)||!Number.isFinite(dt)||dt<=0)return;
+    if(this.closed||!this.running||!['waiting','reading'].includes(this.state)||!Number.isFinite(dt)||dt<=0)return;
     this.remaining=Math.max(0,this.remaining-Math.min(dt,.25));
     if(this.remaining>1e-8)return;
     if(this.automatic)this.next();else {this.running=false;this.state='ready';this.notify();}

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Dos preguntas declaran las opciones yes y no. Cada pregunta tiene su propia distribución, que suma cien por cien. En la primera hay empate; la regla de este ejemplo elige la primera opción. En la segunda hay una preferida. Los valores salen dentro del esquema, pero eso no demuestra que sean decisiones verdaderas. Esta parada ilustra la interfaz publicada de Jev. Sus probabilidades son nuestras: no llamamos a su API ni afirmamos conocer sus operaciones internas.",
+  "duration_ms": 30168,
+  "billed_characters": 465,
+  "sample_rate": 32000,
+  "size_bytes": 484404,
+  "generated_at": "2026-10-03T03:53:31.844142+00:00"
+}

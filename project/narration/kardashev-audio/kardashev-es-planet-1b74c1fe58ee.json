@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Ahora estamos en el tipo uno de la escala continua: diez elevado a dieciséis vatios. La Tierra sigue siendo la misma; lo que cambia es la capacidad energética de la civilización. Imagina generación, almacenamiento y distribución a escala planetaria. Los satélites ilustran infraestructura y comunicaciones, pero no producen toda esa potencia ni definen este nivel. Este número tampoco significa controlar el clima. Mira el multiplicador de arriba: para llegar al tipo dos, la potencia debe crecer diez mil millones de veces. Un salto pequeño en el índice es un salto enorme en energía por segundo.",
+  "duration_ms": 36612,
+  "billed_characters": 597,
+  "sample_rate": 32000,
+  "size_bytes": 587508,
+  "generated_at": "2026-09-20T05:30:37.526563+00:00",
+  "validation": {
+    "audio_sha256": "ca327210bd320834f3b454cf593acc82c6637e428248e5a3f18bd475859c6daa",
+    "text_sha256": "409865dd64a176d932f75bb943cf22f408699709952fdac59b10e49d9270785c",
+    "script_sha256": "a6daf1ea2db5d4d81692efb51fd7c15e6130d34926eac7d078e56222e69a9a3e",
+    "decoded_duration_seconds": 36.612,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

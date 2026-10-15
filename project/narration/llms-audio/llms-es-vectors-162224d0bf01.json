@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "El identificador de cada token selecciona una fila de la tabla de embeddings. A la izquierda vemos esas representaciones; en el centro, una codificación de posición; a la derecha, su suma, X. Cada fila es un token y cada columna una dimensión. La fila dorada sigue el token seleccionado. Azul y naranja distinguen signos; la intensidad indica magnitud. Todos los valores son sintéticos. Usamos una suma de posición ilustrativa; otros modelos, como Llama, usan posiciones rotatorias en consultas y claves. Puedes pulsar una celda para ver su valor.",
+  "duration_ms": 36828,
+  "billed_characters": 547,
+  "sample_rate": 32000,
+  "size_bytes": 590964,
+  "generated_at": "2026-09-21T16:36:25.804532+00:00",
+  "validation": {
+    "audio_sha256": "11cb3f89eaca31ef7c20588da6202e50f40f11907ea1ddbe477a4a0bfe9c6dd7",
+    "text_sha256": "02480790de4f05a4da19010752df26c1ea40368b4bd4b1ca1d52d3d759b190a9",
+    "script_sha256": "5800abe385040ea019d1da0ecb7cc1d825d7db67c54cda9d89551158c30949b1",
+    "decoded_duration_seconds": 36.828,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 36.828
+  }
+}

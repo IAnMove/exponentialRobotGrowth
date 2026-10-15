@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "El crecimiento exponencial no puede continuar indefinidamente. En este laboratorio aparecen dos límites explícitos: componentes importados y potencia disponible. También faltarían restricciones reales como averías, desgaste, calor, financiación y procesos que todavía no sabemos industrializar allí. La escala Kardashev mide potencia, no toneladas de fábricas. Por eso la calculadora de fechas está separada: para llegar a sus umbrales habría que justificar que también crece la potencia aprovechada. Las fechas de la cita son escenarios condicionados, no resultados demostrados.",
+  "duration_ms": 35424,
+  "billed_characters": 579,
+  "sample_rate": 32000,
+  "size_bytes": 568500,
+  "generated_at": "2026-09-26T22:49:20.022550+00:00",
+  "validation": {
+    "audio_sha256": "3ce16108b9e9db3abb85646351c7c81537bcb4de66f188e8d5bbd6db97595a5c",
+    "text_sha256": "11649e6cafaf5e5f6da36781a1642c0b118a218d822894cc60f0fa17c1126717",
+    "script_sha256": "c5db408aa3f26b936030ba69ee25e18e0c8df822374a7ff77840995c545283af",
+    "decoded_duration_seconds": 35.424,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

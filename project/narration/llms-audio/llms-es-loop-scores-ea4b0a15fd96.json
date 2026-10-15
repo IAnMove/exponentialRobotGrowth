@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Calculamos el reparto para la siguiente pieza. En esta demostración la continuación está guionizada. La barra más larga señala el siguiente token previsto; no es una medida de si su contenido es verdadero.",
+  "duration_ms": 12168,
+  "billed_characters": 205,
+  "sample_rate": 32000,
+  "size_bytes": 196404,
+  "generated_at": "2026-09-26T18:57:49.870800+00:00",
+  "validation": {
+    "audio_sha256": "fa3995616dbac4b56753c8fa968fa1c04946dec3b55193dee293deca2702d438",
+    "text_sha256": "46b73ce84db35724657c0f11c33578ec30933035111af9c4a9b60bb372c77b26",
+    "script_sha256": "18dd074c7889b49e77a732002286603d988d3c4ae31c01b535a73a28e5ee6ad9",
+    "decoded_duration_seconds": 12.168,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 12.168
+  }
+}

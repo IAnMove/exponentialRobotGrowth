@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Follow the query with the light border. We compare its Q vector with each K key. The mask allows its own position and earlier positions; it blocks the future. Then softmax converts allowed scores into weights that sum to one. They are not all equal. Each V value is multiplied by its weight, and the results are added. The output is a vector, not yet a word. Change the query position to see how its available context changes.",
+  "duration_ms": 27072,
+  "billed_characters": 426,
+  "sample_rate": 32000,
+  "size_bytes": 434868,
+  "generated_at": "2026-10-03T03:53:59.888672+00:00"
+}

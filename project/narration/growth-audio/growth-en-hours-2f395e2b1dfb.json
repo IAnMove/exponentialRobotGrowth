@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "The first advantage is working more hours. Change robot hours and human shifts. A human factory can also run day and night with different people staffing each shift. With three eight-hour shifts and robots at twenty-four hours, ten workstations have the same capacity, if supply allows. More hours raise production, but keeping ten producers does not create exponential growth. Twenty-one hours is an assumption allowing downtime; twenty-four is an ideal maximum.",
+  "duration_ms": 29880,
+  "billed_characters": 463,
+  "sample_rate": 32000,
+  "size_bytes": 479796,
+  "generated_at": "2026-10-03T04:32:13.760864+00:00"
+}

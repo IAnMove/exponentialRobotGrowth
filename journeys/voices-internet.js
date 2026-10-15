@@ -36,7 +36,7 @@ export const VOICES = {
       "title": "1 · You type an address",
       "text": "Your browser needs to locate a service and communicate with it. The computer sends data to its local network. A router provides a path to other networks; a Wi-Fi antenna does not contain the Internet. Here the example message is divided into numbered pieces.",
       "file": "journey-internet-en-step-0-e0260705e277.mp3",
-      "duration": 16.091
+      "duration": 16.092
     },
     {
       "id": "step-1",

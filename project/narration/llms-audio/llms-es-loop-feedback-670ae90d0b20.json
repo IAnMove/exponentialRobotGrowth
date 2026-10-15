@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Esta nueva pieza ya forma parte de la respuesta y del contexto. Mira cómo regresa al inicio del siguiente cálculo. Dejamos unos segundos para observarlo.",
+  "duration_ms": 10116,
+  "billed_characters": 153,
+  "sample_rate": 32000,
+  "size_bytes": 163572,
+  "generated_at": "2026-09-20T18:03:45.611528+00:00",
+  "validation": {
+    "audio_sha256": "cee936e6f75cae8b07c0aa767a54606bdbe8b9c798acd4198987f0ef23d630f0",
+    "text_sha256": "72497c4bc7b132217ea88349b146c2ecb38caeb3390124940cee87ff358efea3",
+    "script_sha256": "8c4adb24e775f826bbe1045bfc97106ea7ab954fa4dd0f26543d1bc1dfb2f10b",
+    "decoded_duration_seconds": 10.116,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "catalog_duration_seconds": 10.116
+  }
+}

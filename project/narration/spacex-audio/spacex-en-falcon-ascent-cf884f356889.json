@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "Watch liftoff. The nine first-stage engines propel the stack; its path starts vertically and tilts to gain forward speed. Height alone does not put a spacecraft into orbit. During ascent, dynamic pressure reaches a peak: it depends on air density and speed squared, not just altitude. Lower-stage thrust now shuts down. The stages separate and the upper stage then starts its vacuum engine. The payload stays with it. Once protection is no longer needed, the two fairing halves open. The booster fins and engines have a different job: preparing its return. In the return-to-coast option, the trajectory-changing burn happens early after separation; the droneship option continues downrange. The bar shows a teaching sequence rather than seconds from a particular mission.",
+  "duration_ms": 49608,
+  "billed_characters": 771,
+  "sample_rate": 32000,
+  "size_bytes": 795444,
+  "generated_at": "2026-10-03T01:17:48.558054+00:00"
+}

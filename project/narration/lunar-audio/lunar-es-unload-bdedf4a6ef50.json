@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Un elevador deposita equipos; un vehículo los acerca a la base. La descarga representa una entrega, no una fábrica completa. El elevador es una solución prevista en HLS. Descargar, instalar y probar los equipos son pasos distintos. En nuestro modelo una entrega aporta veinticinco toneladas: un supuesto didáctico, no una prestación prometida por SpaceX.",
+  "duration_ms": 24444,
+  "billed_characters": 354,
+  "sample_rate": 32000,
+  "size_bytes": 392820,
+  "generated_at": "2026-09-27T00:28:18.446180+00:00",
+  "validation": {
+    "audio_sha256": "669fa4269f3415c4e6272bddd8fa03b643811b4a405ebd4c0517ec937fa6d8e1",
+    "text_sha256": "7c17b1c2d542faf1c58159d6fb82d0fddf69c3875a789d766129e5e3b9c6fd66",
+    "script_sha256": "e9ae83671446eda80a9789fc176412f8e3622924305d749c0259aba670ef5526",
+    "decoded_duration_seconds": 24.444,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

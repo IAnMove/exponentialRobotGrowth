@@ -163,9 +163,9 @@ export const NARRATIONS = {
   },
   "region-3": {
     "title": "Fábricas que producen robots",
-    "text": "Aquí se ve el centro del ciclo: los kits se convierten en robots y cada robot terminado se incorpora a la flota regional. Una instalación nueva crea más puestos y maquinaria que los robots pueden utilizar. Pero la capacidad del edificio no equivale automáticamente a su producción. Necesita kits, electricidad, transporte y trabajadores disponibles. Compara la curva de tu región con la referencia. La referencia también incorpora todos sus robots nuevos, pero mantiene sus seis instalaciones. Llega un momento en que acumula robots que su maquinaria no puede aprovechar. Tu región puede invertir parte de esos recursos en construir más capacidad. La diferencia aparece después de terminar las obras, y depende de que toda la cadena pueda abastecerlas.",
-    "src": "./audio/region-3-1c7a61ccb604.mp3",
-    "duration": 44.532
+    "text": "Aquí los kits se convierten en robots terminados. El control de entregas reparte los nuevos robots entre dos destinos: permanecer en la industria o salir hacia las ciudades. Un robot enviado deja de formar parte de la fuerza de trabajo industrial. La flota total cuenta ambos destinos, incluidos los robots en tránsito o esperando en el depósito, pero eso no significa que todos estén fabricando. Los dos mapas aplican el mismo porcentaje de entregas y las mismas demoras: la referencia también abastece a las ciudades. La diferencia es que conserva sus seis instalaciones, mientras tu región puede construir nuevas. Cada instalación añade puestos y maquinaria, pero necesita kits, electricidad, transporte y trabajadores disponibles. Compara los robots fabricados por ciclo además de la flota acumulada. El aumento de capacidad se aprovecha después de terminar las obras y solo si toda la cadena puede abastecerlas.",
+    "src": "./audio/region-3-52116050e758.mp3",
+    "duration": 56.808
   },
   "region-4": {
     "title": "La energía también debe crecer",
@@ -205,9 +205,9 @@ export const NARRATIONS = {
   },
   "region-city-2": {
     "title": "Ciudad del valle: la distancia también importa",
-    "text": "Esta ciudad tiene ciento ochenta tareas equivalentes y recibe cada entrega tras cinco ciclos. Puede tener robots reservados y una barra todavía baja, porque esos robots siguen en tránsito. Esta diferencia permite separar fabricar, enviar y utilizar. Al avanzar, la cobertura puede acercarse a la de las otras ciudades, pero cada sector conserva sus límites de automatización. Si toda la cobertura posible está reservada o atendida, los robots adicionales esperan en el depósito. Una red industrial mayor puede ofrecer más capacidad; eso no significa que cualquier ciudad pueda utilizarla sin límites.",
-    "src": "./audio/region-city-2-deb27f206c99.mp3",
-    "duration": 39.348
+    "text": "Esta ciudad tiene ciento ochenta tareas equivalentes y recibe cada entrega después de cinco ciclos. Puede tener robots reservados mientras su barra sigue baja, porque aún están en tránsito. La cobertura aumenta al llegar los robots, no al fabricarlos ni al enviarlos. En el alcance intermedio se conservan límites por sector y tareas humanas. La hipótesis Total permite cubrir las ciento ochenta tareas de esta ciudad y las seiscientas de las tres ciudades juntas. Es una delegación futura supuesta, no una capacidad demostrada ni una predicción sobre profesiones. Si las tareas admitidas ya están cubiertas o reservadas, los robots adicionales esperan en el depósito. Una red industrial mayor puede entregar más robots, pero la distancia retrasa su llegada y el alcance elegido determina dónde pueden trabajar.",
+    "src": "./audio/region-city-2-596fe68c478e.mp3",
+    "duration": 50.148
   },
   "guide-factory": {
     "title": "Primera escala: robots que fabrican robots",
@@ -229,9 +229,9 @@ export const NARRATIONS = {
   },
   "robot-factory-1": {
     "title": "Montar la estructura",
-    "text": "Las personas o los robots ensamblan el torso, las extremidades y la estructura que sostiene los componentes. Mira los cuerpos que avanzan por la cinta. Todavía no son robots operativos: faltan sistemas de movimiento, calibración y pruebas. Si automatizas este puesto mientras otro es más lento, puedes llenar una cola sin conseguir muchos robots adicionales. El modo automático refuerza los puestos con menor capacidad diaria. Puedes desactivarlo para elegir dónde destinar un robot que la propia línea ya haya terminado.",
-    "src": "./audio/robot-factory-1-58a451cc7bf3.mp3",
-    "duration": 31.032
+    "text": "En este puesto, personas o robots ensamblan la estructura que sostiene el torso y las extremidades. Observa la muestra del producto, su identificador y el porcentaje de trabajo. El mismo identificador permite relacionar una pieza con sus pasos por la línea. Las figuras de cada puesto son muestras del proceso; las colas y los contadores indican las cantidades reales del modelo. Una estructura montada todavía no es un robot operativo: faltan actuadores, batería, calibración y pruebas. Si automatizas este puesto mientras otro es más lento, puedes llenar una cola sin terminar muchos robots adicionales. El modo automático refuerza los puestos con menor capacidad diaria. Puedes desactivarlo para elegir dónde destinar un robot que la propia línea ya haya terminado.",
+    "src": "./audio/robot-factory-1-f9831eb27688.mp3",
+    "duration": 47.484
   },
   "robot-factory-2": {
     "title": "Actuadores, batería y movimiento",
@@ -316,6 +316,12 @@ export const NARRATIONS = {
     "text": "Esta comparación mantiene las mismas setenta y cuatro personas, existencias y equipos iniciales. En la referencia humana, los robots fabricados salen del distrito: no vuelven a trabajar y no se construyen ampliaciones. Tu estrategia sí puede incorporar robots y ampliar instalaciones. Los contadores y la gráfica suman la producción de las últimas veinticuatro horas, o las horas transcurridas al principio. Al seleccionar una industria puedes comparar también su salida. En este distrito una persona y un robot tienen el mismo ritmo por hora activa. La diferencia empieza en la disponibilidad: ocho horas humanas frente a veintiuna robóticas, descontando recarga y servicio. Después importan las piezas, las máquinas y las ampliaciones. Por eso el porcentaje expresa el cambio en la producción de toda la cadena, no cuánto rinde un robot individual. Si la referencia todavía no ha producido, no mostramos un porcentaje.",
     "src": "./audio/district-productivity-lesson-93fef2eb2f85.mp3",
     "duration": 55.62
+  },
+  "factory-limits": {
+    "title": "Diez relevos, después el suministro",
+    "text": "Con el relevo automático y los supuestos actuales, los robots fabricados por esta línea pueden cubrir sus diez tareas: dos por puesto. Comprueba el contador mientras avanzan varios días simulados. Si desactivas el relevo automático, el resultado depende de las incorporaciones que elijas y puede conservar puestos humanos. Una vez cubiertas las diez tareas, los robots adicionales quedan en el stock de salida; no añaden nuevos puestos ni trabajan también en otra fábrica. El contador de fabricados puede seguir aumentando, pero la flota de esta línea ya no crece. Empezamos con ciento sesenta kits y llegan hasta ciento sesenta nuevos cada día, con espacio de almacén limitado. La maquinaria y esos suministros restringen la producción. El acumulado puede subir mientras el ritmo diario se estabiliza: eso no es crecimiento exponencial sostenido. Para volver a acelerar harían falta más capacidad y una cadena capaz de abastecerla.",
+    "src": "./audio/factory-limits-0f5cfd4ff203.mp3",
+    "duration": 59.004
   }
 };
 for (const item of Object.values(NARRATIONS)) item.src = new URL(item.src, import.meta.url).href;

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "We begin with Falcon nine. The lower stage has nine Merlin engines, four grid fins and four legs that deploy for landing. Above it is a second stage with a single vacuum Merlin. The fairing protects the satellite and opens into two halves; it is not another powered stage. Follow these same components throughout the journey. Falcon nine stands seventy metres tall with its standard fairing. Parts in this scene retain their identities, while scenery and distances are compressed. An engine expels mass in one direction and accelerates the vehicle in the other: it does not need to push against air. Falcon nine reuse mainly recovers the booster and, on fairing missions, the fairing halves. The upper stage does not return for reuse.",
+  "duration_ms": 46224,
+  "billed_characters": 734,
+  "sample_rate": 32000,
+  "size_bytes": 741300,
+  "generated_at": "2026-10-03T01:17:43.268053+00:00"
+}

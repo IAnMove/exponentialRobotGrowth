@@ -1,0 +1,22 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "English_expressive_narrator",
+  "language": "English",
+  "text": "We return to the system and add collectors on independent orbits. This chapter begins with zero coverage and reaches your chosen target. Each new portion of the swarm intercepts more light. In the ideal budget, eighteen percent coverage intercepts eighteen percent of solar power, while the remainder escapes. Coverage is an effective fraction you choose, not an estimate calculated from the area of these drawn plates. The figures are enlarged samples of a hypothetical population, not an inventory of real satellites. Circular orbits are calculated using solar gravity: more distant orbits have longer periods. We do not solve maneuvers, collisions, mutual shadows or component manufacturing. Growth in this chapter presents coverage; it is neither a construction schedule nor a prediction of exponential growth.",
+  "duration_ms": 51912,
+  "billed_characters": 814,
+  "sample_rate": 32000,
+  "size_bytes": 832308,
+  "generated_at": "2026-10-03T07:23:51.063416+00:00",
+  "validation": {
+    "ffmpeg_decode": "passed",
+    "decoded_duration_seconds": 51.912,
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "audio_sha256": "110bfb3be6827cd460ab8ce947e08c167446829ecb4d6388d5383622810b2fcd",
+    "text_sha256": "ceb036c0f4067f3357a37910db36c7760e3046b9b5f3ec46bdfc4da89af32f95",
+    "script_sha256": "3d3108311b16a988c9bab3677bcdb62eaf4efb7f386c43439e6a1c084eb41618"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Salimos de casa. El ordenador se comunica con el router, por wifi o por cable. En una conexión de fibra doméstica, un terminal óptico convierte entre señales eléctricas y ópticas. La fibra de acceso enlaza el edificio con la red del operador, a menudo mediante divisores ópticos pasivos. Aquí comprimimos muchos equipos en una pequeña ciudad. No existe un único tubo directo hasta la web: vamos entrando en redes conectadas entre sí.",
+  "duration_ms": 25596,
+  "billed_characters": 433,
+  "sample_rate": 32000,
+  "size_bytes": 411252,
+  "generated_at": "2026-09-26T19:16:22.214148+00:00",
+  "validation": {
+    "audio_sha256": "5fb7e550841a577bcc2de1f4b8dde183588eb7341fc9e93f8c5ba1ec36e657df",
+    "text_sha256": "e36ff6d152f766d22d4c2602e7b1dcb1dafc2399f01b34f10680ee66957a3077",
+    "script_sha256": "1e1edae96c069123283cd9566d0640493a4ef6d2ebc706e87c9334ab0465c844",
+    "decoded_duration_seconds": 25.596,
+    "ffmpeg_decode": "passed",
+    "codec": "mp3",
+    "sample_rate": 32000,
+    "channels": 1,
+    "script_archive": "normalized exact narration input with final newline"
+  }
+}

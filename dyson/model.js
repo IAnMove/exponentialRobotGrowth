@@ -1,63 +1,48 @@
-// Teaching physics for a Dyson swarm vs a rigid shell. Not a construction plan.
-// Luminosity: IAU nominal solar luminosity. Distance: IAU astronomical unit.
-export const L_SUN=3.828e26;
-export const AU=1.495978707e11;
-export const SIGMA=5.670374419e-8;
-export const M_JUPITER=1.898e27;
-export const ROCK_DENSITY=3000;
-export const WORLD_ENERGY_EJ=600;
-export const SECONDS_PER_YEAR=365.25*24*3600;
-export const WORLD_POWER=WORLD_ENERGY_EJ*1e18/SECONDS_PER_YEAR;
-export const KARDASHEV_II=4e26;
+// Idealized budgets and reference experiments; no engineering or dense-swarm prediction.
+export const L_SUN=3.828e26,AU=1.495978707e11,GM_SUN=1.3271244e20;
+export const SIGMA=5.670374419e-8,PLANCK=6.62607015e-34,LIGHT_SPEED=299792458,BOLTZMANN=1.380649e-23;
+export const M_JUPITER=1.898e27,ROCK_DENSITY=3000,WORLD_ENERGY_EJ=600,SECONDS_PER_YEAR=365.25*24*3600;
+export const WORLD_POWER=WORLD_ENERGY_EJ*1e18/SECONDS_PER_YEAR,KARDASHEV_II=4e26,SOLAR_TEMPERATURE_REFERENCE=5772;
 export const RING_COUNT=12,PER_RING=80,COLLECTOR_MAX=RING_COUNT*PER_RING;
-export const defaults={form:'swarm',coverage:.18,radiusAu:1,playing:false,time:0};
-
-// Independent orbits, not a rigid spherical lattice. Rings first, then panels on each ring.
-export function swarmLayout(ringCount=RING_COUNT,perRing=PER_RING){
- const pts=[];
- for(let r=0;r<ringCount;r++){
-  const inc=(r/(Math.max(1,ringCount-1))-.5)*1.12,twist=r*.19,rad=1+(r%3-1)*.028;
-  for(let i=0;i<perRing;i++){
-   const a=twist+i*2*Math.PI/perRing,x=rad*Math.cos(a),z=rad*Math.sin(a),y=0;
-   const cy=-z*Math.sin(inc),cz=z*Math.cos(inc);
-   pts.push({x,y:cy,z:cz,ring:r});
-  }
- }
- return pts;
-}
-export function visibleCollectors(coverage,max=COLLECTOR_MAX){return Math.max(0,Math.min(max,Math.floor(Math.min(1,Math.max(0,coverage))*max)));}
-
-export function sphereArea(radiusAu){const r=radiusAu*AU;return 4*Math.PI*r*r;}
-export function flux(radiusAu){return L_SUN/sphereArea(radiusAu);}
-export function capture(coverage){return Math.min(1,Math.max(0,coverage))*L_SUN;}
+export const defaults={form:'swarm',coverage:.18,radiusAu:1,efficiency:.30,emissivity:1,surfaceDensity:1,playing:false,time:0};
+const TAU=2*Math.PI,WIEN_X=4.965114231744276,LOG_HC_K=Math.log(PLANCK*LIGHT_SPEED/BOLTZMANN);
+export const WIEN_DISPLACEMENT=PLANCK*LIGHT_SPEED/(BOLTZMANN*WIEN_X);
+const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+function finite(value,name){if((typeof value!=='number'&&typeof value!=='string')||(typeof value==='string'&&!value.trim()))throw new TypeError(name+' must be a finite number');const n=Number(value);if(!Number.isFinite(n))throw new TypeError(name+' must be a finite number');return n;}
+function positive(value,name){const n=finite(value,name);if(n<=0)throw new RangeError(name+' must be positive');return n;}
+function output(value,name){if(!Number.isFinite(value))throw new RangeError(name+' exceeds numeric range');return value;}
+function deepFreeze(value){if(value&&typeof value==='object'&&!Object.isFrozen(value)){Object.values(value).forEach(deepFreeze);Object.freeze(value);}return value;}
+export function cleanDysonState(raw={}){if(!raw||typeof raw!=='object'||Array.isArray(raw))throw new TypeError('Dyson parameters must be an object');const form=raw.form===undefined?'swarm':raw.form;if(!['swarm','shell'].includes(form))throw new RangeError('Unknown geometry');const ranges={coverage:[0,1],radiusAu:[.4,2.5],efficiency:[0,.6],emissivity:[.2,1],surfaceDensity:[.1,10]},result={form};for(const [key,[lo,hi]]of Object.entries(ranges))result[key]=clamp(finite(raw[key]===undefined?defaults[key]:raw[key],key),lo,hi);return result;}
+export function sphereArea(radiusAu){const r=positive(radiusAu,'radiusAu')*AU;return positive(output(4*Math.PI*r*r,'sphere area'),'representable sphere area');}
+export function flux(radiusAu){return output(L_SUN/sphereArea(radiusAu),'flux');}
+export function capture(coverage){return clamp(finite(coverage,'coverage'),0,1)*L_SUN;}
 export function leak(coverage){return L_SUN-capture(coverage);}
-
-// Two-sided collectors: absorbed flux is radiated from both faces.
-// A closed shell can radiate to space only from the outer surface.
-export function swarmTemperature(radiusAu){return Math.pow(flux(radiusAu)/(2*SIGMA),.25);}
-export function shellTemperature(radiusAu){return Math.pow(flux(radiusAu)/SIGMA,.25);}
-export function radiatingTemperature(form,coverage,radiusAu){
- return form==='shell'&&coverage>=.999?shellTemperature(radiusAu):swarmTemperature(radiusAu);
-}
-
-export function snapshot(s=defaults){
- const coverage=Math.min(1,Math.max(0,s.coverage)),radiusAu=s.radiusAu,form=s.form;
- const area=sphereArea(radiusAu),column=M_JUPITER/area,thickness=column/ROCK_DENSITY;
- const captured=capture(coverage);
- return {
-  form,coverage,radiusAu,area,column,thickness,
-  flux:flux(radiusAu),captured,leaked:L_SUN-captured,
-  temperature:radiatingTemperature(form,coverage,radiusAu),
-  swarmTemperature:swarmTemperature(radiusAu),shellTemperature:shellTemperature(radiusAu),
-  massUsed:coverage*M_JUPITER,vsWorld:captured/WORLD_POWER,vsSun:coverage,
-  collectors:visibleCollectors(coverage),closedShell:form==='shell'&&coverage>=.999
- };
-}
-
-export function tickDyson(s,dt){
- if(s.playing&&Number.isFinite(dt)&&dt>0){
-  s.time+=dt;s.coverage=Math.min(1,s.coverage+dt*.04);
-  if(s.coverage>=1)s.playing=false;
- }
- return s;
-}
+export function visibleCollectors(coverage,max=COLLECTOR_MAX){const n=finite(max,'max');if(!Number.isInteger(n)||n<0)throw new RangeError('Sample count must be a nonnegative integer');return Math.floor(clamp(finite(coverage,'coverage'),0,1)*n);}
+function eps(value){const n=positive(value,'emissivity');if(n>1)throw new RangeError('Emissivity exceeds one');return n;}
+// Passive (eta=0) normal-incidence reference with two freely radiating faces.
+export function swarmTemperature(radiusAu,emissivity=1){return output(Math.exp((Math.log(flux(radiusAu))-Math.log(2)-Math.log(eps(emissivity))-Math.log(SIGMA))/4),'isolated plate temperature');}
+export function shellTemperature(radiusAu,emissivity=1){return output(Math.exp((Math.log(flux(radiusAu))-Math.log(eps(emissivity))-Math.log(SIGMA))/4),'closed shell temperature');}
+export function radiatingTemperature(form,coverage,radiusAu,emissivity=1){if(!['swarm','shell'].includes(form))throw new RangeError('Unknown geometry');const c=clamp(finite(coverage,'coverage'),0,1);return form==='swarm'?swarmTemperature(radiusAu,emissivity):c===1?shellTemperature(radiusAu,emissivity):null;}
+export function energyLedger(coverage,efficiency=.30){const c=clamp(finite(coverage,'coverage'),0,1),eta=clamp(finite(efficiency,'efficiency'),0,.6),intercepted=c*L_SUN;return deepFreeze({stellar:L_SUN,escaped:(1-c)*L_SUN,intercepted,electrical:eta*intercepted,directHeat:(1-eta)*intercepted,workHeat:eta*intercepted,eventualHeat:intercepted,units:'W',scope:'Steady state, all electrical work consumed locally; no storage or useful power export.'});}
+export function isolatedPanelSample(radiusAu=1,efficiency=.30,emissivity=1){const F=flux(radiusAu),eta=clamp(finite(efficiency,'efficiency'),0,.6),passiveTemperature=swarmTemperature(radiusAu,emissivity),temperature=passiveTemperature*Math.pow(1-eta,.25);return deepFreeze({id:'reference-panel',area:1,areaUnits:'m²',flux:F,incoming:F,electrical:eta*F,directHeat:(1-eta)*F,workHeat:eta*F,eventualHeat:F,twoFaceTemperature:temperature,temperature,passiveTemperature,emissivity:eps(emissivity),units:'W',assumptions:'Isolated 1 m², normal incidence and ideal absorption. Plate radiates direct heat from two faces; a separate load radiates the consumed electrical work without returning heat. Passive temperature is a different eta=0 reference, not the electrical plate or a dense swarm.'});}
+export const SPECTRUM_PLOT=Object.freeze({min:1e-5,max:10,scale:'log10',units:'fraction of stellar bolometric power per µm'});
+export function spectrumPlotY(value){const v=finite(value,'spectral density');return v<=SPECTRUM_PLOT.min?0:clamp((Math.log10(v)-Math.log10(SPECTRUM_PLOT.min))/(Math.log10(SPECTRUM_PLOT.max)-Math.log10(SPECTRUM_PLOT.min)),0,1);}
+export function snapshot(raw=defaults){const p=cleanDysonState(raw),{form,coverage,radiusAu,efficiency,emissivity,surfaceDensity}=p,area=sphereArea(radiusAu),effectiveArea=coverage*area,column=M_JUPITER/area,thickness=column/ROCK_DENSITY,ledger=energyLedger(coverage,efficiency),materialMass=surfaceDensity*effectiveArea;return deepFreeze({...p,area,effectiveArea,column,thickness,flux:flux(radiusAu),captured:ledger.intercepted,leaked:ledger.escaped,temperature:radiatingTemperature(form,coverage,radiusAu,emissivity),temperatureCase:form==='swarm'?'isolated-plate-reference':coverage===1?'ideal-closed-shell':'partial-shell-not-solved',actualSwarmTemperature:null,swarmTemperature:swarmTemperature(radiusAu,emissivity),shellTemperature:shellTemperature(radiusAu,emissivity),materialMass,massUsed:materialMass,massUnits:'kg',jupiterMassFraction:materialMass/M_JUPITER,jupiterSheet:{mass:M_JUPITER,area,column,thickness,density:ROCK_DENSITY,scope:'Hypothetical total Jupiter mass at an assumed rock density; not an available rocky resource.'},vsWorld:ledger.intercepted/WORLD_POWER,vsWorldElectrical:ledger.electrical/WORLD_POWER,vsSun:coverage,collectors:visibleCollectors(coverage),closedShell:form==='shell'&&coverage===1,worldReference:{energyEJ:WORLD_ENERGY_EJ,power:WORLD_POWER,scope:'Rounded illustrative energy reference; not a measured year.'},ledger,coverageScope:'Effective fraction supplied as parameter; displayed collector samples do not calculate coverage. Shadows, collisions, radiative coupling and stellar feedback omitted.'});}
+function planckTerms(wavelengthMeters,temperature){const lambda=positive(wavelengthMeters,'wavelengthMeters'),T=positive(temperature,'temperature'),logLambda=Math.log(lambda),logX=LOG_HC_K-logLambda-Math.log(T);if(logX>Math.log(700))return {lambda,T,logLambda,logX,logDen:Infinity};const x=Math.exp(logX),logDen=logX<-20?logX:Math.log(Math.expm1(x));return {lambda,T,logLambda,logX,logDen};}
+function expFinite(logValue,name){if(logValue===-Infinity)return 0;return output(Math.exp(logValue),name);}
+// Stable log-domain Planck law. Public helpers reject unrepresentable output.
+export function blackbodyRadiance(wavelengthMeters,temperature){const q=planckTerms(wavelengthMeters,temperature);return expFinite(Math.log(2*PLANCK*LIGHT_SPEED*LIGHT_SPEED)-5*q.logLambda-q.logDen,'spectral radiance');}
+export const blackbody=blackbodyRadiance;
+export function wienPeak(temperature){return output(WIEN_DISPLACEMENT/positive(temperature,'temperature'),'Wien peak');}
+export function blackbodyNormalized(wavelengthMeters,temperature){const q=planckTerms(wavelengthMeters,temperature),logPeak=5*Math.log(WIEN_X)-Math.log(Math.expm1(WIEN_X));return expFinite(5*q.logX-q.logDen-logPeak,'normalized blackbody');}
+// π B_lambda/(σ T^4), evaluated without overflowing T^4; full integral is one.
+export function spectralPowerDensity(wavelengthMeters,temperature){const q=planckTerms(wavelengthMeters,temperature);return expFinite(Math.log(15/Math.pow(Math.PI,4))+4*q.logX-q.logDen-q.logLambda,'spectral power density');}
+export function dysonSpectrum(coverage,heatTemperature,points=128){const c=clamp(finite(coverage,'coverage'),0,1),T=positive(heatTemperature,'heatTemperature'),n=finite(points,'points');if(!Number.isInteger(n)||n<2||n>4096)throw new RangeError('Spectral sample count must be 2..4096');const wavelengths=Array.from({length:n},(_,i)=>.1e-6*Math.pow(1000,i/(n-1))),star=wavelengths.map(w=>(1-c)*spectralPowerDensity(w,SOLAR_TEMPERATURE_REFERENCE)*1e-6),heat=wavelengths.map(w=>c*spectralPowerDensity(w,T)*1e-6);return deepFreeze({wavelengths,star,heat,combined:star.map((v,i)=>v+heat[i]),starShape:wavelengths.map(w=>blackbodyNormalized(w,SOLAR_TEMPERATURE_REFERENCE)),heatShape:wavelengths.map(w=>blackbodyNormalized(w,T)),weights:{star:1-c,heat:c},starTemperature:SOLAR_TEMPERATURE_REFERENCE,heatTemperature:T,peakMeters:{star:wienPeak(SOLAR_TEMPERATURE_REFERENCE),heat:wienPeak(T)},units:'fraction of stellar bolometric power per µm',normalization:'Analytic Planck normalization over 0..infinity. Window 0.1–100 µm has truncated tails, not renormalized.',scope:'Reference mixture, not a dense-swarm prediction, measured spectrum or detection.'});}
+export function swarmLayout(ringCount=RING_COUNT,perRing=PER_RING){const rings=finite(ringCount,'ringCount'),each=finite(perRing,'perRing');if(!Number.isInteger(rings)||!Number.isInteger(each)||rings<0||each<0||rings*each>1e6)throw new RangeError('Invalid orbital sample counts');const result=[];if(rings===0||each===0)return deepFreeze(result);for(let ring=0;ring<rings;ring++){const f=rings===1?.5:ring/(rings-1),inclination=(f-.5)*1.12,radiusFactor=.94+.12*f;for(let j=0;j<each;j++){const index=ring*each+j,phase=ring*.19+j*TAU/each;result.push({id:'collector-'+index,index,ring,phase,inclination,radiusFactor,x:radiusFactor*Math.cos(phase),y:radiusFactor*Math.sin(phase)*Math.sin(inclination),z:-radiusFactor*Math.sin(phase)*Math.cos(inclination)});}}return deepFreeze(result);}
+const LAYOUT=swarmLayout();
+export function panelPose(index,radiusAu=1,orbitYears=0){const i=finite(index,'index');if(!Number.isInteger(i)||i<0||i>=COLLECTOR_MAX)throw new RangeError('Invalid collector index');const R=positive(radiusAu,'radiusAu'),years=finite(orbitYears,'orbitYears'),s=LAYOUT[i],r=R*s.radiusFactor,periodSeconds=positive(output(TAU*Math.sqrt(Math.pow(r*AU,3)/GM_SUN),'orbital period'),'representable orbital period'),periodYears=positive(periodSeconds/SECONDS_PER_YEAR,'representable period in years'),a=s.phase+TAU*((years%periodYears)/periodYears),position=[r*Math.cos(a),r*Math.sin(a)*Math.sin(s.inclination),-r*Math.sin(a)*Math.cos(s.inclination)],normal=position.map(v=>-v/r);let quaternion;if(normal[2]<-1+1e-12)quaternion=[0,1,0,0];else{const q=[-normal[1],normal[0],0,1+normal[2]],length=Math.hypot(...q);quaternion=q.map(v=>v/length);}return deepFreeze({id:s.id,index:i,ring:s.ring,position,positionAu:position,normal,quaternion,radiusAu:r,periodSeconds,periodYears,orbitNormal:[0,Math.cos(s.inclination),Math.sin(s.inclination)],scope:'Circular Kepler sample with compressed years; practical orbit control and collisions omitted.'});}
+export function shellRestoringAcceleration(offsetAu,radiusAu=1){const x=finite(offsetAu,'offsetAu'),r=positive(radiusAu,'radiusAu');if(Math.abs(x)>=r)throw new RangeError('Point must be strictly inside the uniform shell');return 0;}
+export function dysonFrameAt(raw=defaults,chapter=0,progress=0){const params=cleanDysonState(raw),ch=finite(chapter,'chapter'),p=clamp(finite(progress,'progress'),0,1);if(!Number.isInteger(ch)||ch<0||ch>5)throw new RangeError('Invalid chapter');const coverage=ch<2?0:ch===2?params.coverage*p:ch===5?1:params.coverage,form=ch===5?'shell':params.form,state=snapshot({...params,coverage,form}),time=(ch+p)*20,panelSample=isolatedPanelSample(params.radiusAu,params.efficiency,params.emissivity);return deepFreeze({...state,params,chapter:ch,progress:p,time,orbitYears:time/40,snapshot:state,ledger:state.ledger,panelSample,sampleCount:state.collectors,spectrum:dysonSpectrum(coverage,state.closedShell?state.shellTemperature:panelSample.passiveTemperature),shellTheorem:{offsetAu:params.radiusAu*.4,restoringAcceleration:shellRestoringAcceleration(params.radiusAu*.4,params.radiusAu),units:'m/s²',scope:'Zero gravitational restoring force inside a uniform shell, not a collapse simulation.'},chapterScope:ch===5?'Separate closed-shell reference; saved swarm target retained.':'Teaching budget; visual collector samples do not calculate geometric coverage.'});}
+export const frameAt=dysonFrameAt;
+// Legacy helper: completion consumes only the remaining presentation time.
+export function tickDyson(s,dt){if(s.playing&&Number.isFinite(dt)&&dt>0){const c=clamp(finite(s.coverage,'coverage'),0,1),elapsed=Math.min(dt,(1-c)/.04);s.time=finite(s.time,'time')+elapsed;s.coverage=Math.min(1,c+elapsed*.04);if(s.coverage>=1-1e-12){s.coverage=1;s.playing=false;}}return s;}

@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Sigue la consulta con borde claro. Comparamos su vector Q con cada clave K. La máscara permite su posición y las anteriores; bloquea el futuro. Después, softmax convierte las puntuaciones permitidas en pesos que suman uno. No son todos iguales. Multiplicamos cada valor V por su peso y sumamos. El resultado es un vector, todavía no una palabra. Cambia la posición de la consulta para comprobar cómo cambia lo que puede ver.",
+  "duration_ms": 29844,
+  "billed_characters": 424,
+  "sample_rate": 32000,
+  "size_bytes": 479220,
+  "generated_at": "2026-10-03T03:52:54.692506+00:00"
+}

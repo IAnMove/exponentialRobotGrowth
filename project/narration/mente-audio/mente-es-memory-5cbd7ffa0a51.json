@@ -1,0 +1,12 @@
+{
+  "provider": "MiniMax",
+  "model": "speech-2.8-hd",
+  "voice": "ttv-voice-2026091606404326-GjG0y5Nk",
+  "language": "Spanish",
+  "text": "Seguimos una respuesta en un transformador de juguete. Sus matrices, pesos y vocabulario son pequeños y sintéticos; sus cálculos sí se realizan. La consulta se compara con las claves. La máscara impide mirar posiciones futuras, y el softmax convierte puntuaciones en pesos para mezclar los valores. Un router elige dos de ocho expertos; después obtenemos puntuaciones de salida y elegimos un token. No es un bit que busca una frase guardada. El primer token sale de la última posición del procesamiento inicial del contexto. Para producir el siguiente, procesamos el token que acabamos de emitir y añadimos su clave y valor a la caché. Los pesos del modelo permanecen fijos. Si eliges un contexto grande, la maqueta calcula una muestra reducida y las cifras de Grok uno se muestran aparte. El límite publicado es de ocho mil ciento noventa y dos posiciones: un contexto más largo se rechaza aquí, no se recorta en secreto. Agrupar ocho símbolos en cuatro parejas es una analogía independiente de memoria humana, no una conversión de tokens en recuerdos.",
+  "duration_ms": 68040,
+  "billed_characters": 1053,
+  "sample_rate": 32000,
+  "size_bytes": 1090356,
+  "generated_at": "2026-09-30T05:21:29.529579+00:00"
+}
