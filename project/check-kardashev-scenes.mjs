@@ -35,8 +35,9 @@ class Host extends EventTarget {
   prepend(canvas){canvas.host=this;this.children.unshift(canvas);}
 }
 class GPU {
-  constructor(){this.domElement=new Canvas();this.capabilities={getMaxAnisotropy:()=>8};this.renders=0;this.sizes=[];}
+  constructor(){this.shadowMap={enabled:false};this.domElement=new Canvas();this.capabilities={getMaxAnisotropy:()=>8};this.renders=0;this.sizes=[];}
   setPixelRatio(value){this.pixelRatio=value;}
+  getPixelRatio(){return this.pixelRatio;}
   setClearColor(value){this.clearColor=value;}
   setSize(width,height){this.sizes.push([width,height]);}
   render(scene,camera){this.scene=scene;this.camera=camera;scene.updateMatrixWorld(true);camera.updateMatrixWorld(true);this.renders++;}
