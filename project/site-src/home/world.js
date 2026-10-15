@@ -1,3 +1,4 @@
+import {tuneRenderer} from '../fx/perf.js';
 import * as THREE from '../vendor/three.module.js';
 import * as Model from './model.js';
 
@@ -147,7 +148,7 @@ export function homeNearestStand(pose){let best=null;HOME_STAND_POSITIONS.forEac
 function visible(m){for(let q=m;q;q=q.parent)if(!q.visible)return false;return true;}
 export const homeOverview={yaw:.62,pitch:.69,distance:10,whole:false};
 export function createHomeWorld(host,es=true,onListen=()=>{},onInfo=()=>{}){
- const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio||1,1.5));renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.10;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;host.append(renderer.domElement);const built=createHomeScene(es),camera=new THREE.PerspectiveCamera(46,1,.055,120),ray=new THREE.Raycaster(),pointer=new THREE.Vector2(),canvas=renderer.domElement,orbit={...homeOverview};let frame,chapter=0,mode='notebook',pose=homePoseAt(0),dragging=false,lastX=0,lastY=0,pinch=0,pointerDown,disposed=false;canvas.tabIndex=0;
+ const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio||1,1.5));renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.10;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;host.append(renderer.domElement);tuneRenderer(renderer);const built=createHomeScene(es),camera=new THREE.PerspectiveCamera(46,1,.055,120),ray=new THREE.Raycaster(),pointer=new THREE.Vector2(),canvas=renderer.domElement,orbit={...homeOverview};let frame,chapter=0,mode='notebook',pose=homePoseAt(0),dragging=false,lastX=0,lastY=0,pinch=0,pointerDown,disposed=false;canvas.tabIndex=0;
  function resize(){const width=Math.max(1,host.clientWidth),height=Math.max(1,host.clientHeight);renderer.setSize(width,height,false);camera.aspect=width/height;camera.fov=camera.aspect<1?64:46;camera.updateProjectionMatrix();}
  const observer=new ResizeObserver(resize);observer.observe(host);resize();
  function draw(){if(disposed)return;if(frame)built.update(frame,chapter,orbit.whole&&mode!=='immersive',mode==='immersive');if(mode==='immersive'){camera.position.set(pose.x,1.65,pose.z);camera.rotation.set(pose.pitch,pose.yaw,0,'YXZ');}else{const f=homeFraming(chapter,orbit,camera.aspect,camera.fov,frame);camera.position.copy(f.center).addScaledVector(f.direction,f.distance);camera.lookAt(f.center);}camera.updateMatrixWorld();built.scene.updateMatrixWorld(true);renderer.render(built.scene,camera);}

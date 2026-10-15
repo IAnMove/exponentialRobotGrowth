@@ -11,9 +11,10 @@ const three=new URL('node_modules/three/build/three.module.js',import.meta.url).
 const env=new URL('node_modules/three/examples/jsm/environments/RoomEnvironment.js',import.meta.url).href;
 const data=source=>'data:text/javascript;base64,'+Buffer.from(source).toString('base64');
 const local=name=>new URL('site-src/lunar/'+name,import.meta.url).href;
+const sharedKit=data(readFileSync('site-src/fx/space-kit.js','utf8').replace("'../vendor/three.module.js'",JSON.stringify(three)));
 const map=(name,deps={})=>{
  let source=readFileSync(new URL('site-src/lunar/'+name,import.meta.url),'utf8');
- source=source.replaceAll("'../vendor/three.module.js'",JSON.stringify(three)).replaceAll("'../vendor/RoomEnvironment.js'",JSON.stringify(env));
+ source=source.replaceAll("'../fx/space-kit.js'",JSON.stringify(sharedKit)).replaceAll("'../fx/perf.js'",JSON.stringify(new URL('dist/fx/perf.js',import.meta.url).href)).replaceAll("'../vendor/three.module.js'",JSON.stringify(three)).replaceAll("'../vendor/RoomEnvironment.js'",JSON.stringify(env));
  for(const [file,url] of Object.entries(deps))source=source.replaceAll("'./"+file+"'",JSON.stringify(url));
  return data(source);
 };

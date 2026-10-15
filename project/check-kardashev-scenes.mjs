@@ -108,7 +108,7 @@ async function main(){
   let triangles=0,meshes=0;parsed.scene.traverse(object=>{if(object.isMesh){meshes++;triangles+=(object.geometry.index?.count||object.geometry.attributes.position.count)/3;}});
   assert(meshes>10&&triangles===3992,'the real NASA MarCO GLB is parsed, including all 3,992 triangles');
 
-  const paths={"'../vendor/three.module.js'":file('node_modules/three/build/three.module.js'),"'../vendor/GLTFLoader.js'":file('node_modules/three/examples/jsm/loaders/GLTFLoader.js'),"'../vendor/RoomEnvironment.js'":file('node_modules/three/examples/jsm/environments/RoomEnvironment.js'),"'./presentation.js'":file('site-src/kardashev/presentation.js'),"'./model.js'":file('site-src/kardashev/model.js')};
+  const paths={"'../fx/perf.js'":file("dist/fx/perf.js"),"'../vendor/three.module.js'":file('node_modules/three/build/three.module.js'),"'../vendor/GLTFLoader.js'":file('node_modules/three/examples/jsm/loaders/GLTFLoader.js'),"'../vendor/RoomEnvironment.js'":file('node_modules/three/examples/jsm/environments/RoomEnvironment.js'),"'./presentation.js'":file('site-src/kardashev/presentation.js'),"'./model.js'":file('site-src/kardashev/model.js')};
   let source=readFileSync(new URL('./site-src/kardashev/world.js',import.meta.url),'utf8');
   for(const [specifier,url] of Object.entries(paths))source=source.replaceAll(specifier,JSON.stringify(url));
   source=source.replaceAll('import.meta.url',JSON.stringify(file('site-src/kardashev/world.js')));

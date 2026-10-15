@@ -1,9 +1,10 @@
 import * as THREE from '../vendor/three.module.js';
+import {tuneRenderer} from '../fx/perf.js';
 import {TYPES,WORK,SLOTS,metrics} from './region-model.js';
 export const CENTERS=[[-28,-18],[0,-18],[28,-18],[28,15],[-28,15],[0,15]];
 export const PLOTS=CENTERS.flatMap(([x,z])=>Array.from({length:SLOTS},(_,slot)=>({x:x+(slot%3-1)*8,z:z+(Math.floor(slot/3)-.5)*10})));
 export function createRegionWorld(container,{city=false}={}){
-  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;container.append(renderer.domElement);
+  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));tuneRenderer(renderer);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;container.append(renderer.domElement);
   const scene=new THREE.Scene(),camera=new THREE.OrthographicCamera(-60,60,45,-45,.1,400);scene.add(new THREE.HemisphereLight(0xc8e8ed,0x586d59,2.65));
   const sun=new THREE.DirectionalLight(0xffe4bc,3);sun.position.set(-50,85,35);sun.castShadow=true;sun.shadow.mapSize.set(1536,1536);Object.assign(sun.shadow.camera,{left:-75,right:75,top:70,bottom:-65,near:1,far:200});sun.shadow.normalBias=.12;scene.add(sun);
   const root=new THREE.Group(),staticRoot=new THREE.Group();const cube=new THREE.BoxGeometry(1,1,1),cone=new THREE.ConeGeometry(1,1,6),cylinder=new THREE.CylinderGeometry(1,1,1,10),materials=new Map();

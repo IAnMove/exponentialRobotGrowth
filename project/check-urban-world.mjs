@@ -17,7 +17,7 @@ globalThis.testTHREE={...THREE,WebGLRenderer:Renderer};
 globalThis.devicePixelRatio=1.5;
 globalThis.ResizeObserver=class {constructor(fn){this.fn=fn;}observe(){this.fn();}};
 const code=fs.readFileSync('dist/urban-world.js','utf8')
- .replace("import * as THREE from './vendor/three.module.js';",'const THREE=globalThis.testTHREE;')
+ .replace("'./fx/perf.js'",JSON.stringify(new URL('./dist/fx/perf.js',import.meta.url).href)).replace("import * as THREE from './vendor/three.module.js';",'const THREE=globalThis.testTHREE;')
  .replace("'./region-model.js'",JSON.stringify(new URL('./dist/region-model.js',import.meta.url).href));
 const {createUrbanWorld}=await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'));
 for(const width of [390,1200])for(const regional of [false,true]){
@@ -38,7 +38,7 @@ const hidden=createUrbanWorld({clientWidth:0,clientHeight:0,append(){},getBoundi
 assert.equal(hidden.render(createTerritory(),0),6);
 globalThis.document={createElement(){return {getContext(){return {fillText(){}};}};}};
 const factoryCode=fs.readFileSync('dist/factory-world.js','utf8')
- .replace("import * as THREE from './vendor/three.module.js';",'const THREE=globalThis.testTHREE;')
+ .replace("'./fx/perf.js'",JSON.stringify(new URL('./dist/fx/perf.js',import.meta.url).href)).replace("import * as THREE from './vendor/three.module.js';",'const THREE=globalThis.testTHREE;')
  .replace("'./factory-model.js'",JSON.stringify(new URL('./dist/factory-model.js',import.meta.url).href))
  .replaceAll("'./robot-walk.js'",JSON.stringify(new URL('./dist/robot-walk.js',import.meta.url).href));
 const {createFactoryWorld,POSITIONS}=await import('data:text/javascript;base64,'+Buffer.from(factoryCode).toString('base64'));

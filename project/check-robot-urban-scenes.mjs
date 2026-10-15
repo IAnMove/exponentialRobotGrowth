@@ -14,7 +14,7 @@ class Renderer {
  setPixelRatio(){}setClearColor(){}setSize(w,h){this.width=w;this.height=h;}render(s,c){s.updateMatrixWorld(true);c.updateMatrixWorld(true);this.scene=s;this.camera=c;}dispose(){this.disposed=true;}
 }
 globalThis.testUrbanTHREE={...THREE,WebGLRenderer:Renderer};globalThis.ResizeObserver=class {observe(){}disconnect(){this.disconnected=true;}};
-const source=readFileSync('site-src/urban-world.js','utf8').replace("import * as THREE from './vendor/three.module.js';",'const THREE=globalThis.testUrbanTHREE;').replace("'./region-model.js'",JSON.stringify(new URL('./site-src/region-model.js',import.meta.url).href));
+const source=readFileSync('site-src/urban-world.js','utf8').replace("'./fx/perf.js'",JSON.stringify(new URL('./dist/fx/perf.js',import.meta.url).href)).replace("import * as THREE from './vendor/three.module.js';",'const THREE=globalThis.testUrbanTHREE;').replace("'./region-model.js'",JSON.stringify(new URL('./site-src/region-model.js',import.meta.url).href));
 assert(!/performance\.now|Date\.now|requestAnimationFrame/.test(source),'scene has no independent animation clock');
 const world=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
 const near=(a,b,message,eps=1e-7)=>assert(Number.isFinite(a)&&Number.isFinite(b)&&Math.abs(a-b)<eps,message||`${a} != ${b}`),sum=items=>items.reduce((n,r)=>n+r.representedCount,0),visible=o=>{for(let p=o;p;p=p.parent)if(!p.visible)return false;return true;};

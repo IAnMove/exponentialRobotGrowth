@@ -1,4 +1,5 @@
 import * as THREE from '../../vendor/three.module.js';
+import {createPost,adaptiveScale,pointScaleFor,createAtmosphere} from '../llms/stage.js';
 import {STOPS,standPosition} from './model.js';
 import {contextWindow,transformerTrace,nextCandidates,softmax,pendingToken} from '../llms/model.js';
 import {llmFrameAt} from '../llms/presentation.js';
@@ -126,22 +127,26 @@ export function createGallery(es){
  };
 }
 export const galleryFovAt=aspect=>Math.min(98,2*Math.atan(Math.tan(32*Math.PI/180)/Math.min(1,Math.max(.25,aspect)/1.35))*180/Math.PI);
-export function createExperience(host,{es,onInspect=()=>{},onAction=()=>{},rendererFactory=()=>new THREE.WebGLRenderer({antialias:true}),ResizeObserverClass=globalThis.ResizeObserver}){
+export function createExperience(host,{es,onInspect=()=>{},onAction=()=>{},rendererFactory=()=>new THREE.WebGLRenderer({antialias:true}),ResizeObserverClass=globalThis.ResizeObserver,effects=true}){
  const gallery=createGallery(es),renderer=rendererFactory();renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio||1,1.5));renderer.toneMapping=THREE.ACESFilmicToneMapping;let lastPlayer={x:.8,z:0,yaw:Math.PI/2,pitch:0},lastFrame=null,disposed=false;
- const camera=new THREE.PerspectiveCamera(64,1,.08,155);camera.rotation.order='YXZ';const canvas=renderer.domElement;canvas.tabIndex=0;canvas.setAttribute('aria-label',es?'Galería 3D. Ratón: mirar. WASD: caminar. E: escuchar el stand.':'3D gallery. Mouse: look. WASD: walk. E: listen at a stand.');host.append(canvas);
+ const camera=new THREE.PerspectiveCamera(64,1,.08,200);camera.rotation.order='YXZ';const canvas=renderer.domElement;canvas.tabIndex=0;canvas.setAttribute('aria-label',es?'Galería 3D. Ratón: mirar. WASD: caminar. E: escuchar el stand.':'3D gallery. Mouse: look. WASD: walk. E: listen at a stand.');host.append(canvas);
+ let dpr=Math.min(globalThis.devicePixelRatio||1,1.5),clock=0;const pointScale={value:400},atmosphere=effects?createAtmosphere(gallery.scene,{pointScale,dust:240,spread:[24,9,30]}):null,post=effects?createPost(renderer,gallery.scene,camera,{strength:.42,radius:.55,threshold:1.02}):null;
+ if(post)gallery.scene.environmentIntensity=.18;
+ const quality=adaptiveScale(dpr,{min:.6,apply(value){dpr=value;renderer.setPixelRatio(dpr);resize();}});
+ function draw(dt=0,reduced=false,time=clock){clock=reduced?0:time;atmosphere?.update(clock,camera.position);if(post)post.render(dt);else renderer.render(gallery.scene,camera);quality.frame(dt);}
  const ray=new THREE.Raycaster(),pointer=new THREE.Vector2(),projected=new THREE.Vector3();
  function visibleAncestors(o){for(let p=o;p;p=p.parent)if(!p.visible)return false;return true;}
  function inspect(x,y){const rect=canvas.getBoundingClientRect();pointer.set(x===null?0:(x-rect.left)/rect.width*2-1,y===null?0:1-(y-rect.top)/rect.height*2);ray.setFromCamera(pointer,camera);const hit=ray.intersectObjects(gallery.targets.filter(visibleAncestors))[0];if(hit&&hit.distance<14){if(hit.object.userData.action)onAction(hit.object.userData);else onInspect(hit.object.userData);}}
- function resize(){if(disposed)return;renderer.setSize(Math.max(1,host.clientWidth),Math.max(1,host.clientHeight),false);camera.aspect=Math.max(1,host.clientWidth)/Math.max(1,host.clientHeight);camera.fov=galleryFovAt(camera.aspect);camera.updateProjectionMatrix();}
+ function resize(){if(disposed)return;renderer.setSize(Math.max(1,host.clientWidth),Math.max(1,host.clientHeight),false);camera.aspect=Math.max(1,host.clientWidth)/Math.max(1,host.clientHeight);camera.fov=galleryFovAt(camera.aspect);camera.updateProjectionMatrix();post?.setSize(Math.max(1,host.clientWidth),Math.max(1,host.clientHeight),dpr);pointScale.value=pointScaleFor(Math.max(1,host.clientHeight),dpr,camera.fov);}
  const observer=new ResizeObserverClass(resize);observer.observe(host);resize();
  function applyPlayer(player){lastPlayer={...player};camera.position.set(player.x,1.65,player.z);camera.rotation.set(player.pitch,player.yaw,0,'YXZ');camera.updateMatrixWorld(true);}
  function updateFrame(frame){lastFrame=frame;gallery.updateFrame(frame);}
- function renderFrame(frame,player,options={}){if(disposed)return;updateFrame(frame);applyPlayer(player);renderer.render(gallery.scene,camera);}
+ function renderFrame(frame,player,options={}){if(disposed)return;updateFrame(frame);applyPlayer(player);draw(options.dt||0,options.reduced,(frame.phase+frame.progress)*12);}
  function getViewState(){return {version:1,...lastPlayer,mode:'walk',eyeHeight:1.65};}
  function restoreViewState(pose){if(!pose||!['x','z','yaw','pitch'].every(k=>Number.isFinite(pose[k])))return false;return {x:THREE.MathUtils.clamp(pose.x,-10,4.7),z:THREE.MathUtils.clamp(pose.z,-106,10),yaw:pose.yaw,pitch:THREE.MathUtils.clamp(pose.pitch,-1.05,1.05)};}
  function arrivalPose(index){const stop=STOPS[index];if(!stop)throw new RangeError('Valid gallery station required');gallery.scene.updateMatrixWorld(true);const object=gallery.groups[index],bounds=object?new THREE.Box3().setFromObject(object):new THREE.Box3(new THREE.Vector3(-7,.2,stop.z-4.8),new THREE.Vector3(-4,5.2,stop.z+4.8));bounds.union(new THREE.Box3(new THREE.Vector3(stop.x-1.35,.025,stop.z-5.2),new THREE.Vector3(stop.x-1.35,5.575,stop.z+5.2)));const target=bounds.getCenter(new THREE.Vector3()),test=new THREE.PerspectiveCamera(camera.fov,camera.aspect,.08,155);let pose;for(let x=.8;x<=4.6+.001;x+=.1){pose={x,z:stop.z,yaw:Math.PI/2,pitch:-Math.atan2(target.y-1.65,x-target.x)};test.position.set(x,1.65,stop.z);test.rotation.set(pose.pitch,pose.yaw,0,'YXZ');test.updateMatrixWorld(true);let fits=true;for(const bx of [bounds.min.x,bounds.max.x])for(const by of [bounds.min.y,bounds.max.y])for(const bz of [bounds.min.z,bounds.max.z]){const point=new THREE.Vector3(bx,by,bz).project(test);if(Math.abs(point.x)>.87||Math.abs(point.y)>.84||point.z<=-1||point.z>=1)fits=false;}if(fits)break;}return pose;}
- return {canvas,update:gallery.update,updateFrame,renderFrame,getViewState,restoreViewState,arrivalPose,inspect(x,y){if(arguments.length)return inspect(x,y);return {...gallery.inspect(),camera:{...getViewState(),fov:camera.fov,aspect:camera.aspect},navigation:{mode:'walk',grounded:true,bounds:{x:[-10,4.7],z:[-106,10]},eyeHeight:1.65}};},render(player,dt,progress,running,cue,reduced){applyPlayer(player);gallery.animate(dt,progress,running,cue,reduced);renderer.render(gallery.scene,camera);},
+ return {canvas,update:gallery.update,updateFrame,renderFrame,getViewState,restoreViewState,arrivalPose,inspect(x,y){if(arguments.length)return inspect(x,y);return {...gallery.inspect(),camera:{...getViewState(),fov:camera.fov,aspect:camera.aspect},navigation:{mode:'walk',grounded:true,bounds:{x:[-10,4.7],z:[-106,10]},eyeHeight:1.65}};},render(player,dt,progress,running,cue,reduced){applyPlayer(player);gallery.animate(dt,progress,running,cue,reduced);draw(dt,reduced,clock+dt);},
   projectStand(index,player){const s=standPosition(index);projected.set(s.x,s.y+.5,s.z).project(camera);return {x:(projected.x+1)*host.clientWidth/2,y:(1-projected.y)*host.clientHeight/2,visible:projected.z<1&&projected.z>-1&&Math.abs(projected.x)<.9&&Math.abs(projected.y)<.83&&Math.hypot(player.x-s.x,player.z-s.z)<11};},
-  dispose(){disposed=true;observer.disconnect();gallery.dispose();renderer.dispose();canvas.remove();}
+  dispose(){disposed=true;observer.disconnect();atmosphere?.dispose();post?.dispose();gallery.dispose();renderer.dispose();canvas.remove();}
  };
 }
