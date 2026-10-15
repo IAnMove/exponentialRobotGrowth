@@ -274,10 +274,13 @@ for(const es of [true,false])for(const lesson of Object.values(LESSONS)){
    assert.equal(link.event,event);assert.equal(built.parents[link.parentIndex].id,event.parentId,'each line starts at the recorded real parent');
    assert(link.curve.getPoint(0).distanceTo(built.parents[link.parentIndex].group.position)<.11,'line origin lies at its parent');
    assert.equal(child.body.material.color.getHex(),cellColor[event.parentAllele],'copied allele is not changed before the mutation stage');assert.equal(child.halo.visible,false);
+   assert(link.line.userData.info.every(info=>info.includes(event.parentAllele)&&!/→|Mutación [AB]|Mutation [AB]|Sin mutación\.|No mutation\./.test(info)),'connection inspection does not reveal an allele change or mutation outcome before its stage');
   }
   built.update(model,.8,2);
   assert(trace.generations[1].mutations>0,'this test run must exercise an actual mutation');
   built.offspring.forEach((child,i)=>{const event=trace.generations[1].events[i];assert.equal(child.id,event.id);assert.equal(child.body.material.color.getHex(),cellColor[event.allele]);assert.equal(child.halo.visible,event.mutated,'only a recorded mutation gets the mutation halo');});
+  for(const link of built.links)assert(link.line.userData.info.every(info=>info.includes('→')&&info.includes(link.event.allele)),'inspection reveals the recorded outcome after the mutation stage');
+  built.update(model,.68,2);assert(built.links.every(link=>link.line.userData.info.every(info=>!info.includes('→'))),'rewind hides the not-yet-shown mutation outcome again');
   built.update(model,1-1e-9,3);assert.equal(built.state.t,0);assert.equal(built.state.countA,25);assert.equal(built.state.frequency,.5,'complete counts stay unchanged until the generation boundary');
   built.update(model,1,3);assert.equal(built.state.t,1);assert.equal(built.state.countA,trace.generations[1].countA);
   assert.deepEqual(built.parents.map(cell=>cell.id),trace.generations[1].cohort.map(cell=>cell.id));assert.equal(built.parents.filter(cell=>cell.body.material.color.getHex()===cellColor.A).length,trace.generations[1].countA);
