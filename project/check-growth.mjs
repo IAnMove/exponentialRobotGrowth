@@ -209,4 +209,13 @@ for(const bad of [null,undefined,NaN,Infinity,'','   ',false,{},[]]){
 const original={...defaults},originalBefore=JSON.stringify(original),old=createGrowthTrace(original);simulate(original);unitCosts(original);idealDoubling(original);assert.equal(JSON.stringify(original),originalBefore);
 original.reinvest=0;assert.equal(old.params.reinvest,.7);assert(old.batches.length>0);assert.equal(createGrowthTrace(original).batches.length,0);
 assert.throws(()=>{old.batches[0].count=999;},TypeError);assert.throws(()=>{old.params.days=10;},TypeError);assert.throws(()=>{defaults.reinvest=0;},TypeError);
-console.log(`Growth OK: ${scenarios} scenarios, ${dayStates} start-of-day balances, ${fractionalStates} causal fractional frames, ${events} construction/ready events, ${chapterFrames} contiguous chapter frames, ${commissioningFrames} narrated commissioning frames, ${sanitized} sanitized invalid cases, ${frozen} immutable finite objects checked; legacy and fully used costs preserved.`);
+// Do not silently stop reporting exponential growth after six doublings.
+const highGrowth=createGrowthTrace({limited:false,hours:24,reinvest:1,buildHours:120}),lastFleet=highGrowth.rows.at(-1).fleet;
+assert(highGrowth.milestones.at(-1).factor>64,'all reached doublings remain recorded beyond ×64');
+assert.equal(highGrowth.milestones.length,Math.floor(Math.log2(lastFleet/highGrowth.initialFleet)));
+for(const [index,m]of highGrowth.milestones.entries()){
+ assert.equal(m.factor,2**(index+1));assert.equal(m.threshold,highGrowth.initialFleet*m.factor);
+ assert(highGrowth.rows[m.time].fleet>=m.threshold);assert(highGrowth.rows[m.time-1].fleet<m.threshold,'each milestone uses the first actual deployment day');
+}
+assert.equal(createGrowthTrace({slots:0}).milestones.length,0,'zero initial capacity has no fictitious doublings');
+console.log(`Growth OK: ${scenarios} scenarios, ${dayStates} start-of-day balances, ${fractionalStates} causal fractional frames, ${events} construction/ready events, ${chapterFrames} contiguous chapter frames, ${commissioningFrames} narrated commissioning frames, ${sanitized} sanitized invalid cases, ${frozen} immutable finite objects checked; complete doubling milestones, legacy and fully used costs preserved.`);

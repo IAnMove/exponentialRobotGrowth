@@ -75,7 +75,8 @@ export function createGrowthTrace(raw=defaults){
   {id:`${batch.id}-ready`,type:'ready',time:batch.readyDay,batchId:batch.id,count:batch.count,idStart:batch.idStart,idEnd:batch.idEnd}
  ]).sort((a,b)=>a.time-b.time||(a.type==='ready'?-1:1));
  const ideal=idealDoubling(params);
- const milestones=initialFleet>0?[2,4,8,16,32,64].flatMap(factor=>{const row=rows.find(r=>r.fleet>=initialFleet*factor);return row?[{time:row.day,factor,fleet:row.fleet,threshold:initialFleet*factor}]:[];}):[];
+ const milestones=[];
+ if(initialFleet>0)for(let factor=2;factor<=rows.at(-1).fleet/initialFleet;factor*=2){const row=rows.find(r=>r.fleet>=initialFleet*factor);milestones.push({time:row.day,factor,fleet:row.fleet,threshold:initialFleet*factor});}
  return freeze({
   ...result,horizon:params.days,intervals:rows.slice(0,params.days),events,milestones,
   seedRange:{idStart:0,idEnd:initialFleet,count:initialFleet},fixedFleet:10,humanWorkers:10*params.shifts,
