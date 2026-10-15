@@ -2,7 +2,7 @@
 
 ## Pasada una a una — iniciada el 15 de octubre de 2026
 
-Objetivo activo: repasar las 21 entradas del catálogo y aportar una mejora concreta en cada experiencia, sin añadir complejidad de uso. Cada mejora se guarda por separado y se comprueba antes de continuar. Esta pasada sigue abierta: **9 de 21 experiencias**, con Mente como siguiente.
+Objetivo activo: repasar las 21 entradas del catálogo y aportar una mejora concreta en cada experiencia, sin añadir complejidad de uso. Cada mejora se guarda por separado y se comprueba antes de continuar. Esta pasada sigue abierta: **10 de 21 experiencias**, con Modelos como siguiente.
 
 | ID | Experiencia | Estado de esta pasada | Mejora |
 | --- | --- | --- | --- |
@@ -15,7 +15,7 @@ Objetivo activo: repasar las 21 entradas del catálogo y aportar una mejora conc
 | `spacex` | SpaceX | Hecha | El estado Encendido/Apagado se identifica como estado de los motores del booster, en vez de «empuje», cuya magnitud no se calcula. |
 | `kardashev` | Kardashev | Hecha | La gráfica logarítmica marca la referencia de 20 TW; los ejes se amplían en móvil y sus márgenes evitan recortes y solapamiento con la referencia. |
 | `llms` | LLMs | Hecha | La leyenda distingue vectores token × dimensión de la atención token × token. Las matrices de entrada siguen visibles al pausar al inicio de cualquiera de las cinco operaciones; los resultados mantienen su aparición progresiva. La vista móvil residual incluye X. |
-| `mente` | Mente | Pendiente | — |
+| `mente` | Mente | Hecha | Las barras de puntuación QK parten de una marca de cero: negativas hacia la izquierda en rosa, positivas hacia la derecha en azul. La cabecera «score ±» distingue estas puntuaciones de los pesos softmax no negativos. |
 | `modelos` | Modelos | Pendiente | — |
 | `growth` | Crecimiento | Pendiente | — |
 | `internet` | Internet | Pendiente | — |
@@ -33,6 +33,8 @@ Validación de estos tres pasos: pasan los tres checks existentes del museo, el 
 Pasos 4–6: pasan los checks de control/escena/modelo de Dyson, control/modelo de Hogar y modelo/lifecycle de Starlink. Chrome verifica doce contextos ES/EN y escritorio/móvil: unidades de temperatura; barra de Hogar después de una tarea, al terminar con 20 % de apoyo y en referencia humana; ayuda visible y accesible al alternar cuatro veces las vistas de Starlink. Se mantienen 120 minutos pendientes tras la primera tarea, 29 de apoyo y 116 liberados al completar con 20 %, y 145 de trabajo humano al completar la referencia. Los cambios de texto no alteran estos cálculos ni añaden controles. Capturas representativas inspeccionadas.
 
 Pasos 7–9: pasan controles de SpaceX, Kardashev y LLMs, presentación calculada de LLMs y recursos/imports/sintaxis del sitio; el control de Kardashev se repite tras el ajuste de espaciado. Chrome comprueba doce contextos ES/EN y escritorio/móvil: estados del booster en los dos vehículos, referencia logarítmica frente a escala lineal y cinco operaciones de atención sin cambiar la respuesta. Una comprobación de legibilidad adicional verifica los límites de todas las etiquetas del gráfico, su tamaño móvil y la leyenda completa de LLMs por encima del footer. La inspección visual detectó después matrices ocultas en pausa: una regresión que fallaba antes de la corrección comprueba ahora los datos de entrada, su visibilidad y opacidad en el instante cero. Pasan cinco checks de escenas y controles notebook/inmersivos, incluidos 2.880 estados reversibles y 360 encuadres del notebook. Otras veinte selecciones reales en Chrome verifican las cinco operaciones pausadas en ES/EN y escritorio/móvil, sin errores de ejecución ni de consola. Capturas representativas inspeccionadas: las entradas se dibujan y los resultados conservan su revelado. No se cambian cálculos, datos, voces ni controles.
+
+Paso 10: pasan los tres checks de Mente —modelo, escena y controles— y también la escena fuente antes del build. La geometría comprueba dirección, anclaje en cero, color y visibilidad con puntuaciones calculadas de ambos signos, dentro de 462 estados reversibles ES/EN. Se conservan cálculos, ventanas causales y tiempos. Chrome verifica ocho contextos ES/EN y móvil/escritorio en notebook e inmersivo; retroceder de 5,8 a 2,4 devuelve los mismos valores. Capturas inspeccionadas con puntuaciones ya calculadas, sin errores de página ni de consola. No se añaden controles.
 
 Los cambios siguen en el PR #18 en borrador; esta tabla no afirma que estén mezclados en main ni publicados. Las revisiones anteriores quedan debajo como historial, no como prueba de que esta nueva pasada esté terminada.
 
