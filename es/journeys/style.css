@@ -77,3 +77,5 @@
 @media(max-width:850px){.internet-experience .visual{height:440px;min-height:440px}.internet-experience #world{bottom:122px}.internet-key{left:14px;right:14px;bottom:95px;font-size:11px;gap:10px}.internet-scene-caption{left:14px;right:14px;bottom:35px;font-size:11px}.internet-experience .metrics b{font-size:23px}}
 
 @media(min-width:851px){.internet-experience .layout{height:calc(100svh - 205px - var(--atlas-player-height,108px));min-height:410px}.internet-experience .visual{min-height:100%}}
+
+.electricity-coverage{position:relative;display:inline-block;min-width:190px;overflow:hidden;border:1px solid #8aa6a866;border-radius:5px;background:#4b3037;color:#f0f7f5;line-height:20px}.electricity-coverage i{position:absolute;inset:0 auto 0 0;background:#326853}.electricity-coverage em{position:relative;padding:0 8px;font-style:normal;white-space:nowrap}
