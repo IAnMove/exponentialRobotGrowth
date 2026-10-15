@@ -2,7 +2,7 @@ import {LESSONS} from '../journeys/catalog.js';
 import {spawn,rooms,exhibits,stepVisitor,lookDelta,nearestExhibit,roomAt,standAt,routeTo,portalPose,yawLookingAt,SPEED} from './model.js';
 import {createMuseum} from './world.js';
 import {immersiveHref} from '../immersive/catalog.js';
-import {StepGuide} from '../llms/guide.js';
+import {NotebookPlayer} from '../playback/player.js';
 import {VOICES} from './voices.js';
 const es=document.documentElement.lang==='es',t=(a,b)=>es?a:b,$=id=>document.getElementById(id),reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 document.title=t('Atlas · Un museo de mundos','Atlas · A museum of worlds');
@@ -26,16 +26,20 @@ const locked=()=>!!world&&document.pointerLockElement===world.dom;
 function lockLook(){if(!finePointer||locked()||portal)return;Promise.resolve(world?.lookLock()).catch(()=>{$('route-status').textContent=t('Arrastra la escena para mirar.','Drag the scene to look.');});}
 function foldOffset(){player.yaw+=offset.yaw;player.pitch=Math.max(-1.05,Math.min(1.05,player.pitch+offset.pitch));offset.yaw=offset.pitch=0;}
 const keys=new Set(),stick={id:null,x:0,y:0,ox:0,oy:0};
-const voiceHost=document.createElement('aside');voiceHost.className='museum-audio';voiceHost.innerHTML=`<div><button id="narrate">${t('Escuchar sala','Listen to gallery')}</button><select id="voice-language" aria-label="${t('Idioma de la voz','Voice language')}"><option value="es" ${es?'selected':''}>ES</option><option value="en" ${es?'':'selected'}>EN</option></select></div><span id="voice-state" role="status"></span><details><summary>${t('Texto de la voz','Voice transcript')}</summary><p id="voice-transcript"></p></details>`;$('app').append(voiceHost);
-let voiceLanguage=es?'es':'en';
-const getClip=()=>VOICES[voiceLanguage].find(c=>c.id===(roomAt(player.x,player.z)?.id||'hall'));
-function renderVoice(){const clip=guide.clip||getClip();$('voice-transcript').textContent=clip.text;$('narrate').textContent=guide.running?t('Pausar voz','Pause voice'):t('Escuchar sala','Listen to gallery');$('voice-state').textContent=({loading:t('Cargando…','Loading…'),speaking:'MiniMax',paused:t('En pausa','Paused'),error:t('No se pudo cargar. Pulsa para reintentar.','Could not load. Press to retry.'),blocked:t('Pulsa escuchar para permitir el audio.','Press listen to allow audio.')})[guide.state]||'';}
-const guide=new StepGuide({getClip,onAdvance:()=>false,onChange:renderVoice});guide.automatic=false;
-$('narrate').onclick=()=>{if(guide.running)guide.pause();else if(guide.state==='ready')guide.replay();else guide.resume();};$('voice-language').onchange=e=>{voiceLanguage=e.target.value;const active=guide.running;guide.stop();if(active)guide.enter();renderVoice();};
+
+
+
+
+const roomIndex=id=>Math.max(0,rooms.findIndex(r=>r.id===id));let followingWalk=false;
+const audio=new NotebookPlayer({id:'museo',autoplay:false,
+  getClips:language=>rooms.map(r=>({...VOICES[language].find(c=>c.id===r.id),title:title(r)})),
+  onSync(s){if(!s||followingWalk||s.reason!=='seek'||!started||portal)return;const r=rooms[s.index];if(r&&roomAt(player.x,player.z)?.id!==r.id)moveTo(roomPose(r),title(r));}});
+function roomPose(r){return {x:r.x,z:r.z,yaw:r.id==='industry'?Math.PI/2:r.id==='cosmos'?-Math.PI/2:r.id==='life'?Math.PI:0,pitch:.08};}
+function followRoom(id,play=audio.running){const i=roomIndex(id);if(audio.current?.index===i&&(!play||audio.running))return;followingWalk=true;try{audio.stage(i,play);}finally{followingWalk=false;}}
 try{world=createMuseum($('view'),es);}catch(error){$('welcome').innerHTML=`<article><h1>${t('Abre los notebooks web','Open the web notebooks')}</h1><p>${t('Este navegador no ha podido iniciar la vista 3D.','This browser could not start the 3D view.')}</p><a href="../index.html">Atlas →</a></article>`;console.error(error);}
 const controls=target=>target.closest?.('input,select,textarea');
 function resetInput(){keys.clear();stick.x=stick.y=0;stick.id=null;velocity={forward:0,strafe:0};$('stick-knob').style.transform='translate(-50%,-50%)';}
-function stopWalk(){foldOffset();path=[];destination=null;arrival=null;resetInput();guide.pause();$('stop').hidden=true;$('route-status').textContent='';}
+function stopWalk(){foldOffset();path=[];destination=null;arrival=null;resetInput();$('stop').hidden=true;$('route-status').textContent='';}
 function mapOpen(open){$('map').hidden=!open;$('map-toggle').setAttribute('aria-expanded',String(open));if(open){stopWalk();document.exitPointerLock?.();}}
 function begin(){started=true;$('welcome').hidden=true;}
 function renderMouse(){$('mouse').textContent=locked()?t('Soltar ratón · Esc','Release mouse · Esc'):t('Mirar con ratón','Mouse look');$('mouse').setAttribute('aria-pressed',String(locked()));document.body.classList.toggle('looking',locked());}
@@ -45,7 +49,7 @@ function moveTo(target,label,callback=null){
   if($('instant').checked){player={...player,...destination};arrival?.();arrival=null;destination=null;path=[];paint();return;}
   $('route-status').textContent=t('Caminando hacia ','Walking to ')+label;$('stop').hidden=false;
 }
-function approach(e,narrate=false){begin();selected=e;moveTo(standAt(e),title(e),()=>{selected=e;if(narrate)guide.enter();});}
+function approach(e,narrate=false){begin();selected=e;moveTo(standAt(e),title(e),()=>{selected=e;if(narrate)followRoom(e.room,true);});}
 function enterPainting(e){
   const href=e&&immersiveHref(e.id);if(!href||portal)return;
   if(Math.hypot(player.x-e.x,player.z-e.z)>(e.stand||3.2)+.5){approach(e);return;}
@@ -54,7 +58,7 @@ function enterPainting(e){
 }
 function paint(){
   const room=roomAt(player.x,player.z)||rooms[0];$('where').textContent=title(room);$('where').dataset.x=player.x.toFixed(3);$('where').dataset.z=player.z.toFixed(3);$('where').dataset.room=room.id;
-  if(guide.clip&&guide.clip.id!==room.id)guide.stop();
+  if(audio.running&&audio.current?.index!==roomIndex(room.id))followRoom(room.id);
   $('map-player').setAttribute('cx',player.x);$('map-player').setAttribute('cy',player.z);$('map-direction').setAttribute('transform',`translate(${player.x} ${player.z}) rotate(${-player.yaw*180/Math.PI})`);
   const near=nearestExhibit(player.x,player.z,-Math.sin(player.yaw),-Math.cos(player.yaw),5.5);
   selected=near;$('card').hidden=!near||!!portal||!started;
@@ -67,7 +71,7 @@ $('enter-3d').onclick=()=>enterPainting(selected);
 $('mouse').onclick=()=>{begin();mapOpen(false);if(locked())document.exitPointerLock();else lockLook();};
 document.addEventListener('pointerlockchange',renderMouse);
 $('to-atrium').onclick=()=>{begin();moveTo(spawn,t('Atrio','Atrium'));};
-document.querySelectorAll('[data-room]').forEach(b=>b.onclick=()=>{begin();const r=rooms.find(r=>r.id===b.dataset.room);moveTo({x:r.x,z:r.z,yaw:r.id==='industry'?Math.PI/2:r.id==='cosmos'?-Math.PI/2:r.id==='life'?Math.PI:0,pitch:.08},title(r));});
+document.querySelectorAll('[data-room]').forEach(b=>b.onclick=()=>{begin();const r=rooms.find(r=>r.id===b.dataset.room);moveTo(roomPose(r),title(r));});
 document.querySelectorAll('[data-painting]').forEach(b=>b.onclick=()=>approach(exhibits.find(e=>e.id===b.dataset.painting)));
 const tour=['internet','electricity','kardashev','cell'];$('tour').onclick=()=>{tourStep=(tourStep+1)%tour.length;approach(exhibits.find(e=>e.id===tour[tourStep]),true);lockLook();$('tour').textContent=(tourStep===tour.length-1?t('Repetir visita','Repeat visit'):t('Siguiente sala','Next gallery'))+' →';};
 window.addEventListener('keydown',e=>{
@@ -89,13 +93,12 @@ $('stick').addEventListener('pointerdown',e=>{e.preventDefault();begin();stopWal
 $('stick').addEventListener('pointermove',e=>{if(stick.id!==e.pointerId)return;const x=(e.clientX-stick.ox)/36,y=(stick.oy-e.clientY)/36,n=Math.max(1,Math.hypot(x,y));stick.x=x/n;stick.y=y/n;$('stick-knob').style.transform=`translate(calc(-50% + ${stick.x*28}px),calc(-50% - ${stick.y*28}px))`;});
 for(const event of ['pointerup','pointercancel','lostpointercapture'])$('stick').addEventListener(event,resetInput);
 window.addEventListener('blur',stopWalk);document.addEventListener('visibilitychange',()=>{if(document.hidden)stopWalk();last=performance.now();});
-window.addEventListener('pagehide',()=>{stopWalk();guide.stop();if(portal){player={...portal.from};portal=null;document.body.classList.remove('crossing');$('transition').style.opacity=0;}});
+window.addEventListener('pagehide',()=>{stopWalk();audio.save();if(portal){player={...portal.from};portal=null;document.body.classList.remove('crossing');$('transition').style.opacity=0;}});
 window.addEventListener('pageshow',()=>{last=performance.now();});
 function request(){const id=new URLSearchParams(location.search).get('pieza')||location.hash.slice(1);const e=exhibits.find(e=>e.id===id);if(e){player=standAt(e);begin();paint();}}
-request();renderVoice();renderMouse();window.addEventListener('hashchange',request);
+request();renderMouse();window.addEventListener('hashchange',request);
 function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;
   if(!document.hidden&&world){
-    if(!portal)guide.tick(dt);
     if(portal){portal.elapsed+=dt;portal.progress=Math.min(1,portal.elapsed/portal.duration);player=portalPose(portal.from,portal.exhibit,portal.progress);$('transition').style.opacity=String(Math.max(0,(portal.progress-.62)/.38));if(portal.progress===1&&!portal.navigating){portal.navigating=true;location.assign(portal.href);}}
     else if(started){
       if(path.length){const p=path[0],dx=p.x-player.x,dz=p.z-player.z,d=Math.hypot(dx,dz),step=Math.min(d,SPEED*dt);
