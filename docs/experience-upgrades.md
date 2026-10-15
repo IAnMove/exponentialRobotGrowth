@@ -2,7 +2,7 @@
 
 ## Pasada una a una — iniciada el 15 de octubre de 2026
 
-Objetivo activo: repasar las 21 entradas del catálogo y aportar una mejora concreta en cada experiencia, sin añadir complejidad de uso. Cada mejora se guarda por separado y se comprueba antes de continuar. Esta pasada sigue abierta: **6 de 21 experiencias**, con SpaceX como siguiente.
+Objetivo activo: repasar las 21 entradas del catálogo y aportar una mejora concreta en cada experiencia, sin añadir complejidad de uso. Cada mejora se guarda por separado y se comprueba antes de continuar. Esta pasada sigue abierta: **9 de 21 experiencias**, con Mente como siguiente.
 
 | ID | Experiencia | Estado de esta pasada | Mejora |
 | --- | --- | --- | --- |
@@ -12,9 +12,9 @@ Objetivo activo: repasar las 21 entradas del catálogo y aportar una mejora conc
 | `dyson` | Dyson | Hecha | El campo que muestra kelvin se identifica como temperatura de la placa eléctrica, distinguiéndolo del calor y de la temperatura pasiva de referencia. |
 | `home` | Hogar | Hecha | La leyenda de la barra dice «trabajo de referencia pendiente»: sus segmentos reparten minutos, no un número de tareas. |
 | `starlink` | Starlink | Hecha | La ayuda visible y la descripción accesible se adaptan a Tierra, satélite o vista terrestre. Las vistas de hardware/servidor ya no piden pulsar la Tierra. |
-| `spacex` | SpaceX | Pendiente | — |
-| `kardashev` | Kardashev | Pendiente | — |
-| `llms` | LLMs | Pendiente | — |
+| `spacex` | SpaceX | Hecha | El estado Encendido/Apagado se identifica como estado de los motores del booster, en vez de «empuje», cuya magnitud no se calcula. |
+| `kardashev` | Kardashev | Hecha | La gráfica logarítmica marca la referencia de 20 TW; los ejes se amplían en móvil y sus márgenes evitan recortes y solapamiento con la referencia. |
+| `llms` | LLMs | Hecha | La leyenda distingue vectores token × dimensión de la atención token × token. Las matrices de entrada siguen visibles al pausar al inicio de cualquiera de las cinco operaciones; los resultados mantienen su aparición progresiva. La vista móvil residual incluye X. |
 | `mente` | Mente | Pendiente | — |
 | `modelos` | Modelos | Pendiente | — |
 | `growth` | Crecimiento | Pendiente | — |
@@ -31,6 +31,8 @@ Objetivo activo: repasar las 21 entradas del catálogo y aportar una mejora conc
 Validación de estos tres pasos: pasan los tres checks existentes del museo, el de controles de Robots y los tres de Terafab. Navegador Chrome: veinte visitas a cuadros del museo —cuatro notebooks 3D y LLMs transitable—, doce vistas de barras en Fábrica/Ciudad/Región y las trece selecciones de operación de Terafab en cuatro contextos; todo en ES/EN y escritorio/móvil. Se comprueban etiquetas, destinos, nombres accesibles, valores de barras y posición del modelo, además del ancho de página y errores de ejecución. Las capturas del museo y Terafab se han inspeccionado. No se modifican modelos, datos, voces, recorridos ni controles.
 
 Pasos 4–6: pasan los checks de control/escena/modelo de Dyson, control/modelo de Hogar y modelo/lifecycle de Starlink. Chrome verifica doce contextos ES/EN y escritorio/móvil: unidades de temperatura; barra de Hogar después de una tarea, al terminar con 20 % de apoyo y en referencia humana; ayuda visible y accesible al alternar cuatro veces las vistas de Starlink. Se mantienen 120 minutos pendientes tras la primera tarea, 29 de apoyo y 116 liberados al completar con 20 %, y 145 de trabajo humano al completar la referencia. Los cambios de texto no alteran estos cálculos ni añaden controles. Capturas representativas inspeccionadas.
+
+Pasos 7–9: pasan controles de SpaceX, Kardashev y LLMs, presentación calculada de LLMs y recursos/imports/sintaxis del sitio; el control de Kardashev se repite tras el ajuste de espaciado. Chrome comprueba doce contextos ES/EN y escritorio/móvil: estados del booster en los dos vehículos, referencia logarítmica frente a escala lineal y cinco operaciones de atención sin cambiar la respuesta. Una comprobación de legibilidad adicional verifica los límites de todas las etiquetas del gráfico, su tamaño móvil y la leyenda completa de LLMs por encima del footer. La inspección visual detectó después matrices ocultas en pausa: una regresión que fallaba antes de la corrección comprueba ahora los datos de entrada, su visibilidad y opacidad en el instante cero. Pasan cinco checks de escenas y controles notebook/inmersivos, incluidos 2.880 estados reversibles y 360 encuadres del notebook. Otras veinte selecciones reales en Chrome verifican las cinco operaciones pausadas en ES/EN y escritorio/móvil, sin errores de ejecución ni de consola. Capturas representativas inspeccionadas: las entradas se dibujan y los resultados conservan su revelado. No se cambian cálculos, datos, voces ni controles.
 
 Los cambios siguen en el PR #18 en borrador; esta tabla no afirma que estén mezclados en main ni publicados. Las revisiones anteriores quedan debajo como historial, no como prueba de que esta nueva pasada esté terminada.
 
