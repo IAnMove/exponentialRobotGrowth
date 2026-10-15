@@ -2,7 +2,7 @@
 
 ## Pasada una a una — iniciada el 15 de octubre de 2026
 
-Objetivo activo: repasar las 21 entradas del catálogo y aportar una mejora concreta en cada experiencia, sin añadir complejidad de uso. Cada mejora se guarda por separado y se comprueba antes de continuar. Esta pasada sigue abierta: **10 de 21 experiencias**, con Modelos como siguiente.
+Objetivo activo: repasar las 21 entradas del catálogo y aportar una mejora concreta en cada experiencia, sin añadir complejidad de uso. Cada mejora se guarda por separado y se comprueba antes de continuar. Esta pasada sigue abierta: **13 de 21 experiencias**, con Electricidad como siguiente.
 
 | ID | Experiencia | Estado de esta pasada | Mejora |
 | --- | --- | --- | --- |
@@ -16,9 +16,9 @@ Objetivo activo: repasar las 21 entradas del catálogo y aportar una mejora conc
 | `kardashev` | Kardashev | Hecha | La gráfica logarítmica marca la referencia de 20 TW; los ejes se amplían en móvil y sus márgenes evitan recortes y solapamiento con la referencia. |
 | `llms` | LLMs | Hecha | La leyenda distingue vectores token × dimensión de la atención token × token. Las matrices de entrada siguen visibles al pausar al inicio de cualquiera de las cinco operaciones; los resultados mantienen su aparición progresiva. La vista móvil residual incluye X. |
 | `mente` | Mente | Hecha | Las barras de puntuación QK parten de una marca de cero: negativas hacia la izquierda en rosa, positivas hacia la derecha en azul. La cabecera «score ±» distingue estas puntuaciones de los pesos softmax no negativos. |
-| `modelos` | Modelos | Pendiente | — |
-| `growth` | Crecimiento | Pendiente | — |
-| `internet` | Internet | Pendiente | — |
+| `modelos` | Modelos | Hecha | La caché KV se compara en GiB, manteniendo el recuento exacto y los 2 B/valor del escenario. La explicación define GiB y limita la estimación a la caché. |
+| `growth` | Crecimiento | Hecha | Registra todas las duplicaciones alcanzadas, superando el corte anterior en ×64. Círculos dorados las sitúan en la curva seleccionada; el texto indica ×2, ×4… y su día real de incorporación. |
+| `internet` | Internet | Hecha | Al volver, la referencia submarina pasa de un sentido —6.600 km, 33 ms— a ida y vuelta —13.200 km, 66 ms—, excluyendo tierra, colas y aplicación. Corregida la petición 404 del favicon. |
 | `electricity` | Electricidad | Pendiente | — |
 | `microchip` | Microchip | Pendiente | — |
 | `cell` | Célula | Pendiente | — |
@@ -35,6 +35,8 @@ Pasos 4–6: pasan los checks de control/escena/modelo de Dyson, control/modelo 
 Pasos 7–9: pasan controles de SpaceX, Kardashev y LLMs, presentación calculada de LLMs y recursos/imports/sintaxis del sitio; el control de Kardashev se repite tras el ajuste de espaciado. Chrome comprueba doce contextos ES/EN y escritorio/móvil: estados del booster en los dos vehículos, referencia logarítmica frente a escala lineal y cinco operaciones de atención sin cambiar la respuesta. Una comprobación de legibilidad adicional verifica los límites de todas las etiquetas del gráfico, su tamaño móvil y la leyenda completa de LLMs por encima del footer. La inspección visual detectó después matrices ocultas en pausa: una regresión que fallaba antes de la corrección comprueba ahora los datos de entrada, su visibilidad y opacidad en el instante cero. Pasan cinco checks de escenas y controles notebook/inmersivos, incluidos 2.880 estados reversibles y 360 encuadres del notebook. Otras veinte selecciones reales en Chrome verifican las cinco operaciones pausadas en ES/EN y escritorio/móvil, sin errores de ejecución ni de consola. Capturas representativas inspeccionadas: las entradas se dibujan y los resultados conservan su revelado. No se cambian cálculos, datos, voces ni controles.
 
 Paso 10: pasan los tres checks de Mente —modelo, escena y controles— y también la escena fuente antes del build. La geometría comprueba dirección, anclaje en cero, color y visibilidad con puntuaciones calculadas de ambos signos, dentro de 462 estados reversibles ES/EN. Se conservan cálculos, ventanas causales y tiempos. Chrome verifica ocho contextos ES/EN y móvil/escritorio en notebook e inmersivo; retroceder de 5,8 a 2,4 devuelve los mismos valores. Capturas inspeccionadas con puntuaciones ya calculadas, sin errores de página ni de consola. No se añaden controles.
+
+Pasos 11–13: pasan siete checks afectados de modelo/control/escena y el check de recursos, imports y sintaxis del sitio. Modelos se verifica en 72 combinaciones de cantidad y avance, en ES/EN, móvil/escritorio y notebook/inmersivo: 32.000 tokens equivalen a 117,19 GiB frente a 2,06 GiB con 2 B/valor. Una regresión que fallaba antes detecta las duplicaciones posteriores a ×64; el escenario rápido llega a 17 hitos, en vez de los seis registrados antes. Crecimiento comprueba además 144 estados de curva/día/escenario en cuatro contextos reales: los marcadores se sitúan en los valores de la serie elegida, desaparecen al retroceder y no aparecen sin reinversión. Internet verifica las nueve etapas en cuatro contextos —36 estados—, incluyendo el avance submarino parcial. Tras corregir el favicon, no hay errores de página ni consola. Capturas representativas inspeccionadas. Se conservan la producción simulada, los costes, los guiones de voz y los controles.
 
 Los cambios siguen en el PR #18 en borrador; esta tabla no afirma que estén mezclados en main ni publicados. Las revisiones anteriores quedan debajo como historial, no como prueba de que esta nueva pasada esté terminada.
 
