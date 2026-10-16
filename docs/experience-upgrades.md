@@ -1,5 +1,11 @@
 # Atlas — cola de mejoras
 
+## Siguiente pasada: casillas reales de Internet TCP — 16 de octubre de 2026
+
+El panel del receptor mantenía los veinte números de casilla aunque el mensaje tuviera solo dos u ocho piezas. Cada etiqueta comparte ahora la visibilidad de su pieza. Cambiar el tamaño del mensaje, perderlo o retroceder no deja números de segmentos inexistentes. Se conservan las cantidades recibidas, entregadas en orden y confirmadas, sus colores, el modelo y las voces.
+
+La regresión observa el texto dibujado en las texturas reales: antes falla con veinte números para dos piezas; después comprueba tamaños de 3, 12, 17 y 30 kB con corte, pérdida y duplicación. Pasan cuatro comprobaciones de TCP, controles, escenas y recursos del sitio, incluidos 224 experimentos y 27.104 muestras fraccionarias del modelo. Chrome comprueba 64 estados anteriores y 192 posteriores en ES/EN a 1440, 390 y 320 píxeles —los anteriores a 1440 y 390—, esperando fotogramas nuevos tras cada cambio. Las etiquetas visibles coinciden con las 2, 8, 12 o 20 piezas calculadas; al perder el primer paquete se conservan los bytes en espera y cero bytes entregados/confirmados hasta su llegada. Capturas antes/después inspeccionadas, sin errores de ejecución o recursos. Esta corrección corresponde al panel TCP del notebook; el viaje transatlántico conserva su presentación.
+
 ## Siguiente pasada: salida de publicación sin audios obsoletos — 16 de octubre de 2026
 
 El paquete completo supera el límite de 256 MiB de Sites. `tools/prepare_hosting_output.py` crea una carpeta nueva con los mismos recursos, excluyendo únicamente los MP3 que ningún archivo de ejecución referencia. Conserva intactos la compilación completa y sus audios originales. Los JSON de generación de audio no se consideran referencias de ejecución. La preparación se detiene ante un nombre de audio construido dinámicamente, una grabación que falta o un destino existente.
