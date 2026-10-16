@@ -1,3 +1,4 @@
+import {createSceneAnnotations,annotationViewport} from './scene-annotations.js';
 import * as THREE from '../vendor/three.module.js';
 import {sampleCarbon,FLUXES,RESERVOIRS} from './carbon-model.js';
 
@@ -14,12 +15,7 @@ export function createCarbonScene(lesson,es){
  function ball(g,p,r,material=carbonMaterial){const m=mesh(g,sphereGeo,material,p);m.scale.setScalar(r);return m;}
  function tube(g,curve,r,material){return mesh(g,own(new THREE.TubeGeometry(curve,36,r,5,false)),material);}
  function cylinder(g,p,r,h,color){return mesh(g,own(new THREE.CylinderGeometry(r,r,h,12)),mat(color),p);}
- function label(g,words,p,width=3,{height=128,bg=true}={}){
-  const canvas=document.createElement('canvas');canvas.width=768;canvas.height=height;const ctx=canvas.getContext('2d');
-  const texture=own(new THREE.CanvasTexture(canvas));texture.colorSpace=THREE.SRGBColorSpace;
-  const m=new THREE.Sprite(own(new THREE.SpriteMaterial({map:texture,transparent:true,depthWrite:false})));m.scale.set(width,width*height/768,1);m.position.set(...p);g.add(m);let previous;
-  const set=text=>{if(text===previous)return;previous=text;ctx.clearRect(0,0,768,height);if(bg){ctx.fillStyle='#102633e8';ctx.fillRect(0,0,768,height);}ctx.fillStyle='#e3f5f2';ctx.font='600 70px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';const lines=text.split('\n');lines.forEach((line,i)=>ctx.fillText(line,384,height*(i+.5)/lines.length,736));texture.needsUpdate=true;};set(words);return {m,set};
- }
+ const annotationLayer=createSceneAnnotations(scene,own,{metadataKey:'carbonLabel'}),{layoutLabels,annotations}=annotationLayer,label=(g,w,p,width=3,options={})=>annotationLayer.label(g,w,p,width,{height:128,...options});
  const island=new THREE.Group();scene.add(island);
  // A cutaway connects living land to a geological store; neither is a separate scene.
  box(island,[-4.75,-1.10,0],[10,2.3,10],0x58483d);
@@ -39,7 +35,7 @@ export function createCarbonScene(lesson,es){
  box(scene,[5,.635,0],[9.4,.045,10],0x4998b0,{transparent:true,opacity:.45,depthWrite:false,roughness:.22});
  water.castShadow=false;const waves=[];for(let z=-4.5;z<=4.5;z+=.65){const points=[];for(let x=.35;x<9.65;x+=.32)points.push(new THREE.Vector3(x,.68+Math.sin(x*1.8+z)*.04,z));waves.push(tube(scene,new THREE.CatmullRomCurve3(points),.018,mat(0x9cdfe3,{transparent:true,opacity:.5})));}
  const dissolved=[];for(let i=0;i<36;i++)dissolved.push(ball(scene,[.7+(i%9)*1.02,-1.1+Math.floor(i/9)*.4,4.5],.06,carbonMaterial));
- label(scene,t('C · formas disueltas','C · dissolved forms'),[6,-.75,5.1],3.2,{height:72});
+ const dissolvedCaption=label(scene,t('C · formas disueltas','C · dissolved forms'),[6,-.75,5.1],3.2,{height:72});
  // A chimney visibly receives carbon from the geological seam, then releases it to the air.
  const factory=new THREE.Group();factory.position.set(-.95,.4,2.1);scene.add(factory);
  box(factory,[0,.4,0],[1.7,.8,1.6],0x93a4a3);box(factory,[0,.88,0],[1.8,.12,1.7],0x657c86);
@@ -62,37 +58,50 @@ export function createCarbonScene(lesson,es){
   path.userData.info=[flow.name[0]+': carbono de '+NAMES[flow.from][0].toLowerCase()+' a '+NAMES[flow.to][0].toLowerCase()+'.',flow.name[1]+': carbon from '+NAMES[flow.from][1].toLowerCase()+' to '+NAMES[flow.to][1].toLowerCase()+'.'];targets.push(path);
   const arrows=[];for(const u of [.28,.68]){const a=mesh(scene,arrowGeo,material,curve.getPoint(u).toArray());a.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),curve.getTangent(u));arrows.push(a);}
   const packets=[];for(let i=0;i<20;i++){const packet=mesh(scene,particleGeo,mat(flow.color,{emissive:flow.color,emissiveIntensity:.6}));packet.visible=false;packets.push(packet);}
-  routes.push({...flow,curve,path,arrows,packets});
+  const caption=label(scene,'',curve.getPoint(.5).add(new THREE.Vector3(0,.45,0)).toArray(),3,{color:'#'+flow.color.toString(16)});caption.m.userData.carbonLabel.flow=flow.id;
+  routes.push({...flow,curve,path,arrows,packets,caption});
  }
  // CO2 close-up: absorption, molecular vibration and one re-emitted IR ray.
  // There is no atmosphere wall, specular reflection or conversion of energy into matter.
  const molecule=new THREE.Group();molecule.position.set(-7,5.3,0);scene.add(molecule);
  const atom=ball(molecule,[0,0,0],.40,carbonMaterial),oxygens=[-1.1,1.1].map(x=>ball(molecule,[x,0,0],.3,oxygenMaterial));
  for(const side of [-1,1])for(const y of [-.085,.085]){const curve=new THREE.LineCurve3(new THREE.Vector3(side*.2,y,0),new THREE.Vector3(side*.88,y,0));tube(molecule,curve,.033,mat(0xc4e2e6));}
- label(molecule,'O = C = O',[0,.8,0],2.8,{height:72});
- label(molecule,t('CO₂ · molécula ampliada','CO₂ · enlarged molecule'),[0,1.25,0],3.8,{height:72});
+ const moleculeCaptions=[label(molecule,'O = C = O',[0,.8,0],2.8,{height:72}),label(molecule,t('CO₂ · molécula ampliada','CO₂ · enlarged molecule'),[0,1.25,0],3.8,{height:72})];
  const radiation=new THREE.Group();molecule.add(radiation);
- function wave(a,b){const start=new THREE.Vector3(...a),end=new THREE.Vector3(...b),dir=end.clone().sub(start),perp=new THREE.Vector3(0,0,1),points=[];for(let i=0;i<=60;i++){const u=i/60;points.push(start.clone().addScaledVector(dir,u).addScaledVector(perp,Math.sin(u*10*Math.PI)*.08));}const curve=new THREE.CatmullRomCurve3(points);return {curve,path:tube(radiation,curve,.028,mat(0xffd074,{emissive:0xffc456,emissiveIntensity:.8})),pulse:ball(radiation,[...a],.095,mat(0xffe6a9,{emissive:0xffd16a,emissiveIntensity:1}))};}
+ function wave(a,b){const start=new THREE.Vector3(...a),end=new THREE.Vector3(...b),dir=end.clone().sub(start),perp=new THREE.Vector3(0,0,1),points=[];for(let i=0;i<=60;i++){const u=i/60;points.push(start.clone().addScaledVector(dir,u).addScaledVector(perp,Math.sin(u*10*Math.PI)*.08));}const curve=new THREE.CatmullRomCurve3(points);return {curve,path:tube(radiation,curve,.028,mat(0xffd074,{emissive:0xffc456,emissiveIntensity:.8})),pulse:mesh(radiation,own(new THREE.OctahedronGeometry(.12,0)),mat(0xffe6a9,{emissive:0xffd16a,emissiveIntensity:1}),[...a])};}
  const incoming=wave([-3,-.8,0],[-.45,0,0]),outgoing=[wave([.4,0,0],[2,1,.8]),wave([.4,0,0],[2,-1.2,1.1]),wave([.2,0,.35],[.5,.8,2.3])];
- const heatLabel=label(molecule,t('IR · absorción → vibración → reemisión','IR · absorption → vibration → re-emission'),[0,-1.5,0],5.7,{height:72});
+ const heatLabel=label(molecule,t('IR · absorción → vibración → reemisión','IR · absorption → vibration → re-emission'),[0,-1.5,0],5.7,{height:72,color:'#ffd074'});
+ // A fixed envelope encloses the atoms/bonds throughout vibration, so labels do not jitter or cover the molecule.
+ const moleculeEnvelope=[-1.45,1.45].flatMap(x=>[-.5,.5].flatMap(y=>[-.45,.45].map(z=>new THREE.Vector3(x,y,z))));
+ function moleculeBounds(camera,{width,height}){
+  molecule.updateWorldMatrix(true,false);camera.updateMatrixWorld(true);const world=moleculeEnvelope.map(p=>p.clone().applyMatrix4(molecule.matrixWorld));
+  if(world.some(p=>p.clone().applyMatrix4(camera.matrixWorldInverse).z>=-camera.near))return null;
+  const points=world.map(p=>p.project(camera)),xs=points.map(p=>(p.x+1)*width/2),ys=points.map(p=>(1-p.y)*height/2),x=Math.max(0,Math.min(...xs)),y=Math.max(0,Math.min(...ys)),right=Math.min(width,Math.max(...xs)),bottom=Math.min(height,Math.max(...ys));
+  return right>x&&bottom>y?{x,y,width:right-x,height:bottom-y}:null;
+ }
  const standsGroup=new THREE.Group();scene.add(standsGroup);
- for(let i=0;i<4;i++){const x=[-9,-4,4,9][i],z=8;box(standsGroup,[x,.53,z],[1.6,1.05,.75],0x294553);box(standsGroup,[x,1.1,z],[1.8,.08,.95],0x668394);const b=box(standsGroup,[x,1.22,z+.1],[.8,.2,.5],0xa6e9cd,{emissive:0x7fccb2,emissiveIntensity:.5});b.userData.action=i;targets.push(b);stands.push(b);label(standsGroup,`${i+1} · ${(es?['CO₂ / IR','BOSQUE','OCÉANO','FÓSIL']:['CO₂ / IR','FOREST','OCEAN','FOSSIL'])[i]}`,[x,2.2,z],2.4,{height:72});label(standsGroup,t('▶ ESCUCHAR','▶ LISTEN'),[x,1.55,z+.2],1.2,{height:72});}
+ for(let i=0;i<4;i++){const x=[-9,-4,4,9][i],z=8;box(standsGroup,[x,.53,z],[1.6,1.05,.75],0x294553);box(standsGroup,[x,1.1,z],[1.8,.08,.95],0x668394);const b=box(standsGroup,[x,1.22,z+.1],[.8,.2,.5],0xa6e9cd,{emissive:0x7fccb2,emissiveIntensity:.5});b.userData.action=i;targets.push(b);stands.push(b);label(standsGroup,`${i+1} · ${(es?['CO₂ / IR','BOSQUE','OCÉANO','FÓSIL']:['CO₂ / IR','FOREST','OCEAN','FOSSIL'])[i]}`,[x,.68,z+.46],1.55,{height:72,physical:true});label(standsGroup,t('▶ ESCUCHAR','▶ LISTEN'),[x,1.55,z+.2],1.2,{height:72,physical:true});}
  let lastState;
- function update(model,time=0,phase=0){
+ function update(model,time=0,phase=0,whole=false){
   const s=sampleCarbon(model.trace,time);lastState=s;
   for(const id of RESERVOIRS){const r=reservoirs[id];r.badge.set(`${id==='land'?t('TIERRA','LAND'):NAMES[id][es?0:1]}\n${fmt(s[id])} ${t('u. C','C units')}`);r.fill.scale.x=s[id]/100;r.fill.position.x=-1.5+1.5*s[id]/100;r.badge.m.userData.info=[`${NAMES[id][0]}: ${s[id].toFixed(2)} unidades de carbono almacenado.`,`${NAMES[id][1]}: ${s[id].toFixed(2)} units of stored carbon.`];}
   coal.forEach((m,i)=>{m.scale.x=Math.max(.01,s.fossil/30);m.material.opacity=.4+.6*s.fossil/30;});
-  routes.forEach(r=>{const flow=s.flows[r.id],highlight=phase===0?false:phase===1?['photosynthesis','respiration'].includes(r.id):phase===2?['intoOcean','outOfOcean'].includes(r.id):r.id==='emitted';r.path.material.opacity=flow>0?(highlight?1:.58):.16;r.path.material.emissiveIntensity=highlight?.65:.12;r.arrows.forEach(a=>a.visible=flow>0);const count=flow>0?Math.min(20,Math.max(2,Math.ceil(flow*14))):0;r.packets.forEach((m,i)=>{m.visible=i<count;if(m.visible)m.position.copy(r.curve.getPoint((i/count+s.continuous*Math.max(.3,Math.min(1.2,flow)))%1));});});
+  routes.forEach(r=>{const flow=s.flows[r.id],highlight=phase===0?false:phase===1?['photosynthesis','respiration'].includes(r.id):phase===2?['intoOcean','outOfOcean'].includes(r.id):r.id==='emitted';r.caption.m.visible=whole||highlight;r.caption.set(`${t('MATERIA','MATTER')} · ${r.name[es?0:1]}\n${NAMES[r.from][es?0:1]} → ${NAMES[r.to][es?0:1]}\n${fmt(flow)} ${t('u. C / intervalo','C units / interval')}`);r.path.material.opacity=flow>0?(highlight?1:.58):.16;r.path.material.emissiveIntensity=highlight?.65:.12;r.arrows.forEach(a=>a.visible=flow>0);const count=flow>0?Math.min(20,Math.max(2,Math.ceil(flow*14))):0;r.packets.forEach((m,i)=>{m.visible=i<count;if(m.visible)m.position.copy(r.curve.getPoint((i/count+s.continuous*Math.max(.3,Math.min(1.2,flow)))%1));});});
   chimney.material.emissive.setHex(s.flows.emitted>0?0x59291f:0x000000);
   radiation.visible=phase===0;heatLabel.m.visible=phase===0;const u=s.continuous%1,incomingActive=u<.43;
   incoming.path.visible=incoming.pulse.visible=incomingActive;if(incomingActive)incoming.pulse.position.copy(incoming.curve.getPoint(u/.43));
+  const stage=u<.43?'incoming':u<.66?'absorbed':'emitted';radiation.userData.stage=stage;heatLabel.set(t('ENERGÍA · ','ENERGY · ')+({incoming:t('IR entrante','Incoming IR'),absorbed:t('Absorción · vibración','Absorption · vibration'),emitted:t('IR emitido · otra dirección','Emitted IR · another direction')})[stage]+'\n'+t('La molécula conserva su carbono','The molecule keeps its carbon')+'\n'+t('Esquema cualitativo · sin tiempos físicos','Qualitative diagram · no physical timing'));
   const vibrating=u>=.43&&u<.66,vibration=vibrating?Math.sin(u*100)*.12:0;oxygens.forEach((o,i)=>{o.position.y=(i===0?1:-1)*vibration;});atom.position.y=-vibration*.3;
   outgoing.forEach((r,i)=>{r.path.visible=r.pulse.visible=u>=.66&&i===Math.floor(s.continuous)%3;if(r.pulse.visible)r.pulse.position.copy(r.curve.getPoint((u-.66)/.34));});
   stands.forEach((b,i)=>b.material.emissiveIntensity=i===phase?1:.2);
+  const activeReservoirs=phase===1?['air','land']:phase===2?['air','ocean']:phase===3?['air','fossil']:['air'];
+  for(const id of RESERVOIRS)reservoirs[id].badge.m.visible=reservoirs[id].rail.visible=whole||phase===3||activeReservoirs.includes(id);
+  moleculeCaptions.forEach(c=>c.m.visible=whole||phase===0);dissolvedCaption.m.visible=whole||phase===2;
+  for(const e of annotations){e.active=phase===0&&e.m.parent===molecule||activeReservoirs.some(id=>e.m===reservoirs[id].badge.m)||routes.some(r=>e.m===r.caption.m&&r.caption.m.visible&&(phase===1?['photosynthesis','respiration'].includes(r.id):phase===2?['intoOcean','outOfOcean'].includes(r.id):phase===3?r.id==='emitted':false));e.priority=phase===0&&e.m===heatLabel.m?10000:0;}
  }
  for(const id of RESERVOIRS)targets.push(reservoirs[id].badge.m);
  atom.userData.info=["CO₂: un átomo de carbono y dos de oxígeno. La radiación infrarroja puede excitar vibraciones moleculares; el esquema es cualitativo.","CO₂: one carbon atom and two oxygen atoms. Infrared radiation can excite molecular vibrations; this is a qualitative diagram."];targets.push(atom,...oxygens);oxygens.forEach(o=>o.userData.info=atom.userData.info);
- return {scene,resources,targets,routes,reservoirs,stands,standsGroup,coal,water,dissolved,molecule,radiation,outlines:[],update,get state(){return lastState;}};
+ return {scene,resources,targets,routes,reservoirs,stands,standsGroup,coal,water,dissolved,molecule,moleculeBounds,radiation,heatLabel,incoming,outgoing,annotations,layoutLabels,outlines:[],update,get state(){return lastState;}};
 }
 export function createCarbonWorld(host,lesson,es,onInspect){
  const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFShadowMap;host.append(renderer.domElement);renderer.domElement.tabIndex=0;
@@ -102,9 +111,9 @@ export function createCarbonWorld(host,lesson,es,onInspect){
  function nearest(player){let best=null,distance=5.8;built.stands.forEach((b,i)=>{const d=Math.hypot(player.x-b.position.x,player.z-b.position.z);if(d<distance){best=i;distance=d;}});return best;}
  function hit(x,y){const r=renderer.domElement.getBoundingClientRect();pointer.set((x-r.left)/r.width*2-1,1-(y-r.top)/r.height*2);ray.setFromCamera(pointer,camera);return ray.intersectObjects(built.targets.filter(visible))[0];}
  return {canvas:renderer.domElement,update(s,i){model=s;phase=i;},render(player,dt,animation,orbit,mode,time){
-  if(model)built.update(model,time,phase);built.standsGroup.visible=mode==='immersive';
+  if(model)built.update(model,time,phase,mode==='web'&&orbit.whole===true);built.standsGroup.visible=mode==='immersive';
   if(mode==='immersive'){camera.position.set(player.x,1.65,player.z);camera.rotation.set(player.pitch,player.yaw,0,'YXZ');}
   else{const focus=orbit.whole||phase===3?[0,1.7,0]:[[-7,4.9,0],[-4.2,2.2,0],[5,.8,0]][phase],center=new THREE.Vector3(...focus),base=lesson.overview.distance*(orbit.whole||phase===3?2:phase===0?1.1:1.6),tan=Math.tan(camera.fov*Math.PI/360),width=orbit.whole||phase===3?24:phase===0?8:14,height=orbit.whole||phase===3?11:phase===0?6:10,d=Math.max(base,width/(2*tan*camera.aspect),height/(2*tan))*orbit.distance/lesson.overview.distance;camera.position.set(center.x+Math.sin(orbit.yaw)*Math.cos(orbit.pitch)*d,center.y+Math.sin(orbit.pitch)*d,center.z+Math.cos(orbit.yaw)*Math.cos(orbit.pitch)*d);camera.lookAt(center);}
-  renderer.render(built.scene,camera);
+  const viewport=annotationViewport(host),core=phase===0?built.moleculeBounds(camera,viewport):null;if(core)viewport.obstacles.push(core);built.layoutLabels(camera,viewport);renderer.render(built.scene,camera);
  },inspect(x,y){const h=hit(x,y);if(h)onInspect(h.object.userData.action===undefined?h.object.userData.info:{chapter:h.object.userData.action});},nearest,activate(){const r=renderer.domElement.getBoundingClientRect(),h=hit(r.left+r.width/2,r.top+r.height/2),chapter=h?.object.userData.action!==undefined&&h.distance<8?h.object.userData.action:nearest({x:camera.position.x,z:camera.position.z});if(chapter!==null)onInspect({chapter});},dispose(){observer.disconnect();built.resources.forEach(r=>r.dispose());renderer.dispose();},poseAt:lesson.poseAt};
 }

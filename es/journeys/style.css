@@ -99,7 +99,8 @@
  .continuous-experience.immersive .walk-controls{position:absolute;right:16px;top:var(--walk-top,108px);display:grid;justify-items:end;gap:12px;pointer-events:none;max-width:calc(100% - 32px)}
  .continuous-experience.immersive .walk-controls #mouse-look{position:static;pointer-events:auto;max-width:100%}
  .continuous-experience.immersive .walk-controls .touch{position:static}
- .carbon-experience.immersive .visual{min-height:580px}
+ .carbon-experience .visual{min-height:540px}
+ .carbon-experience.immersive .visual{min-height:640px}
  .evolution-experience.immersive .visual{min-height:520px}
  .electricity-experience.immersive .visual{min-height:460px}
 }
