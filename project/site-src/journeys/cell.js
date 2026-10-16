@@ -21,3 +21,10 @@ export const cell={id:'cell',room:'life',title:L('Una célula fabrica una prote�
  // A single cutaway cell and the same exported RNA live in cell-world.js.
  build(){return ()=>{};}
 };
+
+// Compare the same teaching instant, keeping each variant's causal events.
+let comparisonTraces,comparisonTracks;
+const comparisons=()=>comparisonTraces??=Object.freeze([0,1,2].map(variant=>buildCellTrace({variant})));
+export function sampleCellComparison(time){return comparisons().map(trace=>sampleCell(trace,time));}
+export function cellComparisonTracks(){return comparisonTracks??=Object.freeze(comparisons().map((trace,variant)=>Object.freeze({variant,label:Object.freeze([L('Original','Original'),L('Sinónima','Synonymous'),L('Parada temprana','Early stop')][variant]),codon:trace.sequence[2],meaning:variant===2?'STOP':'Phe',releaseTime:trace.releaseTime,values:Object.freeze(trace.states.map(s=>s.chain.length))})));}
+export function cellChartLayout(width=520){const w=Math.max(200,Number.isFinite(width)&&width>0?width:520);return Object.freeze({width:w,height:440,left:30,right:w-14,top:52,bottom:100,rows:Object.freeze([0,132,264]),axisY:428});}

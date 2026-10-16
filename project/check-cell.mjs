@@ -1,6 +1,17 @@
 import assert from 'node:assert/strict';
 import {buildCellTrace,sampleCell,translate} from './site-src/journeys/cell-model.js';
 
+import {cellChartLayout,cellComparisonTracks,sampleCellComparison} from './site-src/journeys/cell.js';
+
+for(const width of [290,360,420,1000]){const g=cellChartLayout(width);assert(Object.isFrozen(g)&&Object.isFrozen(g.rows));assert.equal(g.width,width);assert(g.right>g.left);assert.equal(g.rows.length,3);assert(g.rows.every(row=>row+g.bottom+20<g.height));assert(g.axisY+6<g.height);}
+const tracks=cellComparisonTracks();assert(Object.isFrozen(tracks));assert.deepEqual(tracks.map(t=>t.codon),['UUU','UUC','UAA']);assert.deepEqual(tracks.map(t=>t.releaseTime),[21,21,15]);assert(tracks.every(t=>Object.isFrozen(t)&&Object.isFrozen(t.values)&&Object.isFrozen(t.label)));
+for(const time of [...Array.from({length:25},(_,i)=>i),8.99,11.99,14.99,15.01,17.99,20.99,21.01]){
+ const frames=sampleCellComparison(time);assert.equal(frames.length,3);
+ for(const [variant,s]of frames.entries()){const expected=(variant===2?[9,12]:[9,12,15,18]).filter(t=>t<=time).length;assert.equal(s.time,time);assert.equal(s.chain.length,expected);assert.equal(s.chain.released,time>=(variant===2?15:21));assert.deepEqual(s.chain.aminoAcids,['Met','Ala','Phe','Glu'].slice(0,expected));if(Number.isInteger(time))assert.equal(tracks[variant].values[time],expected);}
+ assert.deepEqual(frames[0].chain,frames[1].chain,'synonymous third codon keeps this model peptide, not necessarily all cellular effects');
+}
+const isolated=sampleCellComparison(24);isolated[0].chain.aminoAcids[0]='bad';assert.equal(sampleCellComparison(24)[0].chain.aminoAcids[0],'Met');assert.throws(()=>{tracks[0].values[0]=4;},TypeError);
+
 // Independently arranged rows from NCBI standard table 1. Columns are U,C,A,G.
 const rows={UU:['Phe','Phe','Leu','Leu'],UC:['Ser','Ser','Ser','Ser'],UA:['Tyr','Tyr',null,null],UG:['Cys','Cys',null,'Trp'],CU:['Leu','Leu','Leu','Leu'],CC:['Pro','Pro','Pro','Pro'],CA:['His','His','Gln','Gln'],CG:['Arg','Arg','Arg','Arg'],AU:['Ile','Ile','Ile','Met'],AC:['Thr','Thr','Thr','Thr'],AA:['Asn','Asn','Lys','Lys'],AG:['Ser','Ser','Arg','Arg'],GU:['Val','Val','Val','Val'],GC:['Ala','Ala','Ala','Ala'],GA:['Asp','Asp','Glu','Glu'],GG:['Gly','Gly','Gly','Gly']};
 let codonCases=0;
