@@ -1,3 +1,5 @@
+import {wrapSceneLabel as wrapVoyageLabel,layoutSceneLabels as layoutVoyageLabels} from './label-layout.js';
+export {wrapVoyageLabel,layoutVoyageLabels};
 import {tuneRenderer} from '../fx/perf.js';
 import * as THREE from '../vendor/three.module.js';
 import {STAGES,PLACES,geoPoint,greatCircle} from './internet-route.js';
@@ -247,25 +249,6 @@ export function createVoyageScene(es=true,{textures=true}={}){
  return {scene,groups,paths,parts,resources,setStage,setAspect,update,layoutLabels,dispose(){resources.forEach(r=>r.dispose());}};
 }
 
-export function wrapVoyageLabel(text,maxWidth,measure){
- const lines=[];let line='';
- for(const word of text.split(/\s+/)){const next=line?line+' '+word:word;if(line&&measure(next)>maxWidth){lines.push(line);line=word;}else line=next;}
- if(line)lines.push(line);return lines;
-}
-export function layoutVoyageLabels(labels,{width,height,obstacles=[],margin=12,gap=5,compact=false}){
- const placed=[],blocked=obstacles.slice(),inside=(v,size,limit)=>Math.max(margin,Math.min(limit-margin-size,v)),clear=(a,b)=>a.x+a.width+gap<=b.x||b.x+b.width+gap<=a.x||a.y+a.height+gap<=b.y||b.y+b.height+gap<=a.y;
- for(const label of [...labels].sort((a,b)=>b.width*b.height-a.width*a.height||a.id-b.id)){
-  if(label.width>width-2*margin||label.height>height-2*margin)continue;
-  const x0=inside(label.x-label.width/2,label.width,width),y0=inside(label.y-label.height/2,label.height,height),xs=new Set([x0,margin,width-margin-label.width]),ys=new Set([y0,margin,height-margin-label.height]);
-  for(const b of blocked){xs.add(inside(b.x-label.width-gap,label.width,width));xs.add(inside(b.x+b.width+gap,label.width,width));ys.add(inside(b.y-label.height-gap,label.height,height));ys.add(inside(b.y+b.height+gap,label.height,height));}
-  let best=null,score=Infinity;
-  for(const x of xs)for(const y of ys){const candidate={id:label.id,x,y,width:label.width,height:label.height};if(!blocked.every(b=>clear(candidate,b)))continue;const distance=compact?y*width*width+(x+label.width/2-label.x)**2:(x+label.width/2-label.x)**2+(y+label.height/2-label.y)**2;if(distance<score){score=distance;best=candidate;}}
-  if(best){placed.push(best);blocked.push(best);}
- }
- // If nearest-anchor placement strands a label, repack from the top without shrinking text.
- if(!compact&&placed.length<labels.length)return layoutVoyageLabels(labels,{width,height,obstacles,margin,gap,compact:true});
- return placed;
-}
 
 const corners=(min,max)=>[0,1].flatMap(x=>[0,1].flatMap(y=>[0,1].map(z=>[x?max[0]:min[0],y?max[1]:min[1],z?max[2]:min[2]])));
 // Framing encloses the teaching subject; terrain and the city continue beyond it.

@@ -10,7 +10,7 @@ import {navigationFor,collides,safePosition,moveInScene,orbitPosition} from './s
 const source=readFileSync('site-src/journeys/internet-world.js','utf8');
 const local=name=>new URL('site-src/journeys/'+name,import.meta.url).href;
 const three=new URL('node_modules/three/build/three.module.js',import.meta.url).href;
-const mapped=source.replace("'../fx/perf.js'",JSON.stringify(new URL('./dist/fx/perf.js',import.meta.url).href)).replace("'../vendor/three.module.js'",JSON.stringify(three)).replace(/'\.\/(internet-(?:route|model|walk)\.js)'/g,(_,name)=>JSON.stringify(local(name)));
+const mapped=source.replace("'../fx/perf.js'",JSON.stringify(new URL('./dist/fx/perf.js',import.meta.url).href)).replace("'../vendor/three.module.js'",JSON.stringify(three)).replace(/'\.\/((?:internet-(?:route|model|walk)|label-layout)\.js)'/g,(_,name)=>JSON.stringify(local(name)));
 const module=await import('data:text/javascript;base64,'+Buffer.from(mapped).toString('base64'));
 const close=(a,b,tolerance=1e-8)=>assert(Math.abs(a-b)<tolerance,`${a} must equal ${b}`);
 // Annotations use a screen-space packing problem, independent of Three/GPU.
