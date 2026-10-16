@@ -24,11 +24,44 @@ export function createVoyageScene(es=true,{textures=true}={}){
  let glowTexture;
  if(textures){const c=document.createElement('canvas');c.width=c.height=64;const ctx=c.getContext('2d'),gradient=ctx.createRadialGradient(32,32,0,32,32,32);gradient.addColorStop(0,'#fff');gradient.addColorStop(.2,'#ffffffa0');gradient.addColorStop(1,'#ffffff00');ctx.fillStyle=gradient;ctx.fillRect(0,0,64,64);glowTexture=own(new THREE.CanvasTexture(c));}
  function glow(g,p,color,size){if(!glowTexture)return;const m=new THREE.Sprite(own(new THREE.SpriteMaterial({map:glowTexture,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false})));m.position.set(...p);m.scale.set(size,size,1);g.add(m);return m;}
+ // These are annotations, not physical signs: keep their text in CSS pixels.
  function label(g,words,p,w=3,color='#cfe8f3'){
   if(!textures)return;
-  const c=document.createElement('canvas'),ctx=c.getContext('2d');ctx.font='600 36px system-ui';c.width=Math.ceil(ctx.measureText(words).width+36);c.height=70;ctx.font='600 36px system-ui';ctx.fillStyle='rgba(3,12,23,.8)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle=color;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(words,c.width/2,35);
-  const tex=own(new THREE.CanvasTexture(c));tex.colorSpace=THREE.SRGBColorSpace;
-  const m=new THREE.Sprite(own(new THREE.SpriteMaterial({map:tex,transparent:true,depthWrite:false})));m.position.set(...p);m.scale.set(w,w*70/c.width,1);g.add(m);labels.push(m);return m;
+  const canvas=document.createElement('canvas'),texture=own(new THREE.CanvasTexture(canvas));texture.colorSpace=THREE.SRGBColorSpace;texture.minFilter=THREE.LinearFilter;texture.generateMipmaps=false;
+  const sprite=new THREE.Sprite(own(new THREE.SpriteMaterial({map:texture,transparent:true,depthWrite:false,depthTest:false,toneMapped:false})));sprite.position.set(...p);sprite.renderOrder=51;g.add(sprite);
+  const geometry=own(new THREE.BufferGeometry());geometry.setAttribute('position',new THREE.BufferAttribute(new Float32Array(6),3));
+  const leader=new THREE.Line(geometry,own(new THREE.LineBasicMaterial({color:0x9ebacc,transparent:true,opacity:.65,depthTest:false,depthWrite:false,toneMapped:false})));leader.renderOrder=50;leader.frustumCulled=false;leader.visible=false;scene.add(leader);
+  const entry={sprite,leader,anchor:new THREE.Vector3(...p),words,color,canvas,texture,maxWidth:0};
+  sprite.userData.voyageLabel={text:words,anchor:p.slice(),leader:leader.uuid,fontPixels:13,lines:[],layout:null};labels.push(entry);return sprite;
+ }
+ let labelLayoutKey='';
+ function layoutLabels(camera,{width,height,obstacles=[]}){
+  if(!textures)return;
+  scene.updateMatrixWorld(true);camera.updateMatrixWorld(true);
+  const maxWidth=Math.max(60,Math.floor(Math.min(280,width-24))),projected=[];
+  for(const [id,e] of labels.entries()){
+   const m=e.sprite;let visible=true;for(let parent=m;parent;parent=parent.parent)if(!parent.visible){visible=false;break;}
+   const anchor=m.parent.localToWorld(e.anchor.clone()),view=anchor.clone().applyMatrix4(camera.matrixWorldInverse),ndc=anchor.clone().project(camera);
+   if(!visible||view.z>=0||ndc.z< -1||ndc.z>1||Math.abs(ndc.x)>1.1||Math.abs(ndc.y)>1.1){m.material.opacity=0;e.leader.visible=false;m.userData.voyageLabel.layout=null;continue;}
+   if(e.maxWidth!==maxWidth){
+    const c=e.canvas,ctx=c.getContext('2d');ctx.font='600 39px system-ui';
+    const lines=wrapVoyageLabel(e.words,maxWidth-12,text=>ctx.measureText(text).width/3),w=Math.min(maxWidth,Math.max(...lines.map(text=>ctx.measureText(text).width/3))+12),h=lines.length*18+8;
+    c.width=Math.ceil(w*3);c.height=h*3;ctx.font='600 39px system-ui';ctx.fillStyle='#061421ed';ctx.fillRect(0,0,c.width,c.height);ctx.strokeStyle='#9ebacc55';ctx.lineWidth=2;ctx.strokeRect(1,1,c.width-2,c.height-2);ctx.fillStyle=e.color;ctx.textAlign='center';ctx.textBaseline='middle';lines.forEach((line,i)=>ctx.fillText(line,c.width/2,(13+i*18)*3));
+    e.width=c.width/3;e.height=h;e.maxWidth=maxWidth;e.texture.needsUpdate=true;m.userData.voyageLabel.lines=lines;
+   }
+   projected.push({id,x:(ndc.x+1)*width/2,y:(1-ndc.y)*height/2,width:e.width,height:e.height,entry:e,anchor,depth:-view.z});
+  }
+  const key=JSON.stringify([width,height,obstacles,camera.matrixWorld.elements,camera.projectionMatrix.elements,projected.map(p=>[p.id,p.x,p.y,p.depth,p.width,p.height])]);
+  if(key===labelLayoutKey)return;labelLayoutKey=key;
+  const placed=layoutVoyageLabels(projected,{width,height,obstacles});
+  for(const p of projected){const e=p.entry,m=e.sprite,box=placed.find(b=>b.id===p.id);
+   if(!box){m.material.opacity=0;e.leader.visible=false;m.userData.voyageLabel.layout=null;continue;}
+   const center={x:box.x+box.width/2,y:box.y+box.height/2},units=2*p.depth*Math.tan(camera.fov*Math.PI/360)/height;
+   const position=new THREE.Vector3(center.x/width*2-1,1-center.y/height*2,p.anchor.clone().project(camera).z).unproject(camera),parentScale=m.parent.getWorldScale(new THREE.Vector3());
+   m.position.copy(m.parent.worldToLocal(position.clone()));m.scale.set(box.width*units/Math.abs(parentScale.x),box.height*units/Math.abs(parentScale.y),1);m.material.opacity=1;
+   const points=e.leader.geometry.attributes.position;points.setXYZ(0,...p.anchor.toArray());points.setXYZ(1,...position.toArray());points.needsUpdate=true;e.leader.visible=Math.hypot(center.x-p.x,center.y-p.y)>8;
+   m.userData.voyageLabel.layout={...box,anchorX:p.x,anchorY:p.y};
+  }
  }
  function surface(color,kind){
   const material=mat(color);if(!textures)return material;
@@ -158,7 +191,7 @@ export function createVoyageScene(es=true,{textures=true}={}){
   {text:t('Fibras dentro del cable','Fibers inside the cable'),position:[0,-2.05,3.7],width:9,color:'#cfe8f3'},
   {text:t('Infrarrojo · colores simbólicos','Infrared · symbolic colors'),position:[0,-3.05,3.7],width:9,color:'#8bb8cb'}
  ];
- const annotationSet=specs=>specs.map(a=>{const sprite=label(deep,a.text,a.position,a.width,a.color);if(sprite){sprite.material.depthTest=false;sprite.renderOrder=10;}return {...a,sprite};});
+ const annotationSet=specs=>specs.map(a=>{const sprite=label(deep,a.text,a.position,a.width,a.color);if(sprite){sprite.material.depthTest=false;sprite.renderOrder=51;}return {...a,sprite};});
  const desktopAnnotations=annotationSet(cableAnnotations),mobileAnnotations=annotationSet(mobileCableAnnotations);parts.cable.annotations=desktopAnnotations;
  line(deep,[cablePath.curve.getPointAt(.36).toArray(),[-3.2,-1.3,1.8],[-2.4,-1.35,3.1]],0x5b8598,.011);
  // A local enlarged comparison shows optical power increasing, not a new packet.
@@ -168,8 +201,8 @@ export function createVoyageScene(es=true,{textures=true}={}){
  for(const [start,end,amplitude] of [[-4,-.8,.06],[.8,4,.2]])line(amplifier,Array.from({length:70},(_,i)=>{const x=start+(end-start)*i/69;return [x,Math.sin(x*11)*amplitude,.015];}),GOLD,.015);
  label(amplifier,t('Entrada atenuada','Attenuated input'),[-2.5,.7,0],3.6,'#e0bb83');
  label(amplifier,t('Salida amplificada','Amplified output'),[2.6,.7,0],3.6,'#ffcf86');
- label(amplifier,t('Amplificación óptica · comparación local','Optical amplification · local comparison'),[0,1.65,0],8);
- label(amplifier,t('Misma información · aumenta la potencia','Same information · increased optical power'),[0,-.8,0],7,'#9ebcca');
+ const amplifierCaptions=[label(amplifier,t('Amplificación óptica · comparación local','Optical amplification · local comparison'),[0,1.65,0],8),
+ label(amplifier,t('Misma información · aumenta la potencia','Same information · increased optical power'),[0,-.8,0],7,'#9ebcca')];
  parts.amplifier={group:amplifier,path:amplificationPath,housing:amp};
  const sediment=[];for(let i=0;i<900;i++)sediment.push(Math.sin(i*23.3)*27,Math.sin(i*7.12)*6+3,Math.cos(i*17.7)*18);
  const dustGeo=own(new THREE.BufferGeometry());dustGeo.setAttribute('position',new THREE.Float32BufferAttribute(sediment,3));const dust=new THREE.Points(dustGeo,own(new THREE.PointsMaterial({color:0x6da4b2,size:.035,transparent:true,opacity:.48})));deep.add(dust);animated.push(time=>dust.position.x=Math.sin(time*.07)*.3);
@@ -208,10 +241,30 @@ export function createVoyageScene(es=true,{textures=true}={}){
  }
  function setAspect(aspect=1.5){
   const mobile=aspect<1.05;amplifier.scale.setScalar(mobile?2:1);amplifier.position.y=mobile?1.9:2.5;
-  desktopAnnotations.forEach(a=>{if(a.sprite)a.sprite.visible=!mobile;});mobileAnnotations.forEach(a=>{if(a.sprite)a.sprite.visible=mobile;});parts.cable.annotations=mobile?mobileAnnotations:desktopAnnotations;parts.amplifier.mobile=mobile;
+  desktopAnnotations.forEach(a=>{if(a.sprite)a.sprite.visible=!mobile;});mobileAnnotations.forEach((a,i)=>{if(a.sprite)a.sprite.visible=mobile&&i===0;});amplifierCaptions.forEach(sprite=>{if(sprite)sprite.visible=!mobile;});parts.cable.annotations=mobile?mobileAnnotations.slice(0,1):desktopAnnotations;parts.amplifier.mobile=mobile;
  }
  setAspect();setStage(0);update(internetFrameAt(0,0));
- return {scene,groups,paths,parts,resources,setStage,setAspect,update,dispose(){resources.forEach(r=>r.dispose());}};
+ return {scene,groups,paths,parts,resources,setStage,setAspect,update,layoutLabels,dispose(){resources.forEach(r=>r.dispose());}};
+}
+
+export function wrapVoyageLabel(text,maxWidth,measure){
+ const lines=[];let line='';
+ for(const word of text.split(/\s+/)){const next=line?line+' '+word:word;if(line&&measure(next)>maxWidth){lines.push(line);line=word;}else line=next;}
+ if(line)lines.push(line);return lines;
+}
+export function layoutVoyageLabels(labels,{width,height,obstacles=[],margin=12,gap=5,compact=false}){
+ const placed=[],blocked=obstacles.slice(),inside=(v,size,limit)=>Math.max(margin,Math.min(limit-margin-size,v)),clear=(a,b)=>a.x+a.width+gap<=b.x||b.x+b.width+gap<=a.x||a.y+a.height+gap<=b.y||b.y+b.height+gap<=a.y;
+ for(const label of [...labels].sort((a,b)=>b.width*b.height-a.width*a.height||a.id-b.id)){
+  if(label.width>width-2*margin||label.height>height-2*margin)continue;
+  const x0=inside(label.x-label.width/2,label.width,width),y0=inside(label.y-label.height/2,label.height,height),xs=new Set([x0,margin,width-margin-label.width]),ys=new Set([y0,margin,height-margin-label.height]);
+  for(const b of blocked){xs.add(inside(b.x-label.width-gap,label.width,width));xs.add(inside(b.x+b.width+gap,label.width,width));ys.add(inside(b.y-label.height-gap,label.height,height));ys.add(inside(b.y+b.height+gap,label.height,height));}
+  let best=null,score=Infinity;
+  for(const x of xs)for(const y of ys){const candidate={id:label.id,x,y,width:label.width,height:label.height};if(!blocked.every(b=>clear(candidate,b)))continue;const distance=compact?y*width*width+(x+label.width/2-label.x)**2:(x+label.width/2-label.x)**2+(y+label.height/2-label.y)**2;if(distance<score){score=distance;best=candidate;}}
+  if(best){placed.push(best);blocked.push(best);}
+ }
+ // If nearest-anchor placement strands a label, repack from the top without shrinking text.
+ if(!compact&&placed.length<labels.length)return layoutVoyageLabels(labels,{width,height,obstacles,margin,gap,compact:true});
+ return placed;
 }
 
 const corners=(min,max)=>[0,1].flatMap(x=>[0,1].flatMap(y=>[0,1].map(z=>[x?max[0]:min[0],y?max[1]:min[1],z?max[2]:min[2]])));
@@ -238,6 +291,7 @@ export function createVoyageWorld(host,es){
  renderer.domElement.tabIndex=0;renderer.domElement.setAttribute('aria-label',es?'Escena de Internet. Explora con el teclado y el ratón.':'Internet scene. Explore with keyboard and mouse.');
  renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio||1,1.7));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;host.append(renderer.domElement);tuneRenderer(renderer);
  const camera=new THREE.PerspectiveCamera(47,1,.05,240),savedViews=new Map();
+ let labelBoundsKey='',labelObstacles=[],labelViewport={width:0,height:0};
  let index=0,elapsed=2,free=false,yaw=0,pitch=0,orbit=orbitFromPosition(STAGES[0].camera),currentFrame=internetFrameAt(0,0),disposed=false;
  const initial=voyageCameraAt(0,1),target=V(initial.target),fromPos=V(initial.position),fromTarget=target.clone();camera.position.copy(fromPos);camera.lookAt(target);
  const sceneName=()=>STAGES[index].scene,getNavigationMode=()=>navigationFor(sceneName()).mode;
@@ -267,15 +321,19 @@ export function createVoyageWorld(host,es){
   if(getNavigationMode()==='orbit'){orbit.radius=THREE.MathUtils.clamp(orbit.radius-(forward+vertical)*Math.min(.1,dt)*8,12,42);orbit.azimuth-=side*Math.min(.1,dt)*.55;}
   else camera.position.copy(V(moveInScene(sceneName(),camera.position.toArray(),{yaw,pitch,forward,side,vertical,dt})));orient();
  }
- const resize=()=>{if(disposed)return;const w=Math.max(1,host.clientWidth),h=Math.max(1,host.clientHeight);renderer.setSize(w,h,false);camera.aspect=w/h;world.setAspect(camera.aspect);camera.fov=guidedPose().fov;camera.updateProjectionMatrix();if(!free){const pose=guidedPose();camera.position.copy(V(pose.position));target.copy(V(pose.target));fromPos.copy(camera.position);fromTarget.copy(target);elapsed=2;camera.lookAt(target);}};
- const observer=new ResizeObserver(resize);observer.observe(host);resize();
+ const resize=()=>{if(disposed)return;labelBoundsKey='';const w=Math.max(1,host.clientWidth),h=Math.max(1,host.clientHeight);renderer.setSize(w,h,false);camera.aspect=w/h;world.setAspect(camera.aspect);camera.fov=guidedPose().fov;camera.updateProjectionMatrix();if(!free){const pose=guidedPose();camera.position.copy(V(pose.position));target.copy(V(pose.target));fromPos.copy(camera.position);fromTarget.copy(target);elapsed=2;camera.lookAt(target);}};
+ const observer=new ResizeObserver(resize);observer.observe(host);const boundsObserver=new ResizeObserver(()=>{labelBoundsKey='';});for(const element of host.parentElement?.querySelectorAll('.scene-meta,.scene-actions,.scene-limits,#look-help,#navigation,.touch')||[])boundsObserver.observe(element);resize();
  function render(frame,options={}){
   // Older consumers can render a fraction while migrating to immutable frames.
   if(typeof frame==='number'){const progress=arguments[2]||0;options={dt:frame,reduced:!!arguments[3]};frame=internetFrameAt(index,progress);}
   frame=frame||currentFrame;if(frame.index!==index)go(frame.index,true,{preserveView:!!options.preserveView});currentFrame=frame;
   if(!free){elapsed+=Math.max(0,options.dt||0);const q=Math.min(1,elapsed/1.2),s=q*q*(3-2*q),pose=guidedPose();camera.position.lerpVectors(fromPos,V(pose.position),s);target.lerpVectors(fromTarget,V(pose.target),s);camera.lookAt(target);}
-  world.update(frame);renderer.render(world.scene,camera);
+  world.update(frame);
+  // The HUD is real DOM. Measure it only when chapter, exploration or size changes.
+  const boundsKey=[index,free,host.clientWidth,host.clientHeight].join(':');
+  if(boundsKey!==labelBoundsKey){labelBoundsKey=boundsKey;const area=host.getBoundingClientRect?.();labelViewport={width:area?.width||host.clientWidth,height:area?.height||host.clientHeight};labelObstacles=[];if(area)for(const element of host.parentElement?.querySelectorAll('.scene-meta,.scene-actions,.scene-limits,#look-help,#navigation,.touch')||[]){const r=element.getBoundingClientRect();if(r.width&&r.height)labelObstacles.push({x:r.left-area.left,y:r.top-area.top,width:r.width,height:r.height});}}
+  world.layoutLabels(camera,{...labelViewport,obstacles:labelObstacles});renderer.render(world.scene,camera);
  }
  function inspect(){return {stage:index,scene:sceneName(),navigation:navigationFor(sceneName()),camera:{position:camera.position.toArray(),target:target.toArray(),aspect:camera.aspect,fov:camera.fov},exploring:free,frame:currentFrame};}
- return {canvas:renderer.domElement,scene:world.scene,parts:world.parts,go,explore,look,move,render,getViewState,restoreViewState,getNavigationMode,inspect,dispose(){disposed=true;observer.disconnect();world.dispose();renderer.dispose();renderer.domElement.remove();}};
+ return {canvas:renderer.domElement,scene:world.scene,parts:world.parts,go,explore,look,move,render,getViewState,restoreViewState,getNavigationMode,inspect,dispose(){disposed=true;observer.disconnect();boundsObserver.disconnect();world.dispose();renderer.dispose();renderer.domElement.remove();}};
 }
