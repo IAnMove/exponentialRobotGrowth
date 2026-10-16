@@ -39,7 +39,8 @@ export const internet={id:'internet',room:'mind',title:L('Internet: el viaje de 
  k.box(server,[0,3.25,.25],[5.8,3.2,.1],0x193548,L('Estado del receptor y confirmaciones en el emisor','Receiver state and acknowledgements at sender'));
  k.tube(server,[[-3.5,1.35,-.7],[-3.5,1.35,1.2],[0,1.35,1.2],[3.5,1.35,1.2],[3.5,1.35,-.7]],.03,0x5c788d,L('Datos hacia el receptor; confirmaciones y respuesta hacia el emisor','Data toward receiver; acknowledgements and response toward sender'));
  k.label(server,'TCP · SEQ → ACK',0,4.65,0,4.5);
- const cells=Array.from({length:20},(_,i)=>{const x=-2.3+i%10*.5,y=3.45-Math.floor(i/10)*.5;k.label(server,String(i+1),x,y+.18,.5,.3);return k.box(server,[x,y,.5],[.4,.3,.3],0x36495c,L(`Segmento ${i+1}: bytes únicos, no copias`,`Segment ${i+1}: unique bytes, not copies`));});
+ const cellLabels=[];
+ const cells=Array.from({length:20},(_,i)=>{const x=-2.3+i%10*.5,y=3.45-Math.floor(i/10)*.5;cellLabels.push(k.label(server,String(i+1),x,y+.18,.5,.3));return k.box(server,[x,y,.5],[.4,.3,.3],0x36495c,L(`Segmento ${i+1}: bytes únicos, no copias`,`Segment ${i+1}: unique bytes, not copies`));});
  const bar=k.box(server,[0,4.05,.5],[5,.15,.25],0x71e5bb),orderedBar=k.box(server,[0,2.3,.5],[5,.15,.25],0x71b7f0),ackBar=k.box(server,[0,1.9,.5],[5,.15,.25],0xddb980);
  for(const y of [4.05,2.3,1.9])k.box(server,[0,y,.34],[5,.17,.03],0x3b5063);
  k.label(server,'Rx',-3,4.05,.5,.7);k.label(server,'APP',-3,2.3,.5,.7);k.label(server,'ACK',-3,1.9,.5,.7);
@@ -56,7 +57,7 @@ export const internet={id:'internet',room:'mind',title:L('Internet: el viaje de 
    const from=f.kind==='data'?[-3.5,1.35,1.2]:[3.5,1.35,1.2],to=f.kind==='data'?[3.5,1.35,1.2]:[-3.5,1.35,1.2],start=f.send??model.trace.response.send;
    between(b,from,to,Math.max(0,Math.min(1,(s.t-start)/model.trace.delay)));b.position.y+=f.kind==='ack'?.28:f.kind==='response'?.52:0;
   }
-  cells.forEach((m,i)=>{m.visible=i<model.packets;const received=s.receivedSegments.includes(i),delivered=model.trace.segments[i]?.end<=s.deliveredBytes;m.material.color.set(delivered?0x78e3c0:received?0xffd786:i===0&&s.lossOccurred&&!s.retrySent?0xb65665:0x36495c);});
+  cells.forEach((m,i)=>{m.visible=cellLabels[i].visible=i<model.packets;const received=s.receivedSegments.includes(i),delivered=model.trace.segments[i]?.end<=s.deliveredBytes;m.material.color.set(delivered?0x78e3c0:received?0xffd786:i===0&&s.lossOccurred&&!s.retrySent?0xb65665:0x36495c);});
   for(const [m,value]of [[bar,s.uniqueBytes],[orderedBar,s.deliveredBytes],[ackBar,s.ackBytes]]){const f=value/model.trace.totalBytes;m.scale.x=Math.max(.001,f);m.position.x=-2.5+2.5*f;}
  };
  }

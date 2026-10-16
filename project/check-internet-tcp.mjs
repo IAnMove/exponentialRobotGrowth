@@ -38,17 +38,19 @@ for(const value of [NaN,Infinity,-Infinity,'12',null]){assert.throws(()=>tcpTrac
 for(const edges of [[[0,1,-2]],[[0,9,1]],[[.5,1,1]],[[0,1,NaN]]])assert.throws(()=>shortestPath(edges),RangeError);
 for(const reverse of [false,true]){const trace=tcpTrace();near(tcpPathAt(trace,0,reverse).progress,0);near(tcpPathAt(trace,trace.delay,reverse).progress,1);}
 // Real Three objects exercise the notebook builder, including identity and reverse seeks.
-globalThis.document={createElement:()=>({getContext:()=>({measureText:s=>({width:s.length*22}),fillText(){},fillRect(){}})})};
+globalThis.document={createElement:()=>{const canvas={textLines:[]};canvas.getContext=()=>({measureText:s=>({width:s.length*22}),fillText(s){canvas.textLines.push(String(s));},fillRect(){}});return canvas;}};
 const {createLessonScene}=await import('./dist/journeys/world.js');
 for(const es of [true,false]){
  const built=createLessonScene(internet,es),parts=built.scene.userData.internet,ids=parts.packets.map(m=>m.uuid),resourceCount=built.resources.length;
- for(const cut of [false,true])for(const loss of [false,true])for(const duplicate of [false,true]){
-  const model=internet.evaluate({size:30,cut,loss,duplicate},0);
+ for(const size of [3,12,17,30])for(const cut of [false,true])for(const loss of [false,true])for(const duplicate of [false,true]){
+  const model=internet.evaluate({size,cut,loss,duplicate},0);
   for(const time of [0,.45,2.4,4,7,14.99,15,19,22,29,30]){
    built.update(model,time,3);built.scene.updateMatrixWorld(true);const s=sampleTCP(model.trace,time);
    assert.equal(parts.packets.filter(m=>m.visible).length,s.flights.length);assert.equal(parts.localPackets.filter(m=>m.visible).length,s.flights.length);
    s.flights.forEach((f,i)=>{const a=parts.coords[f.position.from],b=parts.coords[f.position.to];parts.packets[i].position.toArray().forEach((value,k)=>near(value,a[k]+(b[k]-a[k])*f.position.progress));});
    near(parts.bar.scale.x,Math.max(.001,s.uniqueBytes/model.trace.totalBytes));near(parts.orderedBar.scale.x,Math.max(.001,s.deliveredBytes/model.trace.totalBytes));near(parts.ackBar.scale.x,Math.max(.001,s.ackBytes/model.trace.totalBytes));
+   const numberedCells=[];parts.cells[0].parent.traverse(object=>{const words=object.material?.map?.image?.textLines?.[0];if(object.visible&&/^\d+$/.test(words))numberedCells.push(Number(words));});
+   assert.deepEqual(numberedCells,Array.from({length:model.packets},(_,i)=>i+1),'only pieces that exist in this message have a visible number');
    for(const link of parts.links)assert.equal(link.mesh.visible,!(cut&&link.a===1&&link.b===2));
    built.scene.traverse(o=>{assert(o.matrixWorld.elements.every(Number.isFinite));if(o.isMesh)assert([...o.geometry.attributes.position.array].every(Number.isFinite));});
   }
