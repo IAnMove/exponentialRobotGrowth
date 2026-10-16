@@ -1,4 +1,4 @@
-// tuneRenderer: phone caps, stepwise render-scale drop on slow frames, shadow freeze, off-screen skipping.
+// tuneRenderer: phone caps, stepwise render-scale drop, live low-cost shadows, off-screen skipping.
 import assert from 'node:assert/strict';
 
 let now = 0, observer = null;
@@ -22,10 +22,12 @@ frames(r, 300, 16);
 assert.equal(r.ratio, 1.5, 'a fluid scene keeps its resolution');
 assert.equal(r.renders, 300);
 
-// Slow frames: resolution steps down to the floor, then shadows stop updating every frame.
+// Slow frames: resolution reaches its floor, then the filter gets cheaper.
+// A moving caster must keep moving its shadow at the lowest quality too.
 frames(r, 2000, 50);
 assert.equal(r.ratio, .6, 'render scale bottoms out at the minimum');
-assert.equal(r.shadowMap.autoUpdate, false, 'at the minimum, shadow maps are frozen');
+assert.equal(r.shadowMap.type, THREE.BasicShadowMap, 'the lowest quality uses an unfiltered shadow map');
+assert.equal(r.shadowMap.autoUpdate, true, 'adaptive quality must keep moving shadows live');
 
 // Off screen: render calls are skipped, and resume once visible.
 const before = r.renders;
@@ -35,6 +37,13 @@ assert.equal(r.renders, before, 'nothing renders while off screen');
 observer([{isIntersecting: true}]);
 frames(r, 5, 16);
 assert.equal(r.renders, before + 5);
+
+// A scene that deliberately owns a static shadow map retains that policy.
+const staticRenderer = fakeRenderer(.6, false);
+staticRenderer.shadowMap.autoUpdate = false;
+tuneRenderer(staticRenderer);
+frames(staticRenderer, 2000, 50);
+assert.equal(staticRenderer.shadowMap.autoUpdate, false, 'the helper preserves explicitly static shadows');
 
 // Phones: pixel ratio capped and soft shadows replaced.
 globalThis.matchMedia = q => ({matches: q.includes('coarse')});
@@ -49,4 +58,4 @@ r = fakeRenderer(1);
 tuneRenderer(r);
 frames(r, 10, 16);
 assert.equal(r.renders, 10);
-console.log('Perf: fluid scenes untouched, stepwise scale drop, shadow freeze, off-screen skip, phone caps: OK');
+console.log('Perf: fluid scenes untouched, stepwise scale drop, live basic shadows, explicit static maps, off-screen skip, phone caps: OK');

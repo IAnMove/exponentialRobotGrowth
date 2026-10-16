@@ -4,7 +4,7 @@ import * as THREE from '../vendor/three.module.js';
 // One call after creating the renderer; the scene's own render loop stays unchanged.
 // - Phones: pixel ratio capped and soft shadows replaced by regular ones.
 // - Slow frames (under ~35 fps for 1.5 s): render scale drops in steps down to `min`;
-//   at the minimum, shadow maps stop updating every frame.
+//   at the minimum, use an unfiltered map while keeping moving shadows live.
 // - Off screen (scrolled away or hidden): render calls are skipped until it is visible again.
 export function tuneRenderer(renderer, {min = .6, mobileCap = 1.25} = {}) {
   const canvas = renderer.domElement;
@@ -13,7 +13,7 @@ export function tuneRenderer(renderer, {min = .6, mobileCap = 1.25} = {}) {
     renderer.setPixelRatio(Math.min(renderer.getPixelRatio(), mobileCap));
     if (renderer.shadowMap.type === THREE.PCFSoftShadowMap) renderer.shadowMap.type = THREE.PCFShadowMap;
   }
-  let visible = true, last = 0, avg = 1 / 60, slow = 0, cool = 0, frozen = false;
+  let visible = true, last = 0, avg = 1 / 60, slow = 0, cool = 0, basicShadows = false;
   if ('IntersectionObserver' in globalThis) new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; last = 0; }, {rootMargin: '160px'}).observe(canvas);
   const render = renderer.render.bind(renderer);
   renderer.render = (scene, camera) => {
@@ -28,7 +28,7 @@ export function tuneRenderer(renderer, {min = .6, mobileCap = 1.25} = {}) {
         slow = 0; cool = 2;
         const ratio = renderer.getPixelRatio();
         if (ratio > min + 1e-3) renderer.setPixelRatio(Math.max(min, +(ratio * .8).toFixed(2)));
-        else if (renderer.shadowMap.enabled && !frozen) { frozen = true; renderer.shadowMap.autoUpdate = false; renderer.shadowMap.needsUpdate = true; }
+        else if (renderer.shadowMap.enabled && !basicShadows) { basicShadows = true; renderer.shadowMap.type = THREE.BasicShadowMap; renderer.shadowMap.needsUpdate = true; }
       }
     }
     render(scene, camera);
