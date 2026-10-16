@@ -1,5 +1,13 @@
 # Atlas — cola de mejoras
 
+## Siguiente pasada: sombras en escenas lentas — 16 de octubre de 2026
+
+La optimización compartida congelaba el mapa de sombras al llegar a su resolución mínima. Los objetos de las simulaciones podían seguir moviéndose mientras su sombra permanecía en la posición anterior. El último nivel usa ahora `BasicShadowMap`, con filtrado más sencillo, conservando la política de actualización de la escena. La resolución adaptativa, los límites de móvil y la pausa fuera de pantalla se mantienen; no se añaden controles ni se cambian modelos o voces.
+
+Una regresión falla antes del arreglo y comprueba ahora sombras dinámicas, mapas configurados expresamente como estáticos, bajada de resolución, reanudación fuera de pantalla y límite de móvil. Pasan siete comprobaciones existentes: rendimiento y escenas de Hogar, Internet, Kardashev, Luna y robots de fábrica/ciudad.
+
+Chrome comprueba el módulo compilado ES/EN en ventanas de 960 y 390 píxeles, con una escena WebGL de un objeto y su plano receptor. Tras cien fotogramas lentos y mover el objeto, compara la imagen con otra que fuerza el recálculo de la sombra en la misma posición. Antes hay 607 píxeles distintos en cada contexto; después, cero. Se mantiene DPR 0,6, las sombras siguen activas y no hay errores de ejecución o recursos. Las imágenes antes/después se han inspeccionado. Esta es una comprobación del comportamiento compartido; no sustituye una revisión de todas las escenas en cada dispositivo.
+
 ## Integración de ramas y nuevas mejoras — 16 de octubre de 2026
 
 El PR #18 ya está mezclado en `main`. Los PR #14, #15 y #16 se mezclaron en `development` después de superar juntos sus 40 comprobaciones. El [PR #19](https://github.com/IAnMove/exponentialRobotGrowth/pull/19) reúne después ambos historiales e incorpora también el trabajo previo de los PR #12, #13 y #17.
