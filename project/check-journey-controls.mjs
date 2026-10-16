@@ -8,6 +8,7 @@ import {microchipChartLayout,microchipTimingTracks,microchipTimingValue} from '.
 import {sampleGrid,lineAtPower} from './site-src/journeys/electricity-model.js';
 import {electricityChartLayout,electricityChartTime} from './site-src/journeys/electricity.js';
 import {sampleEvolution} from './site-src/journeys/evolution-model.js';
+import {evolutionChartLayout,evolutionComparisons} from './site-src/journeys/evolution.js';
 import {sampleCarbon,FLUXES,RESERVOIRS} from './site-src/journeys/carbon-model.js';
 import {playerFixture} from './check-player-fixture.mjs';
 import assert from 'node:assert/strict';
@@ -38,7 +39,7 @@ for(const lang of ['es','en'])for(const mode of ['web','immersive'])for(const [i
   save(){if(lesson.continuous)savedForReload=JSON.parse(JSON.stringify(this.options.capture()));}
   dispose(){this.disposed=true;this.running=false;}
  }
- const ctx={sampleTCP,sampleNuclear,nuclearChartLayout,nuclearChartSeries,sampleCell,cellChartLayout,cellComparisonTracks,sampleCellComparison,sampleChip,microchipChartLayout,microchipTimingTracks,microchipTimingValue,sampleGrid,lineAtPower,electricityChartLayout,electricityChartTime,sampleEvolution,sampleCarbon,FLUXES,RESERVOIRS,NotebookPlayer:NotebookFixture,LESSONS,defaults,poseAt,walk,StepGuide:Guide,VOICES,document,window:{addEventListener(n,f){events[n]=f;},removeEventListener(n,f){if(events[n]===f)delete events[n];}},console,URLSearchParams,Intl,performance:{now:()=>now},matchMedia:()=>({matches:false}),location:{search:`?topic=${id}&mode=${mode}`,replace(url){redirect=url;}},requestAnimationFrame:f=>frames.push(f),cancelAnimationFrame:()=>frames.length=0,createWorld:(host,lesson,es,fn)=>(inspect=fn,{canvas:element('canvas'),update(s,i){current=s;phase=i;},render(p,dt,animation,orbit,mode,time){assert.equal(worldDisposed,false,'disposed worlds do not render');pose={...p};sceneTime=time;orbitState={...orbit};},dispose(){worldDisposed=true;}})};
+ const ctx={sampleTCP,sampleNuclear,nuclearChartLayout,nuclearChartSeries,sampleCell,cellChartLayout,cellComparisonTracks,sampleCellComparison,sampleChip,microchipChartLayout,microchipTimingTracks,microchipTimingValue,sampleGrid,lineAtPower,electricityChartLayout,electricityChartTime,sampleEvolution,evolutionChartLayout,evolutionComparisons,sampleCarbon,FLUXES,RESERVOIRS,NotebookPlayer:NotebookFixture,LESSONS,defaults,poseAt,walk,StepGuide:Guide,VOICES,document,window:{addEventListener(n,f){events[n]=f;},removeEventListener(n,f){if(events[n]===f)delete events[n];}},console,URLSearchParams,Intl,performance:{now:()=>now},matchMedia:()=>({matches:false}),location:{search:`?topic=${id}&mode=${mode}`,replace(url){redirect=url;}},requestAnimationFrame:f=>frames.push(f),cancelAnimationFrame:()=>frames.length=0,createWorld:(host,lesson,es,fn)=>(inspect=fn,{canvas:element('canvas'),update(s,i){current=s;phase=i;},render(p,dt,animation,orbit,mode,time){assert.equal(worldDisposed,false,'disposed worlds do not render');pose={...p};sceneTime=time;orbitState={...orbit};},dispose(){worldDisposed=true;}})};
  vm.runInNewContext(source,ctx);
  if(id==='internet'&&mode==='immersive'){assert.equal(redirect,'./internet-voyage.html');assert.equal(frames.length,0,'legacy gallery must not start behind redirect');redirectCases++;continue;}
  activeCases++;
@@ -202,15 +203,17 @@ for(const lang of ['es','en'])for(const mode of ['web','immersive'])for(const [i
    near(+element('cell-chart-width').width,partial/24*376);near(+element('cell-chart-cursor').x1,30+partial/24*376);advance(80);assert.equal(sceneTime,partial,'restored synthesis remains paused');
   }
   if(id==='evolution'){
+   const chart=()=>{const g=evolutionChartLayout(420),f=n=>new Intl.NumberFormat(lang,{maximumFractionDigits:2}).format(n),runs=evolutionComparisons(current.trace.params);assert.equal(element('evolution-chart-frequency').textContent,f(current.frequency*100)+' %');assert.equal(element('evolution-chart-reference').textContent,f(current.trace.reference[current.t]*100)+' %');assert.equal(+element('evolution-chart-width').width,current.t/80*(g.right-g.left));assert.equal(+element('evolution-chart-point').cx,g.left+current.t/80*(g.right-g.left));assert.equal(+element('evolution-chart-point').cy,g.bottom-current.frequency*(g.bottom-g.top));for(const [i,run]of runs.entries()){assert.equal(element('evolution-replica-a-'+i).textContent,String(run.counts[current.t]));assert.equal(element('evolution-replica-b-'+i).textContent,String(50-run.counts[current.t]));assert.equal(element('evolution-replica-frequency-'+i).textContent,f(run.history[current.t]*100)+' %');}};
+
    // A discontinuous generation must remain the completed one while the next
    // generation is being copied. Seek to the actual end of the mutation stage.
    const edge=notebook.clock.timeline[2];notebook.seek(edge.start+edge.duration-1e-9,false);advance(1);
-   assert.equal(current.t,0);assert.equal(current.countA,25);assert.equal(current.frequency,.5);assert.equal(element('evolution-result').textContent,'25 A / 50','HUD retains the completed population while copies are forming');
-   notebook.seek(edge.start+edge.duration,false);advance(1);assert.equal(current.t,1);assert.equal(element('evolution-result').textContent,`${current.countA} A / 50`);
+   chart();assert.equal(current.t,0);assert.equal(current.countA,25);assert.equal(current.frequency,.5);assert.equal(element('evolution-result').textContent,'25 A / 50','HUD retains the completed population while copies are forming');
+   notebook.seek(edge.start+edge.duration,false);advance(1);chart();assert.equal(current.t,1);assert.equal(element('evolution-result').textContent,`${current.countA} A / 50`);
    const input=(name,value)=>{const el=controls.find(c=>c.dataset.control===name);if(typeof value==='boolean')el.checked=value;else el.value=value;el.oninput();};
    input('drift',false);input('advantage',-.25);input('seed',17);
    element('timeline').oninput({target:{value:'7'}});advance(1);
-   assert.equal(current.countA,null,'infinite-population expectation has no rounded individual count');assert.equal(current.cohort,null);assert.equal(current.events.length,0);assert(element('evolution-result').textContent.endsWith(' % A'),'deterministic result uses a proportion');assert(!element('evolution-result').textContent.includes('/ 50'));
+   chart();assert.equal(current.countA,null,'infinite-population expectation has no rounded individual count');assert.equal(current.cohort,null);assert.equal(current.events.length,0);assert(element('evolution-result').textContent.endsWith(' % A'),'deterministic result uses a proportion');assert(!element('evolution-result').textContent.includes('/ 50'));
    element('play').onclick();advance(20);element('play').onclick();advance(10);
    const partial=sceneTime;assert(partial>7&&partial<8,'manual simulation retains a fractional generation');
    const frequency=current.frequency;assert.equal(current.t,7);assert.equal(frequency,lesson.evaluate({advantage:-.25,mutation:.01,drift:false,seed:17},7).frequency);
@@ -221,9 +224,10 @@ for(const lang of ['es','en'])for(const mode of ['web','immersive'])for(const [i
    // The fixture only supplies storage; restoration and time ownership are app code.
    frames.length=0;elements.clear();now=0;notebook=undefined;current=undefined;
    vm.runInNewContext(source,{...ctx});advance(1);
-   assert.equal(sceneTime,partial,'reload restores exact fractional manual position');assert.equal(current.t,7);assert.equal(current.frequency,frequency);
+   assert.equal(sceneTime,partial,'reload restores exact fractional manual position');chart();assert.equal(current.t,7);assert.equal(current.frequency,frequency);
    assert.equal(controls.find(c=>c.dataset.control==='seed').value,17);assert.equal(controls.find(c=>c.dataset.control==='advantage').value,-.25);assert.equal(controls.find(c=>c.dataset.control==='drift').checked,false);
    advance(80);assert.equal(sceneTime,partial,'restored manual experiment stays paused');
+   const presetPose={...pose};element('evolution-neutral').onclick();advance(1);assert.equal(current.trace.params.advantage,0);assert.equal(current.trace.params.mutation,0);assert.equal(current.trace.params.drift,true);assert.equal(current.trace.params.seed,17);assert.equal(sceneTime,0);assert.deepEqual(pose,presetPose,'isolating drift keeps the visitor and selected seed');assert.equal(notebook.running,false);assert(current.trace.reference.every(f=>f===.5));chart();element('timeline').oninput({target:{value:'30'}});advance(1);chart();
   }
   if(lesson.continuous){element('zoom-in').onclick();advance(1);notebook.save();const savedCamera=JSON.parse(JSON.stringify(savedForReload.camera));frames.length=0;elements.clear();now=0;notebook=undefined;current=undefined;vm.runInNewContext(source,{...ctx});advance(1);assert.deepEqual(orbitState,savedCamera.orbit,'reload preserves the current orbit');assert.deepEqual(pose,savedCamera.player,'reload preserves the current first-person pose');const cacheTime=sceneTime;events.pagehide({persisted:true});assert.equal(worldDisposed,false);assert.equal(notebook.running,false);advance(3);assert.equal(sceneTime,cacheTime,'a cacheable departure preserves the paused experiment');}
   const queuedFrame=frames[0];events.pagehide({persisted:false});assert.equal(worldDisposed,true);assert.equal(notebook.disposed,true);assert.equal(frames.length,0);queuedFrame(now+16);assert.equal(frames.length,0,'final departure and an already queued callback cannot revive RAF');continue;}
