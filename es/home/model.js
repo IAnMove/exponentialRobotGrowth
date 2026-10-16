@@ -199,6 +199,9 @@ function taskFrame(task,index,time){
  return {id:task.id,index,minutes:task.minutes,status,phase:u/TASK_SECONDS,localTime:u,stage:status==='pending'?'pending':status==='completed'?'completed':s[0],operation:s[0],stageProgress,compressed:!!s[3],start,end:start+TASK_SECONDS};
 }
 function objectState(o){return {...copy(o),visible:true,status:'pending',holder:null,ready:false};}
+// Per-chore bookkeeping uses the same completion boundary as the cumulative
+// ledger. Active choreography earns no fractional time saving.
+function taskBudget(task,index,done,params){const credited=index<done,completedBaseline=credited?task.minutes:0,humanSpent=params.capacity==='human'?completedBaseline:completedBaseline*params.overhead/100;return {total:task.minutes,completedBaseline,humanSpent,freed:completedBaseline-humanSpent,pendingBaseline:task.minutes-completedBaseline,credited};}
 function transportStatus(time,pickStart,pickEnd,placeStart,placeEnd,source,destination){return time<pickStart?source:time<pickEnd?'picking':time<placeStart?'carried':time<placeEnd?'placing':destination;}
 function heldBy(time,pickStart,pickEnd,placeStart,placeEnd,sourceHolder,destinationHolder,actor){return time<pickStart?sourceHolder:time<pickEnd?`${actor}.rightHand`:time<placeStart?`${actor}.leftHand`:time<placeEnd?`${actor}.rightHand`:destinationHolder;}
 function appliance(phase,running,progress,ready,doorOpen=false){return {phase,running,cycleProgress:clamp(progress),ready,doorOpen,compressed:running};}
@@ -254,5 +257,5 @@ export function homeFrameAt(trace,time=0){
  };
  const planning={stage:t<62?'pending':t<63?'input':t<66?'draft':t<68?'review':t<69.5?'approve':'approved',inputReady:t>=63,draftReady:t>=66,reviewReady:t>=68,approved:t>=69.5,approvalAssumed:trace.params.capacity==='robots',reviewRequired:trace.params.capacity==='human'||trace.params.overhead>0,reviewer:trace.params.capacity==='human'?'human':trace.params.overhead>0?'human-support':'assumed-autonomous',progress:clamp((t-62)/7.5)};
  ['input','draft','review','approval'].forEach((s,i)=>{const o=byId[`plan-${s}`],start=[62,63,66,68][i],end=[63,66,68,69.5][i];o.visible=t>=start;o.status=t<start?'pending':t<end?'processing':'ready';o.ready=t>=end;o.holder='desk';o.progress=clamp((t-start)/(end-start));});
- return immutable({time:t,t,capacity:trace.params.capacity,actorMode:trace.params.capacity,params:trace.params,continuous:true,completed:done,index,phase:t>=70?1:t%10/10,done,complete:t>=70,active:t<70,tasks:CHORES.map((c,i)=>taskFrame(c,i,t)),actors,objects,appliances,planning,ledger,contacts:trace.contacts.filter(c=>c.time<=t),assumptions:trace.assumptions});
+ return immutable({time:t,t,capacity:trace.params.capacity,actorMode:trace.params.capacity,params:trace.params,continuous:true,completed:done,index,phase:t>=70?1:t%10/10,done,complete:t>=70,active:t<70,tasks:CHORES.map((c,i)=>({...taskFrame(c,i,t),budget:taskBudget(c,i,done,trace.params)})),actors,objects,appliances,planning,ledger,contacts:trace.contacts.filter(c=>c.time<=t),assumptions:trace.assumptions});
 }
