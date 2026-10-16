@@ -10,7 +10,7 @@ const {blue,mint,gold,coral,violet}=PALETTE;
 // The same computed tensors as the notebook, staged like the cinematic view.
 // Geometry represents information, not the physical layout of a processor.
 export function createGallery(es){
- const t=(a,b)=>es?a:b,scene=new THREE.Scene(),fixed=[],dynamic=[],targets=[],groups=[],operations=[],paths=[];
+ const t=(a,b)=>es?a:b,scene=new THREE.Scene(),fixed=[],dynamic=[],targets=[],groups=[],operations=[],paths=[],projectionLabels=[];
  scene.background=new THREE.Color(0x05070f);scene.fog=new THREE.FogExp2(0x05070f,.017);
  scene.add(new THREE.HemisphereLight(0xc6d8ff,0x11162b,2));const sun=new THREE.DirectionalLight(0xd0e0ff,2);sun.position.set(4,12,8);scene.add(sun);
  const architecture=new THREE.Group(),exhibits=new THREE.Group();scene.add(architecture,exhibits);
@@ -20,7 +20,10 @@ export function createGallery(es){
  function text(g,str,x,y,z,width=5,color='#dbe5ff',height=.3){
   const c=document.createElement('canvas'),ctx=c.getContext('2d');ctx.font='500 52px system-ui';c.width=Math.max(64,Math.ceil(ctx.measureText(str).width+36));c.height=84;ctx.font='500 52px system-ui';ctx.fillStyle=color;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(str,c.width/2,42);
   const tx=own(new THREE.CanvasTexture(c));tx.colorSpace=THREE.SRGBColorSpace;const h=Math.min(height*1.4,width*c.height/c.width);
-  const mesh=new THREE.Mesh(own(new THREE.PlaneGeometry(h*c.width/c.height,h)),own(new THREE.MeshBasicMaterial({map:tx,transparent:true,depthWrite:false,toneMapped:false,side:THREE.FrontSide})));mesh.position.set(x,y,z);g.add(mesh);return mesh;
+  const mesh=new THREE.Mesh(own(new THREE.PlaneGeometry(h*c.width/c.height,h)),own(new THREE.MeshBasicMaterial({map:tx,transparent:true,depthWrite:false,toneMapped:false,side:THREE.FrontSide})));mesh.position.set(x,y,z);g.add(mesh);
+  const metrics=ctx.measureText(str),inkWidth=metrics.width,ascent=Number.isFinite(metrics.actualBoundingBoxAscent)?metrics.actualBoundingBoxAscent:26,descent=Number.isFinite(metrics.actualBoundingBoxDescent)?metrics.actualBoundingBoxDescent:26;
+  mesh.userData.glyphBounds={minX:-(Number.isFinite(metrics.actualBoundingBoxLeft)?metrics.actualBoundingBoxLeft:inkWidth/2)*h/84,maxX:(Number.isFinite(metrics.actualBoundingBoxRight)?metrics.actualBoundingBoxRight:inkWidth/2)*h/84,minY:-descent*h/84,maxY:ascent*h/84};
+  return mesh;
  }
  function glow(g,x,y,z,color,size=.8){const c=document.createElement('canvas');c.width=c.height=64;const ctx=c.getContext('2d'),grad=ctx.createRadialGradient(32,32,0,32,32,32);grad.addColorStop(0,'#ffffff');grad.addColorStop(.15,'#ffffffaa');grad.addColorStop(1,'#ffffff00');ctx.fillStyle=grad;ctx.fillRect(0,0,64,64);const tx=own(new THREE.CanvasTexture(c));const sprite=new THREE.Sprite(own(new THREE.SpriteMaterial({map:tx,color,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending})));sprite.position.set(x,y,z);sprite.scale.setScalar(size);g.add(sprite);return sprite;}
  function chip(g,str,x,y,z,w=1.05,color=blue,info){
@@ -31,7 +34,7 @@ export function createGallery(es){
   const ball=glow(g,0,0,0,color,.24+weight*3);paths.push({curve,ball,tube,phase,operation,span,progress:0,arrived:false});return curve;
  }
  function column(g,values,x,y,z,name,width=.52,height=1.8){
-  const cell=height/values.length;values.forEach((v,i)=>{const c=box(g,x,y+height/2-(i+.5)*cell,z,width,cell*.84,.22,v>=0?blue:coral,{text:name+' · d'+(i+1)+' = '+v.toFixed(4),value:v});c.material.emissive.setHex(v>=0?blue:coral);c.material.emissiveIntensity=.12;});text(g,name,x,y-height/2-.26,z+.15,width*1.8,'#aabbd8',.24);
+  const cell=height/values.length;values.forEach((v,i)=>{const c=box(g,x,y+height/2-(i+.5)*cell,z,width,cell*.84,.22,v>=0?blue:coral,{text:name+' · d'+(i+1)+' = '+v.toFixed(4),value:v});c.material.emissive.setHex(v>=0?blue:coral);c.material.emissiveIntensity=.12;});return text(g,name,x,y-height/2-.26,z+.15,width*1.8,'#aabbd8',.24);
  }
  function card(g,title,body,x,y,z,w=6,color=blue){
   const h=.76+Math.ceil(body.length/(w*7))*.3;box(g,x,y,z,w,h,.15,0x10182d);box(g,x-w/2+.035,y,z+.08,.035,h,.025,color);text(g,title,x,y+h/2-.24,z+.1,w-.4,'#a5b8db',.23);
@@ -55,7 +58,7 @@ export function createGallery(es){
  });
  const fixedTargetCount=targets.length;
  function rebuild(run,query,frame){
-  dynamic.splice(0).forEach(r=>r.dispose());exhibits.clear();groups.length=operations.length=paths.length=0;targets.splice(fixedTargetCount);resources=dynamic;
+  dynamic.splice(0).forEach(r=>r.dispose());exhibits.clear();groups.length=operations.length=paths.length=projectionLabels.length=0;targets.splice(fixedTargetCount);resources=dynamic;
   STOPS.forEach(s=>{const g=new THREE.Group();g.position.set(s.x,0,s.z);g.rotation.y=Math.PI/2;exhibits.add(g);groups.push(g);});
   const {tokens,offset}=frame.window,trace=frame.trace,q=frame.queryIndex,xs=tokens.map((_,i)=>(i-(tokens.length-1)/2)*1.09);
   const info=t('1 cabeza · 1 bloque calculado · paquete de vector conceptual','1 head · 1 calculated block · conceptual vector packet');
@@ -80,9 +83,9 @@ export function createGallery(es){
   route(groups[3],[[-4.3,4.65,.45],[0,4.9,.5],[4.3,4.65,.45]],3,gold,.025);
   // Five separate exhibits occupy the same attention stage, following audio cues.
   for(let op=0;op<5;op++){const g=new THREE.Group();groups[4].add(g);operations.push(g);g.userData.operation=op;}
-  const g0=operations[0];column(g0,trace.X[q],-3.35,2.5,.3,'X · 6',1,2.4);
-  [['Q',trace.Q,gold],['K',trace.K,violet],['V',trace.V,mint]].forEach(([name,values,color],i)=>{const x=-.6+i*2.15;column(g0,values[q],x,2.5,.15,name+' · 3',1.15,1.5);text(g0,'W'+name,x,3.75,.2,1.5,'#b0c3e3',.28);route(g0,[[-2.75,2.5,.6],[-1.7,4.15,.7],[x,4.15,.7],[x,3.4,.4]],4,color,.024,0);});
-  text(g0,t('Un vector de entrada → tres proyecciones distintas','One input vector → three different projections'),0,.63,.7,9,'#c5d3ec',.31);
+  const g0=operations[0];projectionLabels.push(column(g0,trace.X[q],-3.35,2.5,.3,'X · '+trace.X[q].length,1,2.4));
+  [['Q',trace.Q,gold],['K',trace.K,violet],['V',trace.V,mint]].forEach(([name,values,color],i)=>{const x=-.6+i*2.15;projectionLabels.push(column(g0,values[q],x,2.5,.15,name+' · '+values[q].length,1.15,1.5),text(g0,'W'+name,x+.65,3.75,.2,1.5,'#b0c3e3',.28));route(g0,[[-2.75,2.5,.6],[-1.7,4.15,.7],[x,4.15,.7],[x,3.4,.4]],4,color,.024,0);});
+  text(g0,t('Un vector de entrada → tres proyecciones distintas','One input vector → three different projections'),0,.48,.7,9,'#c5d3ec',.31);
   for(const op of [1,2,3]){
    const g=operations[op],weights=trace.A[q];
    chip(g,op===3?'Z = Σ A·V':'Q · '+visible(tokens[q]),xs[q]*.4,4.14,.5,2.2,gold,{text:t('Consulta activa: ','Active query: ')+visible(tokens[q])});
@@ -117,9 +120,24 @@ export function createGallery(es){
   text(groups[7],t('El nuevo token vuelve a la entrada · la caché KV evita recalcular K y V anteriores','The new token returns to the input · KV caching reuses earlier keys and values'),0,.29,1.4,9,'#8fbfc5',.27);
   scene.updateMatrixWorld(true);
  }
+ // Target 12 CSS pixels of ink; the width cap leaves a gap between columns.
+ // Only annotations scale: the visitor and computed vector cells stay in place.
+ const labelPoint=new THREE.Vector3();
+ function fitProjectionLabels(camera,viewportHeight){
+  for(const label of projectionLabels){
+   const bounds=label.userData.glyphBounds,limit=Math.min(4,1.85/Math.max(.001,bounds.maxX-bounds.minX));label.scale.setScalar(1);
+   label.updateWorldMatrix(true,false);labelPoint.set(0,0,0).applyMatrix4(label.matrixWorld).applyMatrix4(camera.matrixWorldInverse);if(labelPoint.z>=-camera.near)continue;
+   for(let pass=0;pass<2;pass++){
+    label.updateWorldMatrix(true,false);labelPoint.set(0,bounds.minY,0).applyMatrix4(label.matrixWorld).project(camera);const bottom=labelPoint.y;
+    labelPoint.set(0,bounds.maxY,0).applyMatrix4(label.matrixWorld).project(camera);const pixels=Math.abs(labelPoint.y-bottom)*viewportHeight/2;
+    if(!(pixels>0)||!Number.isFinite(pixels))break;
+    label.scale.setScalar(Math.max(1,Math.min(limit,label.scale.x*12/pixels)));
+   }
+  }
+ }
  function updateFrame(frame){currentFrame=frame;const run=frame.run,key=JSON.stringify([run.prompt,run.generated,run.done,run.options.temperature,run.options.decoding,run.seed,frame.queryIndex,frame.decoder.randomValue,frame.decoder.choice,frame.decoder.mode]);if(key!==signature){signature=key;rebuild(run,frame.queryIndex,frame);}active=frame.phase;animateFrame(frame);}
  function animateFrame(frame){currentOperation=frame.flow.index;operations.forEach((g,i)=>g.visible=i===currentOperation);paths.forEach(path=>{const {ball,curve,tube,phase,operation,span}=path,isActive=phase===active&&(operation===null||operation===currentOperation)&&frame.signals.available&&!frame.signals.stopped,u=Math.max(0,Math.min(1,(frame.flow.progress-span[0])/(span[1]-span[0])));path.progress=u;path.arrived=isActive&&u===1;ball.visible=isActive&&u>0&&u<1;ball.position.copy(curve.getPoint(u));tube.material.opacity=isActive?.5:.14;});if(choiceOutput){choiceOutput.visible=frame.signals.selectionVisible;choiceFace.visible=choiceOutput.visible;}}
- return {scene,targets,groups,operations,paths,fixed,dynamic,updateFrame,animateFrame,
+ return {scene,targets,groups,operations,paths,fixed,dynamic,updateFrame,animateFrame,fitProjectionLabels,
   update(run,query){updateFrame(llmFrameAt(run,{queryIndex:query,progress:currentFrame?.progress||0}));},
   animate(dt,progress,running,cue,reduced=false){if(currentFrame)updateFrame(llmFrameAt(currentFrame.run,{progress,operationIndex:cue.index,operationProgress:cue.progress,queryIndex:currentFrame.queryIndex}));},
   inspect(){return {frame:currentFrame,phase:active,operation:currentOperation,paths:paths.map(p=>({phase:p.phase,operation:p.operation,progress:p.progress,arrived:p.arrived,visible:p.ball.visible,position:p.ball.position.toArray(),span:p.span})),decoder:currentFrame?.decoder,signals:currentFrame?.signals,targets:targets.length,stands:targets.filter(o=>o.userData.action==='listen').length};},
@@ -133,7 +151,7 @@ export function createExperience(host,{es,onInspect=()=>{},onAction=()=>{},rende
  let dpr=Math.min(globalThis.devicePixelRatio||1,1.5),clock=0;const pointScale={value:400},atmosphere=effects?createAtmosphere(gallery.scene,{pointScale,dust:240,spread:[24,9,30]}):null,post=effects?createPost(renderer,gallery.scene,camera,{strength:.42,radius:.55,threshold:1.02}):null;
  if(post)gallery.scene.environmentIntensity=.18;
  const quality=adaptiveScale(dpr,{min:.6,apply(value){dpr=value;renderer.setPixelRatio(dpr);resize();}});
- function draw(dt=0,reduced=false,time=clock){clock=reduced?0:time;atmosphere?.update(clock,camera.position);if(post)post.render(dt);else renderer.render(gallery.scene,camera);quality.frame(dt);}
+ function draw(dt=0,reduced=false,time=clock){clock=reduced?0:time;gallery.fitProjectionLabels(camera,Math.max(1,host.clientHeight));atmosphere?.update(clock,camera.position);if(post)post.render(dt);else renderer.render(gallery.scene,camera);quality.frame(dt);}
  const ray=new THREE.Raycaster(),pointer=new THREE.Vector2(),projected=new THREE.Vector3();
  function visibleAncestors(o){for(let p=o;p;p=p.parent)if(!p.visible)return false;return true;}
  function inspect(x,y){const rect=canvas.getBoundingClientRect();pointer.set(x===null?0:(x-rect.left)/rect.width*2-1,y===null?0:1-(y-rect.top)/rect.height*2);ray.setFromCamera(pointer,camera);const hit=ray.intersectObjects(gallery.targets.filter(visibleAncestors))[0];if(hit&&hit.distance<14){if(hit.object.userData.action)onAction(hit.object.userData);else onInspect(hit.object.userData);}}
