@@ -100,5 +100,21 @@ try{
  world.go(4,true,{preserveView:true});assert.equal(world.getNavigationMode(),'observe');world.move(1,1,1,.1);const ocean=world.getViewState();world.go(6,true,{preserveView:true});assert.equal(world.getNavigationMode(),'walk');world.go(4,true,{preserveView:true});assert.deepEqual(world.getViewState().position,ocean.position,'returning restores an observed scene pose');
  world.go(7,true,{preserveView:true});assert.equal(world.getNavigationMode(),'orbit');world.look(80,40);world.move(1,1,1,.1);const orbit=world.getViewState();assert(Math.hypot(...orbit.position)>=12);world.render(internetFrameAt(7,.65),{dt:.1,preserveView:true});assert.deepEqual(world.getViewState().position,orbit.position);assert(world.restoreViewState(orbit));
  world.explore(false);world.go(7,true);assert.equal(world.inspect().exploring,false,'guided camera is an explicit reversible action');world.dispose();
+ // Return to the guided pose must work even when the caller deliberately sends
+ // zero animation time. Reduced motion snaps; ordinary motion still interpolates.
+ const samePose=(a,b,message)=>{for(const key of ['position','target'])a[key].forEach((value,i)=>{assert(Math.abs(value-b[key][i])<1e-8,message+': '+key);});};
+ for(let stage=0;stage<9;stage++){
+  const sizes=[[1000,650],[390,430],[290,395]][stage%3],instance=cameraModule.createVoyageWorld({clientWidth:sizes[0],clientHeight:sizes[1],append(){}},true),frame=internetFrameAt(stage,.48);
+  instance.go(stage,true);instance.render(frame,{dt:0});const guided=instance.getViewState();
+  instance.explore(true);instance.look(120,45);instance.move(1,.4,0,.1);const free=instance.getViewState();
+  assert(Math.hypot(...free.position.map((v,i)=>v-guided.position[i]),...free.target.map((v,i)=>v-guided.target[i]))>.1);
+  instance.render(frame,{dt:0,reduced:true,preserveView:true});samePose(instance.getViewState(),free,'reduced motion preserves intentional exploration');
+  instance.explore(false);instance.render(frame,{dt:0,reduced:true});
+  samePose(instance.getViewState(),guided,'returning with reduced motion must reach the guided pose without advancing time');assert.equal(instance.inspect().exploring,false);assert.equal(instance.inspect().frame,frame);
+  instance.explore(true);samePose(instance.getViewState(),free,'returning to exploration restores its saved pose');instance.explore(false);
+  instance.render(frame,{dt:0,reduced:false});samePose(instance.getViewState(),free,'ordinary transitions start at the free pose');
+  instance.render(frame,{dt:.6,reduced:false});const midway=instance.getViewState();assert.notDeepEqual(midway.position,guided.position);assert.notDeepEqual(midway.position,free.position);
+  instance.render(frame,{dt:.6,reduced:false});samePose(instance.getViewState(),guided,'ordinary transitions complete at the guided pose');assert.equal(instance.inspect().frame,frame);instance.dispose();
+ }
 }finally{globalThis.ResizeObserver=originalObserver;}
 console.log('Internet scenes: causal markers, continuous interior fibers/repeaters, optical power, browser arrival, desktop/mobile frusta, grounded equipment collision, orbit bounds and pose restoration: OK');
