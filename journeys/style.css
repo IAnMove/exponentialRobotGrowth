@@ -102,5 +102,8 @@
  .carbon-experience .visual{min-height:540px}
  .carbon-experience.immersive .visual{min-height:640px}
  .evolution-experience.immersive .visual{min-height:520px}
- .electricity-experience.immersive .visual{min-height:460px}
+ .electricity-experience .visual{min-height:560px}
+ .electricity-experience.immersive .visual{min-height:640px}
+ .electricity-experience.immersive .walk-controls{--walk-top:75px;bottom:184px;align-content:space-between}
+ .electricity-experience.immersive .walk-controls .touch{position:sticky;bottom:calc(var(--atlas-player-height,150px) + 12px)}
 }
