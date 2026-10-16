@@ -1,5 +1,13 @@
 # Atlas — cola de mejoras
 
+## Siguiente pasada: nombres de las proyecciones LLM — 16 de octubre de 2026
+
+En la operación «Proyectar Q · K · V» del mundo transitable, los nombres de los cuatro vectores y de los tres pesos se reducían a unos 3–4 píxeles en móvil. Esas siete anotaciones tienen ahora un tamaño objetivo de 12 píxeles CSS de letra, calculado con las métricas reales de la fuente y la proyección de la cámara. El aumento se limita en el mundo para conservar separación entre columnas. Los nombres WQ, WK y WV se apartan de las curvas; las dimensiones se leen de los vectores calculados. La escala se aplica solo al texto.
+
+La regresión falla con los nombres antiguos. Pasan seis comprobaciones de escena, controles y cálculo, con 648 estados causales, 40 encuadres de llegada, 21 límites de etiquetas y 9.252 presentaciones reversibles. El chequeo geométrico se repite después del ajuste final de posición de los pesos.
+
+Chrome mide el contorno de la tinta en las texturas reales y lo proyecta sobre el canvas, tras esperar nuevos fotogramas de la aplicación. Se comprueban ES/EN a 320, 390 y 1440 píxeles, con controles táctiles en móvil. Son 18 estados anteriores y 24 posteriores: tres tokens seleccionados y un desplazamiento WASD por contexto, con 168 mediciones finales de rótulos. Los mínimos pasan de 3,46 / 4,13 píxeles en móvil y 9,83 en escritorio a unos 12. Sus contornos quedan dentro del canvas y no se detectan solapamientos entre sus textos ni con el encabezado, el selector de operaciones o los controles táctiles medidos. Capturas antes/después inspeccionadas; sin errores de ejecución o recursos. Esta pasada cubre las siete etiquetas de la primera operación de atención; las demás anotaciones conservan su presentación.
+
 ## Siguiente pasada: sombras en escenas lentas — 16 de octubre de 2026
 
 La optimización compartida congelaba el mapa de sombras al llegar a su resolución mínima. Los objetos de las simulaciones podían seguir moviéndose mientras su sombra permanecía en la posición anterior. El último nivel usa ahora `BasicShadowMap`, con filtrado más sencillo, conservando la política de actualización de la escena. La resolución adaptativa, los límites de móvil y la pausa fuera de pantalla se mantienen; no se añaden controles ni se cambian modelos o voces.
