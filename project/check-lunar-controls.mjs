@@ -123,6 +123,18 @@ for(const lang of ['es','en']){
  h.dispose();assert(h.world.disposed);assert(h.audios.every(audio=>audio.paused));assert(fx.disposed);assert.equal(fx.ctx.state,'closed');assert(fx.sources.every(node=>node.stopped));assert(fx.nodes.every(node=>node.disconnected));h.frames(2);assert.equal(h.queuedFrames,0);assert.equal(h.objectUrls.size,0);
 }
 
+// A shipment must not be credited to the surface while its marker is in flight.
+for(const lang of ['es','en']){
+ const storage=new Map(),h=harness({lang,storage});await h.flush();h.player.pause();month(h,5.5);
+ assert.equal(h.element('route-ledger').hidden,false);assert.equal(h.element('route-inflight').textContent,'25 t');assert.equal(h.element('route-inflight-count').textContent,lang==='es'?'1 entrega':'1 delivery');assert.equal(h.element('route-received').textContent,'100 t');assert.equal(h.element('route-received-count').textContent,lang==='es'?'4 entregas':'4 deliveries');assert.match(h.element('route-arrival').textContent,lang==='es'?/aún no han llegado/:/no additional deliveries/);
+ month(h,6);assert.equal(h.element('route-inflight').textContent,'0 t');assert.equal(h.element('route-received').textContent,'125 t');assert.equal(h.element('route-received-count').textContent,lang==='es'?'5 entregas':'5 deliveries');assert.match(h.element('route-arrival').textContent,/2030 · 07 · \+25 t/);
+ month(h,5.5);assert.equal(h.element('route-inflight').textContent,'25 t');assert.equal(h.element('route-received').textContent,'100 t','rewinding removes the future arrival');h.player.save();h.dispose();
+ const reload=harness({lang,storage});await reload.flush();assert.equal(reload.element('route-inflight').textContent,'25 t');assert.equal(reload.element('route-received').textContent,'100 t');
+ for(const view of ['base','growth','mission']){viewButton(reload,view);assert.equal(reload.element('route-ledger').hidden,true);}viewButton(reload,'route');assert.equal(reload.element('route-ledger').hidden,false);
+ setting(reload,'flights',0);month(reload,240);assert.equal(reload.element('route-inflight').textContent,'0 t');assert.equal(reload.element('route-received').textContent,'100 t');assert.match(reload.element('route-arrival').textContent,lang==='es'?/aún no han llegado/:/no additional deliveries/);
+ setting(reload,'flights',24);setting(reload,'flightGrowth',50);month(reload,239.5);assert(reload.frame.inFlightCount>100,'one marker can represent a large delivery batch');assert.equal(reload.element('route-inflight-count').textContent,new Intl.NumberFormat(lang,{maximumFractionDigits:0}).format(reload.frame.inFlightCount)+(lang==='es'?' entregas':' deliveries'));reload.dispose();
+}
+
 // The world supplies representation metadata. Test the controller's disclosure
 // with a fixed external fact, rather than recreating instancing logic here.
 for(const lang of ['es','en']){
