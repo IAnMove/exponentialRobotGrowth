@@ -1,5 +1,13 @@
 import assert from 'node:assert/strict';
 import {buildGridTrace,sampleGrid,lineAtPower,gridRun} from './site-src/journeys/electricity-model.js';
+import {electricityChartLayout,electricityChartTime} from './site-src/journeys/electricity.js';
+
+for(const width of [240,290,420,1000])for(const peak of [0,22,45]){
+ const g=electricityChartLayout(width,peak);assert(Object.isFrozen(g));assert.equal(g.width,width);assert(g.right>g.left&&g.max>=peak&&g.max>0);assert.equal(g.height,180);
+ assert.equal(electricityChartTime(g.left,g),0);assert.equal(electricityChartTime(g.right,g),24);assert.equal(electricityChartTime((g.left+g.right)/2,g),12);
+ assert.equal(electricityChartTime(-1000,g),0);assert.equal(electricityChartTime(10000,g),24);assert.equal(electricityChartTime(NaN,g),null);
+ for(const time of [0,.25,.5,6.375,12,23.999,24])assert(Math.abs(electricityChartTime(g.left+time/24*(g.right-g.left),g)-time)<1e-10,'time selection is independent of the rendered width');
+}
 
 const defaults={sun:28,demand:22,voltage:200};
 const near=(a,b,context='',tolerance=1e-8)=>assert(Math.abs(a-b)<=tolerance,`${context}: ${a} != ${b}`);

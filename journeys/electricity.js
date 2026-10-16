@@ -22,3 +22,10 @@ export const electricity={id:'electricity',room:'industry',title:L('Electricidad
  // One connected scene is implemented in electricity-world.js.
  build(){return ()=>{};}
 };
+
+// Presentation coordinates are CSS pixels; the physical trace stays unchanged.
+export function electricityChartLayout(width=420,peak=0){
+ const w=Math.max(160,Number.isFinite(width)&&width>0?width:420);
+ return Object.freeze({width:w,height:180,left:42,right:w-12,top:24,bottom:144,max:Math.max(5,Math.ceil(peak/5)*5)});
+}
+export function electricityChartTime(x,layout){return Number.isFinite(x)?clamp((x-layout.left)/(layout.right-layout.left)*24,0,24):null;}
