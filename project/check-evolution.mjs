@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {N,buildEvolutionTrace,sampleEvolution,evolve} from './site-src/journeys/evolution-model.js';
 import {rng} from './site-src/journeys/common.js';
+import {evolutionChartLayout,evolutionComparisons,evolutionExperiment} from './site-src/journeys/evolution.js';
 
 const defaults={advantage:.15,mutation:.01,drift:true,seed:41};
 // Independent copy of the pre-trace model: exact seeded compatibility matters.
@@ -13,6 +14,9 @@ function legacy(p,t){
  }
  return history;
 }
+for(const width of [290,360,420,1000]){const g=evolutionChartLayout(width);assert(Object.isFrozen(g));assert.equal(g.width,width);assert(g.left<g.right&&g.top<g.bottom&&g.axisY+24<g.height);}
+for(const seed of [1,41,100])for(const advantage of [-.4,0,.4])for(const mutation of [0,.05]){const p={seed,advantage,mutation,drift:true},active=evolutionExperiment(p),original=JSON.stringify(active),runs=evolutionComparisons(p);assert(Object.isFrozen(runs));assert.equal(runs.length,5);assert.equal(runs[0].seed,seed);assert.equal(new Set(runs.map(r=>r.seed)).size,5);for(const run of runs){assert(Object.isFrozen(run)&&Object.isFrozen(run.history)&&Object.isFrozen(run.counts));assert.equal(run.counts.length,81);assert.deepEqual(run.history,legacy({...p,seed:run.seed},80));run.counts.forEach((count,i)=>{assert(Number.isInteger(count)&&count>=0&&count<=50);assert.equal(count/50,run.history[i]);});}assert.deepEqual(runs[0].history,active.history);assert.equal(JSON.stringify(active),original,'comparison runs must not mutate or advance the active genealogy');assert.equal(evolutionComparisons(p),runs,'same rules reuse immutable snapshots');assert.throws(()=>{runs[0].counts[0]=50;},TypeError);}
+assert.deepEqual(evolutionComparisons({drift:false}),[],'continuous proportions must not invent sampled populations');assert.deepEqual(evolutionComparisons({seed:100}).map(r=>r.seed),[100,1,2,3,4]);assert.deepEqual(evolutionComparisons({seed:0}).map(r=>r.seed),[0,1,2,3,4]);for(let i=0;i<2;i++)assert.throws(()=>evolutionComparisons({advantage:-1}),RangeError,'failed builds must not poison the comparison cache');
 assert.equal(N,50);
 let compatibilityCases=0;
 const checkCompatibility=p=>{

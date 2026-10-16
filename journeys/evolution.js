@@ -19,3 +19,8 @@ export const evolution={id:'evolution',room:'life',title:L('Evolución: muchas g
  // The specialized renderer retains real parent/copy identities from the model.
  build(){return ()=>{};}
 };
+
+// Separate seeded repetitions share the same rules, never an averaged population.
+let comparisonKey,comparisonRuns;
+export function evolutionComparisons(p={}){const params={advantage:p.advantage??.15,mutation:p.mutation??.01,drift:p.drift??true,seed:(p.seed??41)>>>0},next=[params.advantage,params.mutation,params.drift,params.seed].join(':');if(next!==comparisonKey){const runs=Object.freeze(params.drift?Array.from({length:5},(_,i)=>{const seed=i===0?params.seed:1+(params.seed-1+i)%100,run=i===0?evolutionExperiment(params):buildEvolutionTrace({...params,seed});return Object.freeze({seed,history:Object.freeze([...run.history]),counts:Object.freeze(run.generations.map(g=>g.countA))});}):[]);comparisonRuns=runs;comparisonKey=next;}return comparisonRuns;}
+export function evolutionChartLayout(width=520){const w=Math.max(200,Number.isFinite(width)&&width>0?width:520);return Object.freeze({width:w,height:226,left:44,right:w-12,top:26,bottom:170,axisY:194});}
