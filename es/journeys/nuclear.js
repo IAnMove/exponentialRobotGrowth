@@ -20,3 +20,7 @@ export const nuclear={id:'nuclear',room:'industry',title:L('Un reactor convierte
  // A continuous PWR and its three separate circuits live in nuclear-world.js.
  build(){return ()=>{};}
 };
+
+// Preserve the left limit of the teaching shutdown instead of drawing a ramp.
+export function nuclearChartSeries(trace){const points=[];for(let i=0;i<=trace.horizon*10;i++){const time=i/10;if(time===5&&trace.params.stop){const before=sampleNuclear(trace,0);points.push(Object.freeze({time,heat:before.heat,electric:before.electric,rejected:before.rejected,decay:before.decay}));}const s=sampleNuclear(trace,time);points.push(Object.freeze({time,heat:s.heat,electric:s.electric,rejected:s.rejected,decay:s.decay}));}return Object.freeze(points);}
+export function nuclearChartLayout(width=520){const w=Math.max(200,Number.isFinite(width)&&width>0?width:520);return Object.freeze({width:w,height:344,left:42,right:w-12,top:38,bottom:144,decayTop:216,decayBottom:296,axisY:326});}
