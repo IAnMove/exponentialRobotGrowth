@@ -13,6 +13,27 @@ const three=new URL('node_modules/three/build/three.module.js',import.meta.url).
 const mapped=source.replace("'../fx/perf.js'",JSON.stringify(new URL('./dist/fx/perf.js',import.meta.url).href)).replace("'../vendor/three.module.js'",JSON.stringify(three)).replace(/'\.\/(internet-(?:route|model|walk)\.js)'/g,(_,name)=>JSON.stringify(local(name)));
 const module=await import('data:text/javascript;base64,'+Buffer.from(mapped).toString('base64'));
 const close=(a,b,tolerance=1e-8)=>assert(Math.abs(a-b)<tolerance,`${a} must equal ${b}`);
+// Annotations use a screen-space packing problem, independent of Three/GPU.
+// Check conservation of text, viewport bounds, separation and input ownership.
+const measure=text=>text.length;
+for(const text of ['Optical access network','Petición recibida · procesando','Virginia Beach']){
+ const lines=module.wrapVoyageLabel(text,12,measure);
+ assert.equal(lines.join(' '),text);assert(lines.every(line=>measure(line)<=12));
+}
+const labelInputs=Object.freeze([0,1,2].map(id=>Object.freeze({id,x:100,y:60,width:72,height:24})));
+const obstacles=Object.freeze([Object.freeze({x:0,y:0,width:200,height:15}),Object.freeze({x:0,y:105,width:200,height:15})]);
+const layout=module.layoutVoyageLabels(labelInputs,{width:200,height:120,margin:10,gap:4,obstacles});assert.equal(layout.length,3);
+const separated=(a,b)=>a.x+a.width+3.99<=b.x||b.x+b.width+3.99<=a.x||a.y+a.height+3.99<=b.y||b.y+b.height+3.99<=a.y;
+for(const box of layout){assert(box.x>=10&&box.y>=10&&box.x+box.width<=190&&box.y+box.height<=110);for(const other of [...layout,...obstacles])if(other!==box)assert(separated(box,other),'annotations must not cover one another or the HUD');}
+assert.deepEqual(module.layoutVoyageLabels([...labelInputs].reverse(),{width:200,height:120,margin:10,gap:4,obstacles}),layout,'input order does not change the deterministic result');
+assert.deepEqual(module.layoutVoyageLabels([{id:1,x:100,y:60,width:72,height:24}],{width:200,height:120}),[{id:1,x:64,y:48,width:72,height:24}],'unobstructed text stays on its anchor');
+assert.deepEqual(module.layoutVoyageLabels(labelInputs,{width:50,height:40}),[],'a tiny viewport does not silently shrink the text');
+// Measured 320 px phone cutaway: nearest-anchor placement can leave a hole
+// too small for the attenuated-input label. All six annotations fit at 13 px
+// when repacked, without covering the actual scene HUD or hiding that label.
+const phoneLabels=[[14,125.59,233.49,147],[15,125.73,242.21,185.34],[16,102,183,110],[17,190.99,182.4,118.67],[18,149.04,159.17,249],[19,148.9,201.71,256.67]].map(([id,x,y,width])=>({id,x,y,width,height:26}));
+const phoneHud=[{x:10,y:11,width:270,height:87},{x:10,y:280.67,width:177,height:21},{x:10,y:348.67,width:270,height:36}],phoneLayout=module.layoutVoyageLabels(phoneLabels,{width:290,height:394.67,obstacles:phoneHud});
+assert.equal(phoneLayout.length,6);for(const box of phoneLayout)for(const other of [...phoneLayout,...phoneHud])if(other!==box)assert(separated(box,other));
 for(const es of [true,false]){
  const world=module.createVoyageScene(es,{textures:false});
  for(let stage=0;stage<9;stage++)for(const fraction of [0,.01,.29,.3,.48,.649,.65,.99,1]){
