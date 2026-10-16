@@ -218,6 +218,18 @@ export function portalPose(from,exhibit,progress){
   return {x:from.x+(plane.center.x-plane.normal.x*.45-from.x)*s,z:from.z+(plane.center.z-plane.normal.z*.45-from.z)*s,yaw:from.yaw+Math.atan2(Math.sin(yaw-from.yaw),Math.cos(yaw-from.yaw))*Math.min(1,p*3),pitch:from.pitch*(1-s)};
 }
 
+// Navigation signage samples the remaining safe polyline. Work backwards from
+// the destination so arrows stay anchored while the first leg gets shorter.
+export const ROUTE_GUIDE=Object.freeze({spacing:.75,endGap:.5,startGap:.35,maxMarkers:128});
+export function routeGuide(from,path=[]){
+ const valid=p=>p&&Number.isFinite(p.x)&&Number.isFinite(p.z);if(!valid(from)||!Array.isArray(path)||!path.every(valid))throw new RangeError('Finite route points required');
+ const points=[{x:from.x,z:from.z}],segments=[];let distance=0;
+ for(const point of path){const previous=points.at(-1),length=Math.hypot(point.x-previous.x,point.z-previous.z);if(length<EPSILON)continue;const to={x:point.x,z:point.z};segments.push({from:previous,to,length,start:distance});distance+=length;points.push(to);}
+ const markers=[],spacing=Math.max(ROUTE_GUIDE.spacing,(distance-ROUTE_GUIDE.endGap)/(ROUTE_GUIDE.maxMarkers-1));
+ for(let back=ROUTE_GUIDE.endGap;back<=distance-ROUTE_GUIDE.startGap&&markers.length<ROUTE_GUIDE.maxMarkers;back+=spacing){const at=distance-back,segment=segments.find(s=>at<=s.start+s.length+EPSILON);if(!segment)continue;const u=Math.max(0,Math.min(1,(at-segment.start)/segment.length)),dx=(segment.to.x-segment.from.x)/segment.length,dz=(segment.to.z-segment.from.z)/segment.length;markers.push({x:segment.from.x+(segment.to.x-segment.from.x)*u,z:segment.from.z+(segment.to.z-segment.from.z)*u,direction:{x:dx,z:dz}});}
+ return {distance,points,markers};
+}
+
 export function insideWall(x, z, boxes = walls) {
   return boxes.some(b => x > b.minX && x < b.maxX && z > b.minZ && z < b.maxZ);
 }

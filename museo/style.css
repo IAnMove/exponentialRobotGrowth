@@ -56,3 +56,6 @@
  .welcome article{max-height:94vh;overflow:auto}.welcome h1{font-size:30px}.map{top:63px}.stick{width:74px;height:74px;bottom:calc(var(--atlas-player-height,112px) + 75px)}
 }
 @media(prefers-reduced-motion:reduce){.crossing *{transition:none!important}}
+
+#route-status small{display:block;font-size:11px;line-height:1.6;margin-top:3px;color:#b9e5d6}.room-context{max-width:min(285px,45vw)}
+@media(max-width:760px){.room-context{max-width:44vw}#route-status small{font-size:10px}}

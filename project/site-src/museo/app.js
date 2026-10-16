@@ -1,5 +1,5 @@
 import {LESSONS} from '../journeys/catalog.js';
-import {spawn,rooms,exhibits,stepVisitor,lookDelta,focusedExhibit,portalCrossing,restorePose,roomAt,standAt,routeTo,portalPose,yawLookingAt,SPEED} from './model.js';
+import {spawn,rooms,exhibits,stepVisitor,lookDelta,focusedExhibit,portalCrossing,restorePose,roomAt,standAt,routeTo,portalPose,yawLookingAt,SPEED,routeGuide} from './model.js';
 import {createMuseum} from './world.js';
 import {immersiveHref} from '../immersive/catalog.js';
 import {NotebookPlayer} from '../playback/player.js';
@@ -16,7 +16,7 @@ const worldCount=exhibits.filter(e=>immersiveHref(e.id)).length;
 const finePointer=globalThis.matchMedia?.('(pointer: fine)').matches??false;
 $('app').innerHTML=`<div id="view" tabindex="0" aria-label="${t('Museo 3D: camina y mira para elegir un cuadro','3D museum: walk and look to choose a painting')}"></div><div class="cross" aria-hidden="true"></div>
 <header class="top"><a class="brand" href="../index.html">ATLAS <span>${t('MUSEO DE MUNDOS','MUSEUM OF WORLDS')}</span></a><div id="where"></div><nav><a id="page-language" href="${es?'../../museo/index.html':'../es/museo/index.html'}">${es?'EN':'ES'}</a><button id="mouse">${t('Activar ratón','Enable mouse look')}</button><button id="map-toggle" aria-expanded="false" aria-controls="map">${t('Plano y cuadros','Map & paintings')}</button></nav></header>
-<section class="room-context" aria-label="${t('Sala actual','Current gallery')}"><span class="eyebrow" id="room-number"></span><h1 id="room-name"></h1><p id="room-subtitle"></p><button id="narrate">${t('Escuchar esta sala','Listen to this gallery')} ▶</button></section><div class="route-status" id="route-status" role="status"></div>
+<section class="room-context" aria-label="${t('Sala actual','Current gallery')}"><span class="eyebrow" id="room-number"></span><h1 id="room-name"></h1><p id="room-subtitle"></p><button id="narrate">${t('Escuchar esta sala','Listen to this gallery')} ▶</button></section><div class="route-status" id="route-status" hidden><span id="route-label" role="status"></span><small id="route-distance" aria-live="off"></small></div>
 <aside id="map" class="map" hidden><div class="map-head"><div><span class="eyebrow">ATLAS / ${exhibits.length} ${t('CUADROS','PAINTINGS')}</span><h2>${t('Elige tu recorrido','Choose your path')}</h2></div><button id="map-close" aria-label="${t('Cerrar plano','Close map')}">×</button></div><p class="map-intro">${t('Te llevamos caminando. El ratón sigue siendo tuyo.','We walk you there. You keep control of the view.')}</p><svg id="floorplan" viewBox="-25 -24 50 52" role="img" aria-label="${t('Cuatro salas conectadas por el atrio; el punto blanco eres tú','Four galleries connected by an atrium; the white dot is you')}">${rooms.map(r=>`<rect x="${r.minX}" y="${r.minZ}" width="${r.maxX-r.minX}" height="${r.maxZ-r.minZ}" fill="${r.color}25" stroke="${r.color}" stroke-width=".2"/><text x="${r.x}" y="${r.z}" fill="${r.color}" text-anchor="middle" font-size="1.45">${r.id==='industry'?t('Industria','Industry'):title(r)}</text>`).join('')}<circle id="map-player" cx="0" cy="5" r=".6" fill="white"/><path id="map-direction" d="M0 0 L0 -2" stroke="white" stroke-width=".2"/></svg>
 <div class="room-list">${rooms.slice(1).map(r=>`<section><button class="room-link" data-room="${r.id}" style="--accent:${r.color}"><span>${title(r)}</span><small>${r.subtitle[es?0:1]} →</small></button><div class="painting-list">${exhibits.filter(e=>e.room===r.id).map(e=>`<button data-painting="${e.id}"><span>${e.id==='llms'?'LLMs · ':''}${title(e)}</span><small>${immersiveHref(e.id)?t('3D transitable','Walkable 3D'):notebook3D(e.id)?t('3D en notebook','3D in notebook'):'Web'}</small></button>`).join('')}</div></section>`).join('')}</div><button id="to-atrium">${t('Volver al atrio','Back to the atrium')}</button></aside>
 <aside id="card" class="card" hidden><div class="card-top"><span class="eyebrow" id="card-num"></span><span class="badge" id="card-mode"></span></div><h1 id="card-name"></h1><p id="card-description"></p><div class="actions"><button class="primary" id="enter-3d">${t('Entrar en 3D','Enter 3D')} <span>↗</span></button><a id="web" href="../index.html">${t('Notebook web','Web notebook')} →</a></div><p class="availability" id="availability"></p></aside>
@@ -35,17 +35,18 @@ const controls=target=>target.closest?.('input,select,textarea');
 const roomIndex=id=>VOICES[notebook?.language||(es?'es':'en')].findIndex(c=>c.id===id);
 const roomPose=id=>id==='hall'?{...spawn}:({mind:{x:0,z:-13,yaw:0,pitch:.08},industry:{x:-14,z:1,yaw:Math.PI/2,pitch:.08},cosmos:{x:14,z:1,yaw:0,pitch:.08},life:{x:0,z:17,yaw:Math.PI,pitch:.08}}[id]);
 function resetInput(){keys.clear();stick.x=stick.y=0;stick.id=null;velocity={forward:0,strafe:0};drag=null;pointerLast=null;$('stick-knob').style.transform='translate(-50%,-50%)';}
-function stopWalk(pauseVoice=true){path=[];destination=null;arrival=null;resetInput();if(pauseVoice)notebook?.pause();$('stop').hidden=true;$('route-status').textContent='';}
+function routeStatus(message){$('route-label').textContent=message;$('route-status').hidden=!message;}
+function stopWalk(pauseVoice=true){path=[];destination=null;arrival=null;resetInput();if(pauseVoice)notebook?.pause();$('stop').hidden=true;routeStatus('');$('route-distance').textContent='';}
 function renderMouse(){const active=locked()||freeLook;$('mouse').textContent=active?(locked()?t('Ratón capturado · Esc','Mouse captured · Esc'):t('Ratón activo · Esc','Mouse look active · Esc')):t('Activar ratón','Enable mouse look');$('mouse').setAttribute('aria-pressed',String(active));document.body.classList.toggle('looking',active);}
 function releaseLook(){freeLook=false;pointerLast=null;document.exitPointerLock?.();renderMouse();}
-function lockLook(){if(!finePointer||portal||!world)return;freeLook=true;$('view').focus?.();renderMouse();try{Promise.resolve(world.lookLock?.()).catch(()=>{if(freeLook)$('route-status').textContent=t('Ratón activo sobre la escena · Esc para soltar','Mouse look active over the scene · Esc to release');renderMouse();});}catch{renderMouse();}}
+function lockLook(){if(!finePointer||portal||!world)return;freeLook=true;$('view').focus?.();renderMouse();try{Promise.resolve(world.lookLock?.()).catch(()=>{if(freeLook)routeStatus(t('Ratón activo sobre la escena · Esc para soltar','Mouse look active over the scene · Esc to release'));renderMouse();});}catch{renderMouse();}}
 function mapOpen(open){$('map').hidden=!open;$('map-toggle').setAttribute('aria-expanded',String(open));if(open){stopWalk();releaseLook();}}
 function begin(autoplay=false){started=true;$('welcome').hidden=true;document.body.classList.remove('museum-awaiting');paint();if(autoplay&&notebook&&!notebook.running)notebook.toggle();}
 function moveTo(target,label,callback=null){
  stopWalk();mapOpen(false);autoAim=true;arrival=callback;path=routeTo(player,target);destination=path.at(-1);
  if(!path.length){const done=arrival;arrival=null;destination=null;done?.();return;}
  if($('instant').checked){player={...player,...destination};path=[];destination=null;const done=arrival;arrival=null;done?.();paint();notebook?.save();return;}
- $('route-status').textContent=t('Caminando hacia ','Walking to ')+label;$('stop').hidden=false;
+ routeStatus(t('Caminando hacia ','Walking to ')+label);$('stop').hidden=false;
 }
 function narrateRoom(id){const i=roomIndex(id);if(i<0)return;holdPose=true;notebook.stage(i,true);holdPose=false;}
 function approach(e,narrate=false){if(!e)return;begin();moveTo(standAt(e),title(e),()=>{if(narrate)narrateRoom(e.room);});}
@@ -64,6 +65,7 @@ function paint(){
  $('room-number').textContent=index?`${String(index).padStart(2,'0')} / 04 · ${count} ${t('CUADROS','PAINTINGS')}`:t('TU PUNTO DE PARTIDA','YOUR STARTING POINT');
  $('room-name').textContent=title(room);$('room-subtitle').textContent=room.subtitle[es?0:1];$('room-name').style.color=room.color;
  $('narrate').textContent=notebook?.running&&notebook.current?.id===room.id?t('Pausar voz de sala','Pause gallery voice'):t('Escuchar esta sala','Listen to this gallery')+' ▶';
+ $('route-distance').textContent=path.length?new Intl.NumberFormat(es?'es-ES':'en-US',{maximumFractionDigits:1}).format(routeGuide(player,path).distance)+' m · '+t('Sigue las flechas del suelo','Follow the floor arrows'):'';
  $('map-player').setAttribute('cx',player.x);$('map-player').setAttribute('cy',player.z);$('map-direction').setAttribute('transform',`translate(${player.x} ${player.z}) rotate(${-player.yaw*180/Math.PI})`);
  selected=started&&!portal?focusedExhibit(player,5.5):null;$('card').hidden=!selected;
  if(selected){const available=!!immersiveHref(selected.id);$('card-num').textContent=title(room)+' / '+selected.num;$('card-name').textContent=title(selected);$('card-description').textContent=explanations[selected.id];$('card-mode').textContent=available?t('3D TRANSITABLE','WALKABLE 3D'):notebook3D(selected.id)?'NOTEBOOK 3D':'NOTEBOOK WEB';$('enter-3d').hidden=!available;$('web').href=selected.href;$('web').textContent=(!available&&notebook3D(selected.id)?t('Abrir notebook 3D','Open 3D notebook'):t('Notebook web','Web notebook'))+' →';$('availability').textContent=available?t('E para entrar · o camina hacia el lienzo','E to enter · or walk toward the canvas'):notebook3D(selected.id)?t('Explora su escena 3D desde el notebook.','Explore its 3D scene in the notebook.'):t('Abre su explicación desde el notebook web.','Open its explanation in the web notebook.');}
@@ -133,13 +135,13 @@ function frame(now){const rawDt=Math.max(0,(now-last)/1000),dt=Math.min(.05,rawD
   else if(started){
    if(path.length){const p=path[0],dx=p.x-player.x,dz=p.z-player.z,d=Math.hypot(dx,dz),step=Math.min(d,SPEED*dt);
     if(d>.025){player.x+=dx/d*step;player.z+=dz/d*step;if(autoAim){const targetYaw=d<3&&path.length===1&&p.yaw!==undefined?p.yaw:yawLookingAt(dx,dz);player.yaw+=Math.atan2(Math.sin(targetYaw-player.yaw),Math.cos(targetYaw-player.yaw))*Math.min(1,dt*5);player.pitch+=(.04-player.pitch)*dt*3;}}
-    if(d<.08){player.x=p.x;player.z=p.z;path.shift();if(!path.length){if(autoAim){if(p.yaw!==undefined)player.yaw=p.yaw;if(p.pitch!==undefined)player.pitch=p.pitch;}destination=null;$('stop').hidden=true;$('route-status').textContent='';const done=arrival;arrival=null;done?.();notebook.save();}}
+    if(d<.08){player.x=p.x;player.z=p.z;path.shift();if(!path.length){if(autoAim){if(p.yaw!==undefined)player.yaw=p.yaw;if(p.pitch!==undefined)player.pitch=p.pitch;}destination=null;$('stop').hidden=true;routeStatus('');$('route-distance').textContent='';const done=arrival;arrival=null;done?.();notebook.save();}}
    }else{const f=Number(keys.has('KeyW')||keys.has('ArrowUp'))-Number(keys.has('KeyS')||keys.has('ArrowDown'))+stick.y,s=Number(keys.has('KeyD')||keys.has('ArrowRight'))-Number(keys.has('KeyA')||keys.has('ArrowLeft'))+stick.x,a=1-Math.exp(-dt*14);
     velocity.forward+=(f-velocity.forward)*a;velocity.strafe+=(s-velocity.strafe)*a;const before={...player};Object.assign(player,stepVisitor(player,{x:-Math.sin(player.yaw),z:-Math.cos(player.yaw)},{x:Math.cos(player.yaw),z:-Math.sin(player.yaw)},velocity,dt));
     if(f>.3){const crossed=portalCrossing(before,player);if(crossed)enterPainting(crossed);}
    }
   }
-  selected=started&&!portal?focusedExhibit(player,5.5):null;world.render(player,selected?.id,dt,portal,destination);
+  selected=started&&!portal?focusedExhibit(player,5.5):null;world.render(player,selected?.id,dt,portal,destination,path.length?routeGuide(player,path):null);
   if(rawDt>0&&rawDt<.25){frameTimes.push(rawDt*1000);if(frameTimes.length>120)frameTimes.shift();}
   uiTime+=dt;if(uiTime>.1){uiTime=0;paint();const times=[...frameTimes].sort((a,b)=>a-b);if(times.length){$('view').dataset.frameMedian=times[Math.floor(times.length*.5)].toFixed(2);$('view').dataset.frameP95=times[Math.min(times.length-1,Math.floor(times.length*.95))].toFixed(2);}if(world.stats)Object.assign($('view').dataset,{drawCalls:String(world.stats.calls),triangles:String(world.stats.triangles),textures:String(world.stats.textures)});}
  }

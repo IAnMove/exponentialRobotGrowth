@@ -63,7 +63,7 @@ function harness({lang='es',finePointer=false,reduced=false,lockMode='success',a
   pause(){this.paused=true;this.pauseCalls++;}removeAttribute(name){if(name==='src')this.src='';}load(){if(this.src.startsWith('blob:fixture:'))queueMicrotask(()=>this.onloadedmetadata?.());}
  }
  class Clock extends TimelineClock{constructor(options){super({...options,AudioClass:AudioStub,loadBlob:async src=>src,urls:{createObjectURL:src=>{const url='blob:fixture:'+src;objectUrls.add(url);return url;},revokeObjectURL:url=>objectUrls.delete(url)}});}}
- const world={dom:element('canvas'),render(p,nearId,dt,portal,destination){lastPose={...p};lastRender={pose:lastPose,nearId,dt,portal:portal?{...portal}:null,destination:destination?{...destination}:null};},pick:(x,y)=>{pickCalls.push({x,y});return pickResult;},dispose(){},
+ const world={dom:element('canvas'),render(p,nearId,dt,portal,destination,guide){lastPose={...p};lastRender={pose:lastPose,nearId,dt,portal:portal?{...portal}:null,destination:destination?{...destination}:null,guide:guide?JSON.parse(JSON.stringify(guide)):null};},pick:(x,y)=>{pickCalls.push({x,y});return pickResult;},dispose(){},
   lookLock(){lockCalls++;if(lockMode==='throw')throw Error('Pointer Lock unsupported');if(lockMode==='reject')return Promise.reject(Error('Pointer Lock denied'));if(lockMode==='unsupported')return undefined;document.pointerLockElement=world.dom;events['document:pointerlockchange']?.();return Promise.resolve();}
  };
  const ctx={...model,model,LESSONS,CATALOG,document,window,console,URLSearchParams,URL,TimelineClock:Clock,restoredPosition,immersiveHref,VOICES,ResizeObserver:class{observe(){}disconnect(){}},
@@ -190,4 +190,13 @@ for(const lang of ['es','en']){
   for(const lateral of [2.3,2.45]){const plane=model.paintingPlane(llm),pose={x:plane.center.x+lateral,z:plane.center.z+1.2,yaw:0,pitch:0},walk=harness({lang,storage:stored(lang,pose)});await walk.flush();walk.frames(1);walk.events.keydown(key('KeyW'));walk.frames(150);assert.equal(walk.navigations.length,lateral===2.3?1:0,'walking enters the wide canvas near its edge, but not outside the rectangle');}
  }
 }
+let routeCases=0;
+for(const lang of ['es','en']){
+ const h=harness({lang});await h.flush();h.element('instant').checked=false;const choose=id=>h.paintings.find(b=>b.dataset.painting===id).onclick();
+ for(const id of ['home','llms','lunar','evolution']){choose(id);h.frames(12);const distance=h.lastRender.guide.distance;assert(distance>1);assert(h.lastRender.guide.markers.length>0);assert(h.element('route-distance').textContent.includes('m'));assert.equal(h.element('route-status').hidden,false);h.frames(60);assert(h.lastRender.guide.distance<distance);h.events.keydown(key('KeyD'));h.frames(1);assert.equal(h.lastRender.guide,null,'manual walking removes floor guidance');assert.equal(h.element('route-distance').textContent,'');h.events.keyup(key('KeyD'));routeCases++;}
+ choose('home');h.frames(1800);assert.equal(h.lastRender.guide,null);assert.equal(h.lastRender.destination,null);assert.equal(h.element('route-distance').textContent,'');samePose(h.lastPose,model.standAt(model.exhibits.find(e=>e.id==='home')),'the guide arrives at the existing painting stand');routeCases++;
+ choose('llms');h.frames(10);h.element('stop').onclick();h.frames(1);assert.equal(h.lastRender.guide,null);choose('lunar');h.frames(10);h.element('map-toggle').onclick();h.frames(1);assert.equal(h.lastRender.guide,null,'opening the map retains its pause behavior');routeCases++;
+ h.element('instant').checked=true;choose('evolution');h.frames(1);assert.equal(h.lastRender.guide,null,'instant travel has no residual trail');h.element('instant').checked=false;choose('home');h.frames(10);h.events.keydown(key('Escape'));h.frames(1);assert.equal(h.lastRender.guide,null);assert.equal(h.element('route-status').hidden,true);routeCases++;
+}
+console.log(`Museum guide controls: ${routeCases} bilingual approach/decreasing-distance/arrival/manual/map/Escape/instant cases: OK`);
 console.log(`Museum controls: ${controllerCases} bilingual controller scenarios, ${voiceChecks} canonical/runtime transcripts and MP3 assets, ${recordingProofs} ${proofMode} recording proofs, real NotebookPlayer/TimelineClock, native/fallback mouse capture, held-key diagonals, camera/LOS focus, free head during guide, rectangular portals and safe return, five-chapter seek/transcript/language/advance, audio retries, exact pose/audio/instant persistence and map availability: OK`);
