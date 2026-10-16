@@ -1,5 +1,13 @@
 # Atlas — cola de mejoras
 
+## Siguiente pasada: seleccionar el día sobre la curva de Crecimiento — 16 de octubre de 2026
+
+En escritorio, el SVG conserva sus proporciones y deja márgenes dentro de un contenedor ancho. El clic se calculaba como si el dibujo llenara ese contenedor: Chrome mide un desfase de hasta 22,87 días. La selección convierte ahora el punto de pantalla con la matriz real del SVG; respeta esos márgenes y las transformaciones. El mismo instante sigue situando el modelo, las cifras, la escena, el texto y el audio en los tres modos.
+
+La comprobación a 320 píxeles detecta además que las reglas globales de `aside` daban borde y relleno al widget «Sobre Atlas». Su caja transparente tapaba el inicio de la curva. Esas reglas se limitan al panel de la lección; el widget recupera su tamaño y sus botones conservan apertura y cierre por Escape.
+
+Una regresión falla con la conversión anterior y comprueba SVG ancho, estrecho y con ejes transformados, conservando los casos previos de reproducción y costes. Pasan las cuatro comprobaciones afectadas de Crecimiento y recursos: controles, escenas y modelo, incluidos 531 escenarios de producción. Chrome verifica veinte clics anteriores y 360 posteriores: ES/EN, 1440/900/390/320 píxeles, tres curvas y tres modos. El desfase posterior queda por debajo de 0,29 días, dentro del redondeo de un píxel; footer y modelo conservan el mismo instante fraccionario y la reproducción permanece pausada. Se comprueban también las ocho aperturas/cierres del widget y su caja ajustada a la pestaña. Capturas antes/después inspeccionadas; sin errores de ejecución ni recursos. Los cálculos y las voces no cambian.
+
 ## Siguiente pasada: casillas reales de Internet TCP — 16 de octubre de 2026
 
 El panel del receptor mantenía los veinte números de casilla aunque el mensaje tuviera solo dos u ocho piezas. Cada etiqueta comparte ahora la visibilidad de su pieza. Cambiar el tamaño del mensaje, perderlo o retroceder no deja números de segmentos inexistentes. Se conservan las cantidades recibidas, entregadas en orden y confirmadas, sus colores, el modelo y las voces.
