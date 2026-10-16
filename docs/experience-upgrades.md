@@ -1,5 +1,13 @@
 # Atlas — cola de mejoras
 
+## Siguiente pasada: distinguir la operación de su fase en Terafab — 16 de octubre de 2026
+
+Seleccionar «Exponer el patrón» sitúa la coreografía al inicio de esa operación: primero se recoge el recipiente en el equipo anterior. El título nombraba la exposición sin identificar el transporte que se estaba viendo. La cabecera muestra ahora la fase actual del mismo modelo: recogida y tránsito, carga, operación, salida, separación, traslado de piezas, montaje o prueba final. Las 28 fases tienen texto ES/EN. La entrada de la oblea evita hablar de una cámara que no está representada en ese puesto. El indicador se oculta en las tres vistas del campus y no añade pasos ni cambia los tiempos.
+
+La inspección detecta además que los estilos globales de `aside` daban a «Sobre Atlas» un recuadro de 81 píxeles en escritorio y 71,5 en móvil. Esas reglas se limitan al panel de la lección. El widget ocupa ahora su pestaña y deja pasar los clics a la escena y sus controles. Las coordenadas de primera persona quedan debajo del nuevo indicador.
+
+Pasan las cuatro comprobaciones de controles, escenas, modelo y recursos. Los controles comprueban las 28 fases, textos de transporte/operación/salida, retroceso y ocultación en el campus, manteniendo las doce pruebas de grabaciones MiniMax. Chrome verifica 336 estados en 12 contextos: ES/EN, 1440/390/320 píxeles y notebook/primera persona. Se comprueban separación de rótulos, tiempo y voz pausada, doce recargas, 18 vistas sin indicador y doce aperturas/cierres del widget. En la zona que antes ocupaba el relleno, el clic llega al canvas o a un control real. Capturas inspeccionadas; sin errores de ejecución ni recursos. Se conservan modelo, recorridos, datos de la muestra y voces; no se actualizan las afirmaciones sobre el proyecto industrial.
+
 ## Siguiente pasada: comparación legible en las curvas de Crecimiento — 16 de octubre de 2026
 
 El gráfico fijo de 720 unidades reducía sus ejes hasta 4,5–5,7 píxeles CSS en móvil. Ahora construye su geometría con el ancho disponible y mantiene textos de 13 píxeles; reserva margen para los valores del eje y añade «Días del ejemplo». La cabecera del dibujo muestra las cantidades actuales de humano, diez robots fijos y reinversión, con sus colores. Las tres cifras siguen la métrica elegida: capacidad, bienes diarios o acumulado. Las escalas pequeñas conservan decimales suficientes para distinguir 0,25 de 0,5.
