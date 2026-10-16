@@ -41,7 +41,12 @@ raf=requestAnimationFrame(tick);window.addEventListener('pagehide',event=>{save(
 
 function seekDay(value){manual();const next=growthPositionForDay(trace,value,chapter),changed=chapter!==next.chapter;chapter=next.chapter;progress=next.progress;rebuild();if(changed&&mode==='notebook')world?.focus(chapter);paint();align();save();}
 $('day').oninput=()=>seekDay(+$('day').value);
-$('chart').onclick=e=>{const svg=e.target.closest?.('svg');if(!svg)return;const rect=svg.getBoundingClientRect(),x=(e.clientX-rect.left)*720/Math.max(1,rect.width);seekDay(bounded((x-65)/625*trace.horizon,0,trace.horizon));};
+$('chart').onclick=e=>{
+ const svg=e.target.closest?.('svg'),matrix=svg?.getScreenCTM();if(!matrix)return;
+ // The SVG viewport can include letterboxing; its screen matrix also includes CSS transforms.
+ const point=svg.createSVGPoint();point.x=e.clientX;point.y=e.clientY;
+ const x=point.matrixTransform(matrix.inverse()).x;seekDay(bounded((x-65)/625*trace.horizon,0,trace.horizon));
+};
 document.querySelectorAll('[data-metric]').forEach(b=>b.onclick=()=>{metric=+b.dataset.metric;paint();save();});
 function preset(values){manual();Object.assign(params,values);rebuild();inputs();paint();align();save();}
 $('preset-fair').onclick=()=>preset({hours:24,shifts:3});$('preset-no-grow').onclick=()=>preset({reinvest:0});$('preset-unlimited').onclick=()=>preset({limited:false});$('preset-default').onclick=()=>preset(defaults);
