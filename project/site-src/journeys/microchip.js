@@ -21,3 +21,11 @@ export const microchip={id:'microchip',room:'mind',title:L('Dentro de un microch
  // One connected laboratory is implemented in microchip-world.js.
  build(){return ()=>{};}
 };
+
+// Read the same causal frame for internal nodes and received indicators.
+export function microchipTimingValue(frame,track){return track.received?frame.result[track.node]:frame.nodes[track.node];}
+export function microchipTimingTracks(trace){
+ const signals=[['x','xor1','X',false,L('interno','internal')],['sum','xor2','Sum',false,L('interno','internal')],['cout','or','Cout',false,L('interno','internal')],['received-cout','cout','Cout',true,L('peso 2','weight 2')],['received-sum','sum','Sum',true,L('peso 1','weight 1')]];
+ return Object.freeze(signals.map(([id,node,label,received,detail])=>{const track={id,node,label,received,detail:Object.freeze(detail)};return Object.freeze({...track,values:Object.freeze(trace.states.map(state=>microchipTimingValue(state,track)))});}));
+}
+export function microchipChartLayout(width=520){return Object.freeze({width:Math.max(200,Number.isFinite(width)&&width>0?width:520),height:330,left:122,right:Math.max(200,Number.isFinite(width)&&width>0?width:520)-12,top:22,bottom:282,axisY:312,rows:Object.freeze([42,94,146,212,264])});}
