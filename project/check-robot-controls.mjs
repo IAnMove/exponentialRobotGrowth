@@ -5,7 +5,7 @@ import {TimelineClock,restoredPosition} from './site-src/playback/timeline.js';
 import {bindFirstPerson} from './site-src/immersive/first-person.js';
 import {bindRobotIndustry,createRobotTrace,robotFrameAt,robotChapterWindows} from './site-src/robot-trace.js';
 import {robotPoseAt,restoreRobotPose,robotWalk,robotGuidePath,robotNearestStand} from './site-src/robot-walk.js';
-import {laborIndex,fixedIndex,taskIndex} from './site-src/live/metrics.js';
+import {laborCost,fixedCost,taskCost,laborIndex,fixedIndex,taskIndex} from './site-src/live/metrics.js';
 
 // Run production controller, narrator, player and input code. Only native
 // browser surfaces, Audio and GPU presentation are substituted. The district
@@ -55,7 +55,7 @@ function harness({kind,language='es',mode='notebook',storage=new Map(),audioMode
   nearest(){if(kind==='factory')return robotNearestStand(lastPose);let result=null;sectorCenters.forEach(([x,z],index)=>{const distance=Math.hypot(x-lastPose.x,z-lastPose.z);if(distance<3.1&&(!result||distance<result.distance))result={index,distance,action:index<6?index*6:36+index-6};});return result;},inspect(){return inspected;},getViewState:()=>({...view,...(lastPose?{pose:{...lastPose}}:{})}),restoreViewState(v){view={...v};}};
  if(kind==='district'){delete world.walk;delete world.setMode;delete world.poseAt;delete world.setPose;}
  const ctx={console,URL,URLSearchParams,Intl,document,window,location:{pathname:(language==='es'?'/es':'')+'/robots/'+(kind==='factory'?'factory':kind)+'.html',search:'?mode='+mode},history:{replaceState(){}},CustomEvent:class{constructor(type,options){this.type=type;Object.assign(this,options);}},performance:{now:()=>now},matchMedia:query=>({matches:query==='(pointer: coarse)'?!finePointer:false}),ResizeObserver:class{observe(){}disconnect(){}},
-  localStorage:{getItem:key=>storage.get(key)||null,setItem:(key,value)=>storage.set(key,value)},requestAnimationFrame:fn=>{queued.set(++rafId,fn);return rafId;},cancelAnimationFrame:id=>queued.delete(id),queueMicrotask,TimelineClock:Clock,restoredPosition,NARRATIONS:catalogs[language],OTHER_CATALOG:catalogs[language==='es'?'en':'es'],createRobotTrace,robotFrameAt,robotChapterWindows,laborIndex,fixedIndex,taskIndex,
+  localStorage:{getItem:key=>storage.get(key)||null,setItem:(key,value)=>storage.set(key,value)},requestAnimationFrame:fn=>{queued.set(++rafId,fn);return rafId;},cancelAnimationFrame:id=>queued.delete(id),queueMicrotask,TimelineClock:Clock,restoredPosition,NARRATIONS:catalogs[language],OTHER_CATALOG:catalogs[language==='es'?'en':'es'],createRobotTrace,robotFrameAt,robotChapterWindows,laborCost,fixedCost,taskCost,laborIndex,fixedIndex,taskIndex,
   bindFirstPerson:options=>bindFirstPerson({...options,document,window,coarse:!finePointer})};
  const Player=vm.runInNewContext(`(()=>{${sources['playback/player.js']}\nreturn NotebookPlayer;})()`,ctx);ctx.NotebookPlayer=Player;
  const makeHeader=vm.runInNewContext(`(()=>{${sources['live/header.js']}\nreturn createLiveHeader;})()`,ctx),live=makeHeader({anchor:'#anchor',kind});
