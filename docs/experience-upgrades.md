@@ -1,5 +1,11 @@
 # Atlas — cola de mejoras
 
+## Siguiente pasada: salida de publicación sin audios obsoletos — 16 de octubre de 2026
+
+El paquete completo supera el límite de 256 MiB de Sites. `tools/prepare_hosting_output.py` crea una carpeta nueva con los mismos recursos, excluyendo únicamente los MP3 que ningún archivo de ejecución referencia. Conserva intactos la compilación completa y sus audios originales. Los JSON de generación de audio no se consideran referencias de ejecución. La preparación se detiene ante un nombre de audio construido dinámicamente, una grabación que falta o un destino existente.
+
+Para conservar también las voces de páginas antiguas que sigan abiertas, `--keep-audio archivo.json` acepta sus nombres de MP3 en una lista JSON. Después de compilar: `python tools/prepare_hosting_output.py --source dist --output hosting-output-N --keep-audio hosting-compat.json`. La copia de Sites apunta `static.directory` a esa salida; su identidad y audiencia se conservan. Cada publicación usa un destino nuevo. La regresión verifica conservación byte a byte, referencias actuales/anteriores, omisión de una voz obsoleta y rechazo de entradas ambiguas o sobrescrituras.
+
 ## Siguiente pasada: nombres de las proyecciones LLM — 16 de octubre de 2026
 
 En la operación «Proyectar Q · K · V» del mundo transitable, los nombres de los cuatro vectores y de los tres pesos se reducían a unos 3–4 píxeles en móvil. Esas siete anotaciones tienen ahora un tamaño objetivo de 12 píxeles CSS de letra, calculado con las métricas reales de la fuente y la proyección de la cámara. El aumento se limita en el mundo para conservar separación entre columnas. Los nombres WQ, WK y WV se apartan de las curvas; las dimensiones se leen de los vectores calculados. La escala se aplica solo al texto.
