@@ -1,5 +1,14 @@
 import assert from 'node:assert/strict';
 import {buildChipTrace,sampleChip,fullAdder} from './site-src/journeys/microchip-model.js';
+import {microchipChartLayout,microchipTimingTracks,microchipTimingValue} from './site-src/journeys/microchip.js';
+
+for(const width of [290,360,420,1000]){const g=microchipChartLayout(width);assert(Object.isFrozen(g)&&Object.isFrozen(g.rows));assert.equal(g.width,width);assert.equal(g.height,330);assert(g.right>g.left);assert.equal(g.rows.length,5);assert(g.rows.every(y=>y-14>=g.top&&y+16<=g.bottom));assert(g.axisY+6<g.height);}
+for(let n=0;n<8;n++){
+ const a=n>>2,b=(n>>1)&1,cin=n&1,trace=buildChipTrace({a:!!a,b:!!b,carry:!!cin}),original=JSON.stringify(trace),tracks=microchipTimingTracks(trace),decimal=a+b+cin,answer=[Number(a!==b),decimal%2,Math.floor(decimal/2),Math.floor(decimal/2),decimal%2],arrival=[4,8,10,12,12];
+ assert(Object.isFrozen(tracks));assert.deepEqual(tracks.map(t=>t.id),['x','sum','cout','received-cout','received-sum']);
+ for(const [i,track]of tracks.entries()){assert(Object.isFrozen(track)&&Object.isFrozen(track.values));for(let t=0;t<=12;t++)assert.equal(track.values[t],t<arrival[i]?null:answer[i],'internal evaluation and receipt are separate events');for(const t of [0,3.9,4,7.9,8,9.9,10,11.9,12])assert.equal(microchipTimingValue(sampleChip(trace,t),track),t<arrival[i]?null:answer[i]);}
+ assert.throws(()=>{tracks[0].values[0]=1;},TypeError);assert.equal(JSON.stringify(trace),original,'drawing a diagram must not mutate the causal trace');
+}
 
 const wireIds=['a-xor1','b-xor1','a-and1','b-and1','xor1-xor2','cin-xor2','xor1-and2','cin-and2','and1-or','and2-or','xor2-sum','or-cout'];
 const milestones={xor1:[2,4],and1:[2,4],xor2:[6,8],and2:[6,8],or:[9,10]};
