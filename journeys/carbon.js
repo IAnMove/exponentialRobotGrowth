@@ -3,7 +3,7 @@ import {carbonTrace,sampleCarbon,carbonStoryTime} from './carbon-model.js';
 export {carbonRun} from './carbon-model.js';
 let key,trace,reference;
 export function carbonExperiment(p){const next=[p.emissions,p.uptake,p.stop].join(':');if(next!==key){trace=carbonTrace(p);reference=carbonTrace({...p,stop:false});key=next;}return {trace,reference};}
-export function carbonPose(i){const targets=[[-7,4.6,0],[-4,1.5,0],[5,0,0],[-1,1.5,1]],x=[-10,-5,5,10][i],z=11,[tx,ty,tz]=targets[i];return {x,z,yaw:Math.atan2(x-tx,z-tz),pitch:Math.atan2(ty-1.65,Math.hypot(x-tx,z-tz))};}
+export function carbonPose(i){const targets=[[-7,5.3,0],[-4,1.5,0],[5,0,0],[-1,1.5,1]],x=[-10,-5,5,10][i],z=11,[tx,ty,tz]=targets[i];return {x,z,yaw:Math.atan2(x-tx,z-tz),pitch:Math.atan2(ty-1.65,Math.hypot(x-tx,z-tz))};}
 export const carbon={id:'carbon',room:'life',title:L('El viaje del carbono y el clima','Carbon’s journey and climate'),color:'#83d5d8',unit:L('intervalo','interval'),horizon:60,continuous:true,
  poseAt:carbonPose,walk(p,f,s,dt){const n=Math.max(1,Math.hypot(f,s)),v=3.8*Math.min(.05,dt);return {...p,x:clamp(p.x+(-Math.sin(p.yaw)*f+Math.cos(p.yaw)*s)/n*v,-13,13),z:clamp(p.z+(-Math.cos(p.yaw)*f-Math.sin(p.yaw)*s)/n*v,-8,13)};},
  overview:{yaw:.16,pitch:.36,distance:9.5},fitLabel:L('Ver el ciclo completo','Fit the whole cycle'),
