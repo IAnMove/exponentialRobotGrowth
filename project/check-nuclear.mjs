@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {buildNuclearTrace,sampleNuclear,heatBalance} from './site-src/journeys/nuclear-model.js';
+import {nuclearChartLayout,nuclearChartSeries} from './site-src/journeys/nuclear.js';
 
 const near=(actual,expected,context='',tolerance=1e-9)=>assert(Math.abs(actual-expected)<=tolerance,
  `${context}: ${actual} != ${expected}`);
@@ -21,11 +22,14 @@ function ledger(s){
  assert(s.electric<=s.heat&&s.rejected<=s.heat,'The generator cannot convert more than all available heat');
 }
 
+for(const width of [290,360,420,1000]){const g=nuclearChartLayout(width);assert(Object.isFrozen(g));assert.equal(g.width,width);assert.equal(g.height,344);assert(g.left<g.right&&g.top<g.bottom&&g.bottom<g.decayTop&&g.decayTop<g.decayBottom&&g.axisY+6<g.height);}
 let combinations=0,samples=0;
 // All joint slider positions: 9 power x 21 efficiency x 2 shutdown settings.
 for(let power=20;power<=100;power+=10)for(let efficiency=20;efficiency<=40;efficiency++)for(const stop of [false,true]){
  const p={power,efficiency,stop},original={...p},trace=buildNuclearTrace(p);
  const saved=JSON.stringify(trace),paused=new Map();
+ const chart=nuclearChartSeries(trace);assert(Object.isFrozen(chart)&&chart.every(Object.isFrozen));assert.equal(chart.length,stop?242:241);const jump=chart.filter(s=>s.time===5);assert.equal(jump.length,stop?2:1);near(jump[0].heat,power);near(jump[0].electric,power*efficiency/100);if(stop){near(jump[1].heat,power*.07);assert.equal(jump[1].electric,0);near(jump[1].rejected,jump[1].heat);}for(const [i,point]of chart.entries()){assert(i===0||point.time>=chart[i-1].time);near(point.heat,point.electric+point.rejected);assert(point.decay>=0&&point.decay<=7);assert(point.heat>=point.decay);}assert.throws(()=>{chart[0].heat=0;},TypeError);assert.equal(JSON.stringify(trace),saved,'building the graph must not mutate the physics trace');
+
  assert.deepEqual(p,original,'Trace construction never mutates controls');
  assert.deepEqual(trace.params,p);assert.equal(trace.horizon,24);assert.equal(trace.states.length,25);
  assert.equal(trace.states[0].time,0);
