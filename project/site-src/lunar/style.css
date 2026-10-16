@@ -36,3 +36,7 @@
 #lesson{display:block;font-size:13px;line-height:1.85;color:#bccbd8}
 
 #power-use{display:inline-block;padding:3px 8px;border:1px solid #b69c654d;border-radius:5px;color:#eedeb8;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* Landed cargo is credited only at a completed arrival, never while in transit. */
+.route-ledger{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;padding:18px 22px;background:#101b29;border-top:1px solid var(--line)}.route-ledger[hidden]{display:none}.route-ledger>div{min-width:0}.route-ledger>div+div{border-left:1px solid var(--line);padding-left:24px}.route-ledger span{display:block;font-size:11px;letter-spacing:.7px;line-height:1.6;color:#acc0d1}.route-ledger strong{display:block;font-size:29px;font-weight:500;line-height:1.5;color:var(--gold);font-variant-numeric:tabular-nums}.route-ledger>div+div strong{color:var(--mint)}.route-ledger small{font-size:12px;color:#c0d0dc}.route-ledger p{grid-column:1/-1;margin:0;font-size:12px;line-height:1.65;color:#c0d0dc}.route-ledger .route-ledger-note{font-size:11px;color:#91a9bd}
+@media(max-width:650px){.route-ledger{padding:15px 16px;gap:12px 16px}.route-ledger>div+div{padding-left:16px}.route-ledger strong{font-size:25px}.route-ledger span{font-size:11px;letter-spacing:.3px;min-height:3.2em}}
