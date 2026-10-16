@@ -327,7 +327,7 @@ export function createVoyageWorld(host,es){
   // Older consumers can render a fraction while migrating to immutable frames.
   if(typeof frame==='number'){const progress=arguments[2]||0;options={dt:frame,reduced:!!arguments[3]};frame=internetFrameAt(index,progress);}
   frame=frame||currentFrame;if(frame.index!==index)go(frame.index,true,{preserveView:!!options.preserveView});currentFrame=frame;
-  if(!free){elapsed+=Math.max(0,options.dt||0);const q=Math.min(1,elapsed/1.2),s=q*q*(3-2*q),pose=guidedPose();camera.position.lerpVectors(fromPos,V(pose.position),s);target.lerpVectors(fromTarget,V(pose.target),s);camera.lookAt(target);}
+  if(!free){elapsed=options.reduced?1.2:elapsed+Math.max(0,options.dt||0);const q=Math.min(1,elapsed/1.2),s=q*q*(3-2*q),pose=guidedPose();camera.position.lerpVectors(fromPos,V(pose.position),s);target.lerpVectors(fromTarget,V(pose.target),s);camera.lookAt(target);}
   world.update(frame);
   // The HUD is real DOM. Measure it only when chapter, exploration or size changes.
   const boundsKey=[index,free,host.clientWidth,host.clientHeight].join(':');
