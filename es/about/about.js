@@ -1,5 +1,5 @@
 // "About Atlas" tab, injected into every page by the build. Self-contained: markup, styles and behaviour.
-// A left-edge tab opens a panel with the author on X, the GitHub repository (live star count) and sharing.
+// Docks into notebook playback controls; other pages retain the edge tab.
 const REPO = 'IAnMove/exponentialRobotGrowth', REPO_URL = `https://github.com/${REPO}`, X_HANDLE = 'theinaog';
 const NUDGE_AFTER = 90, STAR_CACHE_HOURS = 6;
 
@@ -16,15 +16,20 @@ function mount() {
   const style = document.createElement('style');
   style.textContent = `
 .atlas-about{--ab-bg:#101a26f2;--ab-line:#ffffff24;--ab-text:#e8eef5;--ab-muted:#a9b8c8;--ab-gold:#e9c98f;position:fixed;left:0;top:42%;z-index:60;font:14px/1.5 Inter,ui-sans-serif,system-ui,sans-serif;color:var(--ab-text);transition:opacity .2s}
-.atlas-about[hidden]{display:block!important;opacity:0;pointer-events:none}
+.atlas-about[hidden]{display:none!important}
 .atlas-about-tab{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:8px;writing-mode:vertical-rl;transform:rotate(180deg);padding:14px 8px;border:1px solid var(--ab-line);border-left:0;border-radius:10px 0 0 10px;background:var(--ab-bg);backdrop-filter:blur(10px);color:var(--ab-text);font-size:12px;letter-spacing:.08em;cursor:pointer;box-shadow:0 6px 24px #0006}
 .atlas-about-tab:hover{background:#18263a}
 .atlas-about-tab:focus-visible{outline:2px solid var(--ab-gold);outline-offset:2px}
 .atlas-about-tab .ab-star{color:var(--ab-gold);transform:rotate(180deg)}
 .atlas-about.open .atlas-about-tab{background:#1d2c40;color:var(--ab-gold)}
-.atlas-about-panel{position:absolute;left:44px;top:50%;transform:translate(-12px,-50%);width:min(330px,calc(100vw - 60px));max-height:calc(100vh - 32px);overflow:auto;box-sizing:border-box;padding:22px;border:1px solid var(--ab-line);border-radius:16px;background:var(--ab-bg);backdrop-filter:blur(14px);box-shadow:0 20px 60px #000a;opacity:0;visibility:hidden;transition:opacity .2s,transform .2s,visibility 0s .2s}
+.atlas-about-panel{position:fixed;left:44px;top:50%;transform:translate(-12px,-50%);width:min(330px,calc(100vw - 60px));max-height:calc(100dvh - 32px);overflow:auto;box-sizing:border-box;padding:22px;border:1px solid var(--ab-line);border-radius:16px;background:var(--ab-bg);backdrop-filter:blur(14px);box-shadow:0 20px 60px #000a;opacity:0;visibility:hidden;transition:opacity .2s,transform .2s,visibility 0s .2s}
 .atlas-about.open .atlas-about-panel{opacity:1;visibility:visible;transform:translate(0,-50%);transition:opacity .2s,transform .2s}
 .atlas-about h2{margin:0 0 4px;font-size:18px;font-weight:600;letter-spacing:-.01em;color:var(--ab-text)}
+.atlas-about .ab-header{display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:1;background:#101a26;padding-bottom:8px;border-radius:6px}
+.atlas-about .ab-close{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;min-width:38px;min-height:38px;border:1px solid var(--ab-line);border-radius:7px;color:var(--ab-text);font:20px/1 system-ui;cursor:pointer}
+.atlas-about .ab-close:hover{background:#ffffff12}
+.atlas-about .ab-close:focus-visible{outline:2px solid var(--ab-gold);outline-offset:2px}
+.atlas-about .ab-info{display:none}
 .atlas-about p{margin:0 0 16px;color:var(--ab-muted);font-size:13px;line-height:1.6}
 .atlas-about .ab-card{display:block;border:1px solid var(--ab-line);border-radius:12px;padding:14px;margin:0 0 10px;background:#ffffff06}
 .atlas-about .ab-card b{display:block;font-size:13px;font-weight:600;margin-bottom:4px;color:var(--ab-text)}
@@ -42,7 +47,16 @@ function mount() {
 .atlas-about.nudge:not(.open) .atlas-about-tab{animation:ab-wiggle 1.2s ease-in-out 2}
 @keyframes ab-wiggle{0%,100%{transform:rotate(180deg) translateX(0)}30%{transform:rotate(180deg) translateX(-5px)}60%{transform:rotate(180deg) translateX(2px)}}
 @media (prefers-reduced-motion:reduce){.atlas-about *{transition:none!important;animation:none!important}}
-@media (max-width:650px){.atlas-about{top:auto;bottom:calc(var(--atlas-player-height,0px) + 90px)}.atlas-about-tab{padding:12px 6px;font-size:11px}.atlas-about-panel{top:auto;bottom:0;transform:translate(-12px,0)}.atlas-about.open .atlas-about-panel{transform:none}.atlas-about .ab-hint{top:auto;bottom:0;transform:none}}
+@media (max-width:650px){.atlas-about{top:auto;bottom:90px}.atlas-about-tab{padding:12px 6px;font-size:11px}.atlas-about-panel{left:12px;right:12px;top:auto;bottom:12px;width:min(330px,calc(100vw - 24px));max-height:calc(100dvh - 24px);transform:translateY(8px)}.atlas-about.open .atlas-about-panel{transform:none}.atlas-about .ab-hint{top:auto;bottom:0;transform:none}}
+.atlas-about.docked{position:static;z-index:auto;order:1;flex:0 0 auto}
+.atlas-about.docked .atlas-about-tab{writing-mode:horizontal-tb;transform:none;min-height:38px;padding:8px 10px;border:1px solid var(--ab-line);border-radius:7px;font-size:12px;letter-spacing:0;white-space:nowrap}
+.atlas-about.docked .ab-star{transform:none}
+.atlas-about.docked .ab-hint{display:none}
+.atlas-about.docked.nudge:not(.open) .atlas-about-tab{animation:none}
+.atlas-about.docked .atlas-about-panel{position:absolute;left:auto;right:12px;top:auto;bottom:calc(100% + 10px);width:min(330px,calc(100vw - 24px));max-height:calc(100dvh - var(--atlas-player-height,112px) - 24px);transform:translateY(8px)}
+.atlas-about.docked.open .atlas-about-panel{transform:none}
+@media(max-width:650px){.atlas-about.docked .atlas-about-tab{min-width:38px;justify-content:center;padding:8px}.atlas-about.docked .ab-tab-label,.atlas-about.docked .ab-star{display:none}.atlas-about.docked .ab-info{display:flex}}
+@media(max-height:420px){.atlas-about.docked .atlas-about-panel{bottom:12px;max-height:calc(100dvh - 24px)}}
 @media print{.atlas-about{display:none!important}}`;
   document.head.append(style);
 
@@ -53,10 +67,10 @@ function mount() {
   const root = document.createElement('aside');
   root.className = 'atlas-about';
   root.setAttribute('aria-label', t('Sobre Atlas', 'About Atlas'));
-  root.innerHTML = `<button class="atlas-about-tab" type="button" aria-expanded="false" aria-controls="atlas-about-panel"><span class="ab-star" aria-hidden="true">★</span>${t('Sobre Atlas', 'About Atlas')}</button>
+  root.innerHTML = `<button class="atlas-about-tab" type="button" aria-label="${t('Sobre Atlas', 'About Atlas')}" title="${t('Sobre Atlas', 'About Atlas')}" aria-haspopup="dialog" aria-expanded="false" aria-controls="atlas-about-panel"><span class="ab-star" aria-hidden="true">★</span><span class="ab-tab-label">${t('Sobre Atlas', 'About Atlas')}</span><span class="ab-info" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 10v7M12 7h.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></button>
 <span class="ab-hint" aria-hidden="true">${t('¿Te gusta? ⭐', 'Enjoying it? ⭐')}</span>
-<div class="atlas-about-panel" id="atlas-about-panel" role="dialog" aria-label="${t('Sobre Atlas', 'About Atlas')}">
- <h2>Atlas</h2>
+<div class="atlas-about-panel" id="atlas-about-panel" role="dialog" aria-label="${t('Sobre Atlas', 'About Atlas')}" aria-hidden="true" inert>
+ <div class="ab-header"><h2>Atlas</h2><button class="ab-close" type="button" aria-label="${t('Cerrar Sobre Atlas', 'Close About Atlas')}">×</button></div>
  <p>${t('Explicaciones interactivas para entender cómo funcionan los sistemas: cambia las condiciones y mira qué pasa.', 'Interactive explanations of how systems work: change the conditions and watch what happens.')}</p>
  <div class="ab-card"><b>${t('Hecho por', 'Made by')} @${X_HANDLE}</b><span>${t('Sígueme en X para ver los próximos cuadernos antes que nadie.', 'Follow on X to see the next notebooks first.')}</span>
   <a class="ab-btn" href="https://x.com/${X_HANDLE}" target="_blank" rel="noopener">${xIcon}${t('Seguir', 'Follow')} @${X_HANDLE}</a></div>
@@ -73,19 +87,36 @@ function mount() {
     root.classList.toggle('open', open);
     root.classList.remove('nudge');
     tab.setAttribute('aria-expanded', String(open));
+    panel.inert = !open;
+    panel.setAttribute('aria-hidden', String(!open));
     if (open) { store.set('atlas-about-nudged', '1'); loadStars(); if (focus) panel.querySelector('a,button')?.focus({ preventScroll: true }); }
     else if (focus && root.contains(document.activeElement)) tab.focus({ preventScroll: true });
   }
   tab.addEventListener('click', () => setOpen(!root.classList.contains('open')));
+  root.querySelector('.ab-close').addEventListener('click', () => setOpen(false));
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && root.classList.contains('open')) setOpen(false); });
   document.addEventListener('pointerdown', e => { if (root.classList.contains('open') && !root.contains(e.target)) setOpen(false, false); });
   // Pages capture keys for walking; typing inside the panel must not move the visitor.
   root.addEventListener('keydown', e => { if (e.key === 'Escape') setOpen(false); e.stopPropagation(); });
 
   // Out of the way while a 3D world owns the mouse or a painting portal is playing.
-  const sync = () => { const busy = !!document.pointerLockElement || document.body.classList.contains('crossing'); root.hidden = busy; if (busy) setOpen(false, false); };
+  const sync = () => {
+    const candidate = document.querySelector('.atlas-player .ap-bar');
+    const bar = candidate?.getClientRects().length && getComputedStyle(candidate).visibility === 'visible' ? candidate : null;
+    const host = bar || document.body;
+    root.classList.toggle('docked', !!bar);
+    if (root.parentElement !== host) {
+      const focused = root.contains(document.activeElement) ? document.activeElement : null;
+      host.append(root);
+      focused?.focus({ preventScroll: true });
+    }
+    const busy = !!document.pointerLockElement || document.body.classList.contains('crossing');
+    root.hidden = busy;
+    if (busy) setOpen(false, false);
+  };
   document.addEventListener('pointerlockchange', sync);
   new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  sync();
 
   const shareLabel = root.querySelector('.ab-share-label');
   root.querySelector('.ab-share').addEventListener('click', async () => {
