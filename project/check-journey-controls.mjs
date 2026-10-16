@@ -3,6 +3,7 @@ import {sampleNuclear} from './site-src/journeys/nuclear-model.js';
 import {sampleCell} from './site-src/journeys/cell-model.js';
 import {sampleChip} from './site-src/journeys/microchip-model.js';
 import {sampleGrid,lineAtPower} from './site-src/journeys/electricity-model.js';
+import {electricityChartLayout,electricityChartTime} from './site-src/journeys/electricity.js';
 import {sampleEvolution} from './site-src/journeys/evolution-model.js';
 import {sampleCarbon,FLUXES,RESERVOIRS} from './site-src/journeys/carbon-model.js';
 import {playerFixture} from './check-player-fixture.mjs';
@@ -17,7 +18,7 @@ const source=readFileSync('site-src/journeys/app.js','utf8').replace(/^import .*
 let activeCases=0,redirectCases=0,nuclearCases=0;
 for(const lang of ['es','en'])for(const mode of ['web','immersive'])for(const [id,lesson] of Object.entries(LESSONS)){
  const elements=new Map(),events={},frames=[],audios=[];let now=0,current,phase,pose,redirect,notebook,sceneTime,inspect,orbitState,savedForReload=null,worldDisposed=false;
- const element=id=>{if(!elements.has(id))elements.set(id,{id,checked:false,dataset:{},style:{},value:'',classList:{toggle(){}},setAttribute(k,v){this[k]=v;},addEventListener(){},setPointerCapture(){},append(){}});return elements.get(id);};
+ const element=id=>{if(!elements.has(id))elements.set(id,{id,clientWidth:420,checked:false,dataset:{},style:{},value:'',handlers:{},classList:{toggle(){}},setAttribute(k,v){this[k]=v;},addEventListener(name,fn){this.handlers[name]=fn;},removeEventListener(name,fn){if(this.handlers[name]===fn)delete this.handlers[name];},focus(){document.activeElement=this;},getBoundingClientRect(){return {left:100,top:50,width:840,height:360};},getScreenCTM(){return {inverse:()=>({a:.5,b:0,c:0,d:.5,e:-50,f:-25})};},createSVGPoint(){return {x:0,y:0,matrixTransform(m){return {x:m.a*this.x+m.c*this.y+m.e,y:m.b*this.x+m.d*this.y+m.f};}};},setPointerCapture(){},append(){}});return elements.get(id);};
  const stops=lesson.steps.map((s,i)=>({...element('stop-'+i),dataset:{stop:String(i)}})),controls=lesson.controls.map(c=>({...element('control-'+c.id),dataset:{control:c.id},value:c.value,checked:c.value})),moves=['forward','left','right','back'].map(move=>({...element(move),dataset:{move}}));
  const truthRows=Array.from({length:8},(_,i)=>({...element('truth-'+i),dataset:{truth:String(i)}}));
  const variantButtons=Array.from({length:3},(_,i)=>({...element('cell-variant-'+i),dataset:{cellVariant:String(i)}}));
@@ -34,7 +35,7 @@ for(const lang of ['es','en'])for(const mode of ['web','immersive'])for(const [i
   save(){if(lesson.continuous)savedForReload=JSON.parse(JSON.stringify(this.options.capture()));}
   dispose(){this.disposed=true;this.running=false;}
  }
- const ctx={sampleTCP,sampleNuclear,sampleCell,sampleChip,sampleGrid,lineAtPower,sampleEvolution,sampleCarbon,FLUXES,RESERVOIRS,NotebookPlayer:NotebookFixture,LESSONS,defaults,poseAt,walk,StepGuide:Guide,VOICES,document,window:{addEventListener(n,f){events[n]=f;},removeEventListener(n,f){if(events[n]===f)delete events[n];}},console,URLSearchParams,Intl,performance:{now:()=>now},matchMedia:()=>({matches:false}),location:{search:`?topic=${id}&mode=${mode}`,replace(url){redirect=url;}},requestAnimationFrame:f=>frames.push(f),cancelAnimationFrame:()=>frames.length=0,createWorld:(host,lesson,es,fn)=>(inspect=fn,{canvas:element('canvas'),update(s,i){current=s;phase=i;},render(p,dt,animation,orbit,mode,time){assert.equal(worldDisposed,false,'disposed worlds do not render');pose={...p};sceneTime=time;orbitState={...orbit};},dispose(){worldDisposed=true;}})};
+ const ctx={sampleTCP,sampleNuclear,sampleCell,sampleChip,sampleGrid,lineAtPower,electricityChartLayout,electricityChartTime,sampleEvolution,sampleCarbon,FLUXES,RESERVOIRS,NotebookPlayer:NotebookFixture,LESSONS,defaults,poseAt,walk,StepGuide:Guide,VOICES,document,window:{addEventListener(n,f){events[n]=f;},removeEventListener(n,f){if(events[n]===f)delete events[n];}},console,URLSearchParams,Intl,performance:{now:()=>now},matchMedia:()=>({matches:false}),location:{search:`?topic=${id}&mode=${mode}`,replace(url){redirect=url;}},requestAnimationFrame:f=>frames.push(f),cancelAnimationFrame:()=>frames.length=0,createWorld:(host,lesson,es,fn)=>(inspect=fn,{canvas:element('canvas'),update(s,i){current=s;phase=i;},render(p,dt,animation,orbit,mode,time){assert.equal(worldDisposed,false,'disposed worlds do not render');pose={...p};sceneTime=time;orbitState={...orbit};},dispose(){worldDisposed=true;}})};
  vm.runInNewContext(source,ctx);
  if(id==='internet'&&mode==='immersive'){assert.equal(redirect,'./internet-voyage.html');assert.equal(frames.length,0,'legacy gallery must not start behind redirect');redirectCases++;continue;}
  activeCases++;
@@ -63,9 +64,16 @@ for(const lang of ['es','en'])for(const mode of ['web','immersive'])for(const [i
    notebook.save();assert.equal(savedForReload.experiment.round,partial);assert.equal(savedForReload.params.voltage,400);
    frames.length=0;elements.clear();now=0;notebook=undefined;current=undefined;
    vm.runInNewContext(source,{...ctx});advance(1);
-   assert.equal(sceneTime,partial,'reload restores the battery partway through its current hour');assert.equal(current.completed,0);assert.equal(sampleGrid(current.trace,sceneTime).stored,snapshot.stored);assert.equal(metricNodes[2].textContent,display(snapshot.stored)+' MWh','reload keeps the header at the restored battery stock');assert(Math.abs(element('electricity-chart-cursor').x1-(30+partial/24*380))<1e-10,'chart cursor tracks elapsed day time');
+   assert.equal(sceneTime,partial,'reload restores the battery partway through its current hour');assert.equal(current.completed,0);assert.equal(sampleGrid(current.trace,sceneTime).stored,snapshot.stored);assert.equal(metricNodes[2].textContent,display(snapshot.stored)+' MWh','reload keeps the header at the restored battery stock');assert(Math.abs(element('electricity-chart-cursor').x1-(42+partial/24*366))<1e-10,'responsive chart cursor tracks elapsed day time');
    assert.equal(controls.find(c=>c.dataset.control==='voltage').value,400);assert.equal(controls.find(c=>c.dataset.control==='sun').value,0);assert.equal(controls.find(c=>c.dataset.control==='demand').value,45);
    advance(80);assert.equal(sceneTime,partial,'restored electrical experiment stays paused');
+   const plot=element('electricity-plot'),key=key=>plot.handlers.keydown({key,preventDefault(){},stopPropagation(){}});
+   key('Home');advance(1);assert.equal(sceneTime,0);key('ArrowRight');key('ArrowUp');advance(1);assert.equal(sceneTime,.5);assert.equal(metricNodes[2].textContent,display(7)+' MWh');assert.equal(element('electricity-chart-stored').textContent,display(7)+' MWh');
+   const g=electricityChartLayout(420,45),pointer=time=>({button:0,pointerId:7,pointerType:'mouse',clientX:100+2*(g.left+time/24*(g.right-g.left)),clientY:150,preventDefault(){},stopPropagation(){}}),heldPose={...pose},heldPhase=phase;
+   plot.handlers.pointerdown(pointer(12.5));advance(1);assert.equal(sceneTime,12.5,'selection uses the SVG transform rather than bounding coordinates');assert.equal(phase,heldPhase);assert.deepEqual(pose,heldPose);assert.equal(notebook.running,false);
+   plot.handlers.pointermove(pointer(18.25));advance(1);assert.equal(sceneTime,18.25);plot.handlers.pointercancel(pointer(18.25));plot.handlers.pointermove(pointer(3));advance(1);assert.equal(sceneTime,18.25,'cancelled drags cannot continue seeking');
+   key('End');advance(1);assert.equal(sceneTime,24);key('PageDown');advance(1);assert.equal(sceneTime,23);key('PageUp');advance(1);assert.equal(sceneTime,24);assert.equal(element('electricity-plot').handlers.keydown,plot.handlers.keydown,'manual seeks keep the same keyboard/focus target');
+
   }
   if(id==='microchip'){
    const input=(name,value)=>{const el=controls.find(c=>c.dataset.control===name);el.checked=value;el.oninput();};
