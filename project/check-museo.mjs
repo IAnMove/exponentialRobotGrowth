@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import * as THREE from './node_modules/three/build/three.module.js';
-import {EYE, RADIUS, SPEED, WALL_H, PAINTING, walls, exhibits, spawn, yawLookingAt, standAt, collide, stepVisitor, lookDelta, nearestExhibit, insideWall, roomName,rooms,routeTo,portalPose,roomAt,paintingPlane,focusHit,focusedExhibit,portalCrossing,isSafePose,restorePose} from './site-src/museo/model.js';
+import {EYE, RADIUS, SPEED, WALL_H, PAINTING, walls, exhibits, spawn, yawLookingAt, standAt, collide, stepVisitor, lookDelta, nearestExhibit, insideWall, roomName,rooms,routeTo,portalPose,roomAt,paintingPlane,focusHit,focusedExhibit,portalCrossing,isSafePose,restorePose,routeGuide,ROUTE_GUIDE} from './site-src/museo/model.js';
 import {immersiveHref} from './site-src/immersive/catalog.js';
 
 function close(v, x, y, z, eps = 1e-6) {
@@ -132,4 +132,11 @@ crossing({...spawn,yaw:NaN},spawn,undefined,'invalid pose data cannot navigate')
 const safeCandidate={...standAt(e),yaw:12.345,pitch:-.456};assert.deepEqual(restorePose(safeCandidate),safeCandidate);assert.notEqual(restorePose(safeCandidate),safeCandidate,'restored poses are independent copies');assert.deepEqual(restorePose({...safeCandidate,pitch:3}),{...safeCandidate,pitch:1.05});assert.equal(isSafePose({...safeCandidate,pitch:3}),false);
 for(const bad of [null,{...spawn,x:NaN},{...spawn,z:Infinity},{...spawn,yaw:'0'},{...spawn,pitch:Infinity},{...spawn,x:-6,z:5},{...spawn,x:100,z:100}]){assert.equal(isSafePose(bad),false);assert.deepEqual(restorePose(bad,safeCandidate),safeCandidate);assert.deepEqual(restorePose(bad,{...spawn,x:100}),spawn,'corrupt pose and fallback return to a safe spawn');}
 oracleResources.forEach(resource=>resource.dispose());
+const cornerGuide=routeGuide({x:0,z:0},[{x:0,z:4},{x:3,z:4}]);assert.equal(cornerGuide.distance,7);assert.deepEqual(cornerGuide.markers[0],{x:2.5,z:4,direction:{x:1,z:0}});assert.deepEqual(cornerGuide.markers[4],{x:0,z:3.5,direction:{x:0,z:1}});
+const shorter=routeGuide({x:0,z:1.2},[{x:0,z:4},{x:3,z:4}]);for(const [i,p]of shorter.markers.entries()){assert(Math.hypot(p.x-cornerGuide.markers[i].x,p.z-cornerGuide.markers[i].z)<1e-9,'arrows stay anchored while approaching the next waypoint');}
+let guideCases=0,guideMarkers=0;
+for(const from of [spawn,...exhibits.map(standAt)])for(const exhibit of exhibits){const path=routeTo(from,standAt(exhibit)),original=JSON.stringify([from,path]),g=routeGuide(from,path);let expected=0,previous=from;for(const point of path){expected+=Math.hypot(point.x-previous.x,point.z-previous.z);previous=point;}assert(Math.abs(g.distance-expected)<1e-9);assert.equal(JSON.stringify([from,path]),original,'guide does not mutate visitor or navigation');assert(g.markers.length<=ROUTE_GUIDE.maxMarkers);for(const p of g.markers){assert(isSafePose({...p,yaw:0,pitch:0}),'guide arrows stay in walkable floor space');assert(Math.abs(Math.hypot(p.direction.x,p.direction.z)-1)<1e-9);guideMarkers++;}guideCases++;}
+assert.equal(routeGuide(spawn,[]).markers.length,0);assert.equal(routeGuide(spawn,[spawn,spawn]).distance,0);assert.equal(routeGuide(spawn,[{x:spawn.x+.4,z:spawn.z}]).markers.length,0);assert(routeGuide(spawn,[{x:spawn.x+10000,z:spawn.z}]).markers.length<=ROUTE_GUIDE.maxMarkers);
+for(const args of [[null,[]],[spawn,null],[spawn,[{x:NaN,z:0}]]])assert.throws(()=>routeGuide(...args),RangeError);
+console.log(`Museum guide: ${guideCases} routes, ${guideMarkers} safe floor markers, fixed 7 m corner, stable world anchors, finite directions and bounded sampling: OK`);
 console.log(`Museum: camera basis, normalized walking, themed rooms, all gallery-to-painting routes, wall clearance, ${focusCases} independent Three focus/occlusion cases, ${portalCases} rectangular portal/direction cases, safe restoration and crossing the canvas: OK`);
