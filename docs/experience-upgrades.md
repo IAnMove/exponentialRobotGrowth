@@ -1,5 +1,13 @@
 # Atlas — cola de mejoras
 
+## Siguiente pasada: comparación legible en las curvas de Crecimiento — 16 de octubre de 2026
+
+El gráfico fijo de 720 unidades reducía sus ejes hasta 4,5–5,7 píxeles CSS en móvil. Ahora construye su geometría con el ancho disponible y mantiene textos de 13 píxeles; reserva margen para los valores del eje y añade «Días del ejemplo». La cabecera del dibujo muestra las cantidades actuales de humano, diez robots fijos y reinversión, con sus colores. Las tres cifras siguen la métrica elegida: capacidad, bienes diarios o acumulado. Las escalas pequeñas conservan decimales suficientes para distinguir 0,25 de 0,5.
+
+Los clics leen los límites reales del área de datos. Un observador de ancho vuelve a dibujar al redimensionar sin reiniciar el modelo ni la posición del visitante y se desconecta al cerrar. Se conservan escalas comparables, escalones de incorporación, curvas limitadas al pasado, hitos de duplicación y los supuestos de coste.
+
+Pasan las cuatro comprobaciones afectadas de controles, escenas, modelo y recursos; controles y recursos se repiten tras colocar las cifras antes del dibujo. El oráculo numérico mantiene sus comprobaciones causales y verifica ahora también las cantidades de la cabecera y el trazado a cuatro anchos. Chrome mide 48 estados anteriores y 144 posteriores en ES/EN a 1440, 900, 390 y 320 píxeles. Incluye supuestos iniciales, crecimiento rápido sin límites y suministro cero; tres métricas y dos instantes. Los 1.440 rótulos posteriores mantienen 13 píxeles, caben en el SVG y no se solapan. Las tres cifras quedan visibles sobre el footer al consultarlas. Otros 120 clics y 48 redimensionados recorren 2D, 3D y primera persona, conservando tiempo, pausa y posición. Capturas inspeccionadas; sin errores de ejecución ni recursos. Los cálculos y las doce grabaciones MiniMax no cambian.
+
 ## Siguiente pasada: seleccionar el día sobre la curva de Crecimiento — 16 de octubre de 2026
 
 En escritorio, el SVG conserva sus proporciones y deja márgenes dentro de un contenedor ancho. El clic se calculaba como si el dibujo llenara ese contenedor: Chrome mide un desfase de hasta 22,87 días. La selección convierte ahora el punto de pantalla con la matriz real del SVG; respeta esos márgenes y las transformaciones. El mismo instante sigue situando el modelo, las cifras, la escena, el texto y el audio en los tres modos.
