@@ -68,3 +68,12 @@ for(const capacity of ['robots','human']){
 }
 console.log(`Home physical model: ${contactOracles} independent tool/target/contact-time oracles, ${phaseOracles} seven-task phase states, ${futureOracles} pending-prop invariants, compressed wash/dry/cook and explicit draft/review/approval: OK`);
 console.log(`Home model core: ${budgetOracles} independent fixed-minute budget oracles, ${frames} deterministic robot/human/supervision/fractional states, 45 physical prop IDs and four explicit planning document IDs and explicit legacy 145/116/0/29 accounting: OK`);
+
+let perChoreStates=0;
+for(const capacity of ['robots','human'])for(const overhead of [0,20,33.3,100])for(const time of [0,9.999,10,19.999,20,29.999,30,47.95,69.999,70]){
+ const f=homeFrameAt(makeHomeTrace({capacity,overhead}),time),totals={total:0,humanSpent:0,freed:0,pendingBaseline:0,completedBaseline:0};
+ for(const [i,task]of f.tasks.entries()){const b=task.budget;assert(Object.isFrozen(b));assert.equal(b.credited,i<Math.floor(time/10));assert.equal(b.credited,task.status==='completed');assert.equal(b.total,[25,15,35,25,10,20,15][i]);assert(Math.abs(b.humanSpent+b.freed+b.pendingBaseline-b.total)<1e-10);if(!b.credited){assert.equal(b.freed,0);assert.equal(b.humanSpent,0);assert.equal(b.pendingBaseline,b.total);}for(const key of Object.keys(totals))totals[key]+=b[key];}
+ for(const [key,value]of Object.entries(totals))assert(Math.abs(value-f.ledger[key])<1e-9,`${key} aggregates to the cumulative balance`);perChoreStates++;
+}
+const homeExample=homeFrameAt(makeHomeTrace({capacity:'robots',overhead:20}),47.95);assert.deepEqual(homeExample.tasks.map(t=>t.budget.humanSpent),[5,3,7,5,0,0,0]);assert.deepEqual(homeExample.tasks.map(t=>t.budget.freed),[20,12,28,20,0,0,0]);assert.deepEqual(homeExample.tasks.map(t=>t.budget.pendingBaseline),[0,0,0,0,10,20,15]);
+console.log(`Home per-chore accounting: ${perChoreStates} immutable boundary/scenario states, no early credit, fixed 20/12/28/20 savings and exact 145-minute aggregate: OK`);
