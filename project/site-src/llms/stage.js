@@ -4,6 +4,7 @@ export {createPost,adaptiveScale,pointScaleFor} from '../fx/fx.js';
 import {RoundedBoxGeometry} from '../vendor/RoundedBoxGeometry.js';
 import {tokenize,embedding,positionEncoding,vector,transformerTrace,contextWindow,softmax,nextCandidates,pendingToken,randomStep,sample} from './model.js';
 import {llmFrameAt} from './presentation.js';
+import {createSceneAnnotations} from '../journeys/scene-annotations.js';
 
 // Shared stage kit for notebook 08: the notebook scene and the walkable world build the same
 // eight stages from model.js. Every value shown is computed; weights are synthetic.
@@ -70,7 +71,7 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
   let S=null,time=0,op=0,F=null,portrait=false;
   const kit={hovered:null};
   // ——— Building blocks. Every resource is owned by the set being built and disposed with it. ———
-  function newSet(){const g=new THREE.Group();g.userData={res:new Set(),anims:[],ticks:[],hits:[],paths:[],tensors:[],clock:0};return g;}
+  function newSet(){const g=new THREE.Group();g.userData={res:new Set(),anims:[],ticks:[],hits:[],paths:[],tensors:[],annotationProtected:[],clock:0};return g;}
   const own=x=>{S.userData.res.add(x);return x;};
   const add=(o,parent=S)=>{parent.add(o);return o;};
   function collect(obj){const out=[];obj.traverse(o=>{for(const m of [o.material].flat())if(m&&!out.some(x=>x.m===m))out.push({m,o:m.uniforms?.uOpacity?m.uniforms.uOpacity.value:m.opacity,t:m.transparent});});return out;}
@@ -91,6 +92,21 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
   }
   const at=(o,x,y,z)=>{o.position.set(x,y,z);return o;};
   function label(str,x,y,z,opts={}){const s=text(str,opts);s.position.set(x,y,z);return add(s);}
+  function note(words,position,role,{priority=0,color=CSS.ink}={}){
+    const notes=S.userData.notes??=createSceneAnnotations(S,own,{metadataKey:'llmLabel'}),result=notes.label(S,words,position,3,{color}),entry=notes.annotations.at(-1);
+    entry.priority=priority;result.m.userData.llmLabel.role=role;entry.leader.userData.llmLabelLeader=true;return result;
+  }
+  function protectedBounds(set,camera,{width,height}){
+    set.updateMatrixWorld(true);camera.updateMatrixWorld(true);
+    return set.userData.annotationProtected.flatMap(object=>{
+      for(let o=object;o;o=o.parent)if(!o.visible)return [];
+      const box=new THREE.Box3().setFromObject(object),points=[box.min.x,box.max.x].flatMap(x=>[box.min.y,box.max.y].flatMap(y=>[box.min.z,box.max.z].map(z=>V(x,y,z))));
+      if(points.every(p=>p.clone().applyMatrix4(camera.matrixWorldInverse).z>=0))return [];
+      const projected=points.map(p=>p.project(camera)),xs=projected.map(p=>(p.x+1)*width/2),ys=projected.map(p=>(1-p.y)*height/2),x=Math.max(0,Math.min(...xs)-4),y=Math.max(0,Math.min(...ys)-4),right=Math.min(width,Math.max(...xs)+4),bottom=Math.min(height,Math.max(...ys)+4);
+      return right>x&&bottom>y?[{x,y,width:right-x,height:bottom-y}]:[];
+    });
+  }
+  function layoutLabels(set,camera,viewport){if(set?.userData.notes)set.userData.notes.layoutLabels(camera,{...viewport,obstacles:[...(viewport.obstacles||[]),...protectedBounds(set,camera,viewport)]});}
   // A designed card rendered to canvas: kicker, title and body with an accent rail.
   function panel(w,h,{kicker='',title='',body='',accent=CSS.blue,titleSize=.3,bodySize=.18,dim=false,mono=false}={}){
     const P=200,c=document.createElement('canvas');c.width=Math.round(w*P);c.height=Math.round(h*P);const x=c.getContext('2d');
@@ -144,11 +160,11 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
     };
     m.customProgramCacheKey=()=>'llm-cell-glow';return m;
   }
-  function tensor(data,{x=0,y=1.8,z=0,w=2.4,h=3,title='',color=C.blue,selected=-1,probability=false,future=false,causalQuery=null,depth=.5,reveal=null,rowInfo=null,dimOthers=false,showDims=true,titleColor=CSS.ink}={}){
+  function tensor(data,{x=0,y=1.8,z=0,w=2.4,h=3,title='',color=C.blue,selected=-1,probability=false,future=false,causalQuery=null,depth=.5,reveal=null,rowInfo=null,dimOthers=false,showDims=true,showTitle=true,titleColor=CSS.ink}={}){
     const rows=data.length,cols=data[0].length,cw=w/cols,ch=h/rows,n=rows*cols,group=add(new THREE.Group());group.position.set(x,y,z);
     const plate=new THREE.Mesh(blockGeometry,material(0x0a1424,{roughness:.55,metalness:.35}));plate.scale.set(w+.26,h+.26,.08);plate.position.z=-.06;group.add(plate);
     const edge=new THREE.Mesh(blockGeometry,own(new THREE.MeshBasicMaterial({color:new THREE.Color(color).multiplyScalar(.35),transparent:true,opacity:.35,depthWrite:false,blending:THREE.AdditiveBlending})));edge.scale.set(w+.34,h+.34,.04);edge.position.z=-.1;group.add(edge);
-    if(title){const s=text(title,{size:.27,color:titleColor,weight:700});s.position.set(0,h/2+.42,0);group.add(s);}
+    if(title&&showTitle){const s=text(title,{size:.27,color:titleColor,weight:700});s.position.set(0,h/2+.42,0);group.add(s);}
     if(showDims){const s=text(`${rows} × ${cols}`,{size:.19,color:CSS.dim,mono:true,weight:500});s.position.set(0,-h/2-.32,0);group.add(s);}
     const mesh=new THREE.InstancedMesh(cellGeometry,cellMaterial(),n);group.add(mesh);
     const glow=new THREE.InstancedBufferAttribute(new Float32Array(n),1);
@@ -366,29 +382,28 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
     }
   }
   function sceneProbabilities(run){
+    const root=S;
     const c=F?{pieces:F.decoder.pieces,logits:F.decoder.logits}:nextCandidates(run),ps=F?.decoder.probabilities??softmax(c.logits,run.options.temperature),best=ps.indexOf(Math.max(...ps));
     const {tokens,offset}=F?.window??contextWindow(run),Y=(F?.trace??transformerTrace(tokens,offset)).Y.at(-1);
-    const h=tensor(Y.map(v=>[v]),{x:-4.9,y:2,w:.55,h:3,title:'h',color:C.blue,showDims:false,depth:.35});
-    label(t('vector final','final vector'),-4.9,.2,.3,{size:.17,color:CSS.dim,weight:500});
+    const h=tensor(Y.map(v=>[v]),{x:-4.9,y:2,w:.55,h:3,title:'h',showTitle:false,color:C.blue,showDims:false,depth:.35});
+    note(t('h · vector final','h · final vector'),[-4.9,2,.8],'vector',{priority:50});root.userData.annotationProtected.push(h.group);
     appear(h.group,.05,{dy:-.4,s0:.8});
-    label(run.options.temperature===0?t('T = 0 → máximo (argmax)','T = 0 → maximum (argmax)'):`softmax(logits / T)  ·  T = ${format(run.options.temperature,2)}`,.6,5,-.3,{size:.22,mono:true,color:CSS.gold,weight:600});
+    note(run.options.temperature===0?t('T = 0 → máximo (argmax)','T = 0 → maximum (argmax)'):`softmax(logits / T) · T = ${format(run.options.temperature,2)}`,[.6,5,-.3],'formula',{priority:180,color:CSS.gold});
     const spacing=Math.min(2.7,8/ps.length),maxH=3.9;
     ps.forEach((p,i)=>{
       const x=.9+(i-(ps.length-1)/2)*spacing,win=i===best,to=p;
       const g=add(new THREE.Group());g.position.set(x,0,0);
       const shell=new THREE.LineSegments(own(new THREE.EdgesGeometry(own(new THREE.BoxGeometry(1.2,maxH,1.2)))),own(new THREE.LineBasicMaterial({color:win?C.mint:C.blue,transparent:true,opacity:.18})));shell.position.y=maxH/2;g.add(shell);
+      root.userData.annotationProtected.push(shell);
       const bar=new THREE.Mesh(blockGeometry,material(win?C.mint:C.blue,{emissive:win?C.mint:C.blue,emissiveIntensity:win?.42:.2,roughness:.2,metalness:.1,transparent:true,opacity:.92}));g.add(bar);
       bar.userData.info={kind:'probability',text:`${piece(c.pieces[i])} · ${format(p*100,1)} % · ${t('probabilidad de texto, no de verdad','text probability, not truth')}`};S.userData.hits.push(bar);
-      const pct=text(`${format(p*100,1)} %`,{size:.4,weight:800,color:win?'#dffcf4':CSS.ink});g.add(pct);
-      const logit=text(`logit ${format(c.logits[i],1)}`,{size:.16,mono:true,color:CSS.dim,weight:500});g.add(logit);
-      const tag=text(piece(c.pieces[i]),{size:.3,weight:700,mono:true,color:win?'#062019':CSS.ink,pill:win?CSS.mint:'#122540',stroke:win?null:'#2c4670'});tag.position.set(0,-.02,.95);g.add(tag);
+      const caption=note(`${piece(c.pieces[i])}\n${format(p*100,1)} % · logit ${format(c.logits[i],1)}`,[x,to*maxH,.65],'candidate',{priority:140,color:win?'#dffcf4':CSS.ink});Object.assign(caption.m.userData.llmLabel,{index:i,probability:p});
       // Height encodes probability: no decorative floor for a zero value.
-      S.userData.ticks.push(({R})=>{const k=R(.04,.3),v=to*ease(k),hh=v*maxH;bar.visible=hh>0;bar.scale.set(1.05,hh,1.05);bar.position.y=hh/2;pct.position.set(0,hh+.45,0);logit.position.set(0,hh+.16,0);});
+      S.userData.ticks.push(({R})=>{const k=R(.04,.3),v=to*ease(k),hh=v*maxH;bar.visible=hh>0;bar.scale.set(1.05,hh,1.05);bar.position.y=hh/2;bar.updateWorldMatrix(true,false);caption.anchor.copy(root.worldToLocal(bar.localToWorld(V(0,.5,.5))));caption.m.visible=g.visible;});
       appear(g,.15+i*.12,{dy:0,s0:.9});
       route([],{curve:new THREE.CubicBezierCurve3(V(h.right,2,.3),V(-2.6,2,.4),V(x-1.6,.6,.6),V(x-.1,.35,.65)),weight:p,span:[.02,.25],delay:i,arrow:false,color:win?C.mint:C.gold});
     });
-    label(t('Probable no significa verdadero','Probable does not mean true'),.9,-.62,.9,{size:.19,color:CSS.dim,weight:600});
-    label(t('Logits preparados · no salen del bloque de arriba','Curated logits · independent of the block above'),.9,-1.02,.9,{size:.17,color:CSS.dim,weight:500});
+    note(t('Probabilidad de texto ≠ verdad.\nLogits preparados; no salen de este vector.','Text probability ≠ truth.\nCurated logits; not produced by this vector.'),[.9,-1.02,.9],'scope',{priority:170,color:CSS.dim});
   }
   function sceneChoose(run){
     const c=F?{pieces:F.decoder.pieces,logits:F.decoder.logits}:nextCandidates(run),ps=F?.decoder.probabilities??softmax(c.logits,run.options.temperature),token=F?.decoder.choice??pendingToken(run);
@@ -470,5 +485,5 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
   function fade(set,dt){set.userData.leaving+=dt;const f=1-ease(set.userData.leaving/(reduce?.01:.45));setOpacity(set.userData.leaveMats,f);set.position.y=(set.userData.baseY??0)-(1-f)*.6;return f<=0;}
   function destroy(set){set.parent?.remove(set);for(const x of set.userData.res)x.dispose?.();set.userData.res.clear();}
   function pickInfo(hit){return hit.instanceId!==undefined?hit.object.userData.infos?.[hit.instanceId]:hit.object.userData.info;}
-  return Object.assign(kit,{build,buildFrame(frame,{aspect=1.5,width=Infinity}={}){return build(frame.phase,frame.run,{frame,selectedToken:frame.selectedToken,queryIndex:frame.queryIndex,operation:frame.flow.index,aspect,width});},tick,replay,leave,fade,destroy,pickInfo,advance(){},get time(){return time;},dispose(){cellGeometry.dispose();blockGeometry.dispose();sphereGeometry.dispose();}});
+  return Object.assign(kit,{build,buildFrame(frame,{aspect=1.5,width=Infinity}={}){return build(frame.phase,frame.run,{frame,selectedToken:frame.selectedToken,queryIndex:frame.queryIndex,operation:frame.flow.index,aspect,width});},tick,layoutLabels,protectedBounds,replay,leave,fade,destroy,pickInfo,advance(){},get time(){return time;},dispose(){cellGeometry.dispose();blockGeometry.dispose();sphereGeometry.dispose();}});
 }
