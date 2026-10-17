@@ -1,7 +1,7 @@
 // Cinematic scroll view of notebook 08. Calculated values share the notebook's
 // immutable frame; the decorative stack and compressed travel are illustrative.
 import {DEFAULTS,createRun,advance,hash} from './model.js';
-import {llmFrameAt} from './presentation.js';
+import {llmFrameAt,probabilityPercent} from './presentation.js';
 
 export function createCinemaController({document:doc=globalThis.document,window:browserWindow=globalThis.window,
  requestFrame=globalThis.requestAnimationFrame,cancelFrame=globalThis.cancelAnimationFrame,
@@ -113,7 +113,7 @@ function syncReadouts(){
   $('token-count').textContent=number(run.tokens.length);$('vocab-count').textContent=number(new Set(run.tokens).size);
   $('temp-out').textContent=number(options.temperature,2);
   const decoder=firstDecoder(),ps=decoder.probabilities,k=decoder.chosenIndex,u=decoder.randomValue;
-  $('choice-readout').textContent=options.decoding==='greedy'?t(`Elección máxima: «${candidates()[k]}» con ${number(ps[k]*100,1)} %. La semilla no influye.`,`Greedy: “${candidates()[k]}” at ${number(ps[k]*100,1)}%. The seed has no effect.`):t(`Número al azar u = ${number(u,3)} → cae en «${candidates()[k]}» (${number(ps[k]*100,1)} %).`,`Random number u = ${number(u,3)} → lands on “${candidates()[k]}” (${number(ps[k]*100,1)}%).`);
+  $('choice-readout').textContent=options.decoding==='greedy'?t(`Elección máxima: «${candidates()[k]}» con ${probabilityPercent(ps,k,lang)} %. La semilla no influye.`,`Greedy: “${candidates()[k]}” at ${probabilityPercent(ps,k,lang)}%. The seed has no effect.`):t(`Número al azar u = ${number(u,3)} → cae en «${candidates()[k]}» (${probabilityPercent(ps,k,lang)} %).`,`Random number u = ${number(u,3)} → lands on “${candidates()[k]}” (${probabilityPercent(ps,k,lang)}%).`);
   $('evidence').textContent=gen?.done?run.data.evidence:pS>=8?t(`Continuación preparada · ${gen.generated.length} piezas visibles. Desplázate hasta EOS.`,`Curated continuation · ${gen.generated.length} visible pieces. Scroll to EOS.`):t('La respuesta se escribirá en la escena al avanzar el scroll.','The answer appears on stage as you scroll forward.');
 }
 document.querySelectorAll('[data-scenario]').forEach(b=>b.onclick=()=>{options.scenario=b.dataset.scenario;rebuild();});
@@ -264,9 +264,9 @@ function drawProbs(al,a){if(al<.01)return;const ps=probs(),cands=candidates(),sm
     ctx.globalAlpha=al;ctx.font=`650 ${clamp(a.w/30,small?14:15,24)}px ${SANS}`;ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillStyle='#f1f5ff';const word=run.data.completions[i].split(/\s/)[0],rest=!small&&word.startsWith(cand)?word.slice(cand.length).replace(/[.,;:]$/,''):'';ctx.fillText(cand,lx,y);const cw0=ctx.measureText(cand).width;ctx.fillStyle='#7d8bb0';ctx.fillText(rest,lx+cw0,y);const tw=cw0+ctx.measureText(rest).width;
     const bx=small?a.x+a.w*.5:lx+Math.max(tw,70)+16,barMax=small?a.w*.28:clamp(a.x+a.w-bx-72,40,a.w*.36),bw=p0*barMax;rr(bx,y-9,barMax,18,9);ctx.fillStyle='#121b36';ctx.fill();
     if(bw>0){const gr=ctx.createLinearGradient(bx,0,bx+bw,0);gr.addColorStop(0,col+'66');gr.addColorStop(1,col);rr(bx,y-9,bw,18,9);ctx.fillStyle=gr;ctx.fill();glow(bx+bw,y,18+p0*20,col,al*.6);}
-    ctx.globalAlpha=al;ctx.fillStyle=col;ctx.font=`700 ${small?12:15}px ${MONO}`;ctx.textAlign=small?'right':'left';ctx.fillText(number(p0*100,1)+' %',small?a.x+a.w:bx+barMax+10,y);ctx.textAlign='left';
+    ctx.globalAlpha=al;ctx.fillStyle=col;ctx.font=`700 ${small?12:15}px ${MONO}`;ctx.textAlign=small?'right':'left';ctx.fillText(probabilityPercent(ps,i,lang)+' %',small?a.x+a.w:bx+barMax+10,y);ctx.textAlign='left';
     ctx.fillStyle=C.muted;ctx.font=`500 10px ${MONO}`;ctx.fillText(`logit ${number(run.data.logits[i],1)}`,lx,y+18);
-    hits.push({x:lx,y:y-12,w:bx+barMax-lx,h:26,text:`«${cand}» · logit ${number(run.data.logits[i],2)} → p = ${number(p0,4)}${i===k?' ★':''}`});});
+    hits.push({x:lx,y:y-12,w:bx+barMax-lx,h:26,text:`«${cand}» · logit ${number(run.data.logits[i],2)} → ${probabilityPercent(ps,i,lang)} %${i===k?' ★':''}`});});
   ctx.globalAlpha=al;ctx.fillStyle=C.muted;ctx.font=`600 10px ${MONO}`;spaced(2);ctx.textAlign='left';ctx.textBaseline='top';ctx.fillText(`T = ${number(options.temperature,2)}`,a.x,a.y+14);spaced(0);
 }
 function drawChoose(al,a){if(al<.01)return;const decoder=presentation?.phase===6?presentation.decoder:firstDecoder(),ps=decoder.probabilities,cands=decoder.pieces,k=decoder.chosenIndex,sx=a.x+a.w*.08,sw=a.w*.84,sy=a.cy+a.h*.12,sh=52;
@@ -274,7 +274,7 @@ function drawChoose(al,a){if(al<.01)return;const decoder=presentation?.phase===6
   const d=clamp((pS-7)/.65),landed=decoder.selectionVisible;let x=sx;
   ps.forEach((p0,i)=>{const w=p0*sw,col=CAND[i%3],on=landed&&i===k;if(w<=0)return;const gap=Math.min(2,w*.06);ctx.globalAlpha=al*(on?1:.55);rr(x+gap/2,sy,w-gap,sh,Math.min(10,w/2));const gr=ctx.createLinearGradient(0,sy,0,sy+sh);gr.addColorStop(0,col);gr.addColorStop(1,col+'55');ctx.fillStyle=gr;ctx.fill();
     if(on){glow(x+w/2,sy+sh/2,Math.max(60,w*.6),col,al*.7);ctx.globalAlpha=al;ctx.strokeStyle='#fff';ctx.lineWidth=2;rr(x+gap/2,sy,w-gap,sh,Math.min(10,w/2));ctx.stroke();}
-    if(w>44){ctx.globalAlpha=al;ctx.fillStyle='#06101f';ctx.font=`700 13px ${SANS}`;ctx.textAlign='center';ctx.textBaseline='middle';if(w>64)ctx.fillText(cands[i],x+w/2,sy+sh/2-7);ctx.font=`600 10px ${MONO}`;ctx.fillText(number(p0*100,1)+'%',x+w/2,sy+sh/2+(w>64?9:0));}
+    if(w>44){ctx.globalAlpha=al;ctx.fillStyle='#06101f';ctx.font=`700 13px ${SANS}`;ctx.textAlign='center';ctx.textBaseline='middle';if(w>64)ctx.fillText(cands[i],x+w/2,sy+sh/2-7);ctx.font=`600 10px ${MONO}`;ctx.fillText(probabilityPercent(ps,i,lang)+'%',x+w/2,sy+sh/2+(w>64?9:0));}
     x+=w;});
   ctx.globalAlpha=al*.8;ctx.fillStyle=C.muted;ctx.font=`500 10px ${MONO}`;ctx.textAlign='left';ctx.textBaseline='top';ctx.fillText('0',sx,sy+sh+8);ctx.textAlign='right';ctx.fillText('1',sx+sw,sy+sh+8);
   const tx=sx+u*sw,ty=sy-10,bx=lerp(orb.x,tx,easeOut(d)),by=lerp(orb.y,ty,reduce?1:bounce(d));

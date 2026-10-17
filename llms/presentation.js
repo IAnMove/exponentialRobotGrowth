@@ -4,6 +4,17 @@ const freeze=o=>{if(o&&typeof o==='object'&&!Object.isFrozen(o)){for(const value
 const finite=(v,name)=>{if(typeof v!=='number'||!Number.isFinite(v))throw new RangeError('Finite '+name+' required');return v;};
 const paths=['context','retrieval','tokenize','embedding',null,'logits-softmax','decode','append'];
 const operations=['qkv','dot-scale','mask-softmax','av','residual-ffn'];
+const percentFormats={es:new Intl.NumberFormat('es-ES',{minimumFractionDigits:1,maximumFractionDigits:1}),en:new Intl.NumberFormat('en-US',{minimumFractionDigits:1,maximumFractionDigits:1})};
+// Percentage text without the unit: rounding must not imply impossible or certain.
+export function probabilityPercent(probabilities,index,language='en'){
+ if(!Array.isArray(probabilities)||!probabilities.length||probabilities.some(p=>!Number.isFinite(p)||p<0||p>1)||!Number.isInteger(index)||index<0||index>=probabilities.length)throw new RangeError('Valid probability distribution and index required');
+ const p=probabilities[index],format=percentFormats[language==='es'?'es':'en'];
+ if(p===0)return '0';
+ if(p===1&&probabilities.every((value,j)=>j===index||value===0))return '100';
+ if(p<.001)return '< '+format.format(.1);
+ if(p>.999)return '> '+format.format(99.9);
+ return format.format(p*100);
+}
 
 // Recorded-time presentation of one calculated, untrained toy block. It does
 // not claim to expose a deployed model or derive the curated response logits.

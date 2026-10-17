@@ -3,7 +3,7 @@ import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
 import {pathToFileURL} from 'node:url';
 import * as model from './site-src/llms/model.js';
-import {llmFrameAt,phaseIndexInCycle} from './site-src/llms/presentation.js';
+import {llmFrameAt,phaseIndexInCycle,probabilityPercent} from './site-src/llms/presentation.js';
 import {TimelineClock,restoredPosition} from './site-src/playback/timeline.js';
 import {StepGuide,narrationId} from './site-src/llms/guide.js';
 import {responsePlaylist} from './site-src/llms/playlist.js';
@@ -57,7 +57,7 @@ export function llmHarness({kind='notebook',lang='es',storage=new Map(),audioMod
  let cameraState={version:1,phase:0,yaw:.3,pitch:.1,zoom:1,views:{}};
  const world={canvas,updateFrame(value){frame=value;updates.push(value);},renderFrame(value,pose,options){frame=value;this.lastPose=pose;this.lastOptions=options;this.renders=(this.renders||0)+1;},getViewState(){return clone(cameraState);},restoreViewState(value){cameraState=clone(value);this.restores=(this.restores||0)+1;},orbit(value){cameraState={...cameraState,...value};this.onViewChange?.();},reset(){cameraState={...cameraState,yaw:0,pitch:0,zoom:1};this.onViewChange?.();},zoom(value){cameraState.zoom*=value;this.onViewChange?.();},inspect(){return {frame,camera:clone(cameraState)};},projectStand(){return {x:20,y:30,visible:true};},dispose(){this.disposed=true;}};
  const requestAnimationFrame=fn=>{const id=++rafId;queued.set(id,fn);return id;},media=()=>({matches:reduced});
- const context={...model,...flow,...navigation,llmFrameAt,phaseIndexInCycle,VOICES,TimelineClock:Clock,restoredPosition,StepGuide:Guide,narrationId,responsePlaylist,bindFirstPerson,Audio:AudioStub,document,window,URL,URLSearchParams,Intl,console,queueMicrotask,location:{search:'?experience=llms'},__LLM_CONTROLLER_TEST__:true,__LLM_IMMERSIVE_CONTROLLER_TEST__:true,
+ const context={...model,...flow,...navigation,llmFrameAt,phaseIndexInCycle,probabilityPercent,VOICES,TimelineClock:Clock,restoredPosition,StepGuide:Guide,narrationId,responsePlaylist,bindFirstPerson,Audio:AudioStub,document,window,URL,URLSearchParams,Intl,console,queueMicrotask,location:{search:'?experience=llms'},__LLM_CONTROLLER_TEST__:true,__LLM_IMMERSIVE_CONTROLLER_TEST__:true,
   ResizeObserver:class{observe(){}disconnect(){}},matchMedia:media,performance:{now:()=>now},localStorage:{getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)},requestAnimationFrame,cancelAnimationFrame:id=>queued.delete(id),createWorld(host,options){world.onViewChange=options.onViewChange;world.onSelect=options.onSelect;return world;},createExperience(){return world;},visible:token=>token==='\n'?'↵':/^\s+$/.test(token)?'␠':token};
  context.NotebookPlayer=vm.runInNewContext(`(()=>{${playerSource};return NotebookPlayer;})()`,context);
  context.createTranscript=vm.runInNewContext(`(()=>{${transcriptSource};return createTranscript;})()`,context);

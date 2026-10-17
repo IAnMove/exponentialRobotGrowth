@@ -3,7 +3,7 @@ import {pointMaterial} from '../fx/fx.js';
 export {createPost,adaptiveScale,pointScaleFor} from '../fx/fx.js';
 import {RoundedBoxGeometry} from '../../vendor/RoundedBoxGeometry.js';
 import {tokenize,embedding,positionEncoding,vector,transformerTrace,contextWindow,softmax,nextCandidates,pendingToken,randomStep,sample} from './model.js';
-import {llmFrameAt} from './presentation.js';
+import {llmFrameAt,probabilityPercent} from './presentation.js';
 import {createSceneAnnotations} from '../journeys/scene-annotations.js';
 
 // Shared stage kit for notebook 08: the notebook scene and the walkable world build the same
@@ -396,8 +396,8 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
       const shell=new THREE.LineSegments(own(new THREE.EdgesGeometry(own(new THREE.BoxGeometry(1.2,maxH,1.2)))),own(new THREE.LineBasicMaterial({color:win?C.mint:C.blue,transparent:true,opacity:.18})));shell.position.y=maxH/2;g.add(shell);
       root.userData.annotationProtected.push(shell);
       const bar=new THREE.Mesh(blockGeometry,material(win?C.mint:C.blue,{emissive:win?C.mint:C.blue,emissiveIntensity:win?.42:.2,roughness:.2,metalness:.1,transparent:true,opacity:.92}));g.add(bar);
-      bar.userData.info={kind:'probability',text:`${piece(c.pieces[i])} · ${format(p*100,1)} % · ${t('probabilidad de texto, no de verdad','text probability, not truth')}`};S.userData.hits.push(bar);
-      const caption=note(`${piece(c.pieces[i])}\n${format(p*100,1)} % · logit ${format(c.logits[i],1)}`,[x,to*maxH,.65],'candidate',{priority:140,color:win?'#dffcf4':CSS.ink});Object.assign(caption.m.userData.llmLabel,{index:i,probability:p});
+      bar.userData.info={kind:'probability',text:`${piece(c.pieces[i])} · ${probabilityPercent(ps,i,es?'es':'en')} % · ${t('probabilidad de texto, no de verdad','text probability, not truth')}`};S.userData.hits.push(bar);
+      const caption=note(`${piece(c.pieces[i])}\n${probabilityPercent(ps,i,es?'es':'en')} % · logit ${format(c.logits[i],1)}`,[x,to*maxH,.65],'candidate',{priority:140,color:win?'#dffcf4':CSS.ink});Object.assign(caption.m.userData.llmLabel,{index:i,probability:p});
       // Height encodes probability: no decorative floor for a zero value.
       S.userData.ticks.push(({R})=>{const k=R(.04,.3),v=to*ease(k),hh=v*maxH;bar.visible=hh>0;bar.scale.set(1.05,hh,1.05);bar.position.y=hh/2;bar.updateWorldMatrix(true,false);caption.anchor.copy(root.worldToLocal(bar.localToWorld(V(0,.5,.5))));caption.m.visible=g.visible;});
       appear(g,.15+i*.12,{dy:0,s0:.9});
@@ -421,9 +421,9 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
     // Segment boundaries share the same probability axis as the draw. A zero
     // probability has no mesh or hit target; tiny probabilities keep their width.
     segs.forEach(s=>{const w=s.p*W;if(w<=0)return;const win=s.i===chosen,cx=s.x0+w/2;
-      const seg=block(cx,.95,0,w,.42,.9,colors[s.i%4],{kind:'probability',text:`${piece(c.pieces[s.i])} · ${format(s.p*100,1)} %`},{emissive:colors[s.i%4],emissiveIntensity:.15});add(seg);appear(seg,.08+s.i*.1,{dy:0,s0:.2});
+      const seg=block(cx,.95,0,w,.42,.9,colors[s.i%4],{kind:'probability',text:`${piece(c.pieces[s.i])} · ${probabilityPercent(ps,s.i,es?'es':'en')} %`},{emissive:colors[s.i%4],emissiveIntensity:.15});add(seg);appear(seg,.08+s.i*.1,{dy:0,s0:.2});
       S.userData.ticks.push(({R})=>{const hit=R(.18,.24,.95,.25);seg.material.emissiveIntensity=win?.12+hit*(.28+.06*Math.sin(time*4)):.08;});
-      if(w>.5){label(piece(c.pieces[s.i]),cx,1.5,.7,{size:.22,mono:true,weight:700,color:win?'#fff':CSS.ink});label(`${format(s.p*100,1)} %`,cx,.42,.5,{size:.17,mono:true,color:CSS.dim,weight:500});}
+      if(w>.5){label(piece(c.pieces[s.i]),cx,1.5,.7,{size:.22,mono:true,weight:700,color:win?'#fff':CSS.ink});label(`${probabilityPercent(ps,s.i,es?'es':'en')} %`,cx,.42,.5,{size:.17,mono:true,color:CSS.dim,weight:500});}
     });
     label('0',left,.2,.3,{size:.16,mono:true,color:CSS.dim});label('1',-left,.2,.3,{size:.16,mono:true,color:CSS.dim});
     const ball=add(new THREE.Mesh(sphereGeometry,own(new THREE.MeshBasicMaterial({color:new THREE.Color(C.gold).multiplyScalar(3)}))));ball.scale.setScalar(.16);
