@@ -8,6 +8,16 @@ export const MISSION_STAGES=[
  ['unload','Bajar la carga a la superficie','Lower cargo to the surface','Un elevador deposita equipos; un vehículo los acerca a la base. La descarga representa una entrega, no una fábrica completa.','An elevator lowers equipment; a rover takes it toward the base. Unloading represents a delivery, not a complete factory.'],
  ['return','Qué vuelve, y adónde','What returns, and where','HLS regresa a órbita lunar en la arquitectura tripulada. No lleva el escudo ni las aletas de la versión que reentra en la Tierra. El ciclo de carga futuro puede ser diferente.','HLS returns to lunar orbit in the crewed architecture. It lacks the heat shield and flaps of the Earth-reentry variant. Future cargo cycles may differ.']
 ].map(([id,es,en,tes,ten])=>({id,month:0,view:'mission',title:[es,en],text:[tes,ten]}));
+export const CARGO_STOPS=Object.freeze(['ship','elevator','handoff','rover','deposit','surface']);
+// Read the same carrier used to parent the one physical pallet; do not infer
+// delivery from a rounded percentage or add another event to the growth run.
+export function cargoStepAt(stage,pose){
+ if(stage!=='unload'&&stage!=='return')return null;
+ const index=CARGO_STOPS.indexOf(pose?.cargoLocation);
+ if(index<0||!Number.isFinite(pose?.u)||stage==='return'&&pose.cargoLocation!=='surface'||pose.cargoLocation==='rover'&&!Number.isFinite(pose.cargo))throw new RangeError('Valid cargo pose required');
+ const location=pose.cargoLocation,action=stage==='return'?'remain':location==='rover'?(pose.cargo>0?'drive':'ready'):location;
+ return Object.freeze({index,location,action,deposited:location==='surface'});
+}
 export function missionPose(id,progress){if(!MISSION_STAGES.some(s=>s.id===id)||typeof progress!=='number'||!Number.isFinite(progress))throw new RangeError('Valid mission stage and finite progress required');const u=Math.max(0,Math.min(1,progress)),smooth=u*u*(3-2*u),ease=x=>{x=Math.max(0,Math.min(1,x));return x*x*(3-2*x);};switch(id){
  case 'liftoff':return {u,height:42*u*u,flame:1,camera:[30,19+35*u*u,43],target:[0,12+42*u*u,0]};
  case 'booster':return {u,height:42*(1-smooth),upper:57.7+55*u,separation:8*u,upperIgnited:u>.08&&u<1,captured:u===1,flame:u<1&&(u<.25||u>.72)?1:0,camera:[31,18+30*(1-smooth),44],target:[0,10+30*(1-smooth),0]};
