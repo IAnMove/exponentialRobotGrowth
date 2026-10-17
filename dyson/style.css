@@ -9,3 +9,4 @@
 
 .scene-metrics[data-scope="panel"] [data-energy="intercepted"] strong{color:var(--gold)}.scene-metrics[data-scope="panel"] [data-energy="directHeat"] strong,.scene-metrics[data-scope="panel"] [data-energy="eventualHeat"] strong{color:#f3ab7c}
 @media(max-width:420px){#ledger strong{font-size:19px}#ledger .energy-branch{padding:11px 9px}#ledger .energy-branches{gap:9px}}
+.collector-flow-key{display:flex;flex-wrap:wrap;gap:6px 18px;margin:0 0 7px;font-size:12px;line-height:1.6}.collector-flow-key>span:nth-child(1){color:#e5b366}.collector-flow-key>span:nth-child(2){color:#83dcbd}.collector-flow-key>span:nth-child(3){color:#ea8e55}.collector-flow-note{display:block;margin-bottom:8px;font-size:11px;line-height:1.65}
