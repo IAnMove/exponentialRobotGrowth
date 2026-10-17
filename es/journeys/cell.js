@@ -4,6 +4,16 @@ export {translate} from './cell-model.js';
 let cachedVariant,cachedTrace;
 export function cellExperiment(p){if(cachedVariant!==p.variant||!cachedTrace){cachedTrace=buildCellTrace(p);cachedVariant=p.variant;}return cachedTrace;}
 export function cellPoseAt(i){const f=[[-3.9,4.3,-1.2],[-.85,4,.2],[4.7,3.25,-.55],[3.4,4,-2.2]][i],x=[-7.8,-1.5,5.5,11.6][i],z=11.2;return {x,z,yaw:Math.atan2(x-f[0],z-f[2]),pitch:Math.atan2(f[1]-1.65,Math.hypot(x-f[0],z-f[2]))};}
+export function cellReading(s,es=true){
+ const t=(a,b)=>es?a:b,index=s.translation.codonIndex,codon=index===null?null:s.sequence[index],window=s.translation.window,trna=s.translation.trna,factor=s.translation.releaseFactor;
+ let stage='waiting',detail=t('Primero se copia y exporta el mensajero.','The messenger must first be copied and exported.');
+ if(s.translation.recycled){stage='recycled';detail=t(`Lectura terminada · ${s.chain.length} aa liberados · ARN conservado`,`Reading finished · ${s.chain.length} aa released · RNA retained`);}
+ else if(s.chain.released){stage='released';detail=t(`Cadena liberada: ${s.chain.length} aa · reciclaje en curso`,`Chain released: ${s.chain.length} aa · recycling in progress`);}
+ else if(factor){stage=factor.bound?'stop-recognized':'stop-approach';detail=factor.bound?t('STOP reconocido en A · cadena todavía unida','STOP recognized at A · chain still attached'):t('Llega el factor de liberación a A','Release factor approaching A');}
+ else if(trna){stage=trna.peptidyl?'incorporated':trna.bound?'recognized':'approaching';detail=trna.peptidyl?t(`Residuo incorporado · cadena de ${s.chain.length} aa`,`Residue incorporated · chain of ${s.chain.length} aa`):trna.bound?t(`Reconocido en ${trna.site} · aún sin incorporar`,`Recognized at ${trna.site} · not yet incorporated`):t(`ARNt hacia ${trna.site} · aún sin incorporar`,`tRNA approaching ${trna.site} · not yet incorporated`);}
+ const aminoAcid=window?.aminoAcid??null,title=codon?`${s.translation.recycled?t('Fin · ','Done · '):''}${t('Codón','Codon')} ${index+1}/${s.sequence.length} · ${codon} → ${aminoAcid||'STOP'}`:t('Esperando al mensajero','Waiting for the messenger');
+ return Object.freeze({stage,index,codon,aminoAcid,site:trna?.site||factor?.site||null,chainLength:s.chain.length,title,detail});
+}
 export const cell={id:'cell',room:'life',title:L('Una célula fabrica una proteína','A cell makes a protein'),color:'#f2a6bc',unit:L('paso','step'),horizon:24,continuous:true,
  poseAt:cellPoseAt,walk(p,f,s,dt){const n=Math.max(1,Math.hypot(f,s)),v=3.5*Math.min(.05,dt);let x=clamp(p.x+(-Math.sin(p.yaw)*f+Math.cos(p.yaw)*s)/n*v,-16,16),z=clamp(p.z+(-Math.cos(p.yaw)*f-Math.sin(p.yaw)*s)/n*v,-12,15);const inside=(a,b)=>(a/11.7)**2+((b+1)/7.7)**2<1;if(inside(x,z)){if(!inside(x,p.z))z=p.z;else if(!inside(p.x,z))x=p.x;else{x=p.x;z=p.z;}}return {...p,x,z};},
  overview:{yaw:.06,pitch:.25,distance:9.5},fitLabel:L('Ver la célula completa','Fit the whole cell'),
