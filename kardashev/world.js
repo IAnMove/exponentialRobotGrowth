@@ -4,6 +4,7 @@ import {GLTFLoader} from '../vendor/GLTFLoader.js';
 import {RoomEnvironment} from '../vendor/RoomEnvironment.js';
 import {SCENE_SAMPLES,createState} from './model.js';
 import {kardashevFrameAt} from './presentation.js';
+import {collectorPhaseAt} from './motion.js';
 
 export const COLLECTOR_COUNT=SCENE_SAMPLES.collectors;
 const VIEWS=['planet','star','galaxy','satellite'],clamp=THREE.MathUtils.clamp;
@@ -89,15 +90,27 @@ export function createWorld(host,{onAsset=()=>{},onViewChange=()=>{},language=gl
     [new THREE.BoxGeometry(.19,.009,.18),panelMat,.155,0,0],
     [new THREE.BoxGeometry(.07,.012,.14),radiatorMat,0,-.065,0]
   ].map(([g,m,x,y,z])=>({mesh:new THREE.InstancedMesh(g,m,count),offset:new THREE.Vector3(x,y,z)}));
-  components.forEach(c=>{star.add(c.mesh);c.mesh.frustumCulled=false;});
-  const dummy=new THREE.Object3D(),orient=new THREE.Quaternion();dummy.scale.setScalar(.65);
+  components.forEach((c,i)=>{c.mesh.name=['collector-bus','collector-panel-left','collector-panel-right','collector-radiator'][i];star.add(c.mesh);c.mesh.frustumCulled=false;c.mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);});
+  const dummy=new THREE.Object3D(),orient=new THREE.Quaternion(),orbits=[];dummy.scale.setScalar(.65);
   for(let ring=0;ring<24;ring++){
-    const r=2.5+ring*.045,plane=orbit(star,r,(ring-11.5)*.085);plane.rotation.y=ring*.63;plane.updateMatrixWorld();
+    const r=2.5+ring*.045,plane=orbit(star,r,(ring-11.5)*.085);plane.name=`collector-orbit-${ring}`;plane.rotation.y=ring*.63;plane.updateMatrixWorld();orbits.push({radius:r,axis:new THREE.Vector3(0,1,0).transformDirection(plane.matrixWorld)});
     for(let i=0;i<72;i++){
       const a=(i/72+ring*.013)*Math.PI*2,pos=new THREE.Vector3(Math.cos(a)*r,0,Math.sin(a)*r).applyMatrix4(plane.matrixWorld);
       orient.setFromUnitVectors(new THREE.Vector3(0,1,0),pos.clone().normalize().negate());
-      for(const c of components){dummy.position.copy(c.offset).applyQuaternion(orient).add(pos);dummy.quaternion.copy(orient);dummy.updateMatrix();c.mesh.setMatrixAt(ring*72+i,dummy.matrix);}
+      for(const c of components){dummy.position.copy(c.offset).multiplyScalar(.65).applyQuaternion(orient).add(pos);dummy.quaternion.copy(orient);dummy.updateMatrix();c.mesh.setMatrixAt(ring*72+i,dummy.matrix);}
     }
+  }
+  // Rotate each complete assembly in its own fixed plane, including its
+  // sun-facing attitude. Reuse rest matrices and scratch storage on every RAF.
+  components.forEach(c=>c.rest=c.mesh.instanceMatrix.array.slice());
+  const orbitRotation=new THREE.Matrix4(),restMatrix=new THREE.Matrix4(),movingMatrix=new THREE.Matrix4();let collectorMotion=NaN;
+  function moveCollectors(motion){
+    if(motion===collectorMotion)return;collectorMotion=motion;
+    for(let ring=0;ring<orbits.length;ring++){
+      const o=orbits[ring];orbitRotation.makeRotationAxis(o.axis,collectorPhaseAt(o.radius,motion));
+      for(let i=ring*72;i<(ring+1)*72;i++)for(const c of components){restMatrix.fromArray(c.rest,i*16);movingMatrix.multiplyMatrices(orbitRotation,restMatrix);c.mesh.setMatrixAt(i,movingMatrix);}
+    }
+    components.forEach(c=>c.mesh.instanceMatrix.needsUpdate=true);
   }
   let seed=1729;const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
   function points(parent,positions,colors,size,opacity=1){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));g.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
@@ -115,7 +128,7 @@ export function createWorld(host,{onAsset=()=>{},onViewChange=()=>{},language=gl
   function animate(){planet.visible=view==='planet';star.visible=view==='star';galaxy.visible=view==='galaxy';detail.visible=view==='satellite';sunlight.visible=star.visible;key.intensity=star.visible?1:3.1;
     const spin=frame.motion*.12;globe.rotation.y=spin-.4;
     spacecraft.forEach((s,i)=>{const a=.6+i*2.1+spin*(.7+i*.2),r=i===0?3.4:3.05;s.position.set(Math.cos(a)*r,Math.sin(a*.7)*.8,Math.sin(a)*r);s.rotation.set(.4,a,-.3);});
-    star.rotation.y=spin*.35;sunMat.uniforms.time.value=frame.motion;galaxy.rotation.y=spin*.6;inspection.rotation.set(.2,.6+spin*.3,-.2);
+    moveCollectors(frame.motion);sunMat.uniforms.time.value=frame.motion;galaxy.rotation.y=spin*.6;inspection.rotation.set(.2,.6+spin*.3,-.2);
     components.forEach(c=>c.mesh.count=frame.samples.collectors);active.geometry.setDrawRange(0,frame.samples.systems);
   }
   function draw(){if(disposed||!ready)return;animate();applyCamera();scene.updateMatrixWorld(true);renderer.render(scene,camera);}

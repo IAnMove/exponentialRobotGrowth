@@ -109,7 +109,7 @@ async function main(){
   let triangles=0,meshes=0;parsed.scene.traverse(object=>{if(object.isMesh){meshes++;triangles+=(object.geometry.index?.count||object.geometry.attributes.position.count)/3;}});
   assert(meshes>10&&triangles===3992,'the real NASA MarCO GLB is parsed, including all 3,992 triangles');
 
-  const paths={"'../fx/perf.js'":file("dist/fx/perf.js"),"'../vendor/three.module.js'":file('node_modules/three/build/three.module.js'),"'../vendor/GLTFLoader.js'":file('node_modules/three/examples/jsm/loaders/GLTFLoader.js'),"'../vendor/RoomEnvironment.js'":file('node_modules/three/examples/jsm/environments/RoomEnvironment.js'),"'./presentation.js'":file('site-src/kardashev/presentation.js'),"'./model.js'":file('site-src/kardashev/model.js')};
+  const paths={"'../fx/perf.js'":file("dist/fx/perf.js"),"'../vendor/three.module.js'":file('node_modules/three/build/three.module.js'),"'../vendor/GLTFLoader.js'":file('node_modules/three/examples/jsm/loaders/GLTFLoader.js'),"'../vendor/RoomEnvironment.js'":file('node_modules/three/examples/jsm/environments/RoomEnvironment.js'),"'./presentation.js'":file('site-src/kardashev/presentation.js'),"'./model.js'":file('site-src/kardashev/model.js'),"'./motion.js'":file('site-src/kardashev/motion.js')};
   let source=readFileSync(new URL('./site-src/kardashev/world.js',import.meta.url),'utf8');
   for(const [specifier,url] of Object.entries(paths))source=source.replaceAll(specifier,JSON.stringify(url));
   source=source.replaceAll('import.meta.url',JSON.stringify(file('site-src/kardashev/world.js')));
@@ -128,6 +128,25 @@ async function main(){
     return {host,gpu,world,textureRequests,modelRequests,observers,assets,records,deliver,dispose};
   }
 
+  let orbitAssemblies=0;
+  {
+    const h=harness(),{world,gpu}=h;world.renderFrame(frameFor('star',0));
+    const star=gpu.scene.getObjectByName('star'),components=star.children.filter(o=>o.isInstancedMesh),guides=Array.from({length:24},(_,i)=>star.getObjectByName(`collector-orbit-${i}`)),fixed=guides.map(g=>g.matrixWorld.toArray()),matrix=new THREE.Matrix4(),rest=new Map();
+    const point=(component,index)=>{component.getMatrixAt(index,matrix);return new THREE.Vector3().setFromMatrixPosition(matrix);};
+    for(let ring=0;ring<24;ring++)for(const i of [0,17,35,71])rest.set(ring*72+i,point(components[0],ring*72+i));
+    for(const motion of [0,.5,4,19,60]){
+      world.renderFrame(frameFor('star',motion));assert.deepEqual(star.rotation.toArray(),[0,0,0,'XYZ'],'the swarm is not rotated as a rigid body');assert.deepEqual(guides.map(g=>g.matrixWorld.toArray()),fixed,'orbit planes remain fixed');
+      for(let ring=0;ring<24;ring++)for(const i of [0,17,35,71]){
+        orbitAssemblies++;const index=ring*72+i,initial=rest.get(index),radius=2.5+ring*.045,axis=new THREE.Vector3(0,1,0).transformDirection(guides[ring].matrixWorld),position=point(components[0],index),angle=Math.atan2(axis.dot(initial.clone().cross(position)),initial.dot(position)),expected=motion*.18*(2.5/radius)**1.5;
+        assert(Math.abs(initial.length()-radius)<6e-7,'rest matrices retain the specified radius within Float32 precision');
+        assert(Math.abs(position.length()-radius)<6e-7,'circular radius stays fixed');assert(Math.abs(position.dot(axis))<6e-7,'each body stays on its actual guide plane');assert(Math.abs(angle-Math.atan2(Math.sin(expected),Math.cos(expected)))<6e-7,'measured phase follows its own radius-dependent period '+JSON.stringify({ring,i,motion,radius,angle,expected}));
+        components[0].getMatrixAt(index,matrix);const q=new THREE.Quaternion(),scale=new THREE.Vector3();matrix.decompose(new THREE.Vector3(),q,scale);assert(new THREE.Vector3(0,1,0).applyQuaternion(q).dot(position.clone().normalize().negate())>1-1e-7,'panel normal continues facing the central star');for(const v of scale)assert(Math.abs(v-.65)<1e-7);
+        for(const [j,offset]of [[1,[-.155,0,0]],[2,[.155,0,0]],[3,[0,-.065,0]]]){const local=point(components[j],index).sub(position).applyQuaternion(q.clone().invert()).divideScalar(.65);assert(local.distanceTo(new THREE.Vector3(...offset))<1e-6,'component offsets share the exact body scale, without floating apart');components[j].getMatrixAt(index,matrix);const componentQ=new THREE.Quaternion();matrix.decompose(new THREE.Vector3(),componentQ,new THREE.Vector3());assert(Math.abs(q.dot(componentQ))>1-1e-7,'all parts travel as one assembly');}
+      }
+      const versions=components.map(o=>o.instanceMatrix.version);world.renderFrame(frameFor('star',motion));assert.deepEqual(components.map(o=>o.instanceMatrix.version),versions,'paused and duplicate renders do not upload instance matrices');
+    }
+    world.renderFrame(frameFor('star',0));for(const [index,initial]of rest)assert.deepEqual(point(components[0],index).toArray(),initial.toArray(),'rewind restores the actual rest matrix exactly');h.dispose();
+  }
   let frozenStates=0,frusta=0,geometryChecks=0;
   for(const aspect of [1.8,359/360,290/360,.5,.4]){
     const h=harness(aspect),{world,gpu}=h;h.deliver();assert(world.isLoaded());assert.deepEqual(h.assets,[['earth',true],['satellite',true]]);
@@ -180,6 +199,6 @@ async function main(){
   const late=harness();late.world.renderFrame(frameFor('satellite'));late.world.dispose();const calls=late.assets.length,renders=late.gpu.renders;
   const lateTexture=new THREE.Texture(),lateModel=cloneAsset(parsed.scene),lateRecords=new Map();track([lateTexture,...resources(lateModel)],lateRecords);late.textureRequests[0].success(lateTexture);late.modelRequests[0].success({scene:lateModel});late.textureRequests[0].failure(new Error('late Earth failure'));late.modelRequests[0].failure(new Error('late MarCO failure'));assertDisposed(lateRecords,'late assets');assert.equal(late.assets.length,calls,'late success/failure cannot emit onAsset');late.observers[0].resize();late.world.renderFrame(frameFor('planet',100));late.world.fit();late.world.zoomBy(2);late.world.highlight('panels');assert.equal(late.gpu.renders,renders,'disposed world does not draw again');assert(late.observers[0].disconnected);assert.equal(late.world.canvas.events.size,0);assert(late.world.canvas.removed&&late.gpu.disposed);
   const failed=harness();failed.textureRequests[0].failure(new Error('Earth unavailable'));failed.modelRequests[0].failure(new Error('MarCO unavailable'));assert.deepEqual(failed.assets,[['earth',false],['satellite',false]],'live asset failures notify accurately');failed.world.renderFrame(frameFor('planet'));track(resources(failed.gpu.scene),failed.records);failed.dispose();
-  console.log(`Kardashev source scenes: ${frozenStates} frozen scene comparisons, ${frusta} desktop/mobile frusta, ${geometryChecks} real geometry bounds; NASA MarCO, exact samples, four-view rewind/orbits, input, resize and disposal passed.`);
+  console.log(`Kardashev source scenes: ${orbitAssemblies} independent circular assemblies, ${frozenStates} frozen scene comparisons, ${frusta} desktop/mobile frusta, ${geometryChecks} real geometry bounds; actual periods/planes/star-facing parts/scaled offsets/quiet uploads, NASA MarCO, exact samples, four-view rewind/orbits, input, resize and disposal passed.`);
 }
 main().catch(error=>{console.error((error.stack||String(error)).replace(/data:text\/javascript;base64,[A-Za-z0-9+/=]+/g,'[Kardashev world source]'));process.exitCode=1;});
