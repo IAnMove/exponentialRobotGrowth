@@ -3,7 +3,7 @@ import {buildGridTrace,sampleGrid} from './electricity-model.js';
 export {gridRun} from './electricity-model.js';
 let key,trace;
 export function electricityExperiment(p){const next=[p.sun,p.demand,p.voltage].join(':');if(next!==key){trace=buildGridTrace(p);key=next;}return trace;}
-export function electricityPose(i){const targets=[[-12,2.3,1.2],[-5.5,2,0],[4.7,2.2,0],[10.4,1.2,2.3]],x=[-14,-6,4,13][i],z=11.5,[tx,ty,tz]=targets[i];return {x,z,yaw:Math.atan2(x-tx,z-tz),pitch:Math.atan2(ty-1.65,Math.hypot(x-tx,z-tz))};}
+export function electricityPose(i){const targets=[[-11,2.3,1.2],[-5.5,2,0],[4.7,2.2,0],[10.4,1.2,2.3]],x=[-14,-6,4,13][i],z=i===0?13:11.5,[tx,ty,tz]=targets[i];return {x,z,yaw:Math.atan2(x-tx,z-tz),pitch:Math.atan2(ty-1.65,Math.hypot(x-tx,z-tz))};}
 export const electricity={id:'electricity',room:'industry',title:L('Electricidad: hasta el enchufe','Electricity: to the outlet'),color:'#ffd278',unit:L('hora','hour'),horizon:24,continuous:true,
  poseAt:electricityPose,walk(p,f,s,dt){const n=Math.max(1,Math.hypot(f,s)),v=3.8*Math.min(.05,dt);return {...p,x:clamp(p.x+(-Math.sin(p.yaw)*f+Math.cos(p.yaw)*s)/n*v,-17,17),z:clamp(p.z+(-Math.cos(p.yaw)*f-Math.sin(p.yaw)*s)/n*v,-10,13)};},
  overview:{yaw:.08,pitch:.4,distance:9.5},fitLabel:L('Ver la red completa','Fit the whole grid'),
