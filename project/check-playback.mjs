@@ -32,6 +32,32 @@ const ordered=new TimelineClock({clips,AudioClass:OrderedAudio});await ordered.s
 const switched=new TimelineClock({clips,AudioClass:DeferredAudio}),oldPlay=switched.seek(0,true),oldAudio=switched.audio,newPlay=switched.seek(13,true),newAudio=switched.audio;newAudio.finish();await newPlay;oldAudio.finish();await oldPlay;assert.equal(oldAudio.paused,true,'obsolete fulfillment stops its captured media');assert.equal(newAudio.paused,false,'obsolete fulfillment cannot stop the newer owner');assert.equal(switched.current.id,'b');assert.equal(switched.state,'playing');switched.dispose();
 const disposedNative=new TimelineClock({clips,AudioClass:DeferredAudio}),disposePlay=disposedNative.seek(0,true),disposeAudio=disposedNative.audio;disposedNative.dispose();disposeAudio.finish();await disposePlay;assert.equal(disposeAudio.paused,true,'late native start cannot outlive disposal');
 const disposedEvents=[],closed=new TimelineClock({clips,AudioClass:AudioStub,onSync:()=>disposedEvents.push('sync'),onState:()=>disposedEvents.push('state')});await closed.play();closed.dispose();const closedPosition=closed.position,closedAudioCount=AudioStub.all.length,closedEventCount=disposedEvents.length;await closed.play();await closed.seek(13,true);closed.pause();closed.tick(.25);closed.notify();closed.status('playing');closed.dispose();assert.equal(closed.audio,null,'a disposed clock cannot reacquire media');assert.equal(AudioStub.all.length,closedAudioCount,'visibility callbacks cannot revive disposed narration');assert.equal(closed.position,closedPosition);assert.equal(closed.running,false);assert.equal(closed.state,'paused');assert.equal(disposedEvents.length,closedEventCount,'disposed callbacks cannot paint removed UI');
+// Exercise the real NotebookPlayer language transition with the real clock.
+// Narration maps by fractional progress; its following observation maps by seconds.
+let languageCases=0;
+for(const languageClips of [{es:clips,en:[{id:'a',src:'en-a.mp3',duration:6},{id:'b',src:'en-b.mp3',duration:27},{id:'c',src:'en-c.mp3',duration:9}]},{es:clips.map((c,i)=>({...c,duration:c.duration+[.17,.23,.31][i]})),en:clips.map((c,i)=>({...c,duration:[6.19,27.41,9.79][i]}))}]){
+for(const language of ['es','en'])for(const playing of [false,true])for(const index of [0,1,2]){
+ const timeline=makeTimeline(languageClips[language]),entry=timeline[index];
+ const offsets=[0,entry.duration*.37,entry.duration-.000001,entry.duration,...(index<2?[entry.duration+.000001,entry.duration+.8,entry.duration+2.4,entry.end-entry.start-.000001]:[])];
+ for(const offset of offsets){
+  const controls={language:{value:language}},synced=[],saved=[];
+  const player={language,wanted:playing,AudioClass:AudioStub,getClips:l=>languageClips[l],onLanguage(){},paint(){},marks(){},el:name=>controls[name],onSync:s=>synced.push(s),save(){saved.push({language:this.language,position:this.clock.position,playing:this.wanted});},seek:NotebookPlayer.prototype.seek,get current(){return this.clock.current;}};
+  player.clock=new TimelineClock({clips:languageClips[language],AudioClass:AudioStub,loadBlob:async src=>src,urls:{createObjectURL:src=>'blob:'+src,revokeObjectURL(){}}});
+  await player.clock.seek(entry.start+offset,playing);const before=player.current,old=player.clock,oldAudio=old.audio,other=language==='es'?'en':'es';
+  NotebookPlayer.prototype.changeLanguage.call(player,other);
+  const next=player.clock.timeline[index],expected=before.elapsed>=before.total?player.clock.total:next.start+Math.min(offset/entry.duration,1)*next.duration+Math.max(0,offset-entry.duration);
+  assert(Math.abs(player.clock.position-expected)<1e-9,'language switch retains audio progress or elapsed observation');
+  assert.equal(player.current.index,index);if(Math.abs(offset-entry.duration)>1e-9)assert.equal(player.current.inGap,before.inGap);assert.equal(player.wanted,playing);assert.equal(player.clock.running,playing&&expected<player.clock.total);
+  if(before.elapsed>=before.total){assert.equal(player.clock.position,player.clock.total,'completion stays exactly at the new end despite fractional durations');assert.equal(player.clock.state,'finished');}
+  assert.equal(old.disposed,true);if(oldAudio)assert.equal(oldAudio.paused,true,'the replaced voice is silenced');
+  assert.equal(synced.length,1,'one deliberate seek synchronizes the language transition');assert.equal(synced[0].reason,'seek');assert.equal(saved.at(-1).position,player.clock.position);
+  const position=player.clock.position;player.clock.tick(.25);if(!playing)assert.equal(player.clock.position,position,'paused observation stays paused');
+  if(playing&&before.inGap&&index<2){assert(Math.abs(player.clock.position-Math.min(next.end,expected+.25))<1e-9);}
+  player.clock.dispose();languageCases++;
+ }
+}
+}
+assert.equal(languageCases,160);
 const voices=JSON.parse(readFileSync('site-src/llms/voices.js','utf8').split('export const VOICES = ')[1].split(/;\r?\n/)[0]);
 for(const language of ['es','en']){const list=responsePlaylist(language,DEFAULTS,voices[language],Array.from({length:8},(_,i)=>String(i)));assert(list.at(-1).snapshot.done);assert.equal(new Set(list.map(c=>c.id)).size,list.length,'repeated token chapters need unique restore IDs');const saved={chapter:list.at(-2).id,offset:2};assert(restoredPosition(saved,makeTimeline(list))>makeTimeline(list)[8].start);assert.equal(list[0].snapshot.generated.length,0);assert(list.at(-1).snapshot.generated.length>0);}
 // Two paused notebook instances share a key. An old tab must not periodically
@@ -45,4 +71,4 @@ for(let i=0;i<20;i++)NotebookPlayer.prototype.save.call(pausedTab);
 assert.equal(storage.get(pausedTab.key),newPayload,'unchanged old tab cannot rewind the new experiment');assert.equal(writes,afterEdit,'paused frames and pagehide do not rewrite unchanged state');
 const reopened={...newerTab,lastSavedPayload:newPayload};NotebookPlayer.prototype.save.call(reopened);assert.equal(writes,afterEdit,'a restored paused tab does not claim ownership');
 pausedTab.wanted=true;pausedTab.clock.position=6.5;NotebookPlayer.prototype.save.call(pausedTab);assert.equal(JSON.parse(storage.get(pausedTab.key)).offset,6.5,'a deliberate change is still persisted');
-console.log('Playback: exact seeking/resume, chapter gaps, autoplay denial, seek races, one audio owner, download reuse, stale-tab persistence and reversible token histories: OK');
+console.log(`Playback: exact seeking/resume, ${languageCases} real language transitions retaining audio/observation time, autoplay denial, seek races, one audio owner, download reuse, stale-tab persistence and reversible token histories: OK`);

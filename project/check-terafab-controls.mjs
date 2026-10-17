@@ -130,3 +130,20 @@ for(const lang of ['es','en']){
  scenarios++;const h=harness({lang,mode:'immersive',finePointer:false,voices:VOICES,worldAPI}),{element,frames}=h;await h.flush();h.players[0].pause();const before=h.lastPose,canvas=h.world.canvas;canvas.handlers.pointerdown({button:0,pointerId:2,pointerType:'touch',clientX:100,clientY:100});canvas.handlers.pointermove({pointerId:2,pointerType:'touch',clientX:180,clientY:125});canvas.handlers.pointerup({button:0,pointerId:2,pointerType:'touch',clientX:180,clientY:125});frames(1);assert(Math.abs(h.lastPose.yaw-before.yaw)>.1);assert.equal(h.document.pointerLockElement,null);const pad=h.queryAll('[data-move]').find(button=>button.dataset.move==='right');pad.handlers.pointerdown({pointerId:3,preventDefault(){}});frames(15);pad.handlers.pointerup({pointerId:3});frames(1);const stopped=h.lastPose;frames(60);samePose(h.lastPose,stopped,'released touch controls cannot remain held');
 }
 console.log(`Terafab controls: ${scenarios} bilingual manual/narrated/audio-failure/FPS scenarios, real NotebookPlayer/TimelineClock/binder, ${anchors.length} literal mechanical anchors and ${inverseSamples} inverse samples, thirteen reversible operation seeks and matching paused audio footer, context chapters, two-camera/manual/language/reload preservation, phase-equivalent voice switches, physical E/click, first/repeated FPS, blur/visibility/touch and ${proofs.recordings} ${proofs.mode} MiniMax proofs: OK`);
+
+// Equivalent scene-cue remapping must not restart the post-audio observation.
+let observationChecks=0;
+for(const lang of ['es','en'])for(const running of [false,true]){
+ const h=harness({lang,voices:VOICES,worldAPI});await h.flush();const n=h.players[0];n.pause();
+ for(let index=0;index<n.clock.timeline.length-1;index++)for(const offset of [.8,2.4]){
+  const c=n.clock.timeline[index];n.seek(c.start+c.duration+offset,running);await h.flush();const before=n.current,position=n.clock.position;
+  n.el('language').onchange({target:{value:n.language==='es'?'en':'es'}});await h.flush();const after=n.current;
+  assert.equal(after.index,index);assert.equal(after.inGap,true);near(after.end-after.elapsed,before.end-before.elapsed,'voice remapping retains the remaining observation');assert.equal(n.running,running);assert.equal(n.wanted,running);
+  if(!running){h.frames(12);near(n.clock.position,after.elapsed,'paused observation cannot advance');}
+  observationChecks++;
+ }
+ n.seek(n.clock.timeline[0].duration+2.4,false);await h.flush();h.events.blur?.();n.save();const reload=harness({lang,voices:VOICES,worldAPI,storage:h.storage});await reload.flush();near(reload.players[0].current.end-reload.players[0].current.elapsed,.6,'manual reload retains an equivalent saved observation instead of realigning it');assert.equal(reload.players[0].running,false);reload.events.pagehide?.({persisted:false});observationChecks++;
+ n.seek(n.clock.total,false);await h.flush();n.changeLanguage(n.language==='es'?'en':'es');await h.flush();assert.equal(n.clock.position,n.clock.total);assert.equal(n.clock.state,'finished');assert.equal(n.running,false);observationChecks++;
+ h.events?.pagehide?.({persisted:false});
+}
+console.log('terafab observation: '+observationChecks+' bilingual paused/running chapter gaps and exact completions retain their phase: OK');
