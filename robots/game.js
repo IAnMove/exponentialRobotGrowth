@@ -104,13 +104,16 @@ function render(){requestAnimationFrame(render);const now=performance.now(),dt=M
 
 
 
-document.addEventListener('narration-focus',e=>{if(/^district-\d+$/.test(e.detail))selectPlace(Number(e.detail.split('-')[1]),false);});
+document.addEventListener('narration-focus',e=>{if(narrator.source==='voice'&&/^district-\d+$/.test(e.detail))selectPlace(Number(e.detail.split('-')[1]),false);});
 
-function updateTrace(){const frame=run.frames[index],next=nextFrame(),d=explainConstraint(frame,next,traceIndex);traceSources=d.sources;const names=d.sources.map(i=>INDUSTRIES[i].name).join(', ');let text;
- if(d.kind==='staff')text='This stage currently lacks available workers. Check shifts and charging before attributing the wait to materials.';
- else if(d.kind==='inputs')text='This stage is below its available capacity. Check the supply from '+names+'. Processes share stocks; reinforcing only this station may not resolve the wait.';
- else if(d.kind==='equipment')text='Available workers reach the equipment limit. This stage needs installed capacity, not just more robots.';
- else text='This stage is producing with the available resources. Finished output still depends on the rest of the chain.';
+function updateTrace(){const frame=run.frames[index],d=explainConstraint(frame,null,traceIndex);traceSources=d.sources;const names=d.sources.map(i=>INDUSTRIES[i].name).join(', ');let text;
+ if(d.kind==='initial')text='No hour of production has completed yet. Advance the simulation before identifying a limiting supplier.';
+ else if(d.kind==='staff')text='No workers were available for this operation during the last completed hour. Check shifts, charging and maintenance before attributing the wait to materials.';
+ else if(d.kind==='partial')text='The last completed hour provided capacity for part of an operation, but no whole unit was completed. That capacity carries over to later hours.';
+ else if(d.kind==='building')text='During the last completed hour the available robots worked on expanding this sector. Those robots were not producing parts.';
+ else if(d.kind==='inputs')text='During the last completed hour this stage produced less than its available capacity allowed. Check the stocks at the start of that hour supplied by '+names+'. Inputs are shared; the stock shown now already includes that hour’s consumption and deliveries.';
+ else if(d.kind==='equipment')text='The last completed hour reached the limit of the machinery available then. Expanding the equipment can increase capacity; adding workers alone cannot exceed that limit.';
+ else text='During the last completed hour this stage produced with the available resources. Final output still depends on the rest of the chain.';
  $('trace-status').textContent=INDUSTRIES[traceIndex].name+': '+text;$('trace-supplier').disabled=!d.sources.length;
  [...$('trace-stages').children].forEach((b,i)=>b.setAttribute('aria-pressed',String(i===traceIndex)));
  labels.forEach((b,i)=>b.classList.toggle('trace-source',$('trace-active').checked&&d.sources.includes(i)));
