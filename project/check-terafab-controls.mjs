@@ -46,7 +46,7 @@ function harness({lang='es',mode='notebook',audioMode='success',reduced=false,fi
   nearest(pose=lastPose){return pose?worldAPI.fabNearestStand(pose)?.index??null:null;},activate(){const chapter=this.nearest();if(chapter!==null)inspect?.(chapter);return chapter;},inspect(x,y){const chapter=this.activate();return chapter===null?null:{chapter};}
  };
  world.canvas.requestPointerLock=()=>world.lookLock();
- const createFabWorld=(...args)=>{inspect=args.find(arg=>typeof arg==='function')||args.find(arg=>arg&&typeof arg==='object'&&arg.onInspect)?.onInspect;return world;};
+ let showObjectInfo;const createFabWorld=(...args)=>{inspect=args.find(arg=>typeof arg==='function')||args.find(arg=>arg&&typeof arg==='object'&&arg.onInspect)?.onInspect;showObjectInfo=args[3];return world;};
  let campusView={view:'campus',following:false,look:[0,2,0],span:85,angle:.62,elevation:.65};const campus={setPlaces(){},render(){},dispose(){},setView(value){campusView={view:value,following:false,look:value==='campus'?[0,2,0]:[-21,value==='layers'?9:5,26],span:value==='campus'?85:29,angle:.62,elevation:value==='layers'?.38:.65};},select(place){this.setView(place.view);if(place.id!=='campus')campusView.look=[place.position[0],place.view==='layers'?9:place.position[1],place.position[2]];},fit(){this.setView(campusView.view);},zoomBy(f){campusView.span=Math.min(125,Math.max(9,campusView.span/f));},getViewState(){return {...campusView,look:[...campusView.look]};},restoreViewState(value){if(value)campusView={...campusView,...value,look:[...(value.look||campusView.look)]};},get view(){return campusView.view;}};
  const window={addEventListener:listen,removeEventListener(){}};
  const ctx={...model,...worldAPI,NARRATION_CHAPTERS,narrationTime,narrationProgress,processChapter,VOICES:voices,document,window,bindFirstPerson:options=>bindFirstPerson({...options,document,window,coarse:!finePointer}),console,URLSearchParams,URL,Intl,TimelineClock:Clock,restoredPosition,ResizeObserver:class{observe(){}disconnect(){}},
@@ -58,7 +58,7 @@ function harness({lang='es',mode='notebook',audioMode='success',reduced=false,fi
  function frames(n){for(let i=0;i<n;i++){const dt=1/60;clock+=dt*1000;for(const audio of audios)if(!audio.paused){audio.currentTime=Math.min(audio.duration,audio.currentTime+dt*audio.playbackRate);if(audio.currentTime>=audio.duration){audio.paused=true;audio.onended?.();}}const callbacks=queued.splice(0);callbacks.forEach(callback=>callback(clock));}}
  return {element,elements,events,document,queryAll,frames,world,campus,audios,players,storage,objectUrls,
   get lastFrame(){return ctx.__fabState().frame;},get lastChapter(){return ctx.__fabState().chapter;},get lastPose(){return {...ctx.__fabState().player};},get state(){return ctx.__fabState();},get lastRender(){return lastRender;},get lockCalls(){return lockCalls;},
-  get inspect(){return inspect;},setAudioMode(value){audioMode=value;},async flush(){for(let i=0;i<12;i++)await Promise.resolve();}
+  get inspect(){return inspect;},showInfo(value){showObjectInfo(value);},setAudioMode(value){audioMode=value;},async flush(){for(let i=0;i<12;i++)await Promise.resolve();}
  };
 }
 const key=code=>({code,repeat:false,target:{closest:()=>false},preventDefault(){}}),near=(a,b,message)=>assert(Math.abs(a-b)<1e-8,message),samePose=(a,b,message)=>['x','z','yaw','pitch'].forEach(name=>near(a[name],b[name],message));
@@ -157,3 +157,16 @@ for(const lang of ['es','en'])for(const mode of ['notebook','immersive']){
  const writes=h.element('metrics').writes;h.frames(120);assert.equal(h.element('metrics').writes,writes,'held sample counters keep their DOM');h.element('view-campus').onclick();assert.equal(h.element('probe-status').hidden,true);assert.equal(h.element('metrics').dataset.reading,'materials');h.element('view-fab').onclick();assert.equal(h.element('probe-status').hidden,false);h.element('process-op-0').onclick();assert.equal(h.element('probe-status').hidden,true);assert.equal(h.element('metrics').dataset.reading,'materials');h.events.pagehide?.({persisted:false});
 }
 console.log('Terafab probe controls: '+probeStates+' bilingual notebook/FPS sample readings, both fault settings, current/last identity, pending outcomes, held counters and view/chapter hiding: OK');
+let inspectionChecks=0;
+for(const lang of ['es','en'])for(const mode of ['notebook','immersive']){
+ const h=harness({lang,mode,finePointer:false,voices:VOICES,worldAPI});await h.flush();h.element('timeline').value=95.9;h.element('timeline').oninput();h.frames(1);const before=JSON.stringify(h.lastFrame),pose=h.lastPose,text=lang==='es'?'El recipiente protege la oblea.':'The container protects the wafer.';
+ h.showInfo(['Detalle completo en español.','Complete English details.']);assert.equal(h.element('inspect-text').textContent,lang==='es'?'Detalle completo en español.':'Complete English details.');assert.equal(h.element('inspect').hidden,false);h.element('inspect-close').onclick();assert.equal(h.element('inspect').hidden,true);samePose(h.lastPose,pose);assert.equal(JSON.stringify(h.lastFrame),before);
+ if(mode==='immersive'){h.world.inspect=()=>text;h.world.canvas.handlers.pointerdown({button:0,pointerId:2,pointerType:'touch',clientX:100,clientY:100});h.world.canvas.handlers.pointerup({button:0,pointerId:2,pointerType:'touch',clientX:100,clientY:100});}else h.showInfo(text);
+ assert.equal(h.element('inspect-text').textContent,text);assert.equal(h.element('inspect').hidden,false);const readingKey=code=>({...key(code),target:{closest:selector=>selector.split(',').includes('#inspect')}});
+ for(const code of ['ArrowDown','KeyW','KeyD','KeyE']){h.events.keydown(readingKey(code));h.frames(12);h.events.keyup(readingKey(code));}samePose(h.lastPose,pose,'reading the detail does not walk or listen to a stand');assert.equal(h.players[0].running,false);assert.equal(JSON.stringify(h.lastFrame),before);
+ if(mode==='immersive'){h.events.keydown(key('KeyD'));h.frames(6);assert(h.lastPose.x>pose.x);const held=h.lastPose;h.events['document:focusin'](readingKey('KeyD'));h.frames(30);samePose(h.lastPose,held,'focusing details clears a previously held walking key');h.events.keyup(key('KeyD'));}
+ const held=h.lastPose;h.events.keydown(readingKey('Escape'));h.frames(1);assert.equal(h.element('inspect').hidden,true);samePose(h.lastPose,held);assert.equal(JSON.stringify(h.lastFrame),before,'dismissal preserves the exact probe frame and counters');
+ for(const view of ['campus','cleanroom','layers']){h.showInfo(text);h.element('view-'+view).onclick();assert.equal(h.element('inspect').hidden,true,'non-fab views hide an unrelated object detail');assert.equal(JSON.stringify(h.lastFrame),before);}
+ inspectionChecks++;
+}
+console.log('Terafab inspection: '+inspectionChecks+' bilingual notebook/FPS close, Escape, reading keys, held movement, exact probe state and three-view hiding cases: OK');
