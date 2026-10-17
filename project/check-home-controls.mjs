@@ -20,7 +20,7 @@ function recordingProofs(voices){
  assert.equal(recordings,14,'all fourteen new recording proofs are mandatory in both source and portable export');return {recordings,mode:portable?'portable':'source'};
 }
 function harness({lang='es',mode='notebook',audioMode='success',reduced=false,finePointer=true,storage=new Map(),voices,worldAPI={}}={}){
- const elements=new Map(),events={},queued=[],audios=[],players=[],objectUrls=new Set();let clock=0,lastFrame,lastChapter,lastPose,lastRender,inspect,lockCalls=0,worldMode=mode,view={yaw:.1,pitch:.23,distance:10,whole:false,zoneOverview:false};
+ const elements=new Map(),events={},queued=[],audios=[],players=[],objectUrls=new Set();let clock=0,lastFrame,lastChapter,lastPose,lastRender,inspect,info,lockCalls=0,worldMode=mode,view={yaw:.1,pitch:.23,distance:10,whole:false,zoneOverview:false};
  const listen=(name,fn)=>{const previous=events[name];events[name]=event=>{previous?.(event);fn(event);};};
  const fakeElement=id=>({id,hidden:id==='.ap-transcript',checked:false,dataset:{},style:{setProperty(k,v){this[k]=v;}},value:'',textContent:'',children:[],selectors:new Map(),offsetHeight:100,
   get innerHTML(){return this._innerHTML||'';},set innerHTML(value){this.writes=(this.writes||0)+1;this._innerHTML=String(value);for(const match of this._innerHTML.matchAll(/<(?:input|button|select|a)\b([^>]*)>/g)){const attrs=match[1],name=attrs.match(/\bid="([^"]+)"/);const child=element(name?.[1]||'anonymous-'+elements.size);for(const attr of attrs.matchAll(/([\w-]+)(?:="([^"]*)")?/g)){const key=attr[1],value=attr[2]??'';if(key.startsWith('data-'))child.dataset[key.slice(5).replace(/-([a-z])/g,(_,c)=>c.toUpperCase())]=value;else if(key==='checked')child.checked=true;else if(key==='hidden')child.hidden=true;else child[key]=value;}}},
@@ -46,7 +46,7 @@ function harness({lang='es',mode='notebook',audioMode='success',reduced=false,fi
   nearest(pose=lastPose){return pose?worldAPI.homeNearestStand(pose)?.index??null:null;},activate(){const chapter=this.nearest();if(chapter!==null)inspect?.(chapter);return chapter;},inspect(x,y){const chapter=this.activate();return chapter===null?null:{chapter};}
  };
  world.canvas.requestPointerLock=()=>world.lookLock();
- const createHomeWorld=(...args)=>{inspect=args.find(arg=>typeof arg==='function')||args.find(arg=>arg&&typeof arg==='object'&&arg.onInspect)?.onInspect;return world;};
+ const createHomeWorld=(...args)=>{inspect=args.find(arg=>typeof arg==='function')||args.find(arg=>arg&&typeof arg==='object'&&arg.onInspect)?.onInspect;info=args[3];return world;};
  const window={addEventListener:listen,removeEventListener(){}};
  const ctx={...model,...worldAPI,narrationTime,narrationProgress,VOICES:voices,document,window,bindFirstPerson:options=>bindFirstPerson({...options,document,window,coarse:!finePointer}),console,URLSearchParams,URL,Intl,TimelineClock:Clock,restoredPosition,ResizeObserver:class{observe(){}disconnect(){}},
   matchMedia:query=>({matches:query==='(pointer: fine)'?finePointer:query==='(prefers-reduced-motion: reduce)'?reduced:false}),performance:{now:()=>clock},
@@ -57,7 +57,7 @@ function harness({lang='es',mode='notebook',audioMode='success',reduced=false,fi
  function frames(n){for(let i=0;i<n;i++){const dt=1/60;clock+=dt*1000;for(const audio of audios)if(!audio.paused){audio.currentTime=Math.min(audio.duration,audio.currentTime+dt*audio.playbackRate);if(audio.currentTime>=audio.duration){audio.paused=true;audio.onended?.();}}const callbacks=queued.splice(0);callbacks.forEach(callback=>callback(clock));}}
  return {element,elements,events,document,queryAll,frames,world,audios,players,storage,objectUrls,
   get lastFrame(){return lastFrame;},get lastChapter(){return lastChapter;},get lastPose(){return lastPose;},get lastRender(){return lastRender;},get lockCalls(){return lockCalls;},
-  get inspect(){return inspect;},setAudioMode(value){audioMode=value;},async flush(){for(let i=0;i<12;i++)await Promise.resolve();}
+  get inspect(){return inspect;},get info(){return info;},setAudioMode(value){audioMode=value;},async flush(){for(let i=0;i<12;i++)await Promise.resolve();}
  };
 }
 const key=code=>({code,repeat:false,target:{closest:()=>false},preventDefault(){}}),near=(a,b,message)=>assert(Math.abs(a-b)<1e-8,message),samePose=(a,b,message)=>['x','z','yaw','pitch'].forEach(name=>near(a[name],b[name],message));
@@ -178,3 +178,11 @@ for(const lang of ['es','en'])for(const running of [false,true]){
  h.events?.pagehide?.({persisted:false});
 }
 console.log('home observation: '+observationChecks+' bilingual paused/running chapter gaps and exact completions retain their phase: OK');
+
+let planningStates=0;
+for(const lang of ['es','en'])for(const mode of ['notebook','immersive']){
+ const h=harness({lang,mode,voices:VOICES,worldAPI,reduced:true});await h.flush();h.players[0].pause();h.element('task-6').onclick();h.element('overhead').value=20;h.element('overhead').onchange();
+ for(const time of [60,62,62.5,63,66,67.99,68,69.49,69.5,70,66.5]){h.element('timeline').value=time;h.element('timeline').oninput();h.frames(1);const panel=h.element('planning-reading'),expected=worldAPI.homePlanningReading(h.lastFrame,lang==='es');assert.equal(panel.hidden,false);expected.steps.forEach(step=>{const row=panel.querySelector(`[data-plan="${step.role}"]`);assert.equal(row.dataset.status,step.status);assert.equal(row.querySelector('strong').textContent,step.number+' · '+step.title);assert.equal(row.querySelector('span').textContent,step.text);});assert.equal(h.element('planning-review').textContent,expected.review);assert.equal(h.element('planning-scope').textContent,expected.scope);assert.match(h.element('description').textContent,lang==='es'?/apoyo humano/:/human assistance/);planningStates++;}
+ h.info(['Detalle ficticio','Fictional detail']);assert.equal(h.element('inspect').hidden,false);assert.equal(h.element('inspect-text').textContent,lang==='es'?'Detalle ficticio':'Fictional detail');h.element('inspect-close').onclick();assert.equal(h.element('inspect').hidden,true);near(h.lastFrame.time,66.5);h.info(['Detalle ficticio','Fictional detail']);h.events.keydown(key('Escape'));assert.equal(h.element('inspect').hidden,true);near(h.lastFrame.time,66.5);h.element('task-0').onclick();assert.equal(h.element('planning-reading').hidden,true);h.events.pagehide?.();
+}
+console.log('Home planning controls: '+planningStates+' bilingual notebook/FPS document states, scenario descriptions, hiding and button/Escape detail dismissal: OK');
