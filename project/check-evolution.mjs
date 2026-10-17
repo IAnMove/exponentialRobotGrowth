@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {N,buildEvolutionTrace,sampleEvolution,evolve} from './site-src/journeys/evolution-model.js';
 import {rng} from './site-src/journeys/common.js';
-import {evolutionChartLayout,evolutionComparisons,evolutionExperiment} from './site-src/journeys/evolution.js';
+import {evolutionChartLayout,evolutionComparisons,evolutionExperiment,evolutionPercent} from './site-src/journeys/evolution.js';
 
 const defaults={advantage:.15,mutation:.01,drift:true,seed:41};
 // Independent copy of the pre-trace model: exact seeded compatibility matters.
@@ -108,4 +108,14 @@ const mutationBalance=buildEvolutionTrace({...defaults,advantage:.2,mutation:.01
 const neutralMutation=buildEvolutionTrace({...defaults,advantage:0,mutation:.05,drift:false});assert(neutralMutation.history.every(f=>f===.5),'Balanced frequency does not imply zero mutations');
 const zero=buildEvolutionTrace(defaults,0);assert.deepEqual(zero.history,[.5]);assert.equal(sampleEvolution(zero,.9).next,null);
 assert.throws(()=>buildEvolutionTrace({...defaults,advantage:-1}),RangeError);assert.throws(()=>buildEvolutionTrace({...defaults,mutation:1.01}),RangeError);
+let percentChecks=0;
+for(const language of ['es','en']){
+ const f=new Intl.NumberFormat(language,{maximumFractionDigits:2}),low=language==='es'?'< 0,01 %':'< 0.01 %',high=language==='es'?'> 99,99 %':'> 99.99 %';
+ for(let count=0;count<=N;count++){assert.equal(evolutionPercent(count/N,language),f.format(count/N*100)+' %');assert.equal(evolutionPercent(count/N,language,true),f.format((N-count)/N*100)+' %');percentChecks+=2;}
+ for(const [value,a,b]of [[0,'0 %','100 %'],[1,'100 %','0 %'],[.5,'50 %','50 %'],[1e-18,low,high],[1-1e-12,high,low],[.0001,f.format(.01)+' %',f.format(99.99)+' %'],[.9999,f.format(99.99)+' %',f.format(.01)+' %']]){assert.equal(evolutionPercent(value,language),a);assert.equal(evolutionPercent(value,language,true),b);percentChecks+=2;}
+ assert.equal(1-1e-18,1,'binary complement rounding is an actual boundary case');
+ for(const invalid of [NaN,Infinity,-.1,1.1,null,'0.5']){assert.equal(evolutionPercent(invalid,language),'—');percentChecks++;}
+ for(const advantage of [-.4,.4]){const trace=buildEvolutionTrace({...defaults,advantage,mutation:0,drift:false});for(const generation of [40,60,79,80]){const value=trace.history[generation];assert(value>0&&value<1);assert.equal(evolutionPercent(value,language),advantage<0?low:high);assert.equal(evolutionPercent(value,language,true),advantage<0?high:low);percentChecks+=2;}}
+}
+console.log(`Evolution percentages: ${percentChecks} bilingual count/end-point/rare-variant/complement cases preserve true zeros and ones: OK`);
 console.log(`Evolution: ${compatibilityCases} exact legacy trajectories, ${ensembleSeeds} first-generation runs with joint probabilities and uniform parents, deterministic references, genealogy and mutations, seed replay, completed-generation sampling, fixation and reintroduction: OK`);

@@ -1,5 +1,6 @@
 import * as THREE from '../../vendor/three.module.js';
 import {sampleEvolution,N} from './evolution-model.js';
+import {evolutionPercent} from './evolution.js';
 import {createSceneAnnotations,annotationViewport} from './scene-annotations.js';
 
 export const EVOLUTION_FOCUS=[[-5,1.55,0],[0,3,-1.8],[5,2.8,.5],[0,1.6,0]];
@@ -10,6 +11,7 @@ export function createEvolutionScene(lesson,es){
  const scene=new THREE.Scene();scene.background=new THREE.Color(0x142432);scene.fog=new THREE.Fog(0x142432,42,95);
  const resources=[],targets=[],stands=[],parents=[],offspring=[],links=[],own=x=>(resources.push(x),x);
  const t=(a,b)=>es?a:b,L=(a,b)=>[a,b],number=n=>new Intl.NumberFormat(es?'es':'en',{maximumFractionDigits:2}).format(n);
+ const percent=(value,complement=false)=>evolutionPercent(value,es?'es':'en',complement).replace(' %','%');
  const mutationName=event=>event.direction?.split('').join(' → ')||'';
  const mat=(color,extra={})=>own(new THREE.MeshStandardMaterial({color,roughness:.58,metalness:.08,...extra}));
  scene.add(new THREE.HemisphereLight(0xe2f5ff,0x354a42,2.1));
@@ -118,8 +120,8 @@ export function createEvolutionScene(lesson,es){
   processCaption.m.visible=whole;processCaption.anchor.set(0,5.35,-.8);
   const selected=next?.selected??s.selected??s.frequency,mutated=next?.mutated??s.mutated??s.frequency;
   weightCaption.set(t('Peso A: ','A weight: ')+number(1+(model.advantage??currentTrace.params?.advantage??0))+' · B: 1');
-  selectedCaption.set(t('Tras selección · A ','After selection · A ')+number(selected*100)+'%');mutatedCaption.set(t('Tras mutación · A ','After mutation · A ')+number(mutated*100)+'%');paintBar(selectedBar,selected);paintBar(mutatedBar,mutated);
-  parentCaption.set(finite?t(`Generación ${generation} · ${s.countA} A / ${N-s.countA} B\n${N} progenitores`, `Generation ${generation} · ${s.countA} A / ${N-s.countA} B\n${N} parents`):t(`Generación ${generation} · referencia sin deriva\nA: ${number(s.frequency*100)}%`,`Generation ${generation} · no-drift reference\nA: ${number(s.frequency*100)}%`));
+  selectedCaption.set(t('Tras selección · A ','After selection · A ')+percent(selected));mutatedCaption.set(t('Tras mutación · A ','After mutation · A ')+percent(mutated));paintBar(selectedBar,selected);paintBar(mutatedBar,mutated);
+  parentCaption.set(finite?t(`Generación ${generation} · ${s.countA} A / ${N-s.countA} B\n${N} progenitores`, `Generation ${generation} · ${s.countA} A / ${N-s.countA} B\n${N} parents`):t(`Generación ${generation} · referencia sin deriva\nA: ${percent(s.frequency)}`,`Generation ${generation} · no-drift reference\nA: ${percent(s.frequency)}`));
   offspringCaption.set(!next?t('Horizonte alcanzado · 80 generaciones','Horizon reached · 80 generations'):finite?t(`Generación ${generation+1} · en formación\n${p<.72?'Copias antes de mutación':`${next.countA} A / ${N-next.countA} B · ${next.mutations} ${next.mutations===1?'mutación':'mutaciones'}`}`,`Generation ${generation+1} · forming\n${p<.72?'Copies before mutation':`${next.countA} A / ${N-next.countA} B · ${next.mutations} ${next.mutations===1?'mutation':'mutations'}`}`):t('Referencia determinista · no población observada','Deterministic reference · not an observed population'));
   const stage=phase===0?t('Variación heredable','Heritable variation'):!next?t('Generación completada','Generation complete'):p<.4?t('1 · Ponderar reproducción','1 · Weight reproduction'):p<.72?t('2 · Copiar al descendiente','2 · Copy to offspring'):p<.94?t('3 · Cambiar solo las copias que mutan','3 · Change only the copies that mutate'):t('4 · Sustituir la generación · población fija','4 · Replace generation · fixed population');processCaption.set(stage);
   offspring.forEach((record,i)=>{const link=links[i],event=link.event;record.group.visible=finite&&!!next&&!!event&&!!link.curve&&p>=.4;record.halo.visible=false;link.line.visible=finite&&!!next&&!!link.curve&&p>.02;link.line.material.opacity=phase===1?.54:phase===2?.38:.20;link.line.material.color.setHex(mutationStage&&event?.mutated?COLORS.mutation:0xa9c9c5);
@@ -143,7 +145,7 @@ export function createEvolutionScene(lesson,es){
    const info=L(`Ampliación de la copia ${index+1} registrada para la generación ${destination}. ${revealed?(event.mutated?'Mutación '+direction+'.':'Sin mutación.'):'Todavía conserva la variante de su progenitor.'}`,`Enlarged view of recorded copy ${index+1} for generation ${destination}. ${revealed?(event.mutated?'Mutation '+direction+'.':'No mutation.'):'It still carries its parent variant.'}`);
    for(const record of [spotlightParent,spotlightDaughter]){record.body.userData.event=event;record.body.userData.info=info;}
   }
-  expectedCaption.set(t('A: ','A: ')+number(s.frequency*100)+'% · B: '+number((1-s.frequency)*100)+'%');paintBar(expectedBar,s.frequency);
+  expectedCaption.set(t('A: ','A: ')+percent(s.frequency)+' · B: '+percent(s.frequency,true));paintBar(expectedBar,s.frequency);
   const plotGeneration=Math.min(80,Math.max(0,Math.floor(generation)));
   if(lastPlot!==plotGeneration||traceId!==plotTrace){
    lastPlot=plotGeneration;plotTrace=traceId;const states=currentTrace.generations||[];
