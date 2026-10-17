@@ -371,7 +371,7 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
     const h=tensor(Y.map(v=>[v]),{x:-4.9,y:2,w:.55,h:3,title:'h',color:C.blue,showDims:false,depth:.35});
     label(t('vector final','final vector'),-4.9,.2,.3,{size:.17,color:CSS.dim,weight:500});
     appear(h.group,.05,{dy:-.4,s0:.8});
-    label(`softmax(logits / T)  ·  T = ${format(run.options.temperature,2)}`,.6,5,-.3,{size:.22,mono:true,color:CSS.gold,weight:600});
+    label(run.options.temperature===0?t('T = 0 → máximo (argmax)','T = 0 → maximum (argmax)'):`softmax(logits / T)  ·  T = ${format(run.options.temperature,2)}`,.6,5,-.3,{size:.22,mono:true,color:CSS.gold,weight:600});
     const spacing=Math.min(2.7,8/ps.length),maxH=3.9;
     ps.forEach((p,i)=>{
       const x=.9+(i-(ps.length-1)/2)*spacing,win=i===best,to=p;
@@ -382,7 +382,8 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
       const pct=text(`${format(p*100,1)} %`,{size:.4,weight:800,color:win?'#dffcf4':CSS.ink});g.add(pct);
       const logit=text(`logit ${format(c.logits[i],1)}`,{size:.16,mono:true,color:CSS.dim,weight:500});g.add(logit);
       const tag=text(piece(c.pieces[i]),{size:.3,weight:700,mono:true,color:win?'#062019':CSS.ink,pill:win?CSS.mint:'#122540',stroke:win?null:'#2c4670'});tag.position.set(0,-.02,.95);g.add(tag);
-      S.userData.ticks.push(({R})=>{const k=R(.04,.3),v=to*ease(k),hh=.06+v*maxH;bar.scale.set(1.05,hh,1.05);bar.position.y=hh/2;pct.position.set(0,hh+.45,0);logit.position.set(0,hh+.16,0);});
+      // Height encodes probability: no decorative floor for a zero value.
+      S.userData.ticks.push(({R})=>{const k=R(.04,.3),v=to*ease(k),hh=v*maxH;bar.visible=hh>0;bar.scale.set(1.05,hh,1.05);bar.position.y=hh/2;pct.position.set(0,hh+.45,0);logit.position.set(0,hh+.16,0);});
       appear(g,.15+i*.12,{dy:0,s0:.9});
       route([],{curve:new THREE.CubicBezierCurve3(V(h.right,2,.3),V(-2.6,2,.4),V(x-1.6,.6,.6),V(x-.1,.35,.65)),weight:p,span:[.02,.25],delay:i,arrow:false,color:win?C.mint:C.gold});
     });
@@ -402,7 +403,9 @@ export function createStageKit({es=false,reduce=false,pointScale={value:400},lig
     label(scripted?t('CONTINUACIÓN PREPARADA · una pieza','CURATED CONTINUATION · one piece'):greedy?t('ELECCIÓN MÁXIMA · argmax','GREEDY · argmax'):`${t('MUESTREO · semilla','SAMPLING · seed')} ${run.seed}`,0,4.95,-.3,{size:.24,weight:800,mono:true,color:CSS.ink});
     S.userData.decoder={mode:scripted?'scripted':greedy?'greedy':'sample',u,chosen,dropX};label(scripted?t('No es otro sorteo','No additional random draw'):greedy?'argmax':`u = ${format(u,5)}`,0,.05,.3,{size:.18,mono:true,color:CSS.gold});
     label(t('Cada segmento mide lo que su probabilidad','Each segment is as wide as its probability'),0,4.55,-.3,{size:.18,color:CSS.dim,weight:500});
-    segs.forEach(s=>{const w=Math.max(.02,s.x1-s.x0-.05),win=s.i===chosen,cx=(s.x0+s.x1)/2;
+    // Segment boundaries share the same probability axis as the draw. A zero
+    // probability has no mesh or hit target; tiny probabilities keep their width.
+    segs.forEach(s=>{const w=s.p*W;if(w<=0)return;const win=s.i===chosen,cx=s.x0+w/2;
       const seg=block(cx,.95,0,w,.42,.9,colors[s.i%4],{kind:'probability',text:`${piece(c.pieces[s.i])} · ${format(s.p*100,1)} %`},{emissive:colors[s.i%4],emissiveIntensity:.15});add(seg);appear(seg,.08+s.i*.1,{dy:0,s0:.2});
       S.userData.ticks.push(({R})=>{const hit=R(.18,.24,.95,.25);seg.material.emissiveIntensity=win?.12+hit*(.28+.06*Math.sin(time*4)):.08;});
       if(w>.5){label(piece(c.pieces[s.i]),cx,1.5,.7,{size:.22,mono:true,weight:700,color:win?'#fff':CSS.ink});label(`${format(s.p*100,1)} %`,cx,.42,.5,{size:.17,mono:true,color:CSS.dim,weight:500});}
