@@ -1,5 +1,11 @@
 # Atlas — cola de mejoras
 
+## Siguiente pasada: comparar las capacidades lunares del mismo mes — 17 de octubre de 2026
+
+La tabla junto al gráfico mostraba importar todo, capacidad ideal y masa local de doce meses. Faltaba allí la capacidad alcanzada por el escenario lunar, y en un móvil de 320 píxeles la unidad del valor ideal saltaba a otra línea. Ahora compara las tres capacidades del mismo mes, con la fecha visible y los colores de sus curvas. Añade la proporción entre capacidad lunar e importarlo todo, marcada como aproximada; puede estar por debajo de uno en los primeros meses. Las filas dan espacio a los nombres y conservan cada número con su unidad. La masa local incorporada durante doce meses tiene su propia fila y una definición, para distinguirla de la capacidad ya instalada.
+
+Pasan siete comprobaciones de Lunar, reproducción y recursos, incluidas las 28 grabaciones MiniMax. El controlador comprueba 32 estados ES/EN de fracción local, reinversión y mes; incluye resultados inferiores y superiores al escenario de importar todo. Chrome compara seis vistas anteriores y 120 estados nuevos a 320/390/1440 píxeles: supuestos iniciales, rápidos, sólo importaciones y sin entregas, en los meses 0, 6, 6,5, 96 y 240. Se verifican 600 lecturas numéricas, fechas, ausencia de solapamiento entre etiquetas y valores, y números/unidades en una sola línea. Treinta y seis estados muestran una capacidad relativa inferior y veinticuatro superior; no se fuerza una ventaja positiva. Capturas inspeccionadas; sin errores de ejecución. Modelo, cifras de las series y voces conservados.
+
 ## Siguiente pasada: cifras legibles en el gráfico lunar — 17 de octubre de 2026
 
 El gráfico mantenía un ancho interno mínimo de 300 unidades y rótulos de 11 píxeles. En un móvil de 320 píxeles, su contenedor de 252 reducía los textos a 9,24 píxeles. El dibujo usa ahora su ancho real y rótulos de 13 píxeles con mayor contraste. El margen izquierdo mide las etiquetas formateadas en el idioma de la página: cantidades como «115,3 mil M» ya no salen del gráfico. Las marcas de años se espacian según el área útil, y se reserva espacio para unidades y cifras de los ejes. El gráfico vuelve a medirse al cargar las fuentes y no se redibuja después de cerrar el controlador.
