@@ -10,3 +10,7 @@
 .live-cost-columns{display:grid;grid-template-columns:1fr 1fr;gap:20px}.live-cost-columns>div{min-width:0}.live-cost-columns h4{margin:0;color:#a7e0cf;font-size:14px}.live-cost-columns>div+div h4{color:#edb892}.live-cost-columns p{margin:7px 0;font-size:14px;line-height:1.7;overflow-wrap:anywhere}.live-cost-columns strong{display:block;font-size:16px;line-height:1.6;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .live-cost-proof .live-cost-comparison{border-top:1px solid #a7c5d53d;padding-top:12px;margin:14px 0 8px;color:#e8f1ed;font-size:15px;font-variant-numeric:tabular-nums}.live-cost-proof small{display:block;color:#a9c7d2;font-size:12px;line-height:1.6}.live-number strong[data-cost-trend="higher"]{color:#edb892}
 @media(max-width:650px){.live-cost-proof{padding:12px}.live-cost-columns{grid-template-columns:1fr;gap:16px}.live-cost-columns>div+div{border-top:1px solid #a7c5d525;padding-top:12px}}
+
+/* Keep the graph's 13 px text at its real CSS size, including narrow cards. */
+.live-cards{grid-template-rows:repeat(4,auto)}.live-card{display:grid;grid-template-rows:subgrid;grid-row:span 4}.live-chart{height:98px}
+@media(max-width:650px){.live-chart{height:98px}.live-bottom p{display:block}}
