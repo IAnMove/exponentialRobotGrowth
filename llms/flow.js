@@ -15,7 +15,7 @@ export function cueAt(cues,time){
 export function guideProgress(guide,clip){
   const state=guide.state==='paused'?guide.resumeState:guide.state;
   if(['waiting','ready','finished'].includes(state))return 1;
-  if(guide.enabled)return Math.max(0,Math.min(1,(guide.audio?.currentTime??0)/(guide.audio?.duration||clip.duration)));
+  if(guide.enabled)return Math.max(0,Math.min(1,(guide.position??guide.audio?.currentTime??0)/(guide.audio?.duration||clip.duration)));
   if(state==='reading'){const reading=Math.max(6,Math.min(14,clip.text.length/32));return Math.max(0,Math.min(1,1-(guide.remaining-guide.gap)/reading));}
   return 0;
 }

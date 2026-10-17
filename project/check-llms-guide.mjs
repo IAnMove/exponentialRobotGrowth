@@ -2,7 +2,22 @@ import assert from 'node:assert/strict';
 import {StepGuide,narrationId} from './site-src/llms/guide.js';
 import {createRun,advance} from './site-src/llms/model.js';
 import {readFileSync,statSync} from 'node:fs';
+import {guideProgress} from './site-src/llms/flow.js';
 class FakeAudio {constructor(src){this.src=src;this.paused=true;}play(){this.paused=false;this.onplaying?.();return Promise.resolve();}pause(){this.paused=true;}removeAttribute(){}load(){}}
+for(const offset of [0,24,60]){
+ let unavailable=true;const retry=new StepGuide({AudioClass:FakeAudio,getClip:()=>({src:'retry.mp3',text:'A recoverable explanation.',duration:100}),onAdvance:()=>{throw Error('Failure never advances');},loadBlob:async()=>{if(unavailable)throw Error('offline');return {};},objectUrls:{createObjectURL:()=> 'blob:retry',revokeObjectURL(){}}});
+ retry.enter({play:false});if(offset)await retry.seek(offset);else retry.audio.onerror();assert.equal(retry.state,'error');assert.equal(guideProgress(retry,retry.clip),offset/100,'a failed seek retains its intended explanation position');unavailable=false;retry.resume();await Promise.resolve();await Promise.resolve();if(offset)retry.audio.onloadedmetadata();assert.equal(retry.audio.currentTime||0,offset,'retry starts at the held point');retry.dispose();
+}
+for(const offset of [0,24,60])for(const reading of [false,true]){
+ const retry=new StepGuide({AudioClass:FakeAudio,getClip:()=>({src:'media.mp3',text:'An explanation that can be resumed.',duration:100}),loadBlob:async()=>({}),objectUrls:{createObjectURL:()=> 'blob:media',revokeObjectURL(){}}});retry.enter();retry.audio.currentTime=offset;const old=retry.audio;old.onerror();assert(old.paused);assert.equal(retry.position,offset);
+ if(reading){retry.setEnabled(false);assert(Math.abs(guideProgress(retry,retry.clip)-offset/100)<1e-9,'reading fallback retains the failed media position');}
+ else{retry.resume();await Promise.resolve();await Promise.resolve();if(offset)retry.audio.onloadedmetadata();assert.equal(retry.audio.currentTime||0,offset);assert.notEqual(retry.audio,old);}
+ retry.dispose();
+}
+{
+ const held=new StepGuide({AudioClass:FakeAudio,getClip:()=>({src:'late.mp3',duration:100,text:'Late metadata'}),loadBlob:async()=>({}),objectUrls:{createObjectURL:()=> 'blob:late',revokeObjectURL(){}}});held.enter({play:false});await held.seek(40);const stale=held.audio.onloadedmetadata;held.audio.onerror();stale();assert.equal(held.position,40);assert.equal(held.state,'error');assert.equal(held.running,false);held.dispose();
+}
+console.log('Audio recovery: 3 held failure positions, 6 interrupted-media retry/reading cases and stale metadata retain the explanation position: OK');
 let index=0;
 const guide=new StepGuide({AudioClass:FakeAudio,getClip:()=>({src:`${index}.mp3`,text:'Teaching narration.'}),onAdvance:()=>++index<3});
 guide.resume();const first=guide.audio;
