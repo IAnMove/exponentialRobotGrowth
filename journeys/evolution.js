@@ -24,3 +24,14 @@ export const evolution={id:'evolution',room:'life',title:L('Evolución: muchas g
 let comparisonKey,comparisonRuns;
 export function evolutionComparisons(p={}){const params={advantage:p.advantage??.15,mutation:p.mutation??.01,drift:p.drift??true,seed:(p.seed??41)>>>0},next=[params.advantage,params.mutation,params.drift,params.seed].join(':');if(next!==comparisonKey){const runs=Object.freeze(params.drift?Array.from({length:5},(_,i)=>{const seed=i===0?params.seed:1+(params.seed-1+i)%100,run=i===0?evolutionExperiment(params):buildEvolutionTrace({...params,seed});return Object.freeze({seed,history:Object.freeze([...run.history]),counts:Object.freeze(run.generations.map(g=>g.countA))});}):[]);comparisonRuns=runs;comparisonKey=next;}return comparisonRuns;}
 export function evolutionChartLayout(width=520){const w=Math.max(200,Number.isFinite(width)&&width>0?width:520);return Object.freeze({width:w,height:226,left:44,right:w-12,top:26,bottom:170,axisY:194});}
+
+const percentFormats={es:new Intl.NumberFormat('es',{maximumFractionDigits:2}),en:new Intl.NumberFormat('en',{maximumFractionDigits:2})};
+// Rounded percentages must not imply fixation. Derive exact endpoints from
+// the original fraction, including when 1 - a tiny positive value rounds to 1.
+export function evolutionPercent(fraction,language='es',complement=false){
+ if(!Number.isFinite(fraction)||fraction<0||fraction>1)return '—';
+ const format=percentFormats[language==='es'?'es':'en'],zero=complement?fraction===1:fraction===0,one=complement?fraction===0:fraction===1;
+ if(zero)return '0 %';if(one)return '100 %';
+ const value=format.format((complement?1-fraction:fraction)*100);
+ return (value===format.format(0)?'< '+format.format(.01):value===format.format(100)?'> '+format.format(99.99):value)+' %';
+}
