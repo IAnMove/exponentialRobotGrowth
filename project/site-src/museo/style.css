@@ -59,3 +59,56 @@
 
 #route-status small{display:block;font-size:11px;line-height:1.6;margin-top:3px;color:#b9e5d6}.room-context{max-width:min(285px,45vw)}
 @media(max-width:760px){.room-context{max-width:44vw}#route-status small{font-size:10px}}
+
+/* Keep painting actions and walking controls in separate, intrinsic-size rows. */
+.museum-dock{--museum-stick-size:0px;--museum-compact-stick-size:0px;position:fixed;z-index:2;left:24px;right:24px;bottom:var(--museum-bottom);display:grid;grid-template-columns:minmax(0,355px) minmax(0,1fr) minmax(0,340px);grid-template-rows:minmax(0,1fr);column-gap:16px;align-items:end;max-height:calc(100svh - var(--atlas-player-height,112px) - 100px);pointer-events:none}
+.museum-dock>.bottom{position:static;grid-column:1;grid-row:1;width:100%;max-width:none;margin:0;pointer-events:auto}
+.museum-dock>.card{position:static;grid-column:3;grid-row:1;display:flex;flex-direction:column;width:100%;min-height:0;max-height:100%;overflow:hidden;pointer-events:auto}
+.card-copy{min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
+.card-copy:focus-visible{outline:2px solid var(--cream);outline-offset:-2px}
+.museum-dock .card .actions,.museum-dock .card .availability{flex:0 0 auto}
+.museum-dock .card .actions{padding-top:6px}
+.museum-dock>.stick{position:relative;inset:auto;display:none;margin:0;pointer-events:auto}
+.crossing .museum-dock{visibility:hidden}
+@media(max-width:900px){
+ .museum-dock{left:14px;right:14px;grid-template-columns:var(--museum-stick-size) minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;gap:12px;max-height:calc(100svh - var(--atlas-player-height,112px) - 100px)}
+ .museum-dock>.card{grid-column:1/-1;grid-row:1;justify-self:end;width:min(330px,100%);max-height:min(40svh,100%)}
+ .museum-dock>.bottom{grid-column:2;grid-row:2;max-width:355px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ .museum-dock>.bottom>p,.museum-dock>.bottom>label{grid-column:1/-1}
+ .museum-dock>.bottom>#tour{grid-column:1/-1}
+ .museum-dock>.bottom:has(#stop:not([hidden]))>#tour{grid-column:auto}
+ .museum-dock>.stick{grid-column:1;grid-row:2;width:88px;height:88px}
+}
+@media(max-width:650px){.museum-dock{left:12px;right:12px;gap:10px}.museum-dock>.card{max-height:min(35svh,100%)}}
+@media(max-height:590px){
+ .room-context{top:100px}
+ .room-context #narrate{position:fixed;left:15px;top:62px}
+ .painting-focused .room-context>span,.painting-focused .room-context>h1,.painting-focused .room-context>p{visibility:hidden}
+ .card-copy{display:flex;flex-direction:column}
+ .card-copy>*{flex:0 0 auto}
+ .museum-dock .card-copy h1{order:-1;font-size:18px;margin:0 0 8px}
+}
+@media(max-width:900px) and (max-height:590px){.top #where{display:none}}
+@media(max-width:600px) and (max-height:590px){.museum-dock{max-height:calc(100svh - var(--atlas-player-height,112px) - 124px)}}
+@media(min-width:501px) and (max-width:900px) and (max-height:590px){
+ .museum-dock{grid-template-columns:var(--museum-compact-stick-size) minmax(0,1fr) minmax(0,1.25fr);grid-template-rows:minmax(0,1fr);gap:10px}
+ .museum-dock>.stick{grid-column:1;grid-row:1;width:74px;height:74px}
+ .museum-dock>.bottom{grid-column:2;grid-row:1}
+ .museum-dock>.card{grid-column:3;grid-row:1;width:min(330px,100%);max-height:100%}
+}
+@media(min-width:901px) and (pointer:coarse){
+ .museum-dock{grid-template-columns:88px minmax(0,355px) minmax(0,1fr) minmax(0,340px)}
+ .museum-dock>.bottom{grid-column:2}
+ .museum-dock>.card{grid-column:4}
+ .museum-dock>.stick{display:block;grid-column:1;grid-row:1;width:88px;height:88px}
+}
+@media(pointer:coarse){.museum-dock{--museum-stick-size:88px;--museum-compact-stick-size:74px}.museum-dock>.stick{display:block}}
+@media(orientation:landscape) and (max-height:450px){
+ .atlas-player .ap-bar{flex-wrap:nowrap;gap:4px}
+ .atlas-player .ap-heading{flex:1 1 0;min-width:0;padding:0}
+ .atlas-player .ap-heading span{display:none}
+ .atlas-player .ap-time{margin:0;font-size:10px}
+ .museum-dock{max-height:calc(100svh - var(--atlas-player-height,112px) - 100px)}
+ .museum-dock>.bottom{padding:8px;gap:4px}
+ .museum-dock>.bottom>label{margin-top:0}
+}

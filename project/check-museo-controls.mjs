@@ -190,6 +190,15 @@ for(const lang of ['es','en']){
   for(const lateral of [2.3,2.45]){const plane=model.paintingPlane(llm),pose={x:plane.center.x+lateral,z:plane.center.z+1.2,yaw:0,pitch:0},walk=harness({lang,storage:stored(lang,pose)});await walk.flush();walk.frames(1);walk.events.keydown(key('KeyW'));walk.frames(150);assert.equal(walk.navigations.length,lateral===2.3?1:0,'walking enters the wide canvas near its edge, but not outside the rectangle');}
  }
 }
+for(const lang of ['es','en']){
+ controllerCases++;const h=harness({lang,search:'?pieza=llms'});await h.flush();h.frames(1);const notebook=h.players[0];notebook.toggle();await h.flush();h.frames(1);const pose={...h.lastPose},readingKey=code=>({...key(code),target:{closest:selector=>selector.split(',').includes('.card-copy')}});
+ for(const code of ['ArrowDown','ArrowUp','KeyW','KeyD']){h.events.keydown(readingKey(code));h.frames(12);h.events.keyup(readingKey(code));}
+ samePose(h.lastPose,pose,'reading the focused painting text does not walk the visitor');assert(notebook.running,'reading keys do not pause the current gallery narration');
+ const copy=h.element('card').querySelector('.card-copy');copy.scrollTop=99;h.frames(15);assert.equal(copy.scrollTop,99,'holding the same painting retains its reading scroll');
+ h.events.keydown(key('ArrowDown'));h.frames(12);h.events.keyup(key('ArrowDown'));assert(h.lastPose.z>pose.z,'returning focus to the world restores ordinary movement');assert.equal(notebook.running,false);
+ h.events.keydown(readingKey('Escape'));const stopped={...h.lastPose};h.frames(30);samePose(h.lastPose,stopped,'Escape remains available while reading');
+ h.element('instant').checked=true;h.paintings.find(b=>b.dataset.painting==='home').onclick();h.frames(1);assert.equal(copy.scrollTop,0,'a different painting begins at the top of its description');
+}
 let routeCases=0;
 for(const lang of ['es','en']){
  const h=harness({lang});await h.flush();h.element('instant').checked=false;const choose=id=>h.paintings.find(b=>b.dataset.painting===id).onclick();
