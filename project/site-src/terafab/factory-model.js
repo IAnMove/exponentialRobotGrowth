@@ -309,3 +309,16 @@ export function fabFrameAt(trace,time=0){
   });
 }
 export const frameAt=fabFrameAt;
+
+// Describe the circuit actually targeted by the probe, or its last completed
+// reading. This never predicts continuity from the circuit's hidden template.
+export function fabProbeView(frame){
+ const q=frame.quality.probe,probe=frame.probe;
+ const last=q.results.reduce((previous,result)=>result.valid!==null&&(!previous||result.measuredAt>=previous.measuredAt)?result:previous,null);
+ const target=probe?.targetDieId||null,active=q.activeDieId||null,selected=frame.selectedDieId||null;
+ const dieId=target||active||selected||last?.dieId||q.results[0]?.dieId||null;
+ const die=frame.dies.find(d=>d.id===dieId),result=q.results.find(r=>r.dieId===dieId);
+ const relation=target?(active===target?'active':'target'):active?'active':selected?'selected':last?'last':'preview';
+ const contact=!!(target&&target===dieId&&probe.contact&&probe.contactDieId===dieId&&probe.needles.length===2&&probe.needles.every(needle=>{const node=die?.circuit.nodes.find(n=>n.id===needle.nodeId);return node&&Math.hypot(...needle.tip.map((v,i)=>v-die.position[i]-node.position[i]))<1e-8;}));
+ return freeze({dieId,relation,contact,phase:probe?.phase||'idle',valid:result?.valid??null,lastMeasuredId:last?.dieId??null,markerId:frame.index===9?target:null,markerPosition:frame.index===9&&target&&die?die.position.slice():null,totals:{measured:q.completed,continuous:frame.ledger.probe.continuous,open:frame.ledger.probe.open,pending:q.pending,total:q.total}});
+}

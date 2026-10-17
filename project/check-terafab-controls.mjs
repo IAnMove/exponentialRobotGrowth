@@ -147,3 +147,13 @@ for(const lang of ['es','en'])for(const running of [false,true]){
  h.events?.pagehide?.({persisted:false});
 }
 console.log('terafab observation: '+observationChecks+' bilingual paused/running chapter gaps and exact completions retain their phase: OK');
+
+let probeStates=0;
+for(const lang of ['es','en'])for(const mode of ['notebook','immersive']){
+ const h=harness({lang,mode,voices:VOICES,worldAPI});await h.flush();h.players[0].pause();h.element('instant').checked=true;h.element('process-op-9').onclick();
+ for(const fault of ['illustrative-open','none']){h.element('fault').value=fault;h.element('fault').onchange();
+  for(const time of [90,94.8,95.2,95.3,95.5,95.9,96.4,97.75,97.8,97.9,100,107]){h.element('timeline').value=time;h.element('timeline').oninput();h.frames(1);const f=h.lastFrame,v=model.fabProbeView(f),html=h.element('metrics').innerHTML,values=[...html.matchAll(/<strong>([^<]+)<\/strong>/g)].map(m=>m[1]);assert.deepEqual(values,[v.totals.measured+' / 9',String(v.totals.continuous),String(v.totals.open),String(v.totals.pending)]);assert.equal(h.element('metrics').dataset.reading,'probe');assert.equal(h.element('probe-status').hidden,false);assert.equal(h.element('probe-status').dataset.dieId,v.dieId);assert.equal(h.element('probe-status').dataset.contact,String(v.contact));assert(h.element('probe-status').textContent.includes(v.dieId));if(v.valid===null)assert(!/continuidad verificada|conexión abierta|continuity verified|open connection/.test(h.element('probe-status').textContent),'a visible gap is not an already completed measurement');if(v.relation==='last')assert.match(h.element('probe-status').textContent,lang==='es'?/Última medida: die-8/:/Last measured: die-8/);assertMetrics(h);probeStates++;}
+ }
+ const writes=h.element('metrics').writes;h.frames(120);assert.equal(h.element('metrics').writes,writes,'held sample counters keep their DOM');h.element('view-campus').onclick();assert.equal(h.element('probe-status').hidden,true);assert.equal(h.element('metrics').dataset.reading,'materials');h.element('view-fab').onclick();assert.equal(h.element('probe-status').hidden,false);h.element('process-op-0').onclick();assert.equal(h.element('probe-status').hidden,true);assert.equal(h.element('metrics').dataset.reading,'materials');h.events.pagehide?.({persisted:false});
+}
+console.log('Terafab probe controls: '+probeStates+' bilingual notebook/FPS sample readings, both fault settings, current/last identity, pending outcomes, held counters and view/chapter hiding: OK');
