@@ -95,3 +95,9 @@ ESCALA 01	SCALE 01
 ESCALA 02	SCALE 02
  sobre 	 out of 
 Incluyen estructura, actuadores, batería, controladores y sensores.	They include the structure, actuators, battery, controllers and sensors.
+
+# Arrivals remain visible after task capacity is reached
+Recibidos en la ciudad	Received in the city
+Sin tarea · terminal	Unassigned · terminal
+La hipótesis total permite cubrir las 600 tareas. Las nuevas entregas esperan después en la reserva.	The full hypothesis allows all 600 tasks to be covered. Further deliveries then wait in reserve.
+Las tareas fuera del alcance supuesto siguen siendo humanas. Los robots sobrantes esperan en la reserva.	Tasks outside the assumed scope remain human. Surplus robots wait in reserve.
