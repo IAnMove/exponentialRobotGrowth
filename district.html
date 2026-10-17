@@ -21,14 +21,14 @@
     <div id="place-labels" class="place-labels"></div>
     <aside class="inspector" id="inspector" hidden>
       <div class="inspector-head"><span id="place-title"></span><button id="close-inspector" type="button" aria-label="Close details">×</button></div>
+      <div id="place-status" class="place-status"></div>
       <p id="place-description"></p>
       <div id="industrial-detail">
         <div class="inspector-numbers"><div><strong id="place-humans"></strong><span>people</span></div><div><strong id="place-workers"></strong><span>robots</span></div><div><strong id="place-flow"></strong><span>produced</span></div></div>
         <div id="place-product" class="place-product"></div><p id="place-shift"></p>
-        <div class="capacity-caption"><span>Rate this hour</span><strong id="capacity-label"></strong></div><div class="capacity-track"><i id="capacity-fill"></i></div>
+        <div class="capacity-caption"><span>Capacity available now</span><strong id="capacity-label"></strong></div><div class="capacity-track"><i id="capacity-fill"></i></div>
         <div class="sector-productivity"><h3>Output compared with human work</h3><p id="d-sector-values"></p><div class="production-legend"><span>● Your strategy</span><span>┄ Human work only</span></div><svg id="d-sector-chart" viewBox="0 0 640 170" role="img" aria-label="Output of this industry over time"></svg><small id="d-sector-window"></small></div><h3 id="stock-title">Required stock</h3><div id="stock-list"></div><p id="stock-footnote"></p>
       </div>
-      <div id="place-status" class="place-status"></div>
     </aside>
     <div class="map-card"><div>INDUSTRIAL DISTRICT <span>↗</span></div><canvas id="minimap" width="200" height="152" tabindex="0" role="button" aria-label="Map: click to explore. Arrow keys to move. Enter to fit the whole world."></canvas><span>Click to explore</span></div>
     <div class="map-tools"><button id="routes" type="button" aria-pressed="false"><span aria-hidden="true">⑂</span> Connections</button></div>
