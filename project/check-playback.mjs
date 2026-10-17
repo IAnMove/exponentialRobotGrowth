@@ -7,6 +7,15 @@ import {readFileSync} from 'node:fs';
 const clips=[{id:'a',src:'a.mp3',duration:10},{id:'b',src:'b.mp3',duration:20},{id:'c',src:'c.mp3',duration:5}];
 const timeline=makeTimeline(clips);assert.equal(timeline.at(-1).end,41);assert.equal(locate(timeline,12).inGap,true);assert.equal(locate(timeline,13).id,'b');assert.equal(restoredPosition({chapter:'b',offset:7.35},timeline),20.35);assert.equal(restoredPosition({chapter:'missing',offset:8},timeline),0);
 class AudioStub{static all=[];constructor(src){this.src=src;this.currentTime=0;this.paused=true;AudioStub.all.push(this);}play(){if(this.block)return Promise.reject(Error('Autoplay blocked'));this.paused=false;return Promise.resolve();}pause(){this.paused=true;}load(){if(this.src?.startsWith('blob:'))this.onloadedmetadata?.();}removeAttribute(){this.src='';}}
+// Recorded fractional durations must reach the actual final generation. For
+// English, 92.16 - 63 is slightly less than 29.16 in binary floating point.
+for(const durations of [[18.396,17.604,18,29.16],[16.128,21.564,19.116,27.18]]){
+ const recorded=durations.map((duration,i)=>({id:String(i),src:i+'.mp3',duration})),c=new TimelineClock({clips:recorded,AudioClass:AudioStub});
+ assert.equal(locate(c.timeline,c.timeline[0].start+c.timeline[0].duration).progress,1,'observation starts with the completed scene');
+ assert(locate(c.timeline,c.total-1e-6).progress<1,'do not complete before the actual boundary');
+ await c.seek(c.timeline.at(-1).start,false);c.audio.onended();assert.equal(c.state,'finished');assert.equal(c.current.local,durations.at(-1));assert.equal(c.current.progress,1);assert.equal(Math.floor(1+79*c.current.progress),80,'ended narration reaches generation 80');
+ await c.seek(c.total,false);assert.equal(c.current.progress,1,'seeking/restoring the end is complete too');c.dispose();
+}
 const sync=[],states=[],revoked=[];let loads=0;
 const clock=new TimelineClock({clips,AudioClass:AudioStub,onSync:s=>sync.push(s),onState:s=>states.push(s),loadBlob:async src=>{loads++;return src;},urls:{createObjectURL:src=>'blob:'+src,revokeObjectURL:url=>revoked.push(url)}});
 await clock.play();assert.equal(clock.state,'playing');clock.audio.currentTime=4.7;clock.tick(.1);assert.equal(clock.position,4.7);clock.pause();clock.audio.currentTime=8;clock.tick(.2);assert.equal(clock.position,4.7,'paused clock must not run');

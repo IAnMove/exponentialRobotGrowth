@@ -25,9 +25,9 @@ export const VOICES = {
     {
       "id": "step-3",
       "title": "4 · El azar cambia la trayectoria",
-      "text": "Con solo cincuenta individuos, el muestreo aleatorio puede aumentar o perder una variante: es deriva genética. Cambia la semilla para comparar historias. Desactiva población finita para ver la expectativa matemática. Con ventaja y mutación a cero, esa expectativa permanece estable, mientras una población pequeña puede fluctuar.",
-      "file": "journey-evolution-es-step-3-8baf34bfef82.mp3",
-      "duration": 21.924
+      "text": "Con solo cincuenta individuos, el muestreo aleatorio puede aumentar o perder una variante: es deriva genética. Cambia la semilla para comparar historias. Desactiva población finita para ver la referencia sin muestreo aleatorio. Representa una población infinita; con selección, no es la media exacta de muchas poblaciones pequeñas. Con ventaja y mutación a cero, esa referencia permanece estable, mientras una población pequeña puede fluctuar.",
+      "file": "journey-evolution-es-step-3-ba32501f4c16.mp3",
+      "duration": 27.18
     }
   ],
   "en": [
@@ -55,9 +55,9 @@ export const VOICES = {
     {
       "id": "step-3",
       "title": "4 · Chance changes the trajectory",
-      "text": "With only fifty individuals, random sampling can increase or lose a variant: this is genetic drift. Change the seed to compare histories. Disable finite population to see the mathematical expectation. With advantage and mutation at zero, that expectation stays stable while a small population can fluctuate.",
-      "file": "journey-evolution-en-step-3-834ac72d2da1.mp3",
-      "duration": 20.628
+      "text": "With only fifty individuals, random sampling can increase or lose a variant: this is genetic drift. Change the seed to compare histories. Disable finite population to see the reference without random sampling. It represents an infinite population; under selection, it is not the exact average of many small populations. With advantage and mutation at zero, that reference stays stable while a small population can fluctuate.",
+      "file": "journey-evolution-en-step-3-dcdc1bd8c777.mp3",
+      "duration": 29.16
     }
   ]
 };

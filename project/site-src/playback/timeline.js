@@ -1,7 +1,7 @@
 // A single clock for recorded narration, chapter gaps and deterministic scenes.
 export const clamp=(v,a,b)=>Math.max(a,Math.min(b,Number.isFinite(v)?v:a));
 export function makeTimeline(clips,gap=3){let start=0;return clips.map((clip,index)=>{const duration=Math.max(.1,Number(clip.duration)||.1),entry={...clip,index,start,duration,end:start+duration+(index<clips.length-1?gap:0)};start=entry.end;return entry;});}
-export function locate(timeline,seconds){const total=timeline.at(-1)?.end||0,elapsed=clamp(seconds,0,total),entry=timeline.find(e=>elapsed<e.end)||timeline.at(-1);if(!entry)return null;const local=clamp(elapsed-entry.start,0,entry.duration);return {...entry,elapsed,local,progress:local/entry.duration,inGap:elapsed>=entry.start+entry.duration,total};}
+export function locate(timeline,seconds){const total=timeline.at(-1)?.end||0,elapsed=clamp(seconds,0,total),entry=timeline.find(e=>elapsed<e.end)||timeline.at(-1);if(!entry)return null;const inGap=elapsed>=entry.start+entry.duration,local=inGap?entry.duration:clamp(elapsed-entry.start,0,entry.duration);return {...entry,elapsed,local,progress:local/entry.duration,inGap,total};}
 export function restoredPosition(saved,timeline){const e=timeline.find(c=>c.id===saved?.chapter);return e?e.start+clamp(saved.offset,0,e.end-e.start):0;}
 
 export class TimelineClock {
