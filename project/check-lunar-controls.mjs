@@ -3,6 +3,7 @@ import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
 import {DEFAULTS,STAGES,simulate,sample,crossingYear,START,YEARS,POWER_PER_TONNE} from './site-src/lunar/model.js';
 import {lunarFrameAt} from './site-src/lunar/presentation.js';
+import {CARGO_STOPS,cargoStepAt} from './site-src/lunar/mission.js';
 import {LunarSfx} from './site-src/lunar/sfx.js';
 import {TimelineClock,restoredPosition} from './site-src/playback/timeline.js';
 
@@ -76,7 +77,7 @@ function harness({lang='es',storage=new Map(),audioMode='success',sfxMode='succe
  const world={updateFrame(value,options){frame=value;camera.view=value.view;updates.push({frame:value,options});},setView(value){viewCalls.push(value);camera.view=value;},getViewState(){return clone(camera);},restoreViewState(value){camera=clone(value);},resetView(){this.resets=(this.resets||0)+1;camera.position=[0,10,20];},inspect(){return {capacity:clone(capacity)};},get representation(){return capacity.tonnesPerSample;},setCapacity(value){capacity=clone(value);},dispose(){this.disposed=true;},orbit(value){camera={...camera,...clone(value)};viewListener?.();}};
  const requestAnimationFrame=fn=>{const id=++rafId;queued.set(id,fn);return id;},media=()=>({matches:reduced});
  const baseline={visibility:document.listenerCount('visibilitychange'),pagehide:window.listenerCount('pagehide'),pointerdown:document.listenerCount('pointerdown'),keydown:document.listenerCount('keydown')};
- const context={DEFAULTS,STAGES,simulate,sample,crossingYear,START,YEARS,POWER_PER_TONNE,lunarFrameAt,VOICES,LunarSfx:Sfx,TimelineClock:Clock,restoredPosition,Audio:AudioStub,document,window,URL,Intl,console:gpu?console:{error(){}},queueMicrotask,__LUNAR_CONTROLLER_TEST__:true,
+ const context={DEFAULTS,STAGES,simulate,sample,crossingYear,START,YEARS,POWER_PER_TONNE,lunarFrameAt,CARGO_STOPS,cargoStepAt,VOICES,LunarSfx:Sfx,TimelineClock:Clock,restoredPosition,Audio:AudioStub,document,window,URL,Intl,console:gpu?console:{error(){}},queueMicrotask,__LUNAR_CONTROLLER_TEST__:true,
   ResizeObserver:class{observe(){}disconnect(){this.disconnected=true;}},matchMedia:media,performance:{now:()=>now},localStorage:{getItem:key=>storage.get(key)||null,setItem:(key,value)=>storage.set(key,value)},requestAnimationFrame,cancelAnimationFrame:id=>queued.delete(id),createWorld(){throw Error('World should be injected');}};
  context.NotebookPlayer=vm.runInNewContext(`(()=>{${playerSource}\nreturn NotebookPlayer;})()`,context);
  const factory=vm.runInNewContext(`(()=>{${appSource}\nreturn createLunarController;})()`,context);
@@ -93,6 +94,9 @@ function viewButton(h,value){const button=h.document.querySelector(`[data-view="
 function setting(h,id,value){h.element(id).value=String(value);h.element(id).oninput();}
 function checkbox(h,id,value){h.element(id).checked=value;h.element(id).onchange();}
 
+let cargoChecks=0;
+for(const lang of ['es','en']){const h=harness({lang});await h.flush();h.player.pause();assert(h.element('cargo-status').hidden);h.player.stage(5,false);const amounts=JSON.stringify(h.frame.row);for(const [u,location,action,index]of [[0,'ship','ship',0],[.079,'ship','ship',0],[.08,'elevator','elevator',1],[.499,'elevator','elevator',1],[.5,'handoff','handoff',2],[.559,'handoff','handoff',2],[.56,'rover','ready',3],[.65,'rover','ready',3],[.651,'rover','drive',3],[.919,'rover','drive',3],[.92,'deposit','deposit',4],[.999,'deposit','deposit',4],[1,'surface','surface',5]]){scrub(h,u);const card=h.element('cargo-status'),items=card.querySelectorAll('[data-cargo-step]');assert(!card.hidden);assert.equal(card.dataset.location,location);assert.equal(card.dataset.action,action);assert.equal(card.dataset.deposited,String(u===1));assert.equal(items.length,6);items.forEach((item,i)=>{assert.equal(item.getAttribute('aria-current'),i===index?'step':'false');assert.equal(item.dataset.status,i<index?'done':i===index?'active':'next');});assert(h.element('cargo-action').textContent);assert.match(card.textContent,lang==='es'?/no añade otra entrega/:/does not add another delivery/);assert.equal(JSON.stringify(h.frame.row),amounts,'illustrative unloading never credits another model delivery');cargoChecks++;}h.player.stage(6,false);for(const u of [0,.5,1]){scrub(h,u);assert.equal(h.element('cargo-status').dataset.action,'remain');assert.equal(h.element('cargo-status').dataset.deposited,'true');cargoChecks++;}viewButton(h,'route');assert(h.element('cargo-status').hidden);viewButton(h,'mission');assert(!h.element('cargo-status').hidden);h.player.changeLanguage(lang==='es'?'en':'es');assert.equal(h.element('cargo-status').dataset.action,'remain');h.player.stage(0,false);assert(h.element('cargo-status').hidden);h.dispose();}
+console.log(`Lunar cargo status: ${cargoChecks} bilingual boundary/carrier cases, no early deposition, unchanged tonnes, view hiding, voice and current-step semantics: OK`);
 let chapterChecks=0;
 for(const lang of ['es','en']){
  const h=harness({lang});await h.flush();h.frames(1);const p=h.player;

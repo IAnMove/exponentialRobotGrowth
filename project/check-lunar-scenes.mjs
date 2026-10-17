@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
 import {simulate,STAGES} from './site-src/lunar/model.js';
-import {missionPose} from './site-src/lunar/mission.js';
+import {missionPose,cargoStepAt} from './site-src/lunar/mission.js';
 import {lunarFrameAt} from './site-src/lunar/presentation.js';
 
 // Browser imports are mapped to the installed identical Three library. The
@@ -39,6 +39,7 @@ for(const es of [true,false]){
   if(index===2){const r=frame.mission.refuel;close(r.shipLevel+r.depotLevel,1);close(parts.refuel.shipLevel.scale.x,4*r.shipLevel);close(parts.refuel.depotLevel.scale.x,4*r.depotLevel);assert.equal(parts.refuel.docking.visible,r.connected);for(const m of parts.refuel.markers)if(m.visible){assert(r.connected&&r.phase==='transfer','transfer requires connected ports');close(m.position.y,5);close(m.position.z,0);assert(m.position.x>=-1.5&&m.position.x<=1.9);}if(sample===100)assert(parts.refuel.markers.every(m=>!m.visible));}
   if(index===4&&sample===100){close(new THREE.Box3().setFromObject(parts.vehicles.lunarShip.legs).min.y,parts.unload.ground);for(const engine of parts.vehicles.lunarShip.engines)assert(new THREE.Box3().setFromObject(engine).min.y>parts.unload.ground,'landing feet keep all engine bells clear of the ground');}
   if(index===5){const location=frame.mission.cargoLocation,ground=parts.unload.ground;assert(frame.mission.arrived);if(location==='elevator'){const deck=new THREE.Box3().setFromObject(parts.unload.elevatorDeck);close(parts.payload.worldBottom,deck.max.y);}if(location==='handoff'||location==='rover')close(parts.payload.worldBottom,ground+parts.unload.bedHeight);if(location==='deposit'){const fork=new THREE.Box3().setFromObject(parts.unload.roverLift);close(parts.payload.worldBottom,fork.max.y);if(parts.payload.worldBottom<ground+.91)assert(new THREE.Box3().setFromObject(parts.payload.mesh).min.x>parts.unload.rover.position.x+1.2,'cargo clears the rover bed before lowering');}if(location==='surface')close(parts.payload.worldBottom,ground);}
+  if(index===5||index===6){const status=cargoStepAt(frame.stage,frame.mission);assert.equal(status.location,parts.payload.location,'the visible status reads the physical pallet carrier');const parents={ship:parts.vehicles.lunarShip.group,elevator:parts.unload.elevator,rover:parts.vehicles.rover,handoff:parts.vehicles.rover.parent,deposit:parts.vehicles.rover.parent,surface:parts.vehicles.rover.parent};assert.equal(parts.payload.mesh.parent,parents[status.location]);if(status.deposited){assert.equal(status.index,5);close(parts.payload.worldBottom,parts.unload.ground);}if(status.action==='ready')close(parts.vehicles.rover.position.x,4.85);if(status.action==='drive')assert(parts.vehicles.rover.position.x>4.85);}
   if(index===6){close(parts.payload.worldBottom,parts.unload.ground);close(parts.payload.mesh.getWorldPosition(new THREE.Vector3()).x,17.05);if(sample===100)assert(!parts.vehicles.lunarShip.burn.visible);}
  }
  // Parent changes preserve position at every platform and ground contact.
