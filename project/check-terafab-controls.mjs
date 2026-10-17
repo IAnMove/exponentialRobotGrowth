@@ -129,6 +129,26 @@ for(const lang of ['es','en'])for(const mode of ['notebook','immersive'])for(con
 for(const lang of ['es','en']){
  scenarios++;const h=harness({lang,mode:'immersive',finePointer:false,voices:VOICES,worldAPI}),{element,frames}=h;await h.flush();h.players[0].pause();const before=h.lastPose,canvas=h.world.canvas;canvas.handlers.pointerdown({button:0,pointerId:2,pointerType:'touch',clientX:100,clientY:100});canvas.handlers.pointermove({pointerId:2,pointerType:'touch',clientX:180,clientY:125});canvas.handlers.pointerup({button:0,pointerId:2,pointerType:'touch',clientX:180,clientY:125});frames(1);assert(Math.abs(h.lastPose.yaw-before.yaw)>.1);assert.equal(h.document.pointerLockElement,null);const pad=h.queryAll('[data-move]').find(button=>button.dataset.move==='right');pad.handlers.pointerdown({pointerId:3,preventDefault(){}});frames(15);pad.handlers.pointerup({pointerId:3});frames(1);const stopped=h.lastPose;frames(60);samePose(h.lastPose,stopped,'released touch controls cannot remain held');
 }
+let focusedKeys=0,focusStops=0;
+for(const lang of ['es','en']){
+ scenarios++;const h=harness({lang,mode:'immersive',voices:VOICES,worldAPI});await h.flush();const n=h.players[0];n.pause();h.element('follow').checked=false;h.element('follow').onchange();h.element('instant').checked=true;h.element('instant').onchange();h.element('chapter-0').onclick();
+ const regions=['input','select','textarea','button','a','[role="button"]','[role="link"]','[role="slider"]','[contenteditable]:not([contenteditable="false"])','.atlas-player','#inspect'];
+ for(const region of regions){
+  const target={closest:selector=>selector.split(',').includes(region)?target:null};
+  n.stage(3,true);await h.flush();h.frames(1);const pose={...h.lastPose},clip=n.current.id,audio=n.clock.audio;
+  for(const code of ['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','KeyE']){
+   let prevented=false;h.events.keydown({...key(code),target,preventDefault(){prevented=true;}});h.frames(2);h.events.keyup(key(code));
+   samePose(h.lastPose,pose,'focused controls do not walk');assert(n.running,'reading keys retain narration');assert.equal(n.current.id,clip,'E on a control does not select another physical stand');assert.equal(n.clock.audio,audio);assert(!prevented,'focused elements retain their native keyboard behavior');focusedKeys++;
+  }
+ }
+ const target={closest:selector=>selector.split(',').includes('button')?target:null};
+ n.pause();h.events.keydown(key('KeyW'));h.frames(12);h.events['document:focusin']({target});const stopped={...h.lastPose};h.frames(60);samePose(h.lastPose,stopped,'focus releases an already held walking key');h.events.keyup(key('KeyW'));focusStops++;
+ h.element('chapter-0').onclick();h.frames(1);const beforeTouch={...h.lastPose};const move=h.queryAll('[data-move]').find(b=>b.dataset.move==='forward');move.handlers.pointerdown({preventDefault(){},pointerId:7});h.frames(12);assert(Math.hypot(h.lastPose.x-beforeTouch.x,h.lastPose.z-beforeTouch.z)>.05);h.events['document:focusin']({target});const touchStopped={...h.lastPose};h.frames(60);samePose(h.lastPose,touchStopped,'focus also releases a held touch direction');move.handlers.pointercancel();focusStops++;
+ h.element('chapter-0').onclick();h.frames(1);h.events.keydown(key('KeyE'));await h.flush();assert(n.running);assert.equal(n.current.index,0,'E retains physical listening from the scene');
+ h.element('inspect').hidden=false;h.events.keydown({...key('Escape'),target});h.frames(1);assert(h.element('inspect').hidden);assert(!n.running,'Escape remains available from focused controls');
+ h.events.pagehide?.({persisted:false});
+}
+console.log(`Terafab keyboard ownership: ${focusedKeys} bilingual focused-key cases and ${focusStops} held keyboard/touch releases; scene E and focused Escape retained: OK`);
 console.log(`Terafab controls: ${scenarios} bilingual manual/narrated/audio-failure/FPS scenarios, real NotebookPlayer/TimelineClock/binder, ${anchors.length} literal mechanical anchors and ${inverseSamples} inverse samples, thirteen reversible operation seeks and matching paused audio footer, context chapters, two-camera/manual/language/reload preservation, phase-equivalent voice switches, physical E/click, first/repeated FPS, blur/visibility/touch and ${proofs.recordings} ${proofs.mode} MiniMax proofs: OK`);
 
 // Equivalent scene-cue remapping must not restart the post-audio observation.
