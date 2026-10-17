@@ -46,3 +46,13 @@ Esta etapa está produciendo con los recursos disponibles. La salida final todav
 1,4×	1.4×
 Los controles y detalles corresponden a la región con ampliaciones. El segundo mapa es su referencia.	Controls and details describe the region with expansion. The second map is its reference.
 — indica un hito aún no alcanzado. 	— means a milestone has not yet been reached. 
+
+# Completed-hour district supply diagnosis
+Todavía no hay una hora de producción completada. Avanza la simulación antes de identificar un proveedor limitante.	No hour of production has completed yet. Advance the simulation before identifying a limiting supplier.
+En la última hora completa no hubo personal disponible para esta operación. Revisa los turnos, la recarga y el servicio antes de atribuir la espera a los materiales.	No workers were available for this operation during the last completed hour. Check shifts, charging and maintenance before attributing the wait to materials.
+En la última hora completa hubo capacidad para una fracción de operación, pero no se terminó una unidad. La capacidad se acumula para horas posteriores.	The last completed hour provided capacity for part of an operation, but no whole unit was completed. That capacity carries over to later hours.
+En la última hora completa los robots disponibles se dedicaron a ampliar este sector. Esos robots no estaban produciendo piezas.	During the last completed hour the available robots worked on expanding this sector. Those robots were not producing parts.
+En la última hora completa esta etapa produjo menos de lo que permitía su capacidad. Revisa las existencias iniciales de esa hora procedentes de	During the last completed hour this stage produced less than its available capacity allowed. Check the stocks at the start of that hour supplied by
+. Las entradas se comparten; el stock que ves ahora ya incluye el consumo y las entregas de esa hora.	. Inputs are shared; the stock shown now already includes that hour’s consumption and deliveries.
+En la última hora completa se alcanzó el límite de la maquinaria disponible entonces. Ampliar los equipos puede aumentar la capacidad; añadir personal por sí solo no supera ese límite.	The last completed hour reached the limit of the machinery available then. Expanding the equipment can increase capacity; adding workers alone cannot exceed that limit.
+En la última hora completa esta etapa produjo con los recursos disponibles. La salida final todavía depende del resto de la cadena.	During the last completed hour this stage produced with the available resources. Final output still depends on the rest of the chain.

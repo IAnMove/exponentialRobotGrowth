@@ -104,13 +104,16 @@ function render(){requestAnimationFrame(render);const now=performance.now(),dt=M
 
 
 
-document.addEventListener('narration-focus',e=>{if(/^district-\d+$/.test(e.detail))selectPlace(Number(e.detail.split('-')[1]),false);});
+document.addEventListener('narration-focus',e=>{if(narrator.source==='voice'&&/^district-\d+$/.test(e.detail))selectPlace(Number(e.detail.split('-')[1]),false);});
 
-function updateTrace(){const frame=run.frames[index],next=nextFrame(),d=explainConstraint(frame,next,traceIndex);traceSources=d.sources;const names=d.sources.map(i=>INDUSTRIES[i].name).join(', ');let text;
- if(d.kind==='staff')text='En esta etapa falta personal disponible en este momento. Revisa el turno y la recarga antes de atribuir la espera a los materiales.';
- else if(d.kind==='inputs')text='Esta etapa no alcanza su capacidad disponible. Revisa el suministro desde '+names+'. Las existencias se comparten entre procesos; reforzar solo este puesto puede no resolver la espera.';
- else if(d.kind==='equipment')text='El personal disponible alcanza el límite de la maquinaria. Aquí hace falta capacidad instalada, no solo más robots.';
- else text='Esta etapa está produciendo con los recursos disponibles. La salida final todavía depende del resto de la cadena.';
+function updateTrace(){const frame=run.frames[index],d=explainConstraint(frame,null,traceIndex);traceSources=d.sources;const names=d.sources.map(i=>INDUSTRIES[i].name).join(', ');let text;
+ if(d.kind==='initial')text='Todavía no hay una hora de producción completada. Avanza la simulación antes de identificar un proveedor limitante.';
+ else if(d.kind==='staff')text='En la última hora completa no hubo personal disponible para esta operación. Revisa los turnos, la recarga y el servicio antes de atribuir la espera a los materiales.';
+ else if(d.kind==='partial')text='En la última hora completa hubo capacidad para una fracción de operación, pero no se terminó una unidad. La capacidad se acumula para horas posteriores.';
+ else if(d.kind==='building')text='En la última hora completa los robots disponibles se dedicaron a ampliar este sector. Esos robots no estaban produciendo piezas.';
+ else if(d.kind==='inputs')text='En la última hora completa esta etapa produjo menos de lo que permitía su capacidad. Revisa las existencias iniciales de esa hora procedentes de '+names+'. Las entradas se comparten; el stock que ves ahora ya incluye el consumo y las entregas de esa hora.';
+ else if(d.kind==='equipment')text='En la última hora completa se alcanzó el límite de la maquinaria disponible entonces. Ampliar los equipos puede aumentar la capacidad; añadir personal por sí solo no supera ese límite.';
+ else text='En la última hora completa esta etapa produjo con los recursos disponibles. La salida final todavía depende del resto de la cadena.';
  $('trace-status').textContent=INDUSTRIES[traceIndex].name+': '+text;$('trace-supplier').disabled=!d.sources.length;
  [...$('trace-stages').children].forEach((b,i)=>b.setAttribute('aria-pressed',String(i===traceIndex)));
  labels.forEach((b,i)=>b.classList.toggle('trace-source',$('trace-active').checked&&d.sources.includes(i)));

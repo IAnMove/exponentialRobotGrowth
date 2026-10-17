@@ -39,19 +39,32 @@ for(const expanded of [true,false]){
 assert.equal(idealFleet(0),24);
 for(const time of [0,20,40,80])assert.equal(idealFleet(time+20),idealFleet(time)*2);
 
-// Test diagnosis against a real shared-inventory run, including fractional work.
+// Diagnose the last credited hour without consulting future flow or end stock.
 const context=vm.createContext({});vm.runInContext(fs.readFileSync('dist/industrial-model.js','utf8')+';globalThis.run=simulateIndustry();',context);
-const frames=context.run.frames;let shortages=0,rest=0;
-for(let t=0;t<frames.length-1;t++)for(let i=0;i<9;i++){
- const f=frames[t],next=frames[t+1],d=explainConstraint(f,next,i);
- if(d.kind==='inputs'){
-  shortages++;assert(next.flow[i]<next.worked.cap[i]);assert(d.sources.length);
-  if(i===6)assert(d.sources.every(k=>f.inventory[k]===next.flow[i]));
-  if([1,7,8].includes(i))assert.equal(f.inventory[d.sources[0]],next.flow[i]);
+const frames=context.run.frames;let shortages=0,rest=0,diagnoses=0,initial=0,partial=0,building=0,openings=0;
+for(const policy of ['none','assembly','network'])for(const expansion of [false,true]){
+ const run=vm.runInContext(`simulateIndustry('${policy}',${expansion},30)`,context),before=JSON.stringify(run);
+ for(let t=0;t<run.frames.length;t++)for(let i=0;i<9;i++){
+  const f=run.frames[t],previous=run.frames[t-1],next=run.frames[t+1],d=explainConstraint(f,next,i);diagnoses++;
+  assert.deepEqual(d,explainConstraint(f,{flow:Array(9).fill(999),worked:{cap:Array(9).fill(999)}},i),'future output cannot explain this snapshot');
+  if(!previous){initial++;assert.equal(d.kind,'initial');assert.equal(d.sources.length,0);continue;}
+  assert.equal(f.worked.hour,previous.absHour);assert.equal(d.flow,f.flow[i]);assert.equal(d.cap,f.worked.cap[i]);
+  const available=f.worked.active[i]+f.worked.humansWorking[i]-f.worked.builders[i];
+  if(d.cap<=0){const expected=available>0?'partial':f.worked.builders[i]>0?'building':'staff';assert.equal(d.kind,expected);assert.equal(d.sources.length,0);if(expected==='staff')rest++;if(expected==='partial')partial++;if(expected==='building')building++;continue;}
+  if(d.kind==='inputs'){
+   shortages++;assert(f.flow[i]<f.worked.cap[i]);assert(d.sources.length);
+   const inputs=[[],[0],[1],[1],[1],[1],[2,3,4,5],[6],[7]][i],lowest=Math.min(...inputs.map(k=>previous.inventory[k]));
+   assert.deepEqual(d.sources,inputs.filter(k=>previous.inventory[k]===lowest));
+   if(i===6)assert(d.sources.every(k=>previous.inventory[k]===f.flow[i]));
+   if([1,7,8].includes(i))assert.equal(previous.inventory[d.sources[0]],f.flow[i]);
+   assert.deepEqual(d,explainConstraint({...f,inventory:Array(8).fill(9999)},null,i),'end-of-hour deliveries cannot change the cause of the shortfall');
+  }else{assert.equal(d.kind,d.cap>=previous.hardware[i]?'equipment':'working');assert.equal(d.sources.length,0);}
+  if(f.opened.includes(i)){openings++;assert.equal(f.hardware[i],previous.hardware[i]+3);}
  }
- if(d.kind==='staff'){rest++;assert.equal(f.capacity[i],0);}
+ assert.equal(JSON.stringify(run),before,'diagnosis never mutates simulation state');
 }
-assert(shortages>0&&rest>0);
+assert(shortages>0&&rest>0&&partial>0&&openings>0);assert.equal(initial,54);
+console.log('Completed-hour diagnosis:',{diagnoses,initial,shortages,rest,partial,building,openings});
 const humanRun=vm.runInContext("simulateIndustry('none',false)",context);
 for(const policy of ['none','assembly','network'])for(const expansion of [false,true]){
  const run=vm.runInContext(`simulateIndustry('${policy}',${expansion})`,context);
@@ -69,6 +82,8 @@ for(const policy of ['none','assembly','network'])for(const expansion of [false,
 }
 const plan=productionSeries(frames),human=productionSeries(humanRun.frames);
 console.log('Final 24-hour window:',productionComparison(plan,human,frames.length-1));
-const f={capacity:Array(9).fill(.5),hardware:Array(9).fill(2),inventory:Array(8).fill(0),flow:Array(9).fill(0)};
-assert.equal(explainConstraint(f,{worked:{cap:Array(9).fill(0)},flow:f.flow},0).kind,'working');
+const f={capacity:Array(9).fill(0),hardware:Array(9).fill(6),inventory:Array(8).fill(0),flow:Array(9).fill(0),worked:{cap:Array(9).fill(0),active:Array(9).fill(1),humansWorking:Array(9).fill(0),builders:Array(9).fill(0),before:Array(8).fill(0)}};
+assert.equal(explainConstraint(f,null,0).kind,'partial','fractional completed-hour capacity is not a material shortage');
+f.worked.active.fill(2);f.worked.builders.fill(2);assert.equal(explainConstraint(f,null,0).kind,'building','builders are unavailable for production');
+f.worked.active.fill(0);f.worked.builders.fill(0);f.capacity.fill(99);assert.equal(explainConstraint(f,null,0).kind,'staff','staff returning now does not rewrite the preceding break');
 console.log('First robot causality, measured doubling intervals, ideal reference and real supply constraints: OK');
