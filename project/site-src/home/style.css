@@ -28,6 +28,7 @@
 
 @media(max-width:760px){.immersive .home-planning .touch{display:flex;right:10px;bottom:12px;gap:3px}.immersive .home-planning .touch button{box-sizing:border-box;min-height:34px;height:34px;min-width:34px;width:34px;padding:4px}.immersive .home-planning .camera-controls{bottom:12px;max-width:100px}.immersive .home-planning #overview,.immersive .home-planning #zoom-in,.immersive .home-planning #zoom-out,.immersive .home-planning #camera-help{display:none}.immersive .home-planning #listen-here{bottom:54px}}
 @media(max-width:760px) and (pointer:coarse){.immersive .home-planning #capture{display:none}}
+@media(max-width:760px) and (max-height:480px){.metrics{position:static}}
 
 #inspect-text{margin:0;padding-right:28px}#inspect-close{position:absolute;right:6px;top:6px;min-height:30px;min-width:30px;padding:2px;font-size:20px;line-height:1;background:#20323e;color:#eee9df}
 .home-planning #position{display:none}
