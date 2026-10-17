@@ -9,6 +9,8 @@ export const SECTORS=[
  {name:'Education and services',tasks:120,limits:[.05,.15,.3],description:'Logistics, spaces and simple administrative support. Teaching, supporting people and deciding are not shown as fully replaced.'}
 ];
 export const TOTAL_TASKS=SECTORS.reduce((a,s)=>a+s.tasks,0);
+// Count task assignments in (time - 10, time], not arrivals or hourly chart samples.
+export function recentCityTasks(assignments,time){return assignments.reduce((total,a)=>total+(a.assignedAt>time-10&&a.assignedAt<=time?a.count:0),0);}
 export const FULL_END=300;
 export function createCity(scenario=3,share=.35){const industry=createRegion(.6,true);industry.end=scenario===3?FULL_END:END;industry.exportShare=share;return {industry,scenario,share,assigned:SECTORS.map(()=>0),pending:[],available:0,received:0,dispatched:0,history:[]};}
 export const eligible=s=>SECTORS.map(t=>Math.floor(t.tasks*(s.scenario===3?1:t.limits[s.scenario])));
