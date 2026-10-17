@@ -29,6 +29,7 @@ let player={...spawn},world,started=false,last=performance.now(),path=[],destina
 let autoAim=true,freeLook=false,wasLocked=false,pointerLast=null,notebook,notebookReady=false,holdPose=false,changingVoice=false,restored=false,savedEntry='';
 let velocity={forward:0,strafe:0};
 const keys=new Set(),stick={id:null,x:0,y:0,ox:0,oy:0},frameTimes=[];
+const PORTAL_FADE=.25;
 const entryId=()=>new URLSearchParams(location.search).get('pieza')||location.hash.slice(1);
 const locked=()=>!!world&&document.pointerLockElement===world.dom;
 const controls=target=>target.closest?.('input,select,textarea,.card-copy,.atlas-player');
@@ -42,10 +43,15 @@ function releaseLook(){freeLook=false;pointerLast=null;document.exitPointerLock?
 function lockLook(){if(!finePointer||portal||!world)return;freeLook=true;$('view').focus?.();renderMouse();try{Promise.resolve(world.lookLock?.()).catch(()=>{if(freeLook)routeStatus(t('Ratón activo sobre la escena · Esc para soltar','Mouse look active over the scene · Esc to release'));renderMouse();});}catch{renderMouse();}}
 function mapOpen(open){$('map').hidden=!open;$('map-toggle').setAttribute('aria-expanded',String(open));if(open){stopWalk();releaseLook();}}
 function begin(autoplay=false){started=true;$('welcome').hidden=true;document.body.classList.remove('museum-awaiting');paint();if(autoplay&&notebook&&!notebook.running)notebook.toggle();}
+function finishWalk(){
+ const target=destination;if(!target)return;
+ player.x=target.x;player.z=target.z;if(autoAim){if(target.yaw!==undefined)player.yaw=target.yaw;if(target.pitch!==undefined)player.pitch=target.pitch;}
+ path=[];destination=null;$('stop').hidden=true;routeStatus('');$('route-distance').textContent='';const done=arrival;arrival=null;done?.();paint();notebook?.save();
+}
 function moveTo(target,label,callback=null){
  stopWalk();mapOpen(false);autoAim=true;arrival=callback;path=routeTo(player,target);destination=path.at(-1);
  if(!path.length){const done=arrival;arrival=null;destination=null;done?.();return;}
- if($('instant').checked){player={...player,...destination};path=[];destination=null;const done=arrival;arrival=null;done?.();paint();notebook?.save();return;}
+ if($('instant').checked){finishWalk();return;}
  routeStatus(t('Caminando hacia ','Walking to ')+label);$('stop').hidden=false;
 }
 function narrateRoom(id){const i=roomIndex(id);if(i<0)return;holdPose=true;notebook.stage(i,true);holdPose=false;}
@@ -54,10 +60,11 @@ function enterPainting(e){
  const href=e&&immersiveHref(e.id);if(!href||portal)return;
  if(focusedExhibit(player,24)?.id!==e.id){approach(e);return;}
  if(Math.hypot(player.x-e.x,player.z-e.z)>(e.stand||3.2)+.5){approach(e);return;}
- stopWalk();mapOpen(false);releaseLook();portal={exhibit:e,href:href+'&entrance=painting',from:{...player},elapsed:0,duration:reduced?.25:1.65,progress:0};
+ stopWalk();mapOpen(false);releaseLook();const instant=$('instant').checked;portal={exhibit:e,href:href+'&entrance=painting',from:{...player},elapsed:0,duration:instant?PORTAL_FADE:1.65,progress:0,instant};
  notebook?.save();$('transition-name').textContent=title(e);document.body.classList.add('crossing');
 }
 function cancelPortal(){if(!portal)return;player={...portal.from};portal=null;document.body.classList.remove('crossing');$('transition').style.opacity='0';paint();notebook?.save();}
+function freezePortal(){if(!portal||portal.instant||portal.navigating)return;portal.still={...player};portal.instant=true;portal.instantAt=portal.elapsed;portal.fadeFrom=Math.max(0,Math.min(1,Number($('transition').style.opacity)||0));portal.duration=portal.elapsed+PORTAL_FADE;}
 function paint(){
  const room=roomAt(player.x,player.z)||rooms[0],index=rooms.indexOf(room),count=exhibits.filter(e=>e.room===room.id).length;
  $('where').textContent=`${exhibits.length} ${t('cuadros','paintings')} · ${worldCount} ${t('mundos','worlds')}`;
@@ -79,7 +86,7 @@ notebook=new NotebookPlayer({id:'museum',autoplay:false,getClips:language=>VOICE
 });
 notebookReady=true;
 $('narrate').onclick=()=>{begin();const id=(roomAt(player.x,player.z)||rooms[0]).id;if(notebook.running&&notebook.current?.id===id)notebook.pause();else if(notebook.current?.id===id)notebook.toggle();else narrateRoom(id);paint();};
-$('follow-narration').onchange=()=>notebook.save();$('instant').onchange=()=>notebook.save();
+$('follow-narration').onchange=()=>notebook.save();$('instant').onchange=()=>{if($('instant').checked){freezePortal();if(destination){finishWalk();return;}}notebook.save();};
 $('start').onclick=()=>{begin(true);lockLook();};$('start-llms').onclick=()=>approach(exhibits.find(e=>e.id==='llms'));
 $('map-toggle').onclick=()=>mapOpen($('map').hidden);$('map-close').onclick=()=>mapOpen(false);
 $('stop').onclick=()=>{tourStep=-1;stopWalk();$('tour').textContent=t('Visita guiada','Guided visit')+' →';};
@@ -133,11 +140,11 @@ function request(initial=false){const e=exhibits.find(e=>e.id===entryId());if(!e
 request(true);if(started)begin();paint();renderMouse();window.addEventListener('hashchange',()=>request());
 function frame(now){const rawDt=Math.max(0,(now-last)/1000),dt=Math.min(.05,rawDt);last=now;
  if(!document.hidden&&world){
-  if(portal){portal.elapsed+=dt;portal.progress=Math.min(1,portal.elapsed/portal.duration);player=portalPose(portal.from,portal.exhibit,portal.progress);$('transition').style.opacity=String(Math.max(0,(portal.progress-.62)/.38));if(portal.progress===1&&!portal.navigating){portal.navigating=true;location.assign(portal.href);}}
+  if(portal){portal.elapsed+=dt;portal.progress=Math.min(1,portal.elapsed/portal.duration);if(portal.instant){player={...(portal.still||portal.from)};const u=Math.min(1,(portal.elapsed-(portal.instantAt||0))/PORTAL_FADE),from=portal.fadeFrom||0;$('transition').style.opacity=String(from+(1-from)*u);}else{player=portalPose(portal.from,portal.exhibit,portal.progress);$('transition').style.opacity=String(Math.max(0,(portal.progress-.62)/.38));}if(portal.progress===1&&!portal.navigating){portal.navigating=true;location.assign(portal.href);}}
   else if(started){
    if(path.length){const p=path[0],dx=p.x-player.x,dz=p.z-player.z,d=Math.hypot(dx,dz),step=Math.min(d,SPEED*dt);
     if(d>.025){player.x+=dx/d*step;player.z+=dz/d*step;if(autoAim){const targetYaw=d<3&&path.length===1&&p.yaw!==undefined?p.yaw:yawLookingAt(dx,dz);player.yaw+=Math.atan2(Math.sin(targetYaw-player.yaw),Math.cos(targetYaw-player.yaw))*Math.min(1,dt*5);player.pitch+=(.04-player.pitch)*dt*3;}}
-    if(d<.08){player.x=p.x;player.z=p.z;path.shift();if(!path.length){if(autoAim){if(p.yaw!==undefined)player.yaw=p.yaw;if(p.pitch!==undefined)player.pitch=p.pitch;}destination=null;$('stop').hidden=true;routeStatus('');$('route-distance').textContent='';const done=arrival;arrival=null;done?.();notebook.save();}}
+    if(d<.08){player.x=p.x;player.z=p.z;path.shift();if(!path.length)finishWalk();}
    }else{const f=Number(keys.has('KeyW')||keys.has('ArrowUp'))-Number(keys.has('KeyS')||keys.has('ArrowDown'))+stick.y,s=Number(keys.has('KeyD')||keys.has('ArrowRight'))-Number(keys.has('KeyA')||keys.has('ArrowLeft'))+stick.x,a=1-Math.exp(-dt*14);
     velocity.forward+=(f-velocity.forward)*a;velocity.strafe+=(s-velocity.strafe)*a;const before={...player};Object.assign(player,stepVisitor(player,{x:-Math.sin(player.yaw),z:-Math.cos(player.yaw)},{x:Math.cos(player.yaw),z:-Math.sin(player.yaw)},velocity,dt));
     if(f>.3){const crossed=portalCrossing(before,player);if(crossed)enterPainting(crossed);}
