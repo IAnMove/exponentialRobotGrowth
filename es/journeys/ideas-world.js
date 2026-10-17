@@ -1,11 +1,14 @@
 import * as THREE from '../../vendor/three.module.js';
 import {personPosition,atRound} from './ideas-model.js';
+import {createSceneAnnotations,annotationViewport} from './scene-annotations.js';
 
 const C={idle:0x668398,active:0xffd47a,known:0x89e7be,fail:0xff8a88,bridge:0xdba5ef};
+export const ideasFieldOfView=(width,height)=>width/height<1?2*Math.atan(Math.tan(65*Math.PI/360)*Math.max(1,height/450))*180/Math.PI:48;
 export function createIdeasScene(lesson,es){
  const scene=new THREE.Scene();scene.background=new THREE.Color(0x101c2b);scene.fog=new THREE.Fog(0x101c2b,35,70);
  scene.add(new THREE.HemisphereLight(0xdfefff,0x34445b,2.2));const sun=new THREE.DirectionalLight(0xffe5c6,3.2);sun.position.set(4,18,9);scene.add(sun);
- const resources=[],targets=[],people=[],links=[],packets=[],stands=[],own=x=>(resources.push(x),x),mat=(color,extra={})=>own(new THREE.MeshStandardMaterial({color,roughness:.55,metalness:.15,...extra}));
+ const resources=[],targets=[],people=[],links=[],packets=[],stands=[],communities=[],own=x=>(resources.push(x),x),mat=(color,extra={})=>own(new THREE.MeshStandardMaterial({color,roughness:.55,metalness:.15,...extra}));
+ const {label:annotation,layoutLabels,annotations}=createSceneAnnotations(scene,own,{metadataKey:'ideasLabel'});
  const bodyGeo=own(new THREE.CylinderGeometry(.17,.23,.5,10)),headGeo=own(new THREE.SphereGeometry(.15,12,8)),limbGeo=own(new THREE.CylinderGeometry(.055,.055,.3,8)),phoneGeo=own(new THREE.BoxGeometry(.11,.18,.025)),haloGeo=own(new THREE.TorusGeometry(.38,.018,6,28)),packetGeo=own(new THREE.SphereGeometry(.075,10,8));
  const shoes=mat(0x183244),screen=mat(0xccefff,{emissive:0x90dbff,emissiveIntensity:.4});
  function mesh(g,geometry,material,p=[0,0,0]){const m=new THREE.Mesh(geometry,material);m.position.set(...p);g.add(m);return m;}
@@ -17,7 +20,8 @@ export function createIdeasScene(lesson,es){
  for(let c=0;c<4;c++){const x=(c%2)*8-4,z=Math.floor(c/2)*8-4;
   const disk=mesh(scene,own(new THREE.CylinderGeometry(3.35,3.35,.12,64)),mat(accents[c]),[x,.025,z]);disk.material.roughness=.9;
   const border=mesh(scene,own(new THREE.TorusGeometry(3.35,.025,6,80)),mat(accents[c],{emissive:accents[c],emissiveIntensity:.7}),[x,.1,z]);border.rotation.x=Math.PI/2;
-  label(scene,`${es?'COMUNIDAD':'COMMUNITY'} ${'ABCD'[c]} · 16`,[x,2.35,z-2.8],4.2);
+  const caption=annotation(scene,'',[x,1.6,z],3);caption.m.userData.ideasLabel.community=c;
+  disk.userData.community=c;targets.push(disk);communities.push({disk,caption,reached:0,active:0});
  }
  for(let i=0;i<64;i++){
   const [x,,z]=personPosition(i),g=new THREE.Group();g.position.set(x,.13,z);g.rotation.y=-i%16/16*Math.PI*2;scene.add(g);
@@ -46,24 +50,30 @@ export function createIdeasScene(lesson,es){
  function update(s,time=s.t,phase=0){
   const state=s.trace?atRound(s.trace,Number.isFinite(time)?time:s.t):s;lastState=state;
   const active=new Set(state.active),set=new Set(state.edges.map(([a,b])=>[Math.min(a,b),Math.max(a,b)].join(':')));
+  const reachedCounts=[0,0,0,0],activeCounts=[0,0,0,0];for(const id of state.known)reachedCounts[Math.floor(id/16)]++;for(const id of active)activeCounts[Math.floor(id/16)]++;
+  communities.forEach((c,i)=>{c.reached=reachedCounts[i];c.active=activeCounts[i];c.caption.set(`${'ABCD'[i]} · ${c.reached}/16 ${es?'alcanzadas':'reached'}\n${c.active} ${es?'emisores activos':'active senders'}`);c.disk.userData.info=L(`Comunidad ${'ABCD'[i]}: ${c.reached} de 16 personas han recibido la idea; ${c.active} pueden intentar transmitir antes de cerrar la ronda ${state.t+1}. El resto ya terminó su oportunidad o todavía no recibió la idea.`,`Community ${'ABCD'[i]}: ${c.reached} of 16 people have received the idea; ${c.active} can attempt transmission before round ${state.t+1} closes. The others have finished their opportunity or have not received the idea yet.`);});
   people.forEach((p,i)=>{const color=active.has(i)?C.active:state.known.has(i)?C.known:C.idle;p.body.material.color.setHex(color);p.halo.visible=active.has(i);p.idLabel.visible=active.has(i)||i===0;p.head.userData.info=p.body.userData.info=L(`Persona ${i+1} · comunidad ${'ABCD'[Math.floor(i/16)]}. ${state.known.has(i)?`Recibió la idea en la ronda ${state.first[i]}. ${active.has(i)?'Puede transmitir en la siguiente ronda.':'Ya terminó su oportunidad.'}`:'Todavía no recibió la idea.'}`,`Person ${i+1} · community ${'ABCD'[Math.floor(i/16)]}. ${state.known.has(i)?`Reached in round ${state.first[i]}. ${active.has(i)?'Can transmit in the next round.':'Its opportunity has ended.'}`:'Has not received the idea yet.'}`);});
   links.forEach(l=>{l.m.visible=set.has(`${l.a}:${l.b}`);const outgoing=(active.has(l.a)&&!state.known.has(l.b))||(active.has(l.b)&&!state.known.has(l.a));l.m.material.color.setHex(outgoing?C.active:l.bridge?C.bridge:0x244354);l.m.material.emissive.setHex(outgoing?0x55411b:0x000000);l.m.material.opacity=outgoing?.9:l.bridge?.85:.75;});
   const progress=state.progress??0,events=state.events.filter(e=>e.attempted);packets.forEach((m,i)=>{const e=events[i];m.visible=!!e&&progress>.015;if(!m.visible)return;const p=personPosition(e.from),q=personPosition(e.to),u=Math.min(1,progress/.9);m.position.set(p[0]+(q[0]-p[0])*u,1.65+Math.sin(u*Math.PI)*(e.bridge?.65:.3),p[2]+(q[2]-p[2])*u);const color=u<1?C.active:e.success?C.known:C.fail;m.material.color.setHex(color);m.material.emissive.setHex(color);m.material.opacity=!e.success&&progress>.9?(1-progress)*10:1;});
   stands.forEach((b,i)=>b.material.emissiveIntensity=i===phase?1:.12);
  }
- return {scene,resources,targets,people,links,stands,standsGroup,packets,outlines:[],update,get state(){return lastState;}};
+ let protectionKey='',protection=[];
+ function protectedBounds(camera,{width,height}){scene.updateMatrixWorld(true);camera.updateMatrixWorld(true);const key=JSON.stringify([width,height,standsGroup.visible,camera.matrixWorld.elements,camera.projectionMatrix.elements]);if(key===protectionKey)return protection;protectionKey=key;protection=[];
+  for(const object of [...people.map(p=>p.head),...(standsGroup.visible?stands:[])]){const box=new THREE.Box3().setFromObject(object),points=[];for(const x of [box.min.x,box.max.x])for(const y of [box.min.y,box.max.y])for(const z of [box.min.z,box.max.z])points.push(new THREE.Vector3(x,y,z).project(camera));if(points.some(p=>p.z< -1||p.z>1))continue;const left=Math.max(0,Math.min(...points.map(p=>(p.x+1)*width/2))-2),top=Math.max(0,Math.min(...points.map(p=>(1-p.y)*height/2))-2),right=Math.min(width,Math.max(...points.map(p=>(p.x+1)*width/2))+2),bottom=Math.min(height,Math.max(...points.map(p=>(1-p.y)*height/2))+2);if(right>left&&bottom>top)protection.push({x:left,y:top,width:right-left,height:bottom-top});}return protection;
+ }
+ return {scene,resources,targets,people,links,stands,standsGroup,packets,communities,annotations,layoutLabels,protectedBounds,outlines:[],update,get state(){return lastState;}};
 }
 const L=(es,en)=>[es,en];
 export function createIdeasWorld(host,lesson,es,onInspect){
  const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.toneMapping=THREE.ACESFilmicToneMapping;host.append(renderer.domElement);renderer.domElement.tabIndex=0;
  const built=createIdeasScene(lesson,es),camera=new THREE.PerspectiveCamera(48,1,.1,100),ray=new THREE.Raycaster(),pointer=new THREE.Vector2();let model,phase=0;
- function resize(){renderer.setSize(host.clientWidth,host.clientHeight,false);camera.aspect=host.clientWidth/Math.max(1,host.clientHeight);camera.fov=camera.aspect<1?65:48;camera.updateProjectionMatrix();}const observer=new ResizeObserver(resize);observer.observe(host);resize();
+ function resize(){renderer.setSize(host.clientWidth,host.clientHeight,false);camera.aspect=host.clientWidth/Math.max(1,host.clientHeight);camera.fov=ideasFieldOfView(host.clientWidth,host.clientHeight);camera.updateProjectionMatrix();}const observer=new ResizeObserver(resize);observer.observe(host);resize();
  function nearest(player){let best=null,distance=5.8;built.stands.forEach((b,i)=>{const d=Math.hypot(player.x-b.position.x,player.z-b.position.z);if(d<distance){best=i;distance=d;}});return best;}
  function hit(x,y){const r=renderer.domElement.getBoundingClientRect();pointer.set((x-r.left)/r.width*2-1,1-(y-r.top)/r.height*2);ray.setFromCamera(pointer,camera);return ray.intersectObjects(built.targets.filter(o=>{for(let p=o;p;p=p.parent)if(!p.visible)return false;return true;}))[0];}
  return {canvas:renderer.domElement,update(s,i){model=s;phase=i;},render(player,dt,animation,orbit,mode,time){
   if(model)built.update(model,time,phase);built.standsGroup.visible=mode==='immersive';
   if(mode==='immersive'){camera.position.set(player.x,1.65,player.z);camera.rotation.set(player.pitch,player.yaw,0,'YXZ');}
   else{const center=new THREE.Vector3(0,.6,1),d=orbit.distance*2;camera.position.set(Math.sin(orbit.yaw)*Math.cos(orbit.pitch)*d,.6+Math.sin(orbit.pitch)*d,center.z+Math.cos(orbit.yaw)*Math.cos(orbit.pitch)*d);camera.lookAt(center);}
-  renderer.render(built.scene,camera);
+  const viewport=annotationViewport(host),area=host.getBoundingClientRect();for(const element of host.parentElement.querySelectorAll('.ideas-key,.ideas-round')){const r=element.getBoundingClientRect(),x=Math.max(0,r.left-area.left),y=Math.max(0,r.top-area.top),right=Math.min(area.width,r.right-area.left),bottom=Math.min(area.height,r.bottom-area.top);if(right>x&&bottom>y)viewport.obstacles.push({x,y,width:right-x,height:bottom-y});}viewport.obstacles.push(...built.protectedBounds(camera,viewport));built.layoutLabels(camera,viewport);renderer.render(built.scene,camera);
  },inspect(x,y){const h=hit(x,y);if(h)onInspect(h.object.userData.action===undefined?h.object.userData.info:{chapter:h.object.userData.action});},nearest,activate(){const r=renderer.domElement.getBoundingClientRect(),h=hit(r.left+r.width/2,r.top+r.height/2),chapter=h?.object.userData.action!==undefined&&h.distance<8?h.object.userData.action:nearest({x:camera.position.x,z:camera.position.z});if(chapter!==null)onInspect({chapter});},dispose(){observer.disconnect();built.resources.forEach(r=>r.dispose());renderer.dispose();},poseAt:lesson.poseAt};
 }
