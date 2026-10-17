@@ -152,6 +152,26 @@ for(const lang of ['es','en']){
  scenarios++;const h=harness({lang,mode:'immersive',voices:VOICES,worldAPI});await h.flush();h.element('instant').checked=false;h.element('instant').onchange();const before={...h.lastPose};h.element('next').onclick();await h.flush();h.frames(12);assert(Math.hypot(h.lastPose.x-before.x,h.lastPose.z-before.z)>.05,'narration starts a visible camera route');
  const stopped={...h.lastPose};h.element('follow').checked=false;h.element('follow').onchange();samePose(h.lastPose,stopped,'turning guidance off does not jump the camera');h.frames(90);samePose(h.lastPose,stopped,'turning guidance off cancels the active route');assert(h.players[0].running,'disabling guidance preserves narration');assert.equal(h.players[0].capture().follow,false);h.element('follow').checked=true;h.element('follow').onchange();h.frames(30);samePose(h.lastPose,stopped,'reenabling guidance waits for the next selection');
 }
+let focusedKeys=0,focusStops=0;
+for(const lang of ['es','en']){
+ scenarios++;const h=harness({lang,mode:'immersive',voices:VOICES,worldAPI});await h.flush();const n=h.players[0];n.pause();h.element('follow').checked=false;h.element('follow').onchange();h.element('instant').checked=true;h.element('instant').onchange();h.element('task-0').onclick();
+ const regions=['input','select','textarea','button','a','[role="button"]','[role="link"]','[role="slider"]','[contenteditable]:not([contenteditable="false"])','.atlas-player','#inspect'];
+ for(const region of regions){
+  const target={closest:selector=>selector.split(',').includes(region)?target:null};
+  n.stage(3,true);await h.flush();h.frames(1);const pose={...h.lastPose},clip=n.current.id,audio=n.clock.audio;
+  for(const code of ['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','KeyE']){
+   let prevented=false;h.events.keydown({...key(code),target,preventDefault(){prevented=true;}});h.frames(2);h.events.keyup(key(code));
+   samePose(h.lastPose,pose,'focused controls do not walk');assert(n.running,'reading keys retain narration');assert.equal(n.current.id,clip,'E on a control does not select another physical stand');assert.equal(n.clock.audio,audio);assert(!prevented,'focused elements retain their native keyboard behavior');focusedKeys++;
+  }
+ }
+ const target={closest:selector=>selector.split(',').includes('button')?target:null};
+ n.pause();h.events.keydown(key('KeyW'));h.frames(12);h.events['document:focusin']({target});const stopped={...h.lastPose};h.frames(60);samePose(h.lastPose,stopped,'focus releases an already held walking key');h.events.keyup(key('KeyW'));focusStops++;
+ const move=h.queryAll('[data-move]').find(b=>b.dataset.move==='forward');move.handlers.pointerdown({preventDefault(){},pointerId:7});h.frames(12);h.events['document:focusin']({target});const touchStopped={...h.lastPose};h.frames(60);samePose(h.lastPose,touchStopped,'focus also releases a held touch direction');move.handlers.pointercancel();focusStops++;
+ h.element('task-0').onclick();h.frames(1);h.events.keydown(key('KeyE'));await h.flush();assert(n.running);assert.equal(n.current.index,0,'E retains physical listening from the scene');
+ h.element('inspect').hidden=false;h.events.keydown({...key('Escape'),target});h.frames(1);assert(h.element('inspect').hidden);assert(!n.running,'Escape remains available from focused controls');
+ h.events.pagehide?.();
+}
+console.log(`Home keyboard ownership: ${focusedKeys} bilingual focused-key cases and ${focusStops} held keyboard/touch releases; scene E and focused Escape retained: OK`);
 let shownBudgetStates=0;
 for(const lang of ['es','en'])for(const mode of ['notebook','immersive']){
  scenarios++;const h=harness({lang,mode,voices:VOICES,worldAPI});await h.flush();h.players[0].pause();h.element('overhead').value=20;h.element('overhead').onchange();
