@@ -31,7 +31,7 @@ let velocity={forward:0,strafe:0};
 const keys=new Set(),stick={id:null,x:0,y:0,ox:0,oy:0},frameTimes=[];
 const entryId=()=>new URLSearchParams(location.search).get('pieza')||location.hash.slice(1);
 const locked=()=>!!world&&document.pointerLockElement===world.dom;
-const controls=target=>target.closest?.('input,select,textarea,.card-copy');
+const controls=target=>target.closest?.('input,select,textarea,.card-copy,.atlas-player');
 const roomIndex=id=>VOICES[notebook?.language||(es?'es':'en')].findIndex(c=>c.id===id);
 const roomPose=id=>id==='hall'?{...spawn}:({mind:{x:0,z:-13,yaw:0,pitch:.08},industry:{x:-14,z:1,yaw:Math.PI/2,pitch:.08},cosmos:{x:14,z:1,yaw:0,pitch:.08},life:{x:0,z:17,yaw:Math.PI,pitch:.08}}[id]);
 function resetInput(){keys.clear();stick.x=stick.y=0;stick.id=null;velocity={forward:0,strafe:0};drag=null;pointerLast=null;$('stick-knob').style.transform='translate(-50%,-50%)';}
@@ -123,6 +123,8 @@ $('view').addEventListener('pointercancel',()=>{drag=null;});
 $('stick').addEventListener('pointerdown',e=>{e.preventDefault();begin();stopWalk();stick.id=e.pointerId;stick.ox=e.clientX;stick.oy=e.clientY;$('stick').setPointerCapture(e.pointerId);});
 $('stick').addEventListener('pointermove',e=>{if(stick.id!==e.pointerId)return;const x=(e.clientX-stick.ox)/36,y=(stick.oy-e.clientY)/36,n=Math.max(1,Math.hypot(x,y));stick.x=x/n;stick.y=y/n;$('stick-knob').style.transform=`translate(calc(-50% + ${stick.x*28}px),calc(-50% - ${stick.y*28}px))`;});
 for(const event of ['pointerup','pointercancel','lostpointercapture'])$('stick').addEventListener(event,resetInput);
+// Reading or adjusting the player must not retain a previously held walk key.
+document.addEventListener('focusin',e=>{if(controls(e.target))resetInput();});
 window.addEventListener('blur',()=>{stopWalk();releaseLook();notebook.save();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){stopWalk();releaseLook();notebook.save();}last=performance.now();});
 window.addEventListener('pagehide',()=>{stopWalk();releaseLook();cancelPortal();notebook.save();});
