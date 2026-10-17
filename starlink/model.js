@@ -86,6 +86,24 @@ export function routePacket(user,sats,pos,lasers,gws=GATEWAYS){
  return {ok:true,reason:laserHops?'laser':'bent',hops,km,ms:lightMs(km),mode:laserHops?'laser-mesh':'bent-pipe',serve:chain[0],elevation:elevation(user,pos[chain[0]]),laserHops,inView:vis.length};
 }
 function pathLen(hops){let n=0;for(let i=1;i<hops.length;i++)n+=distance(hops[i-1].p,hops[i].p);return n;}
+// Position on the CURRENT geometric snapshot, with equal progress per kilometre.
+// Progress is deliberately slowed presentation time, never a measured ping or
+// a simulation of light chasing satellites as they move at orbital time ×40.
+export function packetPose(hops,progress,returning=false){
+ const order=returning?[...hops].reverse():hops;
+ if(order.length<2)return null;
+ const parts=order.slice(1).map((to,i)=>({from:order[i],to,km:distance(order[i].p,to.p),kind:order[i].kind==='user'||to.kind==='user'||order[i].kind==='gateway'||to.kind==='gateway'?'radio':'laser'}));
+ const totalKm=parts.reduce((n,p)=>n+p.km,0);
+ if(!Number.isFinite(totalKm)||totalKm<=0)return null;
+ const fraction=Math.max(0,Math.min(1,Number.isFinite(progress)?progress:0)),traveledKm=fraction*totalKm;
+ let before=0,index=0;
+ // At a node, select the next nonzero leg in the direction of travel. At the
+ // destination, retain the final nonzero leg with local progress exactly one.
+ for(let i=0;i<parts.length;i++)if(parts[i].km>0){index=i;if(traveledKm<before+parts[i].km)break;before+=parts[i].km;}
+ const leg=parts[index],startKm=parts.slice(0,index).reduce((n,p)=>n+p.km,0),local=Math.max(0,Math.min(1,(traveledKm-startKm)/leg.km));
+ const p=leg.from.p,q=leg.to.p;
+ return {position:{x:p.x+(q.x-p.x)*local,y:p.y+(q.y-p.y)*local,z:p.z+(q.z-p.z)*local},fraction,traveledKm,totalKm,index,local,parts,returning};
+}
 // Refresh a cached route against the positions actually being drawn. Null means reroute.
 export function refreshRoute(route,user,sats,pos){
  if(!route?.hops.length)return null;

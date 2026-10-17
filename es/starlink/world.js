@@ -1,6 +1,6 @@
 import * as THREE from '../../vendor/three.module.js';
 import {createPost,adaptiveScale} from '../fx/fx.js';
-import {R_EARTH,SHELLS,GATEWAYS,geodetic,eci,buildConstellation,positionsAt,routePacket,refreshRoute,coverageGrid,footprintHalfAngle} from './model.js';
+import {R_EARTH,SHELLS,GATEWAYS,geodetic,eci,buildConstellation,positionsAt,routePacket,refreshRoute,coverageGrid,footprintHalfAngle,packetPose} from './model.js';
 const SCALE=2.35/R_EARTH;
 const v3=p=>new THREE.Vector3(p.x*SCALE,p.z*SCALE,-p.y*SCALE);
 const GOLD=0xffcb76,MINT=0x75eed6;
@@ -95,14 +95,14 @@ export function createStarlinkWorld(host){
   if(route.serve!=null){satLabel.position.copy(v3(pos[route.serve])).multiplyScalar(1.17);satLabel.visible=[1,2].includes(state.phase)&&satLabel.position.dot(camera.position)>2.35*2.35;}else satLabel.visible=false;
   const gw=hops.find(h=>h.kind==='gateway');gateLabel.visible=!!gw&&state.phase===3;if(gw){gateLabel.position.copy(v3(gw.p)).multiplyScalar(1.16);gateLabel.visible=state.phase===3&&gateLabel.position.dot(camera.position)>2.35*2.35;}
   servingHalo.visible=route.serve!=null;if(servingHalo.visible){servingHalo.position.copy(v3(pos[route.serve]));servingHalo.quaternion.copy(camera.quaternion);}
-  const phase=state.phase||0,progress=state.progress==null?(clock%100)/100:state.progress,returning=phase===5;
+  const phase=state.phase||0,progress=state.progress==null?(clock%100)/100:state.progress,returning=phase===5&&route.ok;
   let visibleHops=phase===0?Math.min(2,hops.length):hops.length;
   for(let i=0;i<lines.length;i++){const l=lines[i];l.visible=i<visibleHops-1;if(l.visible){l.geometry.setFromPoints([v3(hops[i].p),v3(hops[i+1].p)]);l.material.color.setHex(returning?MINT:hops[i+1].kind==='laser'?GOLD:0x89caff);l.material.opacity=route.ok?.92:.35;}}
-  packet.visible=hops.length>1;if(packet.visible){const u=(returning?1-progress:progress)*(visibleHops-1),a=Math.min(visibleHops-2,Math.max(0,Math.floor(u))),f=THREE.MathUtils.clamp(u-a,0,1);packet.position.lerpVectors(v3(hops[a].p),v3(hops[a+1].p),f);packet.material.color.setHex(returning?MINT:GOLD);}
+  const packetTrace=phase===5&&!route.ok?null:packetPose(hops.slice(0,visibleHops),progress,returning);packet.visible=!!packetTrace;if(packetTrace){packet.position.copy(v3(packetTrace.position));packet.material.color.setHex(returning?MINT:GOLD);}
   footprint.visible=route.serve!=null&&state.showFootprint!==false;if(footprint.visible){const alt=sats[route.serve].alt;if(alt!==footprintAlt){footprint.geometry.dispose();footprint.geometry=cap(2.362,footprintHalfAngle(alt));footprintAlt=alt;}footprint.quaternion.setFromUnitVectors(up,v3(pos[route.serve]).normalize());}
   cover.visible=!!state.showCoverage;if(cover.visible){if(!coverCache||Math.abs(clock-coverAt)>45){coverCache=coverageGrid(sats,pos,15);coverAt=clock;}cover.count=coverCache.cells.filter(c=>c.n).length;let i=0;for(const c of coverCache.cells)if(c.n){dummy.position.copy(v3(geodetic(c.lat,c.lon))).setLength(2.365);dummy.scale.setScalar(1);dummy.updateMatrix();cover.setMatrixAt(i++,dummy.matrix);}cover.instanceMatrix.needsUpdate=true;}
   groundPacket.visible=view==='ground'&&route.ok;groundPacket.position.copy(groundCurve.getPoint(THREE.MathUtils.clamp(returning?1-progress:progress,0,1)));groundPacket.material.color.setHex(returning?MINT:GOLD);
-  placeCam();post.render(dt||0);quality.frame(dt||0);return {route,count:sats.length,pos,clock};
+  placeCam();post.render(dt||0);quality.frame(dt||0);return {route,count:sats.length,pos,clock,packetTrace,partialRoute:visibleHops<hops.length};
  }
  return {render,setConstellation,setOnPlace(fn){onPlace=fn;},zoomBy(f){dist/=f;placeCam();},focus,fit(){theta=view==='ground'?.12:.3;phi=view==='satellite'?-.38:view==='ground'?.28:.3;dist=view==='satellite'?8:view==='ground'?10.8:8.3;placeCam();},dispose(){observer.disconnect();renderer.dispose();post.dispose();}};
 }
