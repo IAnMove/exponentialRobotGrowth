@@ -2,6 +2,11 @@ import assert from 'node:assert/strict';
 import {llmHarness,near,clone} from './check-llms-controls.mjs';
 import {OPERATIONS} from './site-src/llms/flow.js';
 let cases=0;
+for(const lang of ['es','en'])for(const failure of ['error','blocked'])for(const compact of [false,true]){
+ let h=llmHarness({kind:'immersive',lang});h.element('start-free').onclick();h.controller.select(4);if(compact)h.element('reader-toggle').onclick();if(failure==='error')h.setMode('error');h.controller.setProgress(.6);await h.flush();if(failure==='blocked'){h.setMode('blocked');h.controller.listenAt(4);await h.flush();}assert.equal(h.guide.state,failure);near(h.state.frame.progress,.6);assert.equal(h.element('status').dataset.problem,'true');assert.equal(h.element('voice-retry').hidden,false);const pose=clone(h.state.player);
+ if(failure==='error'&&compact){const storage=h.storage;h.dispose();h=llmHarness({kind:'immersive',lang,storage,audioMode:'error'});await h.flush();assert.equal(h.guide.state,'error');near(h.state.frame.progress,.6);assert.deepEqual(clone(h.state.player),pose);}
+ h.setMode('success');h.element('voice-retry').onclick();await h.flush();assert.equal(h.guide.running,true);near(h.state.frame.progress,.6);assert.deepEqual(clone(h.state.player),pose);assert.equal(h.state.frame.phase,4);assert.equal(h.element('voice-retry').hidden,true);assert.equal(h.element('status').dataset.problem,'false');h.dispose();
+}
 for(const lang of ['es','en'])for(const compact of [false,true]){
  const h=llmHarness({kind:'immersive',lang});h.element('start-free').onclick();if(compact)h.element('reader-toggle').onclick();h.controller.setProgress(.4);await h.flush();const saved=clone(h.controller.capture());h.dispose();
  const restored=llmHarness({kind:'immersive',lang,storage:h.storage});await restored.flush();assert.equal(restored.document.body.classList.contains('reader-compact'),compact);assert.equal(restored.element('reader-toggle').getAttribute('aria-expanded'),String(!compact));assert.equal(restored.element('reader-toggle').textContent,compact?(lang==='es'?'Mostrar texto':'Show text'):(lang==='es'?'Ocultar texto':'Hide text'));assert.deepEqual(clone(restored.state.player),saved.player);near(restored.state.frame.progress,saved.progress);assert.equal(restored.guide.running,false);restored.dispose();

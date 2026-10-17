@@ -8,9 +8,11 @@ export class StepGuide {
     Object.assign(this,{getClip,onAdvance,onChange,AudioClass,gap,loadBlob,objectUrls});
     this.audio=null;this.clip=null;this.state='idle';this.remaining=0;
     this.enabled=true;this.automatic=true;this.running=false;this.resumeState='idle';
-    this.seekRevision=0;this.playRevision=0;this.seekPending=false;this.blobUrl=null;this.seekTarget=0;this.closed=false;
+    this.seekRevision=0;this.playRevision=0;this.seekPending=false;this.blobUrl=null;this.seekTarget=0;this.errorOffset=null;this.closed=false;
   }
   notify(){if(!this.closed)this.onChange(this);}
+  get position(){if(this.seekPending)return this.seekTarget;if(this.state==='error')return this.errorOffset??0;return Number.isFinite(this.audio?.currentTime)?Math.max(0,this.audio.currentTime):0;}
+  fail(a){if(this.closed||this.audio!==a)return;this.errorOffset=this.position;this.seekPending=false;this.seekRevision++;this.playRevision++;this.running=false;a.onloadedmetadata=null;a.pause();this.state='error';this.notify();}
   release(){this.seekRevision++;this.playRevision++;this.seekPending=false;const a=this.audio;this.audio=null;if(a){a.onended=a.onerror=a.onplaying=a.onpause=a.onloadedmetadata=null;a.pause();a.removeAttribute('src');a.load();}if(this.blobUrl)this.objectUrls.revokeObjectURL(this.blobUrl);this.blobUrl=null;}
   dispose(){if(this.closed)return;this.closed=true;this.running=false;this.state='paused';this.release();}
   async seek(seconds){
@@ -31,17 +33,17 @@ export class StepGuide {
       this.blobUrl=this.objectUrls.createObjectURL(blob);
       a.onloadedmetadata=finish;
       a.src=this.blobUrl;a.load();
-    }catch{if(this.audio!==a||revision!==this.seekRevision)return;this.seekPending=false;this.running=false;this.state='error';this.notify();}
+    }catch{if(this.audio!==a||revision!==this.seekRevision)return;this.fail(a);}
   }
-  stop(){if(this.closed)return;this.release();this.running=false;this.state='idle';this.clip=null;this.remaining=0;this.notify();}
+  stop(){if(this.closed)return;this.release();this.errorOffset=null;this.running=false;this.state='idle';this.clip=null;this.remaining=0;this.notify();}
   enter({offset=0,play=true}={}){
-    if(this.closed)return;this.release();this.clip=this.getClip();this.running=play;this.remaining=this.gap;
+    if(this.closed)return;this.release();this.errorOffset=null;this.seekTarget=0;this.clip=this.getClip();this.running=play;this.remaining=this.gap;
     const progress=Math.max(0,Math.min(1,offset/this.clip.duration||0));
     if(!this.enabled){this.remaining=this.gap+Math.max(6,Math.min(14,this.clip.text.length/32))*(1-progress);this.resumeState='reading';this.state=play?'reading':'paused';this.notify();return;}
     const a=new this.AudioClass(this.clip.src);this.audio=a;a.preload='auto';
     a.onplaying=()=>{if(this.audio!==a||!this.running||this.seekPending)return;this.state='speaking';this.notify();};
     a.onended=()=>{if(this.audio!==a)return;this.remaining=this.gap;if(this.running)this.state='waiting';else this.resumeState='waiting';this.notify();};
-    a.onerror=()=>{if(this.audio!==a)return;this.seekPending=false;this.seekRevision++;this.running=false;this.state='error';this.notify();};
+    a.onerror=()=>this.fail(a);
     if(offset>0){const waiting=this.seek(offset);if(play){this.running=true;this.state='loading';this.notify();}return waiting;}
     this.resumeState='speaking';if(play)this.playAudio();else {this.state='paused';this.notify();}
   }
@@ -53,7 +55,8 @@ export class StepGuide {
   resume(){
     if(this.closed||this.running)return;
     if(this.seekPending){this.running=true;this.state='loading';this.notify();return;}
-    if(!this.clip||['idle','finished','error'].includes(this.state)){this.enter();return;}
+    if(this.state==='error'){this.enter({offset:this.position});return;}
+    if(!this.clip||['idle','finished'].includes(this.state)){this.enter();return;}
     if(this.state==='ready'){this.next();return;}
     this.running=true;
     if(this.state==='paused'&&['waiting','reading'].includes(this.resumeState)){this.state=this.resumeState;this.notify();}
@@ -64,7 +67,7 @@ export class StepGuide {
     this.enter();
   }
   replay(){if(!this.closed)this.enter();}
-  setEnabled(enabled){if(this.closed)return;const active=this.running,progress=this.enabled?(this.audio?.currentTime||0)/(this.clip?.duration||1):this.clip?Math.max(0,Math.min(1,1-(this.remaining-this.gap)/Math.max(6,Math.min(14,this.clip.text.length/32)))):0;this.enabled=enabled;if(this.clip)this.enter({offset:progress*this.clip.duration,play:active});else this.stop();}
+  setEnabled(enabled){if(this.closed)return;const active=this.running,progress=this.enabled?this.position/(this.clip?.duration||1):this.clip?Math.max(0,Math.min(1,1-(this.remaining-this.gap)/Math.max(6,Math.min(14,this.clip.text.length/32)))):0;this.enabled=enabled;if(this.clip)this.enter({offset:progress*this.clip.duration,play:active});else this.stop();}
   tick(dt){
     if(this.closed||!this.running||!['waiting','reading'].includes(this.state)||!Number.isFinite(dt)||dt<=0)return;
     this.remaining=Math.max(0,this.remaining-Math.min(dt,.25));

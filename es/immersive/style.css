@@ -52,3 +52,12 @@
  .reader-compact .reader-footer{padding:12px 8px}
  .reader-compact .viewport{inset:var(--bar) 0 var(--bottom) var(--reader)}
 }
+
+/* A recoverable voice problem stays visible even with the reader collapsed. */
+.reader .status[data-problem="true"]{display:flex;align-items:center;flex-wrap:wrap;gap:10px;position:fixed;top:calc(var(--bar) + 12px);left:calc(var(--reader) + 14px);right:14px;width:auto;height:auto;min-height:44px;max-width:620px;margin:0;padding:10px 12px;overflow:visible;clip-path:none;white-space:normal;z-index:6;background:#241f15;color:#ffe4b2;border:1px solid #a8884b;border-radius:10px;font-size:13px;line-height:1.45}
+.status[data-problem="true"] span{flex:1 1 160px}
+#voice-retry{flex:0 0 auto;min-height:44px;font-size:12px;border-color:#a8884b;background:#3b3020;color:#fff0d4}
+@media(max-width:700px){.reader .status[data-problem="true"]{left:14px}}
+@media(max-height:650px) and (min-aspect-ratio:6/5){.reader .status[data-problem="true"]{left:calc(var(--reader) + 14px)}}
+
+body[data-voice-problem="true"] .scene-caption{visibility:hidden}
