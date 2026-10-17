@@ -14,3 +14,41 @@
 /* Keep the active probability board clear of its listening control. */
 .stand-button.reading-stand{bottom:36px;transform:none}
 @media(max-height:500px){body[data-phase="5"] .scene-caption{display:none}}
+
+/* Reading and transport keep separate rows; only the transcript scrolls. */
+@media(max-width:700px),(max-height:650px){
+ :root{--reader-height:max(208px,27vh)}
+ .welcome{overflow-y:auto;align-items:start}
+ .welcome article{margin-block:auto}
+ .reader{inset:auto 0 var(--bottom);height:var(--reader-height);width:auto;padding:8px 14px 4px 44px;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto 34px 24px minmax(24px,1fr) 26px;gap:4px;border-right:0;border-top:1px solid #27344c}
+ .reader-heading{grid-column:1;grid-row:1;display:block;min-width:0;padding:0}
+ .reader-heading .eyebrow{font-size:10px;line-height:1.2}
+ .reader h1{font-size:17px;line-height:1.2;margin:3px 0 0;overflow-wrap:break-word}
+ .reader-heading p,.progress{display:none}
+ .voice-controls{grid-column:1;grid-row:2;min-width:0;padding:0;gap:6px}
+ .voice-controls #listen{min-height:34px;height:34px;padding:5px 8px;font-size:12px}
+ .voice-controls select{min-height:34px;height:34px;padding:4px 8px;font-size:12px}
+ .audio-scrub{grid-column:1;grid-row:3;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:0;font-size:11px}
+ .audio-scrub-title{display:none}
+ .audio-scrub input{grid-column:1;grid-row:1;height:18px}
+ .audio-scrub output{grid-column:2;grid-row:1}
+ .status{display:block;position:absolute;width:1px;height:1px;min-height:0;padding:0;margin:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+ .transcript{grid-column:1;grid-row:4;min-height:0;padding:0;overflow:auto}
+ .transcript p{font-size:15px;line-height:1.5;margin-bottom:14px}
+ .reader-footer{grid-column:1;grid-row:5;display:flex;justify-content:flex-end;padding:0;border:0}
+ .reader-footer span{display:none}
+ .reader-footer button{min-height:26px;height:26px;padding:2px 0;font-size:12px;line-height:1.2}
+ .viewport{inset:var(--bar) 0 calc(var(--bottom) + var(--reader-height))}
+ .reader-compact .reader{height:36px;padding:3px 12px;display:block}
+ .reader-compact .reader-footer{padding:0}
+ .reader-compact .reader-footer button{height:auto;min-height:26px}
+ .reader-compact .viewport{bottom:calc(var(--bottom) + 36px)}
+}
+@media(max-height:650px) and (min-aspect-ratio:6/5){
+ :root{--reader:285px}
+ .reader{inset:var(--bar) auto var(--bottom) 0;width:var(--reader);height:auto;border-top:0;border-right:1px solid #23304b}
+ .viewport{inset:var(--bar) 0 var(--bottom) var(--reader)}
+ .reader-compact .reader{height:auto;padding:0;display:flex}
+ .reader-compact .reader-footer{padding:12px 8px}
+ .reader-compact .viewport{inset:var(--bar) 0 var(--bottom) var(--reader)}
+}

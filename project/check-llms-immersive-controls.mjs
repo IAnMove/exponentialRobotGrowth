@@ -2,6 +2,10 @@ import assert from 'node:assert/strict';
 import {llmHarness,near,clone} from './check-llms-controls.mjs';
 import {OPERATIONS} from './site-src/llms/flow.js';
 let cases=0;
+for(const lang of ['es','en'])for(const compact of [false,true]){
+ const h=llmHarness({kind:'immersive',lang});h.element('start-free').onclick();if(compact)h.element('reader-toggle').onclick();h.controller.setProgress(.4);await h.flush();const saved=clone(h.controller.capture());h.dispose();
+ const restored=llmHarness({kind:'immersive',lang,storage:h.storage});await restored.flush();assert.equal(restored.document.body.classList.contains('reader-compact'),compact);assert.equal(restored.element('reader-toggle').getAttribute('aria-expanded'),String(!compact));assert.equal(restored.element('reader-toggle').textContent,compact?(lang==='es'?'Mostrar texto':'Show text'):(lang==='es'?'Ocultar texto':'Hide text'));assert.deepEqual(clone(restored.state.player),saved.player);near(restored.state.frame.progress,saved.progress);assert.equal(restored.guide.running,false);restored.dispose();
+}
 for(const lang of ['es','en']){
  const h=llmHarness({kind:'immersive',lang});await h.flush();h.element('start-free').onclick();h.element('motion').checked=true;
  for(let phase=0;phase<8;phase++){h.controller.select(phase);h.controller.setProgress(.51);await h.flush();assert.equal(h.state.frame.phase,phase);near(h.state.frame.progress,.51);assert.equal(h.guide.running,false);cases++;}
