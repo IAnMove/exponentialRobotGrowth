@@ -26,7 +26,7 @@ export class NarrationPlayer {
   stop(){this.dispose();this.items=[];this.setState('stopped');}
 }
 
-export function createNarrator({toggleHost,onBegin,capture=()=>null,restore=()=>{},onSync=()=>{},onReady=()=>{},onIntent=()=>{}}){
+export function createNarrator({toggleHost,onBegin,capture=()=>null,restore=()=>{},onSync=()=>{},onReady=()=>{},onIntent=()=>{},shouldFocus=()=>true}){
  const scene=location.pathname.includes('district')?'district':location.pathname.includes('region')?'region':location.pathname.includes('city')?'city':'factory';
  const tours={factory:['guide-factory',...Array.from({length:5},(_,i)=>'robot-factory-'+i),'factory-first-loop','factory-limits'],district:['guide-district',...Array.from({length:14},(_,i)=>'district-'+i)],region:['region-overview',...Array.from({length:3},(_,i)=>'region-city-'+i),...Array.from({length:6},(_,i)=>'region-'+i)],city:['guide-city',...Array.from({length:6},(_,i)=>'city-'+i)]};
  const es=document.documentElement.lang==='es';let notebook,focused='',pending,extras=[],context=null,rawSeek,changingLanguage=false;let catalogs;
@@ -35,9 +35,9 @@ export function createNarrator({toggleHost,onBegin,capture=()=>null,restore=()=>
  queueMicrotask(async()=>{
   let other;try{other=(await import(new URL(es?'narration-catalog-en.js':'narration-catalog.js',root).href)).NARRATIONS;}catch{other=NARRATIONS;}
   catalogs=es?{es:NARRATIONS,en:other}:{en:NARRATIONS,es:other};
-  notebook=new NotebookPlayer({id:'robots-'+scene,capture:()=>({extras,context,simulation:capture()}),restore(saved){if(Array.isArray(saved?.extras))extras=saved.extras.filter(key=>typeof key==='string'&&catalogs.es[key]);if(saved?.context&&catalogs.es[saved.context.key]&&catalogs.es[saved.context.stateKey])context=saved.context;restore(saved?.simulation);},getClips:language=>[...tours[scene],...extras].flatMap(key=>context?.key===key?[key,context.stateKey]:[key]).filter(key=>catalogs[language][key]).map(key=>({...catalogs[language][key],id:key,src:new URL(catalogs[language][key].src,root).href})),onSync(s){if(!s)return;if(s.reason==='seek'||focused!==s.id){focused=s.id;onBegin?.();document.dispatchEvent(new CustomEvent('narration-focus',{detail:s.id}));}onSync(s);}});
+  notebook=new NotebookPlayer({id:'robots-'+scene,capture:()=>({extras,context,simulation:capture()}),restore(saved){if(Array.isArray(saved?.extras))extras=saved.extras.filter(key=>typeof key==='string'&&catalogs.es[key]);if(saved?.context&&catalogs.es[saved.context.key]&&catalogs.es[saved.context.stateKey])context=saved.context;restore(saved?.simulation);},getClips:language=>[...tours[scene],...extras].flatMap(key=>context?.key===key?[key,context.stateKey]:[key]).filter(key=>catalogs[language][key]).map(key=>({...catalogs[language][key],id:key,src:new URL(catalogs[language][key].src,root).href})),onSync(s){if(!s)return;if(s.reason==='seek'||focused!==s.id){focused=s.id;onBegin?.();if(shouldFocus())document.dispatchEvent(new CustomEvent('narration-focus',{detail:s.id}));}onSync(s);}});
   rawSeek=notebook.seek.bind(notebook);notebook.seek=(seconds,play=notebook.wanted)=>{if(!changingLanguage)onIntent('seek');rawSeek(seconds,play);};
-  const rawToggle=notebook.toggle.bind(notebook);notebook.toggle=()=>{if(!notebook.running)onIntent('play');rawToggle();};
+  const rawToggle=notebook.toggle.bind(notebook);notebook.toggle=()=>{if(!notebook.running){onIntent('play');focused=null;}rawToggle();};
   const rawLanguage=notebook.changeLanguage.bind(notebook);notebook.changeLanguage=language=>{changingLanguage=true;try{rawLanguage(language);}finally{changingLanguage=false;}};
   onReady(notebook);
   if(pending)explain(...pending);
