@@ -110,4 +110,14 @@
  .nuclear-experience.immersive .visual{height:710px;min-height:710px}
  .nuclear-experience.immersive .walk-controls{--walk-top:75px;bottom:184px;align-content:space-between}
  .nuclear-experience.immersive .walk-controls .touch{position:sticky;bottom:calc(var(--atlas-player-height,150px) + 12px)}
+ .cell-experience .visual{height:560px;min-height:560px}
+ .cell-experience.immersive .visual{height:640px;min-height:640px}
+ .cell-experience.immersive #world{top:125px}
+ .cell-experience.immersive .walk-controls{--walk-top:75px;bottom:184px;align-content:space-between}
+ .cell-experience.immersive .walk-controls .touch{position:sticky;bottom:calc(var(--atlas-player-height,150px) + 12px)}
+ .cell-experience .visual:has(.cell-reading.in-scene:not([hidden])) #inspect{top:50px;margin:0;max-height:84px;overflow:auto;overscroll-behavior:contain}
+ .cell-experience.immersive .visual:has(.cell-reading.in-scene:not([hidden])) #inspect{top:125px}
 }
+.inspect-close{position:sticky;top:0;float:right;width:32px;height:32px;margin:-4px -4px 4px 8px;padding:0;font-size:20px;line-height:1;border-radius:6px}
+.cell-experience .visual:has(#inspect:not([hidden])) .cell-reading.in-scene{visibility:hidden}
+.cell-reading{box-sizing:border-box;height:84px;margin:12px 0;min-width:0;padding:8px 10px;display:flex;flex-direction:column;justify-content:center;gap:4px;border:1px solid #78999d88;border-radius:9px;background:#142b3af5;color:#d9eaf1;pointer-events:none}.cell-reading.in-scene{position:absolute;top:0;left:10px;right:10px;margin:0}.cell-reading strong{font-size:16px;line-height:1.35;color:#ffd69e;font-weight:650}.cell-reading span{font-size:13px;line-height:1.4}.cell-reading[data-stage=recognized] strong,.cell-reading[data-stage=incorporated] strong{color:#b8efd1}.cell-reading[data-stage^=stop] strong{color:#ffd2df}
