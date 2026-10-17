@@ -7,3 +7,19 @@
 @media(max-width:480px){.chapters{grid-template-columns:repeat(6,minmax(0,1fr))}.chapters button{min-width:0;padding:6px 2px;font-size:10px}.chapters button span{font-size:9px}}
 
 .mini-metrics{display:none}@media(max-width:800px){.mini-metrics{display:flex;position:absolute;left:16px;right:16px;bottom:112px;gap:10px;justify-content:space-between;pointer-events:none}.mini-metrics span{background:#081a2bd9;border:1px solid #3b5c73;border-radius:8px;padding:7px 11px;font-size:9px;color:#b7d0e1}.mini-metrics b{display:block;font:600 18px ui-monospace,monospace;color:#f5d39c;margin-bottom:3px}}
+
+/* Keep packet measurements outside the canvas and its orbit controls. */
+.scene-top{position:relative;top:auto;left:auto;right:auto;padding:16px 18px}
+.packet-reading{padding:0 18px 14px;border-bottom:1px solid #2b4358;color:#c5dcea}
+.packet-reading-title{display:flex;align-items:baseline;justify-content:space-between;gap:8px 18px;flex-wrap:wrap;font-size:13px;line-height:1.5}
+.packet-reading-title strong{font-weight:550;color:#ffe0ab}.packet-reading-title>span{font-family:ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.packet-track{position:relative;margin:12px 6px;height:7px}.packet-track #packet-links{display:flex;height:100%;gap:0}.packet-link{min-width:0;background:#89caff}.packet-link.laser{background:#ffcb76}
+#packet-marker{position:absolute;top:50%;width:12px;height:12px;border:2px solid #081a2b;background:#ffe4aa;border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 1px #ffe4aa}
+.packet-reading.returning #packet-marker{background:#75eed6;box-shadow:0 0 0 1px #75eed6}
+.packet-reading small{display:block;font-size:12px;line-height:1.5;color:#9fbdcf}
+@media(max-width:480px){.scene-top{padding:12px 12px 10px}.packet-reading{padding:0 12px 12px}.packet-reading-title{gap:4px 10px}}
+
+.stage.has-packet{display:flex;flex-direction:column;height:calc(100svh - var(--atlas-player-height,120px) - 24px);min-height:500px;max-height:780px}
+.stage.has-packet .scene-top,.stage.has-packet .packet-reading{flex-shrink:0}
+.stage.has-packet #space{flex:1 1 auto;height:0;min-height:200px}
+.stage.has-packet .scene-bottom{position:relative;flex:0 0 auto}

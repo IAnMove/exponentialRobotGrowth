@@ -51,3 +51,16 @@ const lifecycle={disposed:false,raf:0,last:0,domAt:0,narrative:false,state:{play
 vm.runInNewContext('function frame(now)'+lifecycleSource,lifecycle);assert.notEqual(hideOptions?.once,true,'a cacheable departure must not consume final cleanup');const firstFrame=[...scheduled.values()][0];scheduled.clear();firstFrame(50);const cachedTime=lifecycle.state.time;pagehide({persisted:true});assert.equal(lifecycle.world.disposed,false);assert.equal(lifecycle.player.disposed,false);assert.equal(lifecycle.state.playing,false);assert.equal(lifecycle.player.paused,1);const cachedFrame=[...scheduled.values()][0];scheduled.clear();cachedFrame(100);assert.equal(lifecycle.state.time,cachedTime,'back/forward restores the retained scene paused');const finalFrame=[...scheduled.values()][0];pagehide({persisted:false});assert.equal(lifecycle.world.disposed,true);assert.equal(lifecycle.player.disposed,true);assert.equal(scheduled.size,0);const finalRenderCount=lifecycle.world.renders;finalFrame(150);assert.equal(lifecycle.world.renders,finalRenderCount);assert.equal(scheduled.size,0,'an already queued callback cannot resurrect its frame loop');
 console.log('Starlink: orbital physics, honest routing, Earth occlusion, empty layers and moving-route validation OK');
 console.log('Starlink lifecycle: back/forward retains the scene paused; final departure disposes playback and renderer and stops RAF: OK');
+
+// The app also synchronizes directly from player.current, which has no running
+// field (unlike clock notifications). Saving undefined dropped playing from
+// JSON, so reloading a paused free experiment inherited initial playing=true.
+const chapterSource=readFileSync('site-src/starlink/app.js','utf8').split('function chapter(s)')[1].split('function capture()')[0];
+const chapterContext={state:{playing:true},narrative:true,manualView:false,activePhase:-1,lang:'es',player:{language:'es',running:false},LESSONS:{es:Array.from({length:6},()=>({title:'Title',text:'Text'}))},t:a=>a,$:()=>({}),document:{querySelectorAll:()=>[]},syncControls(){}};
+vm.runInNewContext('function chapter(s)'+chapterSource+';globalThis.syncChapter=chapter;',chapterContext);
+const current={index:2,progress:.4,elapsed:10,reason:'seek'};
+chapterContext.syncChapter(current);assert.equal(chapterContext.state.playing,false);assert.equal(JSON.parse(JSON.stringify(chapterContext.state)).playing,false);
+chapterContext.player.running=true;chapterContext.syncChapter(current);assert.equal(chapterContext.state.playing,true);
+chapterContext.syncChapter({...current,running:false});assert.equal(chapterContext.state.playing,false,'explicit clock state wins over a retained player value');
+chapterContext.narrative=false;chapterContext.syncChapter({...current,running:true});assert.equal(chapterContext.state.playing,false,'narration updates leave a paused free experiment paused');
+console.log('Starlink synchronization: direct current snapshots retain an explicit playing/paused value in saved JSON: OK');
