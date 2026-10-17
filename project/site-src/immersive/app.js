@@ -40,7 +40,7 @@ if(requested!=='llms'){
   $('audio-time').value=p;$('audio-time-value').textContent=Math.round(p*100)+'%';$('progress').style.width=p*100+'%';document.querySelector('.progress').setAttribute('aria-valuenow',String(Math.round(p*100)));transcript.sync(clip,p*clip.duration);
   if(run.phase===4){const op=OPERATIONS[cue.index];$('scene-caption').textContent=op.text[es?0:1];if(lastOperation!==cue.index){lastOperation=cue.index;$('operation-title').textContent=op.name[es?0:1];$('formula').textContent=op.formula;document.querySelectorAll('[data-operation]').forEach(b=>b.setAttribute('aria-current',String(+b.dataset.operation===cue.index)));}}else $('scene-caption').textContent=descriptions[run.phase];
  }
- function refresh(){if(disposed)return;present();
+ function refresh(){if(disposed)return;present();document.body.dataset.phase=String(run.phase);
   const s=STOPS[run.phase],clip=guide?.clip||getClip();$('chapter').textContent=`${String(run.phase+1).padStart(2,'0')} / 08 · ${t('ESTACIÓN','STATION')}`;$('title').textContent=s.titles[es?0:1];$('description').textContent=descriptions[run.phase];transcript.show(clip);
   $('listen').textContent=guide?.running?'Ⅱ '+t('Pausar voz','Pause voice'):'▶ '+t('Escuchar','Listen');$('tour').textContent=guided?t('Pausar guía','Pause guide'):t('Guiarme','Guide me');$('next').textContent=run.done?t('Reiniciar','Restart')+' ↺':run.phase===7?t('Otro token','Next token')+' →':t('Siguiente','Next')+' →';$('attention').hidden=run.phase!==4;syncQuery();
   document.querySelectorAll('[data-stop]').forEach(b=>{b.setAttribute('aria-current',String(+b.dataset.stop===run.phase));b.classList.toggle('visited',visited.has(+b.dataset.stop));});syncUIflow();
@@ -95,7 +95,7 @@ if(requested!=='llms'){
     uiTime+=dt;if(uiTime>.12){uiTime=0;const near=nearestStop(player);$('position').textContent=`${t('Cerca de la estación','Near station')} ${near.index+1} / ${STOPS.length} · ${run.generated.length} ${t('tokens emitidos','emitted tokens')}`;$('position').dataset.x=player.x;$('position').dataset.z=player.z;$('position').dataset.yaw=player.yaw;
      syncUIflow();
      const states={idle:t('Pulsa el botón del stand o Escuchar.','Press the stand button or Listen.'),loading:t('Cargando voz…','Loading voice…'),speaking:t('Escuchando · puedes explorar mientras tanto','Listening · you can explore meanwhile'),reading:t('Tiempo de lectura','Reading time'),paused:t('Voz en pausa','Voice paused'),waiting:t('Pausa para observar · ','Pause to observe · ')+Math.ceil(guide.remaining)+' s',ready:t('Explicación terminada','Explanation complete'),error:t('No se pudo cargar la voz. Pulsa Escuchar para reintentar.','Voice failed to load. Press Listen to retry.'),blocked:t('Pulsa Escuchar para permitir el audio.','Press Listen to allow audio.')};$('status').textContent=travel?t('Viajando a la estación…','Travelling to the station…'):states[guide.state]||'';
-     for(const b of document.querySelectorAll('[data-listen]')){const p=world.projectStand(+b.dataset.listen,player);b.hidden=!started||!p.visible;b.style.left=p.x+'px';b.style.top=p.y+'px';}
+     for(const b of document.querySelectorAll('[data-listen]')){const p=world.projectStand(+b.dataset.listen,player);b.hidden=!started||!p.visible;const reading=run.phase===5&&+b.dataset.listen===5;b.classList.toggle('reading-stand',reading);b.style.left=reading?'18px':p.x+'px';b.style.top=reading?'auto':p.y+'px';}
      if(now>inspectUntil)$('inspect').hidden=true;save();
     }
    }requestAnimationFrame(tick);

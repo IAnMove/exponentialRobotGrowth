@@ -26,9 +26,10 @@ export function createGallery(es){
   return mesh;
  }
  function glow(g,x,y,z,color,size=.8){const c=document.createElement('canvas');c.width=c.height=64;const ctx=c.getContext('2d'),grad=ctx.createRadialGradient(32,32,0,32,32,32);grad.addColorStop(0,'#ffffff');grad.addColorStop(.15,'#ffffffaa');grad.addColorStop(1,'#ffffff00');ctx.fillStyle=grad;ctx.fillRect(0,0,64,64);const tx=own(new THREE.CanvasTexture(c));const sprite=new THREE.Sprite(own(new THREE.SpriteMaterial({map:tx,color,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending})));sprite.position.set(x,y,z);sprite.scale.setScalar(size);g.add(sprite);return sprite;}
- function chip(g,str,x,y,z,w=1.05,color=blue,info){
-  const mesh=box(g,x,y,z,w,.49,.19,0x17213b,info);const edge=new THREE.LineSegments(own(new THREE.EdgesGeometry(mesh.geometry)),own(new THREE.LineBasicMaterial({color,transparent:true,opacity:.65})));mesh.add(edge);text(g,str,x,y,z+.106,w-.08,'#e8efff',.29);return mesh;
+ function chip(g,str,x,y,z,w=1.05,color=blue,info,reading){
+  const mesh=box(g,x,y,z,w,.49,.19,0x17213b,info);const edge=new THREE.LineSegments(own(new THREE.EdgesGeometry(mesh.geometry)),own(new THREE.LineBasicMaterial({color,transparent:true,opacity:.65})));mesh.add(edge);const label=text(g,str,x,y,z+.106,w-.08,'#e8efff',.29);if(reading)readable(label,reading,w-.1);return mesh;
  }
+ function readable(label,reading,maxInkWidth){label.userData.reading=reading;label.userData.maxInkWidth=maxInkWidth;projectionLabels.push(label);return label;}
  function route(g,points,phase,color=gold,weight=.035,operation=null,span=[0,1]){
   const curve=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));const tube=new THREE.Mesh(own(new THREE.TubeGeometry(curve,40,weight,5,false)),own(new THREE.MeshBasicMaterial({color,transparent:true,opacity:.35,depthWrite:false})));g.add(tube);
   const ball=glow(g,0,0,0,color,.24+weight*3);paths.push({curve,ball,tube,phase,operation,span,progress:0,arrived:false});return curve;
@@ -105,7 +106,7 @@ export function createGallery(es){
   text(g4,t('Residual: sumar la entrada · red por posición: 6 → 12 → 6','Residual: add the input · position-wise network: 6 → 12 → 6'),0,.64,.5,9,'#ffcf7a',.3);
   text(groups[4],info,0,-.04,1,9,'#7588ac',.24);
   const candidates={pieces:frame.decoder.pieces,logits:frame.decoder.logits},ps=frame.decoder.probabilities,colors=[mint,blue,violet];
-  ps.forEach((p,i)=>{const y=3.8-i*1.15;chip(groups[5],visible(candidates.pieces[i]),-2.9,y,.2,2.2,colors[i%3],{text:'logit = '+candidates.logits[i]});box(groups[5],1.35,y,0,4.9,.36,.22,0x192039);if(p>0)box(groups[5],-1.1+p*2.45,y,.13,4.9*p,.36,.25,colors[i%3],{text:'p: '+probabilityPercent(ps,i,es?'es':'en')+'%',value:p});text(groups[5],probabilityPercent(ps,i,es?'es':'en')+'%',4.35,y,.25,1.1,'#e8efff',.29);text(groups[5],'logit '+candidates.logits[i],-2.9,y-.41,.3,2.1,'#8295ba',.22);route(groups[5],[[-4.2,4.3,.3],[-4.45,y,.8],[-4.05,y,.3]],5,colors[i%3],.025);});
+  ps.forEach((p,i)=>{const y=3.8-i*1.15;chip(groups[5],visible(candidates.pieces[i]),-2.9,y+.18,.2,2.2,colors[i%3],{text:'logit = '+candidates.logits[i]},'candidate');box(groups[5],1.35,y,0,4.9,.36,.22,0x192039);if(p>0)box(groups[5],-1.1+p*2.45,y,.13,4.9*p,.36,.25,colors[i%3],{text:'p: '+probabilityPercent(ps,i,es?'es':'en')+'%',value:p});readable(text(groups[5],probabilityPercent(ps,i,es?'es':'en')+'%',1.35,y+.48,.25,2.8,'#e8efff',.38),'probability',2.8);readable(text(groups[5],'logit '+candidates.logits[i],-2.9,y-.38,.3,2.65,'#a6b9d9',.26),'logit',2.65);route(groups[5],[[-4.2,4.3,.3],[-4.45,y,.8],[-4.05,y,.3]],5,colors[i%3],.025);});
   text(groups[5],run.options.temperature===0?t('T = 0 → máximo (argmax)','T = 0 → maximum (argmax)'):'softmax(logits / T)   ·   T = '+run.options.temperature.toFixed(2),0,.65,.5,9,'#ffcf7a',.33);
   text(groups[5],t('Continuación ≠ verdad · logits preparados, independientes del bloque anterior','Continuation ≠ truth · curated logits, independent of the block above'),0,.23,.6,9,'#91a4c8',.26);
   let edge=-4;ps.forEach((p,i)=>{const w=p*8;if(w>0)box(groups[6],edge+w/2,1.7,.2,w,.62,.48,colors[i%3]);if(w>.8)text(groups[6],probabilityPercent(ps,i,es?'es':'en')+'%',edge+w/2,1.7,.46,w-.12,'#091223',.29);edge+=w;});
@@ -119,19 +120,22 @@ export function createGallery(es){
   if(run.generated.length&&!run.done)route(groups[7],[[3,1.58,.4],[3,.65,1.2],[-2.9,.65,1.2],[-2.9,1.58,.4]],7,mint);
   text(groups[7],t('El nuevo token vuelve a la entrada · la caché KV evita recalcular K y V anteriores','The new token returns to the input · KV caching reuses earlier keys and values'),0,.29,1.4,9,'#8fbfc5',.27);
   scene.updateMatrixWorld(true);
+  // Framing uses the original exhibit, independent of screen-sized lettering.
+  groups.forEach(g=>{g.userData.framingBounds=new THREE.Box3().setFromObject(g);});
  }
- // Target 12 CSS pixels of ink; the width cap leaves a gap between columns.
+ // Target 12 CSS pixels of ink; short windows also reserve the row spacing.
+ // Width caps leave a gap between columns, including flat punctuation glyphs.
  // Only annotations scale: the visitor and computed vector cells stay in place.
  const labelPoint=new THREE.Vector3();
  function fitProjectionLabels(camera,viewportHeight){
   for(const label of projectionLabels){
-   const bounds=label.userData.glyphBounds,limit=Math.min(4,1.85/Math.max(.001,bounds.maxX-bounds.minX));label.scale.setScalar(1);
+   const bounds=label.userData.glyphBounds,limit=Math.min(4,(label.userData.maxInkWidth??1.85)/Math.max(.001,bounds.maxX-bounds.minX)),inkPixels=label.userData.reading?Math.min(12,viewportHeight/26):12;label.scale.setScalar(1);
    label.updateWorldMatrix(true,false);labelPoint.set(0,0,0).applyMatrix4(label.matrixWorld).applyMatrix4(camera.matrixWorldInverse);if(labelPoint.z>=-camera.near)continue;
    for(let pass=0;pass<2;pass++){
     label.updateWorldMatrix(true,false);labelPoint.set(0,bounds.minY,0).applyMatrix4(label.matrixWorld).project(camera);const bottom=labelPoint.y;
     labelPoint.set(0,bounds.maxY,0).applyMatrix4(label.matrixWorld).project(camera);const pixels=Math.abs(labelPoint.y-bottom)*viewportHeight/2;
     if(!(pixels>0)||!Number.isFinite(pixels))break;
-    label.scale.setScalar(Math.max(1,Math.min(limit,label.scale.x*12/pixels)));
+    label.scale.setScalar(Math.max(1,Math.min(limit,label.scale.x*inkPixels/pixels)));
    }
   }
  }
@@ -162,7 +166,7 @@ export function createExperience(host,{es,onInspect=()=>{},onAction=()=>{},rende
  function renderFrame(frame,player,options={}){if(disposed)return;updateFrame(frame);applyPlayer(player);draw(options.dt||0,options.reduced,(frame.phase+frame.progress)*12);}
  function getViewState(){return {version:1,...lastPlayer,mode:'walk',eyeHeight:1.65};}
  function restoreViewState(pose){if(!pose||!['x','z','yaw','pitch'].every(k=>Number.isFinite(pose[k])))return false;return {x:THREE.MathUtils.clamp(pose.x,-10,4.7),z:THREE.MathUtils.clamp(pose.z,-106,10),yaw:pose.yaw,pitch:THREE.MathUtils.clamp(pose.pitch,-1.05,1.05)};}
- function arrivalPose(index){const stop=STOPS[index];if(!stop)throw new RangeError('Valid gallery station required');gallery.scene.updateMatrixWorld(true);const object=gallery.groups[index],bounds=object?new THREE.Box3().setFromObject(object):new THREE.Box3(new THREE.Vector3(-7,.2,stop.z-4.8),new THREE.Vector3(-4,5.2,stop.z+4.8));bounds.union(new THREE.Box3(new THREE.Vector3(stop.x-1.35,.025,stop.z-5.2),new THREE.Vector3(stop.x-1.35,5.575,stop.z+5.2)));const target=bounds.getCenter(new THREE.Vector3()),test=new THREE.PerspectiveCamera(camera.fov,camera.aspect,.08,155);let pose;for(let x=.8;x<=4.6+.001;x+=.1){pose={x,z:stop.z,yaw:Math.PI/2,pitch:-Math.atan2(target.y-1.65,x-target.x)};test.position.set(x,1.65,stop.z);test.rotation.set(pose.pitch,pose.yaw,0,'YXZ');test.updateMatrixWorld(true);let fits=true;for(const bx of [bounds.min.x,bounds.max.x])for(const by of [bounds.min.y,bounds.max.y])for(const bz of [bounds.min.z,bounds.max.z]){const point=new THREE.Vector3(bx,by,bz).project(test);if(Math.abs(point.x)>.87||Math.abs(point.y)>.84||point.z<=-1||point.z>=1)fits=false;}if(fits)break;}return pose;}
+ function arrivalPose(index){const stop=STOPS[index];if(!stop)throw new RangeError('Valid gallery station required');gallery.scene.updateMatrixWorld(true);const object=gallery.groups[index],bounds=object?object.userData.framingBounds.clone():new THREE.Box3(new THREE.Vector3(-7,.2,stop.z-4.8),new THREE.Vector3(-4,5.2,stop.z+4.8));bounds.union(new THREE.Box3(new THREE.Vector3(stop.x-1.35,.025,stop.z-5.2),new THREE.Vector3(stop.x-1.35,5.575,stop.z+5.2)));const target=bounds.getCenter(new THREE.Vector3()),test=new THREE.PerspectiveCamera(camera.fov,camera.aspect,.08,155);let pose;for(let x=.8;x<=4.6+.001;x+=.1){pose={x,z:stop.z,yaw:Math.PI/2,pitch:-Math.atan2(target.y-1.65,x-target.x)};test.position.set(x,1.65,stop.z);test.rotation.set(pose.pitch,pose.yaw,0,'YXZ');test.updateMatrixWorld(true);let fits=true;for(const bx of [bounds.min.x,bounds.max.x])for(const by of [bounds.min.y,bounds.max.y])for(const bz of [bounds.min.z,bounds.max.z]){const point=new THREE.Vector3(bx,by,bz).project(test);if(Math.abs(point.x)>.87||Math.abs(point.y)>.84||point.z<=-1||point.z>=1)fits=false;}if(fits)break;}return pose;}
  return {canvas,update:gallery.update,updateFrame,renderFrame,getViewState,restoreViewState,arrivalPose,inspect(x,y){if(arguments.length)return inspect(x,y);return {...gallery.inspect(),camera:{...getViewState(),fov:camera.fov,aspect:camera.aspect},navigation:{mode:'walk',grounded:true,bounds:{x:[-10,4.7],z:[-106,10]},eyeHeight:1.65}};},render(player,dt,progress,running,cue,reduced){applyPlayer(player);gallery.animate(dt,progress,running,cue,reduced);draw(dt,reduced,clock+dt);},
   projectStand(index,player){const s=standPosition(index);projected.set(s.x,s.y+.5,s.z).project(camera);return {x:(projected.x+1)*host.clientWidth/2,y:(1-projected.y)*host.clientHeight/2,visible:projected.z<1&&projected.z>-1&&Math.abs(projected.x)<.9&&Math.abs(projected.y)<.83&&Math.hypot(player.x-s.x,player.z-s.z)<11};},
   dispose(){disposed=true;observer.disconnect();atmosphere?.dispose();post?.dispose();gallery.dispose();renderer.dispose();canvas.remove();}
