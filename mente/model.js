@@ -8,8 +8,9 @@ export const NONNEURONAL = 84.6e9;
 export const CORTICAL = 16.3e9;
 export const CEREBELLAR = 69e9;
 export const SYNAPSE_ORDER = 1e14;
-// Whole-organ order estimate, not the incremental cost of a sentence:
-// Raichle & Gusnard (2002), doi:10.1073/pnas.172399499.
+// Whole-organ metabolic order estimate, not computation-only power or the
+// incremental cost of a sentence. Raichle & Gusnard (2002),
+// doi:10.1073/pnas.172399499; Levy & Calvert (2021), doi:10.1073/pnas.2008173118.
 export const BRAIN_WATTS = 20;
 // Approximate mean under Cowan's experimental conditions, not a token limit:
 // Cowan (2001), doi:10.1017/S0140525X01003922.
