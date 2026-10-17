@@ -162,3 +162,19 @@ for(const lang of ['es','en'])for(const mode of ['notebook','immersive']){
 const proofs=recordingProofs(VOICES);
 console.log(`Home visible per-chore budgets: ${shownBudgetStates} bilingual notebook/FPS boundary, rewind and scenario states; numerical legend and 145-minute conservation: OK`);
 console.log(`Home controls: ${scenarios} bilingual notebook/FPS/audio-failure scenarios, 14 independent phrase-cue and ${inverseCases.length} inverse numerical oracles / ${inverseSamples} roundtrip samples, narrated ES↔EN wash/dry switching without rewind or camera travel, first/repeated entry, manual fractional scenario/voice/reload, real player/clock/mouse binder, spent/released ledger, seven selections/scrubs, physical E/click, blur/visibility and ${proofs.recordings} ${proofs.mode} MiniMax proofs: OK`);
+
+// Equivalent scene-cue remapping must not restart the post-audio observation.
+let observationChecks=0;
+for(const lang of ['es','en'])for(const running of [false,true]){
+ const h=harness({lang,voices:VOICES,worldAPI});await h.flush();const n=h.players[0];n.pause();
+ for(let index=0;index<n.clock.timeline.length-1;index++)for(const offset of [.8,2.4]){
+  const c=n.clock.timeline[index];n.seek(c.start+c.duration+offset,running);await h.flush();const before=n.current,position=n.clock.position;
+  n.el('language').onchange({target:{value:n.language==='es'?'en':'es'}});await h.flush();const after=n.current;
+  assert.equal(after.index,index);assert.equal(after.inGap,true);near(after.end-after.elapsed,before.end-before.elapsed,'voice remapping retains the remaining observation');assert.equal(n.running,running);assert.equal(n.wanted,running);
+  if(!running){h.frames(12);near(n.clock.position,after.elapsed,'paused observation cannot advance');}
+  observationChecks++;
+ }
+ n.seek(n.clock.total,false);await h.flush();n.changeLanguage(n.language==='es'?'en':'es');await h.flush();assert.equal(n.clock.position,n.clock.total);assert.equal(n.clock.state,'finished');assert.equal(n.running,false);observationChecks++;
+ h.events?.pagehide?.({persisted:false});
+}
+console.log('home observation: '+observationChecks+' bilingual paused/running chapter gaps and exact completions retain their phase: OK');
