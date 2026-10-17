@@ -3,7 +3,7 @@ import {wrapSceneLabel,layoutSceneLabels} from './label-layout.js';
 
 function annotationVisible(object){for(let o=object;o;o=o.parent)if(!o.visible)return false;return true;}
 
-export function createSceneAnnotations(scene,own,{metadataKey='sceneLabel'}={}){
+export function createSceneAnnotations(scene,own,{metadataKey='sceneLabel',gap=5}={}){
  const annotations=[];
  function label(g,words,p,width=3,{height=96,bg=true,physical=false,color='#eff7f2'}={}){
   const canvas=document.createElement('canvas');canvas.width=768;canvas.height=physical?height:384;const ctx=canvas.getContext('2d');
@@ -37,7 +37,7 @@ export function createSceneAnnotations(scene,own,{metadataKey='sceneLabel'}={}){
   }
   const key=JSON.stringify([width,height,obstacles,camera.matrixWorld.elements,camera.projectionMatrix.elements,projected.map(p=>[p.id,p.x,p.y,p.depth,p.width,p.height,p.priority])]);
   if(key===labelLayoutKey)return;labelLayoutKey=key;
-  const placed=layoutSceneLabels(projected,{width,height,obstacles});
+  const placed=layoutSceneLabels(projected,{width,height,obstacles,gap});
   for(const p of projected){
    const e=p.entry,m=e.m,box=placed.find(b=>b.id===p.id);if(!box){m.material.opacity=0;e.leader.visible=false;m.userData[metadataKey].layout=null;continue;}
    const center={x:box.x+box.width/2,y:box.y+box.height/2},units=2*p.depth*Math.tan(camera.fov*Math.PI/360)/height;
