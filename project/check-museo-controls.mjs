@@ -199,6 +199,16 @@ for(const lang of ['es','en']){
  h.events.keydown(readingKey('Escape'));const stopped={...h.lastPose};h.frames(30);samePose(h.lastPose,stopped,'Escape remains available while reading');
  h.element('instant').checked=true;h.paintings.find(b=>b.dataset.painting==='home').onclick();h.frames(1);assert.equal(copy.scrollTop,0,'a different painting begins at the top of its description');
 }
+for(const lang of ['es','en']){
+ controllerCases++;const h=harness({lang,search:'?pieza=llms'});await h.flush();h.frames(1);const notebook=h.players[0];notebook.toggle();await h.flush();h.frames(1);
+ const pose={...h.lastPose},footerKey=code=>({...key(code),target:{closest:selector=>selector.split(',').includes('.atlas-player')}});
+ for(const code of ['ArrowDown','ArrowUp','ArrowLeft','ArrowRight','KeyW','KeyA','KeyS','KeyD','KeyE','KeyN']){h.events.keydown(footerKey(code));h.frames(12);h.events.keyup(footerKey(code));}
+ samePose(h.lastPose,pose,'timeline/transcript focus does not move the visitor');assert(notebook.running,'footer reading keys retain recorded playback');assert.equal(h.navigations.length,0,'E in the player does not open the nearby painting');assert.equal(h.lastRender.portal,null);
+ h.events.keydown(key('KeyD'));h.frames(12);assert(h.lastPose.x>pose.x,'scene keys still walk after leaving the player');
+ const stopped={...h.lastPose};h.events['document:focusin'](footerKey('KeyD'));h.frames(30);samePose(h.lastPose,stopped,'focusing the player clears held keys and walking inertia even before keyup');h.events.keyup(key('KeyD'));
+ h.events.keydown(footerKey('Escape'));h.frames(1);assert.equal(notebook.running,false,'Escape remains a global pause while reading');
+ h.events.keydown(key('KeyE'));h.frames(1);assert(h.lastRender.portal,'E in the scene still enters the painting');h.events.keydown(key('Escape'));h.frames(1);assert.equal(h.lastRender.portal,null);
+}
 let routeCases=0;
 for(const lang of ['es','en']){
  const h=harness({lang});await h.flush();h.element('instant').checked=false;const choose=id=>h.paintings.find(b=>b.dataset.painting===id).onclick();
