@@ -52,7 +52,7 @@ export function createSceneAnnotations(scene,own,{metadataKey='sceneLabel'}={}){
 
 export function annotationViewport(host){
   const area=host.getBoundingClientRect(),obstacles=[];
-  const elements=[...(host.parentElement?.querySelectorAll('.walk-controls button,#fit-network,.scene-zoom button,#position,.evolution-key,.carbon-key,.carbon-flows,.evolution-process,.electricity-key,.electricity-flows,#inspect,.view-help')||[]),...document.querySelectorAll('.atlas-player')];
+  const elements=[...(host.parentElement?.querySelectorAll('.walk-controls button,#fit-network,.scene-zoom button,#position,.evolution-key,.carbon-key,.carbon-flows,.evolution-process,.electricity-key,.electricity-flows,.nuclear-key,.nuclear-progress,#inspect,.view-help')||[]),...document.querySelectorAll('.atlas-player')];
   for(const element of elements){const r=element.getBoundingClientRect();if(!r.width||!r.height)continue;const x=Math.max(0,r.left-area.left),y=Math.max(0,r.top-area.top),right=Math.min(area.width,r.right-area.left),bottom=Math.min(area.height,r.bottom-area.top);if(right>x&&bottom>y)obstacles.push({x,y,width:right-x,height:bottom-y});}
   return {width:area.width,height:area.height,obstacles};
  }

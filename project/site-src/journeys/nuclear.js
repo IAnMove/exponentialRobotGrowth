@@ -3,8 +3,8 @@ import {buildNuclearTrace,sampleNuclear} from './nuclear-model.js';
 export {heatBalance} from './nuclear-model.js';
 let cachedKey,cachedTrace;
 export function nuclearExperiment(p){const key=[p.power,p.efficiency,p.stop].join(':');if(key!==cachedKey||!cachedTrace){cachedTrace=buildNuclearTrace(p);cachedKey=key;}return cachedTrace;}
-export const nuclearFocus=[[-6.5,2.5,0],[-2.2,2.6,0],[4.4,2,0],[-6.5,2.5,0]],nuclearStandX=[-7,-2.2,4.4,-10.5];
-export function nuclearPoseAt(i){const f=nuclearFocus[i],x=nuclearStandX[i],z=8.3;return {x,z,yaw:Math.atan2(x-f[0],z-f[2]),pitch:Math.atan2(f[1]-1.65,Math.hypot(x-f[0],z-f[2]))};}
+export const nuclearFocus=[[-8.2,2.6,.6],[-2.2,2.6,0],[4.4,2,0],[-6.5,2.5,0]],nuclearStandX=[-7,-2.2,4.4,-10.5];
+export function nuclearPoseAt(i){const f=nuclearFocus[i],x=i===0?-8.2:nuclearStandX[i],z=i===0?10.8:8.3;return {x,z,yaw:Math.atan2(x-f[0],z-f[2]),pitch:Math.atan2(f[1]-1.65,Math.hypot(x-f[0],z-f[2]))};}
 export function nuclearWalk(p,f,s,dt){const n=Math.max(1,Math.hypot(f,s)),v=3.5*Math.min(.05,dt);let x=clamp(p.x+(-Math.sin(p.yaw)*f+Math.cos(p.yaw)*s)/n*v,-13,12),z=clamp(p.z+(-Math.cos(p.yaw)*f-Math.sin(p.yaw)*s)/n*v,-8,12);const inside=(a,b)=>a>-9&&a<9&&b>-4&&b<2.8;if(inside(x,z)){if(!inside(x,p.z))z=p.z;else if(!inside(p.x,z))x=p.x;else{x=p.x;z=p.z;}}return {...p,x,z};}
 export const nuclear={id:'nuclear',room:'industry',title:L('Un reactor convierte calor en electricidad','A reactor turns heat into electricity'),color:'#ffb582',unit:L('paso','step'),horizon:24,continuous:true,
  poseAt:nuclearPoseAt,walk:nuclearWalk,overview:{yaw:.06,pitch:.30,distance:9.5},fitLabel:L('Ver la central completa','Fit the whole plant'),

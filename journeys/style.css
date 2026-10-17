@@ -106,4 +106,8 @@
  .electricity-experience.immersive .visual{min-height:640px}
  .electricity-experience.immersive .walk-controls{--walk-top:75px;bottom:184px;align-content:space-between}
  .electricity-experience.immersive .walk-controls .touch{position:sticky;bottom:calc(var(--atlas-player-height,150px) + 12px)}
+ .nuclear-experience .visual{height:650px;min-height:650px}
+ .nuclear-experience.immersive .visual{height:710px;min-height:710px}
+ .nuclear-experience.immersive .walk-controls{--walk-top:75px;bottom:184px;align-content:space-between}
+ .nuclear-experience.immersive .walk-controls .touch{position:sticky;bottom:calc(var(--atlas-player-height,150px) + 12px)}
 }
