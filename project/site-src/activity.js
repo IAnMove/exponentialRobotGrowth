@@ -3,14 +3,20 @@ import {roadRoute,routePoint,districtContactTargets} from './world.js';
 
 export const INPUTS=[[],[0],[1],[1],[1],[1],[2,3,4,5],[6],[7]];
 export const RESOURCES=['Mineral','Metales','Estructuras','Actuadores','Baterías','Electrónica','Kits','Por probar'];
+// Beacons describe resources available now. rate is deliberately separate:
+// the animation and output counter still use the last completed hour.
 export function processStatus(frame,next,i){
-  const rate=Number(frame.flow[i])||0,cap=frame.worked?.cap?.[i]??Math.floor(frame.capacity[i]);
-  if(frame.capacity[i]<=0)return {code:'rest',label:'Sin turno disponible',color:0x7995b4,rate};
-  if(rate===0&&cap>0)return {code:'waiting',label:'Esperando materiales',color:0xffaa61,rate};
-  if(rate<cap)return {code:'supply',label:'Suministro insuficiente',color:0xffaa61,rate};
-  if(frame.projects[i])return {code:'building',label:'Ampliación en marcha',color:0xffc96c,rate};
-  if(frame.capacity[i]>=frame.hardware[i])return {code:'full',label:'Maquinaria al máximo',color:0xddbc78,rate};
-  return {code:'working',label:'En producción',color:0xa7e3cb,rate};
+  const rate=Number(frame.flow[i])||0,cap=frame.capacity[i],inputs=INPUTS[i];
+  if(cap<=0)return frame.projects[i]&&frame.active[i]>0?{code:'building',label:'Ampliación en marcha',color:0xffc96c,rate}:{code:'rest',label:'Sin turno disponible',color:0x7995b4,rate};
+  const stock=inputs.length?Math.min(...inputs.map(k=>frame.inventory[k])):Infinity;
+  if(stock<=0)return {code:'waiting',label:'Esperando materiales',color:0xffaa61,rate};
+  if(stock<cap)return {code:'supply',label:'Existencias insuficientes',color:0xffaa61,rate};
+  // These four processes compete for the same pool. A collective shortfall
+  // does not establish how much any single process will receive next hour.
+  if(i>=2&&i<=5&&stock<frame.capacity.slice(2,6).reduce((n,c)=>n+c,0))return {code:'shared',label:'Stock compartido limitado',color:0xe7bf75,rate};
+  if(frame.projects[i]&&frame.active[i]>0)return {code:'building',label:'Ampliación en marcha',color:0xffc96c,rate};
+  if(cap>=frame.hardware[i])return {code:'full',label:'Límite de equipo cubierto',color:0xddbc78,rate};
+  return {code:'ready',label:'Recursos disponibles',color:0xa7e3cb,rate};
 }
 
 export function createActivity(scene,world,industries){
@@ -45,8 +51,8 @@ export function createActivity(scene,world,industries){
     assembly.forEach((record,j)=>{const p=(clock*.4+j*.21)%1,on=active[7]&&j<Math.min(5,statuses[7].rate);record.group.visible=on;record.group.scale.setScalar(1);record.chassis.visible=true;record.battery.visible=p>=.20;record.board.visible=p>=.35;record.limbs.forEach(o=>o.visible=p>=.45);record.head.visible=p>=.65;record.cover.visible=p>=.80;Object.assign(record.group.userData,{active:on,phase:on?p:0,stage:p<.2?'chassis':p<.35?'battery':p<.45?'electronics':p<.65?'actuators':p<.8?'head':'cover',observedRate:statuses[7].rate,completedHour:frame.worked?.hour??null});});
     scanners.forEach((record,j)=>{const p=(clock*.4+j*.22)%1,illustrated=active[8]&&j<Math.min(4,statuses[8].rate),stock=Number(frame.inventory[7])>j;record.body.visible=illustrated||stock;record.group.visible=illustrated;const contact=illustrated&&p>=.4&&p<=.75,height=contact?record.target.y+.25:Math.max(record.target.y+.34,record.target.y+.25+.45*Math.abs(Math.cos(p*Math.PI)));record.group.position.set(record.target.x,height,record.target.z);record.needles.forEach(needle=>{const tipY=contact?record.target.y:record.target.y+.30,length=height-tipY;needle.mesh.position.set(needle.x,-length/2,0);needle.mesh.scale.y=length/.20;needle.mesh.userData={contactPoint:[record.target.x+needle.x,tipY,record.target.z],materialPoint:[record.target.x+needle.x,record.target.y,record.target.z],contact,countsAsObject:false};});Object.assign(record.body.userData,{source:illustrated?'last completed calibration interval':'current inventory sample',inventoryQuantity:Number(frame.inventory[7])||0,observedRate:statuses[8].rate,completedHour:frame.worked?.hour??null});record.group.userData={contact,phase:illustrated?p:0,countsAsObject:false,qualityResult:null};});
     for(const [mesh,site,total]of[[smoke,1,10],[dust,0,8]]){mesh.count=active[site]?total:0;mesh.instanceMatrix.array.fill(0);for(let j=0;j<mesh.count;j++){const p=(clock*(site?.15:.3)+j/total)%1;temp.position.set(industries[site].x+(site?5.4+p*2:-1+p*2),site?6.3+p*6:1+p*1.5,industries[site].z+(site?-2+Math.sin(j)*.3:-1+Math.sin(j)*.7));temp.scale.setScalar((site?.3:.25)+p*(site?.8:.55));temp.updateMatrix();mesh.setMatrixAt(j,temp.matrix);}mesh.instanceMatrix.needsUpdate=true;mesh.boundingSphere=null;}
-    routes.forEach(r=>{const traced=traceSources.includes(r.from)&&selected===r.to,visible=traced||showRoutes||selected===r.from||selected===r.to,blocked=statuses[r.to].code==='waiting'||statuses[r.to].code==='supply';r.line.visible=visible;r.line.material.color.set(traced?0xffd17f:blocked?0xffad67:0x8edccc);r.line.material.opacity=traced?1:selected===r.from||selected===r.to?.9:.3;r.arrows.forEach((o,j)=>{o.visible=visible&&active[r.from];const point=routePoint(r.path,(clock*.08+j/4)%1);o.position.set(point.x,.65,point.z);o.rotation.set(Math.PI/2,point.angle,0,'YXZ');o.userData.observedRate=statuses[r.from].rate;});});
-    summary={time:clock,completedHour:frame.worked?.hour??null,scope:es?'Muestras de operaciones de la última hora completa; existencias actuales exactas. Las piezas no son lotes individuales.':'Examples from the last completed hour; exact current inventories. Parts are not tracked individual lots.',inventories,processes:statuses.map((s,i)=>({site:i,active:active[i],observedRate:s.rate,status:s.code}))};root.updateMatrixWorld(true);
+    routes.forEach(r=>{const traced=traceSources.includes(r.from)&&selected===r.to,visible=traced||showRoutes||selected===r.from||selected===r.to,blocked=['waiting','supply','shared'].includes(statuses[r.to].code);r.line.visible=visible;r.line.material.color.set(traced?0xffd17f:blocked?0xffad67:0x8edccc);r.line.material.opacity=traced?1:selected===r.from||selected===r.to?.9:.3;r.arrows.forEach((o,j)=>{o.visible=visible&&active[r.from];const point=routePoint(r.path,(clock*.08+j/4)%1);o.position.set(point.x,.65,point.z);o.rotation.set(Math.PI/2,point.angle,0,'YXZ');o.userData.observedRate=statuses[r.from].rate;});});
+    summary={time:clock,completedHour:frame.worked?.hour??null,scope:es?'Semáforos: disponibilidad actual. Muestras de operaciones de la última hora completa; existencias actuales exactas. Las piezas no son lotes individuales.':'Beacons: current availability. Examples from the last completed hour; exact current inventories. Parts are not tracked individual lots.',inventories,processes:statuses.map((s,i)=>({site:i,active:active[i],observedRate:s.rate,status:s.code}))};root.updateMatrixWorld(true);
   }
   root.traverse(o=>{if(o.isInstancedMesh)own(o);own(o.geometry);for(const material of(Array.isArray(o.material)?o.material:[o.material]))if(material){own(material);own(material.map);}});
   return {root,parts:{rings,beacons,stocks,stockGroups,stockLabels,assembly,scanners,testBodies,taskSamples,routes,smoke,dust},resources,update,getSummary:()=>summary,dispose(){if(disposed)return;disposed=true;for(const resource of resources)resource.dispose?.();root.removeFromParent();}};

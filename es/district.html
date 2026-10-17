@@ -21,14 +21,14 @@
     <div id="place-labels" class="place-labels"></div>
     <aside class="inspector" id="inspector" hidden>
       <div class="inspector-head"><span id="place-title"></span><button id="close-inspector" type="button" aria-label="Cerrar detalle">×</button></div>
+      <div id="place-status" class="place-status"></div>
       <p id="place-description"></p>
       <div id="industrial-detail">
         <div class="inspector-numbers"><div><strong id="place-humans"></strong><span>personas</span></div><div><strong id="place-workers"></strong><span>robots</span></div><div><strong id="place-flow"></strong><span>producidos</span></div></div>
         <div id="place-product" class="place-product"></div><p id="place-shift"></p>
-        <div class="capacity-caption"><span>Ritmo esta hora</span><strong id="capacity-label"></strong></div><div class="capacity-track"><i id="capacity-fill"></i></div>
+        <div class="capacity-caption"><span>Capacidad disponible ahora</span><strong id="capacity-label"></strong></div><div class="capacity-track"><i id="capacity-fill"></i></div>
         <div class="sector-productivity"><h3>Producción frente al trabajo humano</h3><p id="d-sector-values"></p><div class="production-legend"><span>● Tu estrategia</span><span>┄ Solo trabajo humano</span></div><svg id="d-sector-chart" viewBox="0 0 640 170" role="img" aria-label="Producción de esta industria a lo largo del tiempo"></svg><small id="d-sector-window"></small></div><h3 id="stock-title">Existencias que necesita</h3><div id="stock-list"></div><p id="stock-footnote"></p>
       </div>
-      <div id="place-status" class="place-status"></div>
     </aside>
     <div class="map-card"><div>DISTRITO INDUSTRIAL <span>↗</span></div><canvas id="minimap" width="200" height="152" tabindex="0" role="button" aria-label="Mapa: haz clic para explorar. Flechas para desplazarte. Intro para ver todo."></canvas><span>Haz clic para explorar</span></div>
     <div class="map-tools"><button id="routes" type="button" aria-pressed="false"><span aria-hidden="true">⑂</span> Conexiones</button></div>

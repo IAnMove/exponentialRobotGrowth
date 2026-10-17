@@ -56,3 +56,12 @@ En la última hora completa esta etapa produjo menos de lo que permitía su capa
 . Las entradas se comparten; el stock que ves ahora ya incluye el consumo y las entregas de esa hora.	. Inputs are shared; the stock shown now already includes that hour’s consumption and deliveries.
 En la última hora completa se alcanzó el límite de la maquinaria disponible entonces. Ampliar los equipos puede aumentar la capacidad; añadir personal por sí solo no supera ese límite.	The last completed hour reached the limit of the machinery available then. Expanding the equipment can increase capacity; adding workers alone cannot exceed that limit.
 En la última hora completa esta etapa produjo con los recursos disponibles. La salida final todavía depende del resto de la cadena.	During the last completed hour this stage produced with the available resources. Final output still depends on the rest of the chain.
+
+# Current district availability and completed output are separate
+Existencias insuficientes	Insufficient stock
+Stock compartido limitado	Limited shared stock
+Límite de equipo cubierto	Equipment capacity staffed
+Recursos disponibles	Resources available
+Capacidad disponible ahora	Capacity available now
+Las cuatro fábricas de componentes comparten este stock. La disponibilidad de cada una no garantiza que todas puedan usarlo a la vez.	The four component factories share this stock. Availability for each one does not guarantee that all can use it at once.
+Ahora:	Now:
