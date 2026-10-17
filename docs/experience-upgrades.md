@@ -1,5 +1,11 @@
 # Atlas — cola de mejoras
 
+## Siguiente pasada: cifras legibles en el gráfico lunar — 17 de octubre de 2026
+
+El gráfico mantenía un ancho interno mínimo de 300 unidades y rótulos de 11 píxeles. En un móvil de 320 píxeles, su contenedor de 252 reducía los textos a 9,24 píxeles. El dibujo usa ahora su ancho real y rótulos de 13 píxeles con mayor contraste. El margen izquierdo mide las etiquetas formateadas en el idioma de la página: cantidades como «115,3 mil M» ya no salen del gráfico. Las marcas de años se espacian según el área útil, y se reserva espacio para unidades y cifras de los ejes. El gráfico vuelve a medirse al cargar las fuentes y no se redibuja después de cerrar el controlador.
+
+Pasan siete comprobaciones de Lunar, reproducción y recursos, incluidas las 28 grabaciones MiniMax existentes. Chrome compara seis vistas anteriores con 144 estados posteriores ES/EN, a 320, 390 y 1440 píxeles: supuestos iniciales y rápidos, meses 0/96/240, escalas lineal/logarítmica e ideal visible/oculto. Los 1.486 rótulos mantienen 13 píxeles, caben y no se solapan. Se conserva la correspondencia entre extremo de la curva y marcador; no aparecen meses futuros. Ocho redimensionados adicionales conservan giro, zoom elegido, mes, pausa y posición de audio, y vuelven a comprobar los 13 píxeles. La distancia automática de encuadre sigue respondiendo a la proporción de la vista. Capturas inspeccionadas; sin errores de ejecución. Los cálculos, las entregas y las tres series no cambian.
+
 ## Siguiente pasada: reintentar la voz sin reiniciar la explicación — 17 de octubre de 2026
 
 Un fallo de descarga al buscar el 60 % de una narración devolvía el progreso visual a cero. Reintentar creaba el audio desde el principio. La guía compartida conserva ahora la posición solicitada durante un seek o la posición efectiva de una grabación interrumpida. El reintento parte de esos segundos y la lectura sin voz conserva la misma fracción. Los metadatos tardíos de un intento fallido no pueden mover ni reactivar la explicación. El controlador de LLMs usa esa posición también para la escena y el guardado.
