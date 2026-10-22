@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://robots.iaen.es/city</loc><lastmod>2026-10-22</lastmod></url>
-  <url><loc>https://robots.iaen.es/district</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://robots.iaen.es/dyson/</loc><lastmod>2026-10-22</lastmod></url>
-  <url><loc>https://robots.iaen.es/es/city</loc><lastmod>2026-10-22</lastmod></url>
-  <url><loc>https://robots.iaen.es/es/district</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://robots.iaen.es/es/dyson/</loc><lastmod>2026-10-22</lastmod></url>
-  <url><loc>https://robots.iaen.es/es/factory</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://robots.iaen.es/es/growth/</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://robots.iaen.es/es/home/</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://robots.iaen.es/es/immersive/</loc><lastmod>2026-10-22</lastmod></url>
@@ -20,16 +15,13 @@
   <url><loc>https://robots.iaen.es/es/mente/</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://robots.iaen.es/es/modelos/</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://robots.iaen.es/es/museo/</loc><lastmod>2026-10-22</lastmod></url>
-  <url><loc>https://robots.iaen.es/es/region</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://robots.iaen.es/es/robots/city</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://robots.iaen.es/es/robots/district</loc><lastmod>2026-10-22</lastmod></url>
-  <url><loc>https://robots.iaen.es/es/robots/factory</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://robots.iaen.es/es/robots/</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://robots.iaen.es/es/robots/region</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://robots.iaen.es/es/spacex/</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://robots.iaen.es/es/starlink/</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://robots.iaen.es/es/terafab/</loc><lastmod>2026-10-22</lastmod></url>
-  <url><loc>https://robots.iaen.es/factory</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://robots.iaen.es/growth/</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://robots.iaen.es/home/</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://robots.iaen.es/immersive/</loc><lastmod>2026-10-22</lastmod></url>
@@ -43,10 +35,8 @@
   <url><loc>https://robots.iaen.es/mente/</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://robots.iaen.es/modelos/</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://robots.iaen.es/museo/</loc><lastmod>2026-10-22</lastmod></url>
-  <url><loc>https://robots.iaen.es/region</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://robots.iaen.es/robots/city</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://robots.iaen.es/robots/district</loc><lastmod>2026-10-22</lastmod></url>
-  <url><loc>https://robots.iaen.es/robots/factory</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://robots.iaen.es/robots/</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://robots.iaen.es/robots/region</loc><lastmod>2026-10-22</lastmod></url>
   <url><loc>https://robots.iaen.es/spacex/</loc><lastmod>2026-10-22</lastmod></url>
