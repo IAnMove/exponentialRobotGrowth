@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /project/
+
+Sitemap: https://robots.iaen.es/sitemap.xml
